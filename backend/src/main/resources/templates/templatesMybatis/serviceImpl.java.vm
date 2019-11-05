@@ -1,0 +1,75 @@
+package ${package.ServiceImpl};
+
+import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.utils.SortUtil;
+import ${package.Entity}.${entity};
+import ${package.Mapper}.${table.mapperName};
+import ${package.Service}.${table.serviceName};
+import ${superServiceImplClassPackage};
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.time.LocalDate;
+/**
+ * <p>
+ * $!{table.comment} 服务实现类
+ * </p>
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+@Slf4j
+@Service("${table.serviceName}")
+@Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
+public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.mapperName}, ${entity}> implements ${table.serviceName} {
+
+
+@Override
+public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.entityPath}){
+        try{
+        LambdaQueryWrapper<${entity}> queryWrapper=new LambdaQueryWrapper<>();
+
+        Page<${entity}> page=new Page<>();
+        SortUtil.handlePageSort(request,page,true);
+        return this.page(page,queryWrapper);
+        }catch(Exception e){
+        log.error("获取字典信息失败" ,e);
+        return null;
+        }
+        }
+
+@Override
+@Transactional
+public void create${entity}(${entity} ${table.entityPath}){
+        ${table.entityPath}.setId(UUID.randomUUID().toString());
+        ${table.entityPath}.setCreateTime(LocalDate.now());
+        this.save(${table.entityPath});
+        }
+
+@Override
+@Transactional
+public void update${entity}(${entity} ${table.entityPath}){
+        ${table.entityPath}.setModifyTime(LocalDate.now());
+        this.baseMapper.update${entity}(${table.entityPath});
+        }
+
+@Override
+@Transactional
+public void delete${entity}s(String[]Ids){
+        List<String> list=Arrays.asList(Ids);
+        this.baseMapper.deleteBatchIds(list);
+        }
+
+
+        }
