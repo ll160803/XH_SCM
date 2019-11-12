@@ -12,8 +12,7 @@
             #set ($nuType="Int,Decimal,Double,BigDecimal")
             #foreach($field in ${table.fields})
                 <a-form-item
-                        :labelCol="labelCol"
-                        :wrapperCol="wrapperCol"
+                        v-bind="formItemLayout"
                         label="${field.comment}">
                     #if (${field.propertyType} =='Date'||${field.propertyType} =='LocalDate')
                         <a-date-picker v-decorator="[ '${field.propertyName}', #if (${field.nullable} =='N')validatorRules.${field.propertyName} #else{}#end]" />

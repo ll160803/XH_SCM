@@ -6,9 +6,11 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
-import cc.mrbird.febs.scm.service.IScmDPlanService;
-import cc.mrbird.febs.scm.entity.ScmDPlan;
+import cc.mrbird.febs.scm.service.IScmDMaterService;
+import cc.mrbird.febs.scm.entity.ScmDMater;
 
+import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -27,31 +29,31 @@ import java.util.Map;
 /**
  *
  * @author viki
- * @since 2019-10-23
+ * @since 2019-11-11
  */
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("scmDPlan")
+@RequestMapping("scmDMater")
 
-public class ScmDPlanController extends BaseController{
+public class ScmDMaterController extends BaseController{
 
 private String message;
 @Autowired
-public IScmDPlanService iScmDPlanService;
+public IScmDMaterService iScmDMaterService;
 
 
 /**
  * 分页查询数据
  *
  * @param bootStrapTable  分页信息
- * @param scmDPlan 查询条件
+ * @param scmDMater 查询条件
  * @return
  */
 @GetMapping
-@RequiresPermissions("scmDPlan:view")
-public Map<String, Object> List(QueryRequest request, ScmDPlan scmDPlan){
-        return getDataTable(this.iScmDPlanService.findScmDPlans(request, scmDPlan));
+@RequiresPermissions("scmDMater:view")
+public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater){
+        return getDataTable(this.iScmDMaterService.findScmDMaters(request, scmDMater));
         }
 
 /**
@@ -63,10 +65,12 @@ public Map<String, Object> List(QueryRequest request, ScmDPlan scmDPlan){
  */
 @Log("新增/按钮")
 @PostMapping
-@RequiresPermissions("scmDPlan:add")
-public void addScmDPlan(@Valid ScmDPlan scmDPlan)throws FebsException{
+@RequiresPermissions("scmDMater:add")
+public void addScmDMater(@Valid ScmDMater scmDMater)throws FebsException{
         try{
-        this.iScmDPlanService.createScmDPlan(scmDPlan);
+        User currentUser= FebsUtil.getCurrentUser();
+        scmDMater.setCreateUserId(currentUser.getUserId());
+        this.iScmDMaterService.createScmDMater(scmDMater);
         }catch(Exception e){
         message="新增/按钮失败" ;
         log.error(message,e);
@@ -82,10 +86,12 @@ public void addScmDPlan(@Valid ScmDPlan scmDPlan)throws FebsException{
  */
 @Log("修改")
 @PutMapping
-@RequiresPermissions("scmDPlan:update")
-public void updateScmDPlan(@Valid ScmDPlan scmDPlan)throws FebsException{
+@RequiresPermissions("scmDMater:update")
+public void updateScmDMater(@Valid ScmDMater scmDMater)throws FebsException{
         try{
-        this.iScmDPlanService.updateScmDPlan(scmDPlan);
+        User currentUser= FebsUtil.getCurrentUser();
+      scmDMater.setModifyUserId(currentUser.getUserId());
+        this.iScmDMaterService.updateScmDMater(scmDMater);
         }catch(Exception e){
         message="修改成功" ;
         log.error(message,e);
@@ -96,11 +102,11 @@ public void updateScmDPlan(@Valid ScmDPlan scmDPlan)throws FebsException{
 
 @Log("删除")
 @DeleteMapping("/{ids}")
-@RequiresPermissions("scmDPlan:delete")
-public void deleteScmDPlans(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
+@RequiresPermissions("scmDMater:delete")
+public void deleteScmDMaters(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
         try{
         String[]arr_ids=ids.split(StringPool.COMMA);
-        this.iScmDPlanService.deleteScmDPlans(arr_ids);
+        this.iScmDMaterService.deleteScmDMaters(arr_ids);
         }catch(Exception e){
         message="删除成功" ;
         log.error(message,e);
@@ -108,11 +114,11 @@ public void deleteScmDPlans(@NotBlank(message = "{required}") @PathVariable Stri
         }
         }
 @PostMapping("excel")
-@RequiresPermissions("scmDPlan:export")
-public void export(QueryRequest request, ScmDPlan scmDPlan, HttpServletResponse response) throws FebsException {
+@RequiresPermissions("scmDMater:export")
+public void export(QueryRequest request, ScmDMater scmDMater, HttpServletResponse response) throws FebsException {
         try {
-        List<ScmDPlan> scmDPlans = this.iScmDPlanService.findScmDPlans(request, scmDPlan).getRecords();
-        ExcelKit.$Export(ScmDPlan.class, response).downXlsx(scmDPlans, false);
+        List<ScmDMater> scmDMaters = this.iScmDMaterService.findScmDMaters(request, scmDMater).getRecords();
+        ExcelKit.$Export(ScmDMater.class, response).downXlsx(scmDMaters, false);
         } catch (Exception e) {
         message = "导出Excel失败";
         log.error(message, e);
@@ -121,8 +127,8 @@ public void export(QueryRequest request, ScmDPlan scmDPlan, HttpServletResponse 
         }
 
 @GetMapping("/{id}")
-public ScmDPlan detail(@NotBlank(message = "{required}") @PathVariable String id) {
-    ScmDPlan scmDPlan=this.iScmDPlanService.getById(id);
-        return scmDPlan;
+public ScmDMater detail(@NotBlank(message = "{required}") @PathVariable String id) {
+    ScmDMater scmDMater=this.iScmDMaterService.getById(id);
+        return scmDMater;
         }
         }

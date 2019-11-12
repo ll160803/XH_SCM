@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +40,9 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.entityPath}){
         try{
         LambdaQueryWrapper<${entity}> queryWrapper=new LambdaQueryWrapper<>();
-
+        if (StringUtils.isNotBlank(${table.entityPath}.getCode())) {
+        queryWrapper.eq(${entity}::getCode, ${table.entityPath}.getCode());
+        }
         Page<${entity}> page=new Page<>();
         SortUtil.handlePageSort(request,page,true);
         return this.page(page,queryWrapper);
@@ -53,14 +56,14 @@ public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.e
 @Transactional
 public void create${entity}(${entity} ${table.entityPath}){
         ${table.entityPath}.setId(UUID.randomUUID().toString());
-        ${table.entityPath}.setCreateTime(LocalDate.now());
+        ${table.entityPath}.setCreateTime(LocalDateTime.now());
         this.save(${table.entityPath});
         }
 
 @Override
 @Transactional
 public void update${entity}(${entity} ${table.entityPath}){
-        ${table.entityPath}.setModifyTime(LocalDate.now());
+        ${table.entityPath}.setModifyTime(LocalDateTime.now());
         this.baseMapper.update${entity}(${table.entityPath});
         }
 

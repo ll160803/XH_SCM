@@ -1,5 +1,6 @@
 package cc.mrbird.febs.common.controller;
 
+import cc.mrbird.febs.common.utils.FebsUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.HashMap;
@@ -13,6 +14,4 @@ public class BaseController {
         rspData.put("total", pageInfo.getTotal());
         return rspData;
     }
-
-
 }

@@ -22,6 +22,8 @@ public class HanGenerator {
     // 数据库密码scm_d_plan
     private static final String PASSWORD = "123456";
 
+    private static  final  String PageUrl="D:/Project_SCM/XH_SCM/frontend/src/views/";
+
     public static void main(String[] args) {
 
 
@@ -65,7 +67,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"scm_d_plan" }); // 需要生成的表
+        strategy.setInclude(new String[]{"scm_d_area" }); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -116,7 +118,8 @@ public class HanGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输入文件名称
-                return projectPath + "/src/main/resources/" + moduleName + "/" + tableInfo.getEntityName() + "ListIndex.vue";
+               // return projectPath + "/src/main/resources/" + moduleName + "/" + tableInfo.getEntityName() + "ListIndex.vue";
+                return PageUrl + moduleName + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() +".vue";
             }
         });
      //   cfg.setFileOutConfigList(focList);
@@ -127,7 +130,7 @@ public class HanGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输入文件名称
-                return projectPath + "/src/main/resources/" + moduleName + "/" + tableInfo.getEntityName() + "Add.vue";
+                return PageUrl + moduleName + "/" + tableInfo.getEntityName() +"/"+ tableInfo.getEntityName() +"Add.vue";
             }
         });
       //  cfg.setFileOutConfigList(focList);
@@ -138,7 +141,7 @@ public class HanGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输入文件名称
-                return projectPath + "/src/main/resources/" + moduleName + "/" + tableInfo.getEntityName() + "Edit.vue";
+                return PageUrl + moduleName + "/" + tableInfo.getEntityName() +"/" + tableInfo.getEntityName() + "Edit.vue";
             }
         });
 
