@@ -1,5 +1,5 @@
 <template>
-  <a-form :form="form">
+  <a-form :form="form" :visible="myAreaVisiable">
     <a-form-item
       label="用户名"
       v-bind="formItemLayout"

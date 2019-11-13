@@ -9,13 +9,40 @@
     :visible="userAddVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
-    <!-- 新增用户 -->
-    <my-area
-      ref="aduser"
-      :myAreaVisiable="true"
-    >
-    </my-area>
+    <div>
+      <a-steps :current="current">
+        <a-step
+          title="基本信息"
+          key="base"
+        />
+        <a-step
+          title="用户信息"
+          key="base"
+        />
+      </a-steps>
+      <!-- 新增用户 -->
+      <my-area
+        ref="aduser"
+        :myAreaVisiable="true"
+        v-show="current == 0"
+      >
+      </my-area>
+    </div>
     <div class="drawer-bootom-button">
+      <a-button
+        v-if="current < 1"
+        type="primary"
+        @click="next"
+      >
+        下一步
+      </a-button>
+      <a-button
+        v-if="current>0"
+        style="margin-left: 8px"
+        @click="prev"
+      >
+        上一步
+      </a-button>
       <a-popconfirm
         title="确定放弃编辑？"
         @confirm="onClose"
@@ -26,10 +53,12 @@
       </a-popconfirm>
       <a-button
         @click="handleSubmit"
+        v-if="current == 1"
         type="primary"
         :loading="loading"
       >提交</a-button>
     </div>
+
   </a-drawer>
 
 </template>
@@ -45,17 +74,19 @@ export default {
   },
   data () {
     return {
-      loading: false
+      loading: false,
+      current: 0
     }
   },
   methods: {
     reset () {
       this.$refs.aduser.reset()
       this.loading = false
+      this.current = 0
     },
     onClose () {
       this.loading = false
-      this.$refs.aduser.reset()
+      this.reset()
       this.$emit('close')
     },
     handleSubmit () {
@@ -69,6 +100,12 @@ export default {
       }).catch(() => {
         this.loading = false
       })
+    },
+    next () {
+      this.current++;
+    },
+    prev () {
+      this.current--;
     }
   }
 }
