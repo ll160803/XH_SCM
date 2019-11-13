@@ -72,5 +72,8 @@ public void deleteScmBUserandareas(String[]Ids){
         this.baseMapper.deleteBatchIds(list);
         }
 
-
+        @Override
+        public List<ScmBUserandarea> getAreaByUserId(String userId) {
+                return baseMapper.selectList(new LambdaQueryWrapper<ScmBUserandarea>().eq(ScmBUserandarea::getUserID, userId));
+        }
         }

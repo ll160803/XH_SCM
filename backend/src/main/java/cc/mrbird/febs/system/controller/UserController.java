@@ -5,7 +5,10 @@ import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.MD5Util;
+import cc.mrbird.febs.scm.entity.ScmBUserandarea;
 import cc.mrbird.febs.scm.entity.ScmDArea;
+import cc.mrbird.febs.scm.service.IScmBUserandareaService;
+import cc.mrbird.febs.scm.service.impl.ScmBUserandareaServiceImpl;
 import cc.mrbird.febs.system.domain.Role;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.domain.UserConfig;
@@ -43,6 +46,8 @@ public class UserController extends BaseController {
     private UserConfigService userConfigService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private IScmBUserandareaService areaService;
 
     @GetMapping("check/{username}")
     public boolean checkUserName(@NotBlank(message = "{required}") @PathVariable String username) {
@@ -64,6 +69,12 @@ public class UserController extends BaseController {
     @RequiresPermissions("user:view")
     public Map<String, Object> userList(QueryRequest queryRequest, User user) {
         return getDataTable(userService.findUserDetail(user, queryRequest));
+    }
+
+    @GetMapping("area/{userId}")
+    public List<String> getRoleMenus(@NotBlank(message = "{required}") @PathVariable String userId) {
+        List<ScmBUserandarea> list = this.areaService.getAreaByUserId(userId);
+        return list.stream().map(area -> String.valueOf(area.getAreaID())).collect(Collectors.toList());
     }
 
     @Log("新增用户")

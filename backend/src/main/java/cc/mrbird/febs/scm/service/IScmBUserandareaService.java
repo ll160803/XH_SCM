@@ -25,4 +25,5 @@ public interface IScmBUserandareaService extends IService<ScmBUserandarea> {
         void updateScmBUserandarea(ScmBUserandarea scmBUserandarea);
 
         void deleteScmBUserandareas(String[]Ids);
+        List<ScmBUserandarea> getAreaByUserId(String userId);
         }

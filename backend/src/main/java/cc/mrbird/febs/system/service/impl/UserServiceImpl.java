@@ -125,6 +125,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String[] roles = user.getRoleId().split(StringPool.COMMA);
         setUserRoles(user, roles);
 
+        this.areaUserMapper.delete(new LambdaQueryWrapper<ScmBUserandarea>().eq(ScmBUserandarea::getUserID, user.getUserId()));
+
+        //保存用户的部门区域
+        String[] areaIds = user.getAreaId().split(StringPool.COMMA);
+        setUserArea(user,areaIds);
+
         // 重新将用户信息，用户角色信息，用户权限信息 加载到 redis中
         cacheService.saveUser(user.getUsername());
         cacheService.saveRoles(user.getUsername());

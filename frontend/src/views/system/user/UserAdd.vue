@@ -16,8 +16,8 @@
           key="base"
         />
         <a-step
-          title="用户信息"
-          key="base"
+          title="院区设置"
+          key="ro"
         />
       </a-steps>
       <!-- 新增用户 -->
@@ -81,6 +81,11 @@
 </template>
 <script>
 import MyArea from './MyArea'
+
+const formItemLayout = {
+  labelCol: { span: 3 },
+  wrapperCol: { span: 18 }
+}
 export default {
   components: { MyArea },
   name: 'UserAdd',
@@ -91,8 +96,10 @@ export default {
   },
   data () {
     return {
+      menuTreeKey: +new Date(),
       loading: false,
       current: 0,
+      formItemLayout,
       validateStatus: '',
       menuSelectStatus: '',
       menuSelectHelp: '',
