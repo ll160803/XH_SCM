@@ -1,5 +1,5 @@
 <template>
-  <a-form :form="form" :visible="myAreaVisiable">
+  <a-form :form="form">
     <a-form-item
       label="用户名"
       v-bind="formItemLayout"
@@ -142,7 +142,8 @@ export default {
   data () {
     return {
       user: {
-        username: ""
+        username: "",
+        areaId:""
       },
       roleData: [],
       deptTreeData: [],

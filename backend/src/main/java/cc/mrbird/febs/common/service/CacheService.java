@@ -1,5 +1,6 @@
 package cc.mrbird.febs.common.service;
 
+import cc.mrbird.febs.scm.entity.ScmDArea;
 import cc.mrbird.febs.system.domain.Menu;
 import cc.mrbird.febs.system.domain.Role;
 import cc.mrbird.febs.system.domain.User;

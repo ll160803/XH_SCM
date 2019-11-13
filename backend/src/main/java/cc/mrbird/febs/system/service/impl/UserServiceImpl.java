@@ -5,6 +5,8 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.service.CacheService;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.common.utils.MD5Util;
+import cc.mrbird.febs.scm.dao.ScmBUserandareaMapper;
+import cc.mrbird.febs.scm.entity.ScmBUserandarea;
 import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.dao.UserRoleMapper;
 import cc.mrbird.febs.system.domain.User;
@@ -24,9 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service("userService")
@@ -43,7 +47,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private UserRoleService userRoleService;
     @Autowired
     private UserManager userManager;
-
+    @Autowired
+    private ScmBUserandareaMapper areaUserMapper;
 
     @Override
     public User findByName(String username) {
@@ -88,13 +93,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String[] roles = user.getRoleId().split(StringPool.COMMA);
         setUserRoles(user, roles);
 
+        //保存用户的部门区域
+        String[] areaIds = user.getAreaId().split(StringPool.COMMA);
+        setUserArea(user,areaIds);
         // 创建用户默认的个性化配置
         userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
 
         // 将用户相关信息保存到 Redis中
         userManager.loadUserRedisCache(user);
     }
-
+    private void setUserArea(User user, String[] areaIds) {
+        Arrays.stream(areaIds).forEach(menuId -> {
+            ScmBUserandarea rm = new ScmBUserandarea();
+            rm.setId(UUID.randomUUID().toString());
+            rm.setAreaID(menuId);
+            rm.setUserID(user.getUserId());
+            rm.setCreateTime(LocalDateTime.now());
+             this.areaUserMapper.insert(rm);
+        });
+    }
     @Override
     @Transactional
     public void updateUser(User user) throws Exception {
