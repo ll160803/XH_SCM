@@ -1,0 +1,287 @@
+package cc.mrbird.febs.scm.entity;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.wuwenze.poi.annotation.Excel;
+import com.wuwenze.poi.annotation.ExcelField;
+
+/**
+ * <p>
+ * 供应商表
+ * </p>
+ *
+ * @author viki
+ * @since 2019-11-14
+ */
+
+@Excel("scm_d_vendor")
+public class ScmDVendor implements Serializable{
+
+private static final long serialVersionUID=1L;
+
+    /**
+     * 主键
+     */
+                    @TableId("ID")
+                    @ExcelField(value ="主键")
+private String id;
+    /**
+     * 编码
+     */
+    @TableField("CODE")
+            @ExcelField(value ="编码")
+private String code;
+    /**
+     * 名字
+     */
+    @TableField("NAME")
+            @ExcelField(value ="名字")
+private String name;
+    /**
+     * 地址
+     */
+    @TableField("ADDRESS")
+            @ExcelField(value ="地址")
+private String address;
+    /**
+     * 法人代表
+     */
+    @TableField("LAW_PERSON")
+            @ExcelField(value ="法人代表")
+private String lawPerson;
+    /**
+     * 联系人
+     */
+    @TableField("LINK_PERSON")
+            @ExcelField(value ="联系人")
+private String linkPerson;
+    /**
+     * 联系电话
+     */
+    @TableField("PHONE")
+            @ExcelField(value ="联系电话")
+private String phone;
+    /**
+     * 邮件
+     */
+    @TableField("EMAIL")
+            @ExcelField(value ="邮件")
+private String email;
+    /**
+     * 状态
+     */
+    @TableField("STATE")
+            @ExcelField(value ="状态")
+private Integer state;
+    /**
+     * 供应商类别（0是药品1是物资）
+     */
+    @TableField("LB")
+            @ExcelField(value ="供应商类别（0是药品1是物资）")
+private Integer lb;
+    /**
+     * 是否删除
+     */
+    @TableField("IS_DELETEMARK")
+            @ExcelField(value ="是否删除")
+private Integer isDeletemark;
+    /**
+     * 创建时间
+     */
+    @TableField("CREATE_TIME")
+            @ExcelField(value ="创建时间")
+private LocalDateTime createTime;
+    /**
+     * 修改时间
+     */
+    @TableField("MODIFY_TIME")
+            @ExcelField(value ="修改时间")
+private LocalDateTime modifyTime;
+    /**
+     * 创建人
+     */
+    @TableField("CREATE_USER_ID")
+            @ExcelField(value ="创建人")
+private Long createUserId;
+    /**
+     * 修改人
+     */
+    @TableField("MODIFY_USER_ID")
+            @ExcelField(value ="修改人")
+private Long modifyUserId;
+
+
+    public String getId(){
+            return id;
+            }
+
+        public void setId(String id) {
+            this.id = id;
+            }
+
+    public String getCode(){
+            return code;
+            }
+
+        public void setCode(String code) {
+            this.code = code;
+            }
+
+    public String getName(){
+            return name;
+            }
+
+        public void setName(String name) {
+            this.name = name;
+            }
+
+    public String getAddress(){
+            return address;
+            }
+
+        public void setAddress(String address) {
+            this.address = address;
+            }
+
+    public String getLawPerson(){
+            return lawPerson;
+            }
+
+        public void setLawPerson(String lawPerson) {
+            this.lawPerson = lawPerson;
+            }
+
+    public String getLinkPerson(){
+            return linkPerson;
+            }
+
+        public void setLinkPerson(String linkPerson) {
+            this.linkPerson = linkPerson;
+            }
+
+    public String getPhone(){
+            return phone;
+            }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+            }
+
+    public String getEmail(){
+            return email;
+            }
+
+        public void setEmail(String email) {
+            this.email = email;
+            }
+
+    public Integer getState(){
+            return state;
+            }
+
+        public void setState(Integer state) {
+            this.state = state;
+            }
+
+    public Integer getLb(){
+            return lb;
+            }
+
+        public void setLb(Integer lb) {
+            this.lb = lb;
+            }
+
+    public Integer getIsDeletemark(){
+            return isDeletemark;
+            }
+
+        public void setIsDeletemark(Integer isDeletemark) {
+            this.isDeletemark = isDeletemark;
+            }
+
+    public LocalDateTime getCreateTime(){
+            return createTime;
+            }
+
+        public void setCreateTime(LocalDateTime createTime) {
+            this.createTime = createTime;
+            }
+
+    public LocalDateTime getModifyTime(){
+            return modifyTime;
+            }
+
+        public void setModifyTime(LocalDateTime modifyTime) {
+            this.modifyTime = modifyTime;
+            }
+
+    public Long getCreateUserId(){
+            return createUserId;
+            }
+
+        public void setCreateUserId(Long createUserId) {
+            this.createUserId = createUserId;
+            }
+
+    public Long getModifyUserId(){
+            return modifyUserId;
+            }
+
+        public void setModifyUserId(Long modifyUserId) {
+            this.modifyUserId = modifyUserId;
+            }
+
+    public static final String ID ="ID" ;
+
+    public static final String CODE ="CODE" ;
+
+    public static final String NAME ="NAME" ;
+
+    public static final String ADDRESS ="ADDRESS" ;
+
+    public static final String LAW_PERSON ="LAW_PERSON" ;
+
+    public static final String LINK_PERSON ="LINK_PERSON" ;
+
+    public static final String PHONE ="PHONE" ;
+
+    public static final String EMAIL ="EMAIL" ;
+
+    public static final String STATE ="STATE" ;
+
+    public static final String LB ="LB" ;
+
+    public static final String IS_DELETEMARK ="IS_DELETEMARK" ;
+
+    public static final String CREATE_TIME ="CREATE_TIME" ;
+
+    public static final String MODIFY_TIME ="MODIFY_TIME" ;
+
+    public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
+
+    public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
+
+@Override
+public String toString() {
+        return "ScmDVendor{" +
+                ", id=" + id +
+                ", code=" + code +
+                ", name=" + name +
+                ", address=" + address +
+                ", lawPerson=" + lawPerson +
+                ", linkPerson=" + linkPerson +
+                ", phone=" + phone +
+                ", email=" + email +
+                ", state=" + state +
+                ", lb=" + lb +
+                ", isDeletemark=" + isDeletemark +
+                ", createTime=" + createTime +
+                ", modifyTime=" + modifyTime +
+                ", createUserId=" + createUserId +
+                ", modifyUserId=" + modifyUserId +
+        "}";
+        }
+        }

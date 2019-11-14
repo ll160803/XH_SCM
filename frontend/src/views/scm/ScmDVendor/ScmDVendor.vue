@@ -6,10 +6,9 @@
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
-          <a-row gutter="20"
-          >
+          <a-row>
             <a-col
-              :md="6"
+              :md="8"
               :sm="24"
             >
               <a-form-item
@@ -21,7 +20,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="6"
+              :md="8"
               :sm="24"
             >
               <a-form-item
@@ -32,29 +31,10 @@
                 <a-input v-model="queryParams.code" />
               </a-form-item>
             </a-col>
-            <a-col
-              :md="6"
-              :sm="24"
-            >
-              <a-form-item
-                label="订单号"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-input v-model="queryParams.ebeln" />
-              </a-form-item>
-            </a-col>
-            <a-col
-              :md="6"
-              :sm="24"
-            >
-            </a-col>
           </a-row>
-          <a-row v-if="advanced"
-            :gutter="20"
-          >
+          <a-row v-if="advanced">
             <a-col
-              :md="6"
+              :md="8"
               :sm="24"
             >
               <a-form-item
@@ -89,16 +69,16 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['scmDPlan:add']"
+          v-hasPermission="['scmDVendor:add']"
           type="primary"
           ghost
           @click="add"
         >新增</a-button>
         <a-button
-          v-hasPermission="['scmDPlan:delete']"
+          v-hasPermission="['scmDVendor:delete']"
           @click="batchDelete"
         >删除</a-button>
-        <a-dropdown v-hasPermission="['scmDPlan:export']">
+        <a-dropdown v-hasPermission="['scmDVendor:export']">
           <a-menu slot="overlay">
             <a-menu-item
               key="export-data"
@@ -122,7 +102,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 1500 }"
+        :scroll="{ x: 900 }"
       >
         <template
           slot="remark"
@@ -140,7 +120,7 @@
           slot-scope="text, record"
         >
           <a-icon
-            v-hasPermission="['scmDPlan:update']"
+            v-hasPermission="['scmDVendor:update']"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
@@ -148,7 +128,7 @@
             title="修改"
           ></a-icon>
           <a-badge
-            v-hasNoPermission="['scmDPlan:update']"
+            v-hasNoPermission="['scmDVendor:update']"
             status="warning"
             text="无权限"
           ></a-badge>
@@ -156,30 +136,30 @@
       </a-table>
     </div>
     <!-- 新增字典 -->
-    <scmDPlan-add
+    <scmDVendor-add
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
     >
-    </scmDPlan-add>
+    </scmDVendor-add>
     <!-- 修改字典 -->
-    <scmDPlan-edit
-      ref="scmDPlanEdit"
+    <scmDVendor-edit
+      ref="scmDVendorEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
     >
-    </scmDPlan-edit>
+    </scmDVendor-edit>
   </a-card>
 </template>
 
 <script>
-import ScmDPlanAdd from './ScmDPlanAdd'
-import ScmDPlanEdit from './ScmDPlanEdit'
+import ScmDVendorAdd from './ScmDVendorAdd'
+import ScmDVendorEdit from './ScmDVendorEdit'
 
 export default {
-  name: 'ScmDPlan',
-  components: { ScmDPlanAdd, ScmDPlanEdit },
+  name: 'ScmDVendor',
+  components: { ScmDVendorAdd, ScmDVendorEdit },
   data () {
     return {
       advanced: false,
@@ -207,40 +187,50 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '编码',
-        dataIndex: 'code',
-        sorter: true,
-        sortOrder: sortedInfo.columnKey === 'code' && sortedInfo.order
+        title: '主键',
+        dataIndex: 'id'
       }, {
-        title: 'name',
+        title: '编码',
+        dataIndex: 'code'
+      }, {
+        title: '名字',
         dataIndex: 'name'
       }, {
-        title: '订单号',
-        dataIndex: 'ebeln'
+        title: '地址',
+        dataIndex: 'address'
       }, {
-        title: '项目号',
-        dataIndex: 'ebelp'
+        title: '法人代表',
+        dataIndex: 'lawPerson'
       }, {
-        title: '供应商账号',
-        dataIndex: 'lifnr'
+        title: '联系人',
+        dataIndex: 'linkPerson'
       }, {
-        title: '药品编码',
-        dataIndex: 'matnr'
+        title: '联系电话',
+        dataIndex: 'phone'
       }, {
-        title: '药品名称',
-        dataIndex: 'txz01'
+        title: '邮件',
+        dataIndex: 'email'
       }, {
-        title: '院区编码',
-        dataIndex: 'werks'
+        title: '状态',
+        dataIndex: 'state'
       }, {
-        title: '院区',
-        dataIndex: 'werkst'
+        title: '供应商类别（0是药品1是物资）',
+        dataIndex: 'lb'
       }, {
-        title: '药房',
-        dataIndex: 'lgort'
+        title: '是否删除',
+        dataIndex: 'isDeletemark'
       }, {
-        title: '订单数量',
-        dataIndex: 'menge'
+        title: '创建时间',
+        dataIndex: 'createTime'
+      }, {
+        title: '修改时间',
+        dataIndex: 'modifyTime'
+      }, {
+        title: '创建人',
+        dataIndex: 'createUserId'
+      }, {
+        title: '修改人',
+        dataIndex: 'modifyUserId'
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -283,7 +273,7 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.scmDPlanEdit.setFormValues(record)
+      this.$refs.scmDVendorEdit.setFormValues(record)
       this.editVisiable = true
     },
     batchDelete () {
@@ -297,8 +287,8 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let scmDPlanIds = that.selectedRowKeys.join(',')
-          that.$delete('scmDPlan/' + scmDPlanIds).then(() => {
+          let scmDVendorIds = that.selectedRowKeys.join(',')
+          that.$delete('scmDVendor/' + scmDVendorIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -317,7 +307,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('scmDPlan/excel', {
+      this.$export('scmDVendor/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
@@ -375,7 +365,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('scmDPlan', {
+      this.$get('scmDVendor', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -391,5 +381,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "../../../static/less/Common";
+@import "../../../../static/less/Common";
 </style>

@@ -27,7 +27,7 @@
         v-show="current == 0"
       >
       </my-area>
-      <a-form-item label='权限选择'
+      <a-form-item label='院区选择'
                    style="margin-bottom: 2rem"
                    :validateStatus="menuSelectStatus"
                    :help="menuSelectHelp"
