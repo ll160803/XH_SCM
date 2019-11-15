@@ -1,7 +1,6 @@
 <template>
   <a-card
     :title="title"
-    style="width: 300px"
   >
     <a-form-item
       v-bind="formItemLayout"
@@ -63,8 +62,8 @@
 </template>
 <script>
 const formItemLayout = {
-  labelCol: { span: 4 },
-  wrapperCol: { span: 8 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 15 },
 };
 export default {
   data () {
@@ -101,13 +100,11 @@ export default {
     handleUpload () {
       const { fileList } = this
       const formData = new FormData()
-      fileList.forEach(file => {
-        formData.append('files[]', file)
-      })
+      formData.append('file', fileList[0])
       this.uploading = true
 
       // You can use any AJAX library you like
-      this.$post('comFile/upload', formData).then((r) => {
+      this.$upload('comFile/upload', formData).then((r) => {
         this.scmDVendorD.file_id = r
         this.fileList = []
         this.uploading = false

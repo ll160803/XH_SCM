@@ -138,8 +138,8 @@ public class ComFileController extends BaseController{
     }
 
 
-    @PostMapping("/upload")
-    public String Upload(@RequestParam(value = "file") MultipartFile file, HttpServletResponse response) throws FebsException {
+    @PostMapping("upload")
+    public String Upload(@RequestParam("file") MultipartFile file) throws FebsException {
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
