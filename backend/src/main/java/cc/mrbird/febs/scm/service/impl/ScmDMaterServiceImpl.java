@@ -17,11 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
+import java.util.Date;
 /**
  * <p>
  * 药品物料库 服务实现类
@@ -56,14 +55,14 @@ public IPage<ScmDMater> findScmDMaters(QueryRequest request, ScmDMater scmDMater
 @Transactional
 public void createScmDMater(ScmDMater scmDMater){
         scmDMater.setId(UUID.randomUUID().toString());
-        scmDMater.setCreateTime(LocalDateTime.now());
+        scmDMater.setCreateTime(new Date());
         this.save(scmDMater);
         }
 
 @Override
 @Transactional
 public void updateScmDMater(ScmDMater scmDMater){
-        scmDMater.setModifyTime(LocalDateTime.now());
+        scmDMater.setModifyTime(new Date());
         this.baseMapper.updateScmDMater(scmDMater);
         }
 

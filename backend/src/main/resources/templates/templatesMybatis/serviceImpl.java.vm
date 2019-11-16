@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -56,14 +56,14 @@ public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.e
 @Transactional
 public void create${entity}(${entity} ${table.entityPath}){
         ${table.entityPath}.setId(UUID.randomUUID().toString());
-        ${table.entityPath}.setCreateTime(LocalDateTime.now());
+        ${table.entityPath}.setCreateTime(new Date());
         this.save(${table.entityPath});
         }
 
 @Override
 @Transactional
 public void update${entity}(${entity} ${table.entityPath}){
-        ${table.entityPath}.setModifyTime(LocalDateTime.now());
+        ${table.entityPath}.setModifyTime(new Date());
         this.baseMapper.update${entity}(${table.entityPath});
         }
 

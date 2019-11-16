@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
+import java.util.Date;
 /**
  * <p>
  * 供应商对应的资质文件表 服务实现类
@@ -54,14 +54,14 @@ public IPage<ScmDVendorD> findScmDVendorDs(QueryRequest request, ScmDVendorD scm
 @Transactional
 public void createScmDVendorD(ScmDVendorD scmDVendorD){
         scmDVendorD.setId(UUID.randomUUID().toString());
-        scmDVendorD.setCreateTime(LocalDateTime.now());
+        scmDVendorD.setCreateTime(new Date());
         this.save(scmDVendorD);
         }
 
 @Override
 @Transactional
 public void updateScmDVendorD(ScmDVendorD scmDVendorD){
-        scmDVendorD.setModifyTime(LocalDateTime.now());
+        scmDVendorD.setModifyTime(new Date());
         this.baseMapper.updateScmDVendorD(scmDVendorD);
         }
 

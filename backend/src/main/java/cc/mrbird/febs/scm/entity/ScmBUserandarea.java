@@ -1,7 +1,7 @@
 package cc.mrbird.febs.scm.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -45,13 +45,13 @@ private String AreaID;
      */
     @TableField("CREATE_TIME")
             @ExcelField(value ="创建时间")
-private LocalDateTime createTime;
+private Date createTime;
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
             @ExcelField(value ="修改时间")
-private LocalDateTime modifyTime;
+private Date modifyTime;
     /**
      * 创建人
      */
@@ -90,19 +90,19 @@ private Long modifyUserId;
             this.AreaID = AreaID;
             }
 
-    public LocalDateTime getCreateTime(){
+    public Date getCreateTime(){
             return createTime;
             }
 
-        public void setCreateTime(LocalDateTime createTime) {
+        public void setCreateTime(Date createTime) {
             this.createTime = createTime;
             }
 
-    public LocalDateTime getModifyTime(){
+    public Date getModifyTime(){
             return modifyTime;
             }
 
-        public void setModifyTime(LocalDateTime modifyTime) {
+        public void setModifyTime(Date modifyTime) {
             this.modifyTime = modifyTime;
             }
 

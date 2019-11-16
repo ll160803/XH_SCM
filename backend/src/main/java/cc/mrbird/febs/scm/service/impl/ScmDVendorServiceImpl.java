@@ -2,8 +2,10 @@ package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.dao.ScmDVendorDMapper;
 import cc.mrbird.febs.scm.entity.ScmDVendor;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
+import cc.mrbird.febs.scm.entity.ScmDVendorD;
 import cc.mrbird.febs.scm.service.IScmDVendorService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -13,15 +15,16 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
+import java.util.Date;
 /**
  * <p>
  * 供应商表 服务实现类
@@ -35,44 +38,60 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVendor> implements IScmDVendorService {
 
-
-@Override
-public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor){
-        try{
-        LambdaQueryWrapper<ScmDVendor> queryWrapper=new LambdaQueryWrapper<>();
-        if (StringUtils.isNotBlank(scmDVendor.getCode())) {
-        queryWrapper.eq(ScmDVendor::getCode, scmDVendor.getCode());
-        }
-        Page<ScmDVendor> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
-        }
-        }
-
-@Override
-@Transactional
-public void createScmDVendor(ScmDVendor scmDVendor){
-        scmDVendor.setId(UUID.randomUUID().toString());
-        scmDVendor.setCreateTime(LocalDateTime.now());
-        this.save(scmDVendor);
+        @Autowired
+        private ScmDVendorDMapper scmDVendorDMapper;
+        @Override
+        public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor){
+                try{
+                        LambdaQueryWrapper<ScmDVendor> queryWrapper=new LambdaQueryWrapper<>();
+                        if (StringUtils.isNotBlank(scmDVendor.getCode())) {
+                                queryWrapper.eq(ScmDVendor::getCode, scmDVendor.getCode());
+                        }
+                        Page<ScmDVendor> page=new Page<>();
+                        SortUtil.handlePageSort(request,page,true);
+                        return this.page(page,queryWrapper);
+                }catch(Exception e){
+                        log.error("获取字典信息失败" ,e);
+                        return null;
+                }
         }
 
-@Override
-@Transactional
-public void updateScmDVendor(ScmDVendor scmDVendor){
-        scmDVendor.setModifyTime(LocalDateTime.now());
-        this.baseMapper.updateScmDVendor(scmDVendor);
+        @Override
+        @Transactional
+        public void createScmDVendor(ScmDVendor scmDVendor){
+                scmDVendor.setId(UUID.randomUUID().toString());
+                scmDVendor.setCreateTime(new Date());
+                this.save(scmDVendor);
         }
 
-@Override
-@Transactional
-public void deleteScmDVendors(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
-        this.baseMapper.deleteBatchIds(list);
+        @Override
+        @Transactional
+        public void updateScmDVendor(ScmDVendor scmDVendor){
+                scmDVendor.setModifyTime(new Date());
+                this.baseMapper.updateScmDVendor(scmDVendor);
         }
 
-
+        @Override
+        @Transactional
+        public void deleteScmDVendors(String[]Ids){
+                List<String> list=Arrays.asList(Ids);
+                this.baseMapper.deleteBatchIds(list);
         }
+
+        @Override
+        @Transactional
+        public void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS)
+        {
+                String F_id=UUID.randomUUID().toString();
+                scmDVendor.setId(F_id);
+                scmDVendor.setCreateTime(new Date());
+                scmDVendor.setState(1);
+                this.save(scmDVendor);
+                for ( ScmDVendorD scmDVendorD:
+                        scmDVendorDS) {
+                        scmDVendorD.setId(UUID.randomUUID().toString());
+                        scmDVendorD.setBaseId(F_id);
+                        scmDVendorDMapper.insert(scmDVendorD);
+                }
+        }
+}

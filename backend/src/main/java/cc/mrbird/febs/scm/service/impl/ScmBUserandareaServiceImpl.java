@@ -17,11 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
+import java.util.Date;
 /**
  * <p>
  * 用户表和院区表配置表 服务实现类
@@ -54,14 +53,14 @@ public IPage<ScmBUserandarea> findScmBUserandareas(QueryRequest request, ScmBUse
 @Transactional
 public void createScmBUserandarea(ScmBUserandarea scmBUserandarea){
         scmBUserandarea.setId(UUID.randomUUID().toString());
-        scmBUserandarea.setCreateTime(LocalDateTime.now());
+        scmBUserandarea.setCreateTime(new Date());
         this.save(scmBUserandarea);
         }
 
 @Override
 @Transactional
 public void updateScmBUserandarea(ScmBUserandarea scmBUserandarea){
-        scmBUserandarea.setModifyTime(LocalDateTime.now());
+        scmBUserandarea.setModifyTime(new Date());
         this.baseMapper.updateScmBUserandarea(scmBUserandarea);
         }
 

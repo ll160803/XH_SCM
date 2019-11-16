@@ -7,15 +7,15 @@
         :label-col="{ span: 5 }"
         :wrapper-col="{ span: 18 }"
       >
-        <a-select
+        <a-select 
           v-decorator="[
           'lb',
-          { rules: [{ required: true, message: '请选择供应商' }] },
+          { rules: [{ required: true, message: '请选择供应商' }],initialValue:'药品供应商' },
         ]"
           placeholder="请选择供应商"
           @change="handleSelectChange"
         >
-          <a-select-option value="0">
+          <a-select-option value="0" >
             药品供应商
           </a-select-option>
           <a-select-option value="1">

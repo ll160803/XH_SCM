@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -108,7 +108,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             rm.setId(UUID.randomUUID().toString());
             rm.setAreaID(menuId);
             rm.setUserID(user.getUserId());
-            rm.setCreateTime(LocalDateTime.now());
+            rm.setCreateTime(new Date());
              this.areaUserMapper.insert(rm);
         });
     }

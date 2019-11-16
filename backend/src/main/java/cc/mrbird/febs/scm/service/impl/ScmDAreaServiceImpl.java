@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+
 import java.time.ZoneId;
 import java.util.*;
-import java.time.LocalDate;
+import java.util.Date;
 /**
  * <p>
  * 药房院区表 服务实现类
@@ -76,7 +76,7 @@ public class ScmDAreaServiceImpl extends ServiceImpl<ScmDAreaMapper, ScmDArea> i
                         tree.setKey(tree.getId());
                         tree.setParentId(scmDArea.getParentId());
                         tree.setText(scmDArea.getName());
-                        tree.setCreateTime(Date.from( scmDArea.getCreateTime().atZone( ZoneId.systemDefault()).toInstant()));
+                        tree.setCreateTime( scmDArea.getCreateTime());
                       //  tree.setModifyTime(Date.from( scmDArea.getModifyTime().atZone( ZoneId.systemDefault()).toInstant()));
                         tree.setOrder(scmDArea.getOrderNum());
                         tree.setTitle(tree.getText());
@@ -91,14 +91,14 @@ public class ScmDAreaServiceImpl extends ServiceImpl<ScmDAreaMapper, ScmDArea> i
                 if (parentId == null)
                         scmDArea.setParentId("");
                 scmDArea.setId(scmDArea.getCode());
-                scmDArea.setCreateTime(LocalDateTime.now());
+                scmDArea.setCreateTime(new Date());
                 this.save(scmDArea);
         }
 
         @Override
         @Transactional
         public void updateScmDArea(ScmDArea scmDArea){
-                scmDArea.setModifyTime(LocalDateTime.now());
+                scmDArea.setModifyTime(new Date());
                 this.baseMapper.updateScmDArea(scmDArea);
         }
 

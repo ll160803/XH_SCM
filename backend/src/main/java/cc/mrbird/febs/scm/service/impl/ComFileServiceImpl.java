@@ -1,6 +1,7 @@
 package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.utils.DateUtil;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.entity.ComFile;
 import cc.mrbird.febs.scm.dao.ComFileMapper;
@@ -17,11 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
 /**
  * <p>
  * 附件 服务实现类
@@ -54,14 +54,14 @@ public IPage<ComFile> findComFiles(QueryRequest request, ComFile comFile){
 @Transactional
 public void createComFile(ComFile comFile){
         comFile.setId(UUID.randomUUID().toString());
-        comFile.setCreateTime(LocalDateTime.now());
+        comFile.setCreateTime(new Date());
         this.save(comFile);
         }
 
 @Override
 @Transactional
 public void updateComFile(ComFile comFile){
-        comFile.setModifyTime(LocalDateTime.now());
+        comFile.setModifyTime(new Date());
         this.baseMapper.updateComFile(comFile);
         }
 

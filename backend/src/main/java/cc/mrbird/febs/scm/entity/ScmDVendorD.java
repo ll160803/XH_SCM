@@ -1,10 +1,10 @@
 package cc.mrbird.febs.scm.entity;
 
-import java.time.LocalDate;
+import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
@@ -46,13 +46,13 @@ private String filename;
      */
     @TableField("VALID_DATESTART")
             @ExcelField(value ="有效期开始时间")
-private LocalDate validDatestart;
+private Date validDatestart;
     /**
      * 有效期
      */
     @TableField("VALID_DATE")
             @ExcelField(value ="有效期")
-private LocalDate validDate;
+private Date validDate;
     /**
      * 是否有效
      */
@@ -82,13 +82,13 @@ private Integer fileIndex;
      */
     @TableField("CREATE_TIME")
             @ExcelField(value ="创建时间")
-private LocalDateTime createTime;
+private Date createTime;
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
             @ExcelField(value ="修改时间")
-private LocalDateTime modifyTime;
+private Date modifyTime;
     /**
      * 创建人
      */
@@ -133,19 +133,19 @@ private String baseId;
             this.filename = filename;
             }
 
-    public LocalDate getValidDatestart(){
+    public Date getValidDatestart(){
             return validDatestart;
             }
 
-        public void setValidDatestart(LocalDate validDatestart) {
+        public void setValidDatestart(Date validDatestart) {
             this.validDatestart = validDatestart;
             }
 
-    public LocalDate getValidDate(){
+    public Date getValidDate(){
             return validDate;
             }
 
-        public void setValidDate(LocalDate validDate) {
+        public void setValidDate(Date validDate) {
             this.validDate = validDate;
             }
 
@@ -181,19 +181,19 @@ private String baseId;
             this.fileIndex = fileIndex;
             }
 
-    public LocalDateTime getCreateTime(){
+    public Date getCreateTime(){
             return createTime;
             }
 
-        public void setCreateTime(LocalDateTime createTime) {
+        public void setCreateTime(Date createTime) {
             this.createTime = createTime;
             }
 
-    public LocalDateTime getModifyTime(){
+    public Date getModifyTime(){
             return modifyTime;
             }
 
-        public void setModifyTime(LocalDateTime modifyTime) {
+        public void setModifyTime(Date modifyTime) {
             this.modifyTime = modifyTime;
             }
 

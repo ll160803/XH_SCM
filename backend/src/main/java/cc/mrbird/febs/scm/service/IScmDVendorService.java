@@ -1,6 +1,7 @@
 package cc.mrbird.febs.scm.service;
 
 import cc.mrbird.febs.scm.entity.ScmDVendor;
+import cc.mrbird.febs.scm.entity.ScmDVendorD;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
@@ -25,4 +26,6 @@ public interface IScmDVendorService extends IService<ScmDVendor> {
         void updateScmDVendor(ScmDVendor scmDVendor);
 
         void deleteScmDVendors(String[]Ids);
+
+        void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS);
         }

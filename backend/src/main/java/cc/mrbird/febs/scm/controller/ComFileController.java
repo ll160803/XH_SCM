@@ -25,8 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -139,7 +138,7 @@ public class ComFileController extends BaseController{
 
 
     @PostMapping("upload")
-    public String Upload(@RequestParam("file") MultipartFile file) throws FebsException {
+    public FebsResponse Upload(@RequestParam("file") MultipartFile file) throws FebsException {
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
@@ -159,10 +158,10 @@ public class ComFileController extends BaseController{
         String Id=UUID.randomUUID().toString();
         ComFile cf=new ComFile();
         cf.setId(Id);
-        cf.setCreateTime(LocalDateTime.now());
+        cf.setCreateTime(new Date());
         cf.setClientName(fileName);
         cf.setServerName(filePath+fileName);
         iComFileService.createComFile(cf);
-        return  Id ;
+        return new FebsResponse().data(Id) ;
     }
 }
