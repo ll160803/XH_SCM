@@ -53,7 +53,7 @@ public IPage<ComFile> findComFiles(QueryRequest request, ComFile comFile){
 @Override
 @Transactional
 public void createComFile(ComFile comFile){
-        comFile.setId(UUID.randomUUID().toString());
+       // comFile.setId(UUID.randomUUID().toString());
         comFile.setCreateTime(new Date());
         this.save(comFile);
         }

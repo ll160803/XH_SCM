@@ -25,4 +25,5 @@ public interface IScmDVendorDService extends IService<ScmDVendorD> {
         void updateScmDVendorD(ScmDVendorD scmDVendorD);
 
         void deleteScmDVendorDs(String[]Ids);
+        List<ScmDVendorD> findScmDVendorDByBaseId(String base_id);
         }

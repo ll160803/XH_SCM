@@ -4,6 +4,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wuwenze.poi.annotation.Excel;
@@ -107,11 +108,14 @@ private Long modifyUserId;
     @TableField("BASE_ID")
             @ExcelField(value ="供应商主表ID")
 private String baseId;
+    @TableField(exist = false)
+    public  ComFile attachfile=new ComFile();
+
 
 
     public String getId(){
-            return id;
-            }
+        return id;
+    }
 
         public void setId(String id) {
             this.id = id;
@@ -268,4 +272,6 @@ public String toString() {
                 ", baseId=" + baseId +
         "}";
         }
+
+
         }

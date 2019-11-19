@@ -32,20 +32,6 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row v-if="advanced">
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="备注"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-input v-model="queryParams.comments" />
-              </a-form-item>
-            </a-col>
-          </a-row>
         </div>
         <span style="float: right; margin-top: 3px;">
           <a-button
@@ -187,9 +173,6 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '主键',
-        dataIndex: 'id'
-      }, {
         title: '编码',
         dataIndex: 'code'
       }, {
@@ -213,24 +196,6 @@ export default {
       }, {
         title: '状态',
         dataIndex: 'state'
-      }, {
-        title: '供应商类别（0是药品1是物资）',
-        dataIndex: 'lb'
-      }, {
-        title: '是否删除',
-        dataIndex: 'isDeletemark'
-      }, {
-        title: '创建时间',
-        dataIndex: 'createTime'
-      }, {
-        title: '修改时间',
-        dataIndex: 'modifyTime'
-      }, {
-        title: '创建人',
-        dataIndex: 'createUserId'
-      }, {
-        title: '修改人',
-        dataIndex: 'modifyUserId'
       }, {
         title: '操作',
         dataIndex: 'operation',

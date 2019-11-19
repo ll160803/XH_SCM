@@ -22,7 +22,7 @@
       >
         <a-input
           v-decorator="[
-          'linkperson',
+          'linkPerson',
           { rules: [{ required: true, message: '请输入联系人' }] },
         ]"
           placeholder="请输入联系人"
@@ -117,7 +117,7 @@ export default {
       formItemLayout,
       scmDVendor: {
         name: '',
-        linkperson: '',
+        linkPerson: '',
         phone: '',
         email: '',
         address: '',
@@ -158,29 +158,29 @@ export default {
       })
     },
     handleSubmit () {
-      // this.form1.validateFields(err => {
-      //   if (!err) {
-      //     for (let i = 1; i < 19; i++) {
-      //       this.$refs["file" + i][0].form.validateFields(error => {
-      //         if (error) {
-      //           return false
-      //         }
-      //       })
-      //     }
-      //   }
-      //   else {
-      //     return false
-      //   }
-      // })
+      this.form1.validateFields(err => {
+        if (!err) {
+          for (let i = 1; i < 19; i++) {
+            this.$refs["file" + i][0].form.validateFields(error => {
+              if (error) {
+                return false
+              }
+            })
+          }
+        }
+        else {
+          return false
+        }
+      })
       this.setscmDVendorFields()
       // console.info(this.scmDVendor.name)
       //循环把子组件的值获取到
       for (let i = 1; i < 19; i++) {
         this.$refs["file" + i][0].setScmDAreaFields()
-        // if (this.$refs["file" + i][0].isRequire && this.$refs["file" + i][0].scmDVendorD.fileId == "") {
-        //   this.$message.error('请上传' + this.attachList[i - 1].title + '附件');
-        //   return false
-        // }
+        if (this.$refs["file" + i][0].isRequire && this.$refs["file" + i][0].scmDVendorD.fileId == "") {
+          this.$message.error('请上传' + this.attachList[i - 1].title + '附件');
+          return false
+        }
         if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
           this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
         }
@@ -199,7 +199,7 @@ export default {
       })
     },
     setscmDVendorFields () {
-      let values = this.form1.getFieldsValue(['name', 'linkperson', 'phone', 'email', 'address'])
+      let values = this.form1.getFieldsValue(['name', 'linkPerson', 'phone', 'email', 'address'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmDVendor[_key] = values[_key] })
       }

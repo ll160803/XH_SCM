@@ -12,24 +12,6 @@
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
-        label="主键"
-      >
-        <a-input
-          placeholder="请输入主键"
-          v-decorator="['id', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="编码"
-      >
-        <a-input
-          placeholder="请输入编码"
-          v-decorator="['code', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
         label="名字"
       >
         <a-input
@@ -44,15 +26,6 @@
         <a-input
           placeholder="请输入地址"
           v-decorator="['address', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="法人代表"
-      >
-        <a-input
-          placeholder="请输入法人代表"
-          v-decorator="['lawPerson', {}]"
         />
       </a-form-item>
       <a-form-item
@@ -82,97 +55,39 @@
           v-decorator="['email', {}]"
         />
       </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="状态"
-      >
-        <a-input
-          placeholder="请输入状态"
-          v-decorator="['state', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="供应商类别（0是药品1是物资）"
-      >
-        <a-input
-          placeholder="请输入供应商类别（0是药品1是物资）"
-          v-decorator="['lb', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="是否删除"
-      >
-        <a-input
-          placeholder="请输入是否删除"
-          v-decorator="['isDeletemark', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="创建时间"
-      >
-        <a-date-picker
-          showTime
-          format='YYYY-MM-DD HH:mm:ss'
-          v-decorator="[ 'createTime', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="修改时间"
-      >
-        <a-date-picker
-          showTime
-          format='YYYY-MM-DD HH:mm:ss'
-          v-decorator="[ 'modifyTime', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="创建人"
-      >
-        <a-input
-          placeholder="请输入创建人"
-          v-decorator="['createUserId', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="修改人"
-      >
-        <a-input
-          placeholder="请输入修改人"
-          v-decorator="['modifyUserId', {}]"
-        />
-      </a-form-item>
     </a-form>
+    <attach-file
+      v-for="item in attachList"
+      :key="item.index"
+      :ref="'file'+item.index"
+      :title="item.title"
+      :displayIndex="item.index"
+      :isRequire="item.isRequire"
+      :validdatestart="item.validdatestart"
+      :validdate="item.validdate"
+      :fileId="item.fileId"
+      :fileName="item.fileName"
+      :fileList="item.fileList"
+    >
+    </attach-file>
     <div class="drawer-bootom-button">
-      <a-popconfirm
-        title="确定放弃编辑？"
-        @confirm="onClose"
-        okText="确定"
-        cancelText="取消"
-      >
-        <a-button style="margin-right: .8rem">取消</a-button>
-      </a-popconfirm>
       <a-button
-        @click="handleSubmit"
+        @click="onClose"
         type="primary"
-        :loading="loading"
-      >提交</a-button>
+      >关闭</a-button>
     </div>
   </a-drawer>
 </template>
 <script>
 import moment from 'moment'
+import AttachFile from './AttachFile'
 
 const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 18 }
 }
 export default {
+  components: { AttachFile },
   name: 'ScmDVendorEdit',
   props: {
     editVisiable: {
@@ -184,7 +99,27 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      scmDVendor: {}
+      scmDVendor: {},
+      attachList: [
+        { title: "企业法人营业执照", isRequire: true, index: 1, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [] },
+        { title: "中华人民共和国组织结构代码证", isRequire: true, index: 2, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "税务登记证", isRequire: true, index: 3, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "中华人民共和国药品经营许可证", isRequire: true, index: 4, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "中华人民共和国药品经营许可证副本及变更记录", isRequire: false, index: 5, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "中华人民共和国药品经营质量管理规范认证证书(GSP)", isRequire: true, index: 6, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 7, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 8, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "食品流通许可证", isRequire: false, index: 9, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "开发票资料及银行账户信息", isRequire: true, index: 10, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "企业税票模板", isRequire: true, index: 11, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "企业出库单模板", isRequire: true, index: 12, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "企业样章备案", isRequire: true, index: 13, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "药品销售单位首次开户应收集资料", isRequire: false, index: 14, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "企业基本情况和质量保证体系情况表", isRequire: true, index: 15, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "下游客户法人授权委托书模板", isRequire: true, index: 16, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "药品供需双方质量保证协议(正本)", isRequire: true, index: 17, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+        { title: "药品供需双方质量保证协议(副本)", isRequire: true, index: 18, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: []  },
+      ]
     }
   },
   methods: {
@@ -197,7 +132,7 @@ export default {
       this.$emit('close')
     },
     setFormValues ({ ...scmDVendor }) {
-      let fields = ['id', 'code', 'name', 'address', 'lawPerson', 'linkPerson', 'phone', 'email', 'state', 'lb', 'isDeletemark', 'createTime', 'modifyTime', 'createUserId', 'modifyUserId']
+      let fields = ['code', 'name', 'address', 'linkPerson', 'phone', 'email']
       let fieldDates = ['createTime', 'modifyTime']
       Object.keys(scmDVendor).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
@@ -214,20 +149,36 @@ export default {
         }
       })
       this.scmDVendor.id = scmDVendor.id
-    },
-    handleSubmit () {
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          let scmDVendor = this.form.getFieldsValue()
-          scmDVendor.id = this.scmDVendor.id
-          this.$put('scmDVendor', {
-            ...scmDVendor
-          }).then(() => {
-            this.reset()
-            this.$emit('success')
-          }).catch(() => {
-            this.loading = false
-          })
+      this.$get('scmDVendorD/attach/' + scmDVendor.id, {
+      }).then((r) => {
+        let data = r.data.data
+        console.info(data)
+        if (data.length > 0) {
+          for (var index=0;index<data.length;index++) {
+            if(data[index].validDatestart!=null)
+            {
+              this.attachList[index].validdatestart = data[index].validDatestart
+            }
+            if(data[index].validDate!=null)
+            {
+              this.attachList[index].validdate = data[index].validDate
+            }
+            if(data[index].attachfile.id!=null){
+              this.attachList[index].fileId = data[index].attachfile.id
+            }
+            
+            this.attachList[index].fileName = data[index].filename
+            this.attachList[index].fileList=[]
+            if (data[index].attachfile.id !== ''&&data[index].attachfile.id !==null) {
+              this.attachList[index].isShow=0
+              this.attachList[index].fileList.push({
+                uid: data[index].attachfile.id,
+                name: data[index].attachfile.clientName,
+                status: 'done',
+                url: data[index].attachfile.serverName
+              })
+            }
+          }
         }
       })
     }
