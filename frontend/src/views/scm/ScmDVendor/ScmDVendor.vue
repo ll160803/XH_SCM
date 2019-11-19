@@ -106,10 +106,10 @@
           slot-scope="text, record"
         >
           <a-icon
-            v-hasPermission="['scmDVendor:update']"
-            type="setting"
+            v-hasPermission="['scmDVendor:view']"
+            type="eye"
             theme="twoTone"
-            twoToneColor="#4a9ff5"
+            twoToneColor="##42b983"
             @click="edit(record)"
             title="修改"
           ></a-icon>

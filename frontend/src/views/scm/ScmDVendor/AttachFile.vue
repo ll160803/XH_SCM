@@ -70,7 +70,8 @@ export default {
   name: "file",
   data () {
     return {
-      isShow: 1,
+      isShow:this.showV,
+      fileList:this.fileList2,
       uploading: false,
       formItemLayout,
       form: this.$form.createForm(this),
@@ -92,10 +93,13 @@ export default {
     validdate: '',
     fileId: '',
     fileName: '',
-    fileList: {
+    fileList2: {
       type: Array,
       default: () => []
-    }
+    },
+    showV: {
+      type: Number,
+      default: 1}
   },
   methods: {
     handleRemove (file) {
@@ -137,14 +141,14 @@ export default {
         Object.keys(values).forEach(_key => { this.scmDVendorD[_key] = values[_key] })
       }
     },
-    getScmDAreaFields () {
+    getScmDAreaFields (entity) {
       let fields = ['fileName', 'validdatestart', 'validdate']
       let fieldDates = ['validdatestart', 'validdate']
-      let entity = {
-        fileName: this.fileName,
-        validdatestart: this.validdatestart,
-        validdate: this.validdate
-      }
+      // let entity={
+      //   fileName:this.fileName,
+      //   validdatestart:this.validdatestart,
+      //   validdate:this.validdate
+      // }
       Object.keys(entity).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -154,18 +158,24 @@ export default {
               obj[key] = moment(entity[key])
             }
           } else {
-          obj[key] = entity[key]
+            obj[key] = entity[key]
           }
           this.form.setFieldsValue(obj)
         }
       })
     }
   },
+  watch: {
+    // fileList () {
+    //   if (this.fileList.length > 0) {
+    //     this.isShow = 0
+    //   }
+    //   else{
+    //     this.isShow = 1 
+    //   }
+    // }
+  },
   mounted () {
-    if (this.fileList.length > 0) {
-      this.isShow = 0
-    }
-     this.getScmDAreaFields()
   }
 }
 </script>
