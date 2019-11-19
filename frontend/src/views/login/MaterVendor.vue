@@ -47,7 +47,7 @@
         <a-input
           v-decorator="[
           'email',
-          { rules: [{ required: true, message: '请输入电子邮件' }] },
+          { rules: [{ type: 'email', required: true, message: '请输入电子邮件' }] },
         ]"
           placeholder="请输入电子邮件"
         />
@@ -94,6 +94,8 @@
       type="primary"
       :loading="loading"
       @click.stop.prevent="handleSubmit"
+      v-show="current == 10"
+      :disabled="saveF"
     >
       保存
     </a-button>
@@ -111,6 +113,7 @@ export default {
   components: { UploadFile },
   data () {
     return {
+      saveF: false,
       loading: false,
       current: 0,
       checkNick: false,
@@ -149,6 +152,9 @@ export default {
         this.form1.validateFields(['nickname'], { force: true })
       })
     },
+    returnLogin () {
+       this.$emit('regist2', 'Login')
+    },
     handleSubmit () {
       this.form1.validateFields(err => {
         if (!err) {
@@ -180,8 +186,9 @@ export default {
       this.loading = true
       this.$post('scmDVendor/regist', {
         ...this.scmDVendor,
-        scmDVendorD:JSON.stringify(this.scmDVendorD)
+        scmDVendorD: JSON.stringify(this.scmDVendorD)
       }).then(() => {
+        this.saveF = true
         this.loading = false
         this.$message.success('注册成功')
         this.returnLogin()

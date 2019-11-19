@@ -111,7 +111,7 @@
             theme="twoTone"
             twoToneColor="##42b983"
             @click="edit(record)"
-            title="修改"
+            title="查看"
           ></a-icon>
           <a-badge
             v-hasNoPermission="['scmDVendor:update']"
