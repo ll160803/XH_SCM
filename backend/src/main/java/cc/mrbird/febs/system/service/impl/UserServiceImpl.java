@@ -67,7 +67,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             return null;
         }
     }
-
+    @Override
+    public  void updateUserByName( User user)
+    {
+        this.baseMapper.updateUserByName(user);
+    }
     @Override
     @Transactional
     public void updateLoginTime(String username) throws Exception {
@@ -94,8 +98,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         setUserRoles(user, roles);
 
         //保存用户的部门区域
-        String[] areaIds = user.getAreaId().split(StringPool.COMMA);
-        setUserArea(user,areaIds);
+        if(user.getAreaId()!=null) {
+            String[] areaIds = user.getAreaId().split(StringPool.COMMA);
+            setUserArea(user, areaIds);
+        }
         // 创建用户默认的个性化配置
         userConfigService.initDefaultUserConfig(String.valueOf(user.getUserId()));
 

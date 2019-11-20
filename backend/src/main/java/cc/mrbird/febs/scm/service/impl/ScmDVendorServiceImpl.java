@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +45,9 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
         public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor){
                 try{
                         LambdaQueryWrapper<ScmDVendor> queryWrapper=new LambdaQueryWrapper<>();
+                        if (StringUtils.isNotBlank(scmDVendor.getName())) {
+                                queryWrapper.like(ScmDVendor::getName, scmDVendor.getName());
+                        }
                         if (StringUtils.isNotBlank(scmDVendor.getCode())) {
                                 queryWrapper.eq(ScmDVendor::getCode, scmDVendor.getCode());
                         }
@@ -85,7 +89,10 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
                 String F_id=UUID.randomUUID().toString();
                 scmDVendor.setId(F_id);
                 scmDVendor.setCreateTime(new Date());
-                scmDVendor.setState(1);
+                scmDVendor.setState(0);//不可用
+                scmDVendor.setIsDeletemark(1);
+                scmDVendor.setFileState(0);
+                scmDVendor.setJieKouState(0);
                 this.save(scmDVendor);
                 for ( ScmDVendorD scmDVendorD:
                         scmDVendorDS) {

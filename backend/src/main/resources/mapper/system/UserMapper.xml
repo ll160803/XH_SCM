@@ -111,4 +111,12 @@
             u.DESCRIPTION,
             u.LAST_LOGIN_TIME
     </select>
+
+    <update id="updateUserByName" parameterType="cc.mrbird.febs.system.domain.User">
+        update t_user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null">STATUS=#{status},</if>
+        </trim>
+        where USER_ID=#{userId}
+    </update>
 </mapper>

@@ -9,6 +9,12 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface UserService extends IService<User> {
 
     /**
+     * 通过用户id更改用户状态
+     * @param id
+     * @param status
+     */
+    void updateUserByName( User user);
+    /**
      * 通过用户名查找用户
      *
      * @param username username

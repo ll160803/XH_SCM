@@ -13,6 +13,7 @@ import cc.mrbird.febs.scm.entity.ScmDVendor;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cc.mrbird.febs.system.service.UserService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author viki
  * @since 2019-11-14
  */
@@ -40,27 +40,31 @@ import java.util.Map;
 @RestController
 @RequestMapping("scmDVendor")
 
-public class ScmDVendorController extends BaseController{
+public class ScmDVendorController extends BaseController {
 
     private String message;
     @Autowired
     public IScmDVendorService iScmDVendorService;
 
+    @Autowired
+    private UserService userService;
+
     /**
      * 分页查询数据
      *
-     * @param bootStrapTable  分页信息
-     * @param scmDVendor 查询条件
+     * @param bootStrapTable 分页信息
+     * @param scmDVendor     查询条件
      * @return
      */
     @GetMapping
     @RequiresPermissions("scmDVendor:view")
-    public Map<String, Object> List(QueryRequest request, ScmDVendor scmDVendor){
+    public Map<String, Object> List(QueryRequest request, ScmDVendor scmDVendor) {
         return getDataTable(this.iScmDVendorService.findScmDVendors(request, scmDVendor));
     }
 
     /**
      * 跳转添加页面
+     *
      * @param request
      * @param response
      * @param model
@@ -69,35 +73,36 @@ public class ScmDVendorController extends BaseController{
     @Log("新增/按钮")
     @PostMapping
     @RequiresPermissions("scmDVendor:add")
-    public void addScmDVendor(@Valid ScmDVendor scmDVendor)throws FebsException{
-        try{
-            User currentUser= FebsUtil.getCurrentUser();
+    public void addScmDVendor(@Valid ScmDVendor scmDVendor) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
             scmDVendor.setCreateUserId(currentUser.getUserId());
             this.iScmDVendorService.createScmDVendor(scmDVendor);
-        }catch(Exception e){
-            message="新增/按钮失败" ;
-            log.error(message,e);
+        } catch (Exception e) {
+            message = "新增/按钮失败";
+            log.error(message, e);
             throw new FebsException(message);
         }
     }
 
     /**
      * 跳转修改页面
+     *
      * @param request
-     * @param id  实体ID
+     * @param id      实体ID
      * @return
      */
     @Log("修改")
     @PutMapping
     @RequiresPermissions("scmDVendor:update")
-    public void updateScmDVendor(@Valid ScmDVendor scmDVendor)throws FebsException{
-        try{
-            User currentUser= FebsUtil.getCurrentUser();
+    public void updateScmDVendor(@Valid ScmDVendor scmDVendor) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
             scmDVendor.setModifyUserId(currentUser.getUserId());
             this.iScmDVendorService.updateScmDVendor(scmDVendor);
-        }catch(Exception e){
-            message="修改成功" ;
-            log.error(message,e);
+        } catch (Exception e) {
+            message = "修改成功";
+            log.error(message, e);
             throw new FebsException(message);
         }
     }
@@ -106,16 +111,17 @@ public class ScmDVendorController extends BaseController{
     @Log("删除")
     @DeleteMapping("/{ids}")
     @RequiresPermissions("scmDVendor:delete")
-    public void deleteScmDVendors(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
-        try{
-            String[]arr_ids=ids.split(StringPool.COMMA);
+    public void deleteScmDVendors(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
+        try {
+            String[] arr_ids = ids.split(StringPool.COMMA);
             this.iScmDVendorService.deleteScmDVendors(arr_ids);
-        }catch(Exception e){
-            message="删除成功" ;
-            log.error(message,e);
+        } catch (Exception e) {
+            message = "删除成功";
+            log.error(message, e);
             throw new FebsException(message);
         }
     }
+
     @PostMapping("excel")
     @RequiresPermissions("scmDVendor:export")
     public void export(QueryRequest request, ScmDVendor scmDVendor, HttpServletResponse response) throws FebsException {
@@ -131,18 +137,71 @@ public class ScmDVendorController extends BaseController{
 
     @GetMapping("/{id}")
     public ScmDVendor detail(@NotBlank(message = "{required}") @PathVariable String id) {
-        ScmDVendor scmDVendor=this.iScmDVendorService.getById(id);
+        ScmDVendor scmDVendor = this.iScmDVendorService.getById(id);
         return scmDVendor;
     }
+
     @PostMapping("regist")
     public void regist(ScmDVendor scmDVendor, String scmDVendorD) throws FebsException {
         try {
 
-            List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {});
+            List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {
+            });
 
-            this.iScmDVendorService.createScmVendor(scmDVendor,list);
+            this.iScmDVendorService.createScmVendor(scmDVendor, list);
         } catch (Exception e) {
             message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @Log("保存用户的账号")
+    @PostMapping("SaveCode")
+    public void saveCodeScmDVendor(@Valid String data) throws FebsException {
+        try {
+            List<ScmDVendor> list = JSON.parseObject(data, new TypeReference<List<ScmDVendor>>() {
+            });
+            for (ScmDVendor item : list) {
+                if(item.getState()!=null) {
+                    if (item.getState() == 1) {//保存并审核
+                        User user = this.userService.findByName(item.getCode());
+                        if (user != null) {
+                            user.setStatus("1");
+                            this.userService.updateUserByName(user);
+                        } else {
+                            user=new User();
+                            user.setUsername(item.getCode());//供应商编码
+                            user.setRealname(item.getName());//供应商名称
+                            user.setAvatar("default.jpg");
+                            user.setSsex("1");
+                            user.setPassword("0000");
+                            user.setDeptId(1L);
+                            user.setStatus("1");//有效
+                            user.setCode(item.getId());//存储供应商的ID
+                            if (item.getLb() == 0) {
+                                user.setRoleId("3");//角色ID
+                                user.setRoleName("药品供应商");
+                            } else {
+                                user.setRoleId("4");//角色ID
+                                user.setRoleName("物资供应商");
+                            }
+                            this.userService.createUser(user);
+                        }
+                    }
+                    if (item.getState() == 0) {//取消审核
+                        User user = this.userService.findByName(item.getCode());
+
+                        user.setStatus("0");//无效
+
+                        this.userService.updateUser(user);
+                    }
+                }
+                this.iScmDVendorService.updateScmDVendor(item);
+            }
+
+        } catch (Exception e) {
+            message = "保存用户帐号失败";
             log.error(message, e);
             throw new FebsException(message);
         }

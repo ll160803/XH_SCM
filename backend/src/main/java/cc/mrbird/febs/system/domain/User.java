@@ -63,6 +63,10 @@ public class User implements Serializable {
     @ExcelField(value = "邮箱")
     private String email;
 
+    @Size(max = 50, message = "{noMoreThan}")
+    @ExcelField(value = "姓名")
+    private String realname;
+
     @Pattern(regexp = RegexpConstant.MOBILE_REG, message = "{mobile}")
     @ExcelField(value = "手机号")
     private String mobile;
@@ -75,6 +79,8 @@ public class User implements Serializable {
     private Date createTime;
 
     private Date modifyTime;
+
+    private String code;
 
     @ExcelField(value = "最后登录时间", writeConverter = TimeConverter.class)
     private Date lastLoginTime;

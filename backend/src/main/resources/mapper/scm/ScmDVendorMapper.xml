@@ -36,6 +36,8 @@
 <if test="phone != null">PHONE=#{phone},</if>
 <if test="email != null">EMAIL=#{email},</if>
 <if test="state != null">STATE=#{state},</if>
+            <if test="jieKouState != null">JIEKOUSTATE=#{jieKouState},</if>
+            <if test="fileState != null">FILESTATE=#{fileState},</if>
 <if test="lb != null">LB=#{lb},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>

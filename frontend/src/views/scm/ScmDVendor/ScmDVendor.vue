@@ -55,27 +55,34 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['scmDVendor:add']"
           type="primary"
           ghost
-          @click="add"
-        >新增</a-button>
+          @click="save(0)"
+        >保存</a-button>
         <a-button
-          v-hasPermission="['scmDVendor:delete']"
-          @click="batchDelete"
-        >删除</a-button>
-        <a-dropdown v-hasPermission="['scmDVendor:export']">
-          <a-menu slot="overlay">
-            <a-menu-item
-              key="export-data"
-              @click="exportExcel"
-            >导出Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
+          type="primary"
+          @click="save(1)"
+        >保存并审核</a-button>
+        <a-button
+          type="danger"
+          @click="save(2)"
+        >取消审核</a-button>
+        <a-button
+          type="primary"
+          @click="open(1)"
+        >打开接口</a-button>
+        <a-button
+          type="danger"
+          @click="open(0)"
+        >关闭接口</a-button>
+        <a-button
+          type="primary"
+          @click="open(3)"
+        >限制资质文件</a-button>
+        <a-button
+          type="danger"
+          @click="open(4)"
+        >不限制资质文件</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -88,18 +95,17 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :scroll="{ x: 1200 }"
       >
+
         <template
-          slot="remark"
+          slot="code"
           slot-scope="text, record"
         >
-          <a-popover placement="topLeft">
-            <template slot="content">
-              <div style="max-width: 200px">{{text}}</div>
-            </template>
-            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-          </a-popover>
+          <editable-cell
+            :text="text"
+            @change="onCellChange(record.id, 'code', $event)"
+          />
         </template>
         <template
           slot="operation"
@@ -109,7 +115,7 @@
             v-hasPermission="['scmDVendor:view']"
             type="eye"
             theme="twoTone"
-            twoToneColor="##42b983"
+            twoToneColor="#42b983"
             @click="edit(record)"
             title="查看"
           ></a-icon>
@@ -142,10 +148,11 @@
 <script>
 import ScmDVendorAdd from './ScmDVendorAdd'
 import ScmDVendorEdit from './ScmDVendorEdit'
+import EditableCell from '../../common/EditableCell'
 
 export default {
   name: 'ScmDVendor',
-  components: { ScmDVendorAdd, ScmDVendorEdit },
+  components: { ScmDVendorAdd, ScmDVendorEdit, EditableCell },
   data () {
     return {
       advanced: false,
@@ -174,7 +181,8 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '编码',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        scopedSlots: { customRender: 'code' }
       }, {
         title: '名字',
         dataIndex: 'name'
@@ -195,7 +203,45 @@ export default {
         dataIndex: 'email'
       }, {
         title: '状态',
-        dataIndex: 'state'
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未审核</a-tag>
+            case 1:
+              return <a-tag color="green">已审核</a-tag>
+            case 2:
+              return <a-tag color="red">审核未通过</a-tag>
+            default:
+              return text
+          }
+        }
+      }, {
+        title: '接口状态',
+        dataIndex: 'jieKouState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="cyan">不限制</a-tag>
+            case 1:
+              return <a-tag color="red">限制</a-tag>
+            default:
+              return text
+          }
+        }
+      }, {
+        title: '验收资质',
+        dataIndex: 'fileState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="red">不限制</a-tag>
+            case 1:
+              return <a-tag color="cyan">限制</a-tag>
+            default:
+              return text
+          }
+        }
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -227,7 +273,158 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.addVisiable = true
+
+    },
+    onCellChange (key, dataIndex, value) {
+      const dataSource = [...this.dataSource];
+      const target = dataSource.find(item => item.id === key);
+      console.info(target)
+      if (target) {
+        target[dataIndex] = value;
+        this.dataSource = dataSource;
+      }
+    },
+    open (flag) {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要操作的记录')
+        return
+      }
+      let that = this
+      this.$confirm({
+        title: '确定保存所选中的记录?',
+        content: '当您点击确定按钮后，这些记录将会被保存',
+        centered: true,
+        onOk () {
+          let scmDVendorIds = that.selectedRowKeys.join(',')
+          let arrCodes = [];
+          const dataSource = [...that.dataSource]
+          let IsValid = 0
+          for (let key in that.selectedRowKeys) {
+            let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
+            if (flag == 0) {//关闭接口
+              if (row.jieKouState == 1) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经关闭接口,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                jieKouState: 1
+              })
+            }
+            if (flag == 1) {//保存审核
+              if (row.jieKouState == 0) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经打开接口,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                jieKouState: 0
+              })
+            }
+            if (flag == 3) {//限制
+              if (row.fileState == 1) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经限制资质上传,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                fileState: 1
+              })
+            }
+            if (flag == 4) {//不限制
+              if (row.fileState == 0) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经不限制资质上传,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                fileState: 0
+              })
+            }
+          }
+          if (IsValid == 0) {
+            let arrJson = JSON.stringify(arrCodes)
+            that.$post('scmDVendor/SaveCode', { data: arrJson }).then(() => {
+              that.$message.success('操作成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          }
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
+      })
+    },
+    save (flag) {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要操作的记录')
+        return
+      }
+      let that = this
+      this.$confirm({
+        title: '确定保存所选中的记录?',
+        content: '当您点击确定按钮后，这些记录将会被保存',
+        centered: true,
+        onOk () {
+          let scmDVendorIds = that.selectedRowKeys.join(',')
+          let arrCodes = [];
+          const dataSource = [...that.dataSource]
+          let IsValid = 0
+          for (let key in that.selectedRowKeys) {
+            let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
+            if (flag == 0) {//保存
+              if (row.code == "" || row.state == 1) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经审核或账号未填写,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                code: row.code,
+                name: row.name,
+                lb: 0
+              })
+            }
+            if (flag == 1) {//保存审核
+              if (row.code == "" || row.state == 1) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经审核或账号未填写,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                code: row.code,
+                name: row.name,
+                state: 1,
+                lb: 0
+              })
+            }
+            if (flag == 2) {//取消审核
+              if (row.code == "" || row.state == 0 || row.state == 2) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户尚未审核,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                code: row.code,
+                name: row.name,
+                state: 2,
+                lb: 0
+              })
+            }
+          }
+          if (IsValid == 0) {
+            let arrJson = JSON.stringify(arrCodes)
+            that.$post('scmDVendor/SaveCode', { data: arrJson }).then(() => {
+              that.$message.success('操作成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          }
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
+      })
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -348,3 +545,48 @@ export default {
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
 </style>
+<style>
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-input-wrapper,
+.editable-cell-text-wrapper {
+  padding-right: 24px;
+}
+
+.editable-cell-text-wrapper {
+  padding: 1px 24px 1px 5px;
+}
+
+.editable-cell-icon,
+.editable-cell-icon-check {
+  position: absolute;
+  right: 0;
+  width: 20px;
+  cursor: pointer;
+}
+
+.editable-cell-icon {
+  line-height: 18px;
+  display: none;
+}
+
+.editable-cell-icon-check {
+  line-height: 21px;
+}
+
+.editable-cell:hover .editable-cell-icon {
+  display: inline-block;
+}
+
+.editable-cell-icon:hover,
+.editable-cell-icon-check:hover {
+  color: #108ee9;
+}
+
+/* .editable-add-btn {
+    margin-bottom: 8px;
+  } */
+</style>
+

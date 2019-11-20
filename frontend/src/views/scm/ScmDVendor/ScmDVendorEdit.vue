@@ -67,8 +67,6 @@
       :validdate="item.validdate"
       :fileId="item.fileId"
       :fileName="item.fileName"
-      :fileList2="item.fileList"
-      :showV="item.showV"
     >
     </attach-file>
     <div class="drawer-bootom-button">
@@ -180,11 +178,11 @@ export default {
 
               this.$refs['file' + (index + 1)][0].getScmDAreaFields(entity)
               this.attachList[index].fileName = data[index].filename
-              this.attachList[index].fileList = []
+              this.$refs['file' + (index + 1)][0].fileList = []
 
               if (data[index].attachfile.id !== '' && data[index].attachfile.id !== null) {
-                this.attachList[index].showV = 0
-                this.attachList[index].fileList.push({
+                this.$refs['file' + (index + 1)][0].isShow = 0
+                this.$refs['file' + (index + 1)][0].fileList.push({
                   uid: data[index].attachfile.id,
                   name: data[index].attachfile.clientName,
                   status: 'done',
