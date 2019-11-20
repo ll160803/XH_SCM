@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
@@ -14,6 +15,7 @@ import cc.mrbird.febs.scm.entity.ScmDVendor;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.service.UserService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -27,9 +29,7 @@ import com.alibaba.fastjson.TypeReference;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author viki
@@ -45,6 +45,8 @@ public class ScmDVendorController extends BaseController {
     private String message;
     @Autowired
     public IScmDVendorService iScmDVendorService;
+    @Autowired
+    public IScmDVendorDService iScmDVendorDService;
 
     @Autowired
     private UserService userService;
@@ -150,7 +152,22 @@ public class ScmDVendorController extends BaseController {
 
             this.iScmDVendorService.createScmVendor(scmDVendor, list);
         } catch (Exception e) {
-            message = "导出Excel失败";
+            message = "注册失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("Edit")
+    public void edit(ScmDVendor scmDVendor, String scmDVendorD) throws FebsException {
+        try {
+
+            List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {
+            });
+
+            this.iScmDVendorService.updateScmDVendor(scmDVendor, list);
+        } catch (Exception e) {
+            message = "修改失败";
             log.error(message, e);
             throw new FebsException(message);
         }
@@ -163,14 +180,14 @@ public class ScmDVendorController extends BaseController {
             List<ScmDVendor> list = JSON.parseObject(data, new TypeReference<List<ScmDVendor>>() {
             });
             for (ScmDVendor item : list) {
-                if(item.getState()!=null) {
+                if (item.getState() != null) {
                     if (item.getState() == 1) {//保存并审核
                         User user = this.userService.findByName(item.getCode());
                         if (user != null) {
                             user.setStatus("1");
                             this.userService.updateUserByName(user);
                         } else {
-                            user=new User();
+                            user = new User();
                             user.setUsername(item.getCode());//供应商编码
                             user.setRealname(item.getName());//供应商名称
                             user.setAvatar("default.jpg");
@@ -205,5 +222,32 @@ public class ScmDVendorController extends BaseController {
             log.error(message, e);
             throw new FebsException(message);
         }
+    }
+
+    /*
+    获取当前供应商的信息
+     */
+    @GetMapping("/GetByVendorCode")
+    @RequiresPermissions("VendorUpdate:view")
+    public FebsResponse GetByVendorCode() {
+        User currentUser = FebsUtil.getCurrentUser();
+        String userCode = currentUser.getUsername();
+        QueryWrapper<ScmDVendor> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(ScmDVendor::getCode, userCode);
+        ScmDVendor scmDVendor = this.iScmDVendorService.getOne(queryWrapper);
+        CustomerVendor cv = new CustomerVendor();
+        if (scmDVendor != null) {
+            List<ScmDVendorD> scmDVendorDs = this.iScmDVendorDService.findScmDVendorDByBaseId(scmDVendor.getId());
+            Collections.sort(scmDVendorDs, Comparator.comparing(ScmDVendorD::getFileIndex));
+
+            cv.scmDVendor = scmDVendor;
+            cv.scmDVendorDS = scmDVendorDs;
+        }
+        return new FebsResponse().data(cv);
+    }
+
+    public class CustomerVendor {
+        public ScmDVendor scmDVendor;
+        public List<ScmDVendorD> scmDVendorDS;
     }
 }

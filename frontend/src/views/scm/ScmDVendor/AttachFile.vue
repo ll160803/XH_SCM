@@ -81,7 +81,7 @@ export default {
         validdatestart: this.validdatestart,
         validdate: this.validdate,
         fileIndex: this.displayIndex,
-        fileId: this.fileId
+        fileId: ''
       }
     }
   },
@@ -159,14 +159,11 @@ export default {
     }
   },
   watch: {
-    // fileList () {
-    //   if (this.fileList.length > 0) {
-    //     this.isShow = 0
-    //   }
-    //   else{
-    //     this.isShow = 1 
-    //   }
-    // }
+    fileList () {
+      if (this.fileList.length > 0) {
+        this.scmDVendorD.fileId = this.fileList[0].uid
+      }
+    }
   },
   mounted () {
   }

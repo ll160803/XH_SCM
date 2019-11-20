@@ -7,6 +7,7 @@ import cc.mrbird.febs.scm.entity.ScmDVendor;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
 import cc.mrbird.febs.scm.entity.ScmDVendorD;
 import cc.mrbird.febs.scm.service.IScmDVendorService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -102,6 +103,22 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
                 scmDVendorDS) {
             scmDVendorD.setId(UUID.randomUUID().toString());
             scmDVendorD.setBaseId(F_id);
+            scmDVendorDMapper.insert(scmDVendorD);
+        }
+    }
+    @Override
+    @Transactional
+    public void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS) {
+        scmDVendor.setModifyTime(new Date());
+        this.updateScmDVendor(scmDVendor);
+        QueryWrapper<ScmDVendorD> queryWrapper = new QueryWrapper<>();
+        String F_id= scmDVendor.getId();
+        queryWrapper.lambda().eq(ScmDVendorD::getBaseId,F_id);
+        scmDVendorDMapper.delete(queryWrapper);
+        for (ScmDVendorD scmDVendorD :
+                scmDVendorDS) {
+            scmDVendorD.setId(UUID.randomUUID().toString());
+            scmDVendorD.setBaseId(scmDVendor.getId());
             scmDVendorDMapper.insert(scmDVendorD);
         }
     }
