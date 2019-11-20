@@ -67,22 +67,6 @@
           type="danger"
           @click="save(2)"
         >取消审核</a-button>
-        <a-button
-          type="primary"
-          @click="open(1)"
-        >打开接口</a-button>
-        <a-button
-          type="danger"
-          @click="open(0)"
-        >关闭接口</a-button>
-        <a-button
-          type="primary"
-          @click="open(3)"
-        >限制资质文件</a-button>
-        <a-button
-          type="danger"
-          @click="open(4)"
-        >不限制资质文件</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -169,7 +153,7 @@ export default {
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       queryParams: {
-        lb: 0
+        lb: 1
       },
       addVisiable: false,
       editVisiable: false,
@@ -186,12 +170,12 @@ export default {
         dataIndex: 'code',
         scopedSlots: { customRender: 'code' },
         fixed: 'left',
-        width: 120
+        width:120
       }, {
         title: '名字',
         dataIndex: 'name',
         fixed: 'left',
-         width: 120
+         width:120
       }, {
         title: '地址',
         dataIndex: 'address'
@@ -219,37 +203,7 @@ export default {
               return text
           }
         },
-        width: 80,
-        fixed: 'right'
-      }, {
-        title: '接口状态',
-        dataIndex: 'jieKouState',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return <a-tag color="cyan">不限制</a-tag>
-            case 1:
-              return <a-tag color="red">限制</a-tag>
-            default:
-              return text
-          }
-        },
-        width: 80,
-        fixed: 'right'
-      }, {
-        title: '验收资质',
-        dataIndex: 'fileState',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return <a-tag color="red">不限制</a-tag>
-            case 1:
-              return <a-tag color="cyan">限制</a-tag>
-            default:
-              return text
-          }
-        },
-        width: 80,
+        width: 100,
         fixed: 'right'
       }, {
         title: '操作',
@@ -391,7 +345,7 @@ export default {
                 id: row.id,
                 code: row.code,
                 name: row.name,
-                lb: 0
+                lb: 1
               })
             }
             if (flag == 1) {//保存审核
@@ -404,7 +358,7 @@ export default {
                 code: row.code,
                 name: row.name,
                 state: 1,
-                lb: 0
+                lb: 1
               })
             }
             if (flag == 2) {//取消审核
@@ -417,7 +371,7 @@ export default {
                 code: row.code,
                 name: row.name,
                 state: 2,
-                lb: 0
+                lb: 1
               })
             }
           }
@@ -445,25 +399,17 @@ export default {
     },
     edit (record) {
       this.$refs.scmDVendorEdit.setFormValues(record)
-      this.$refs.scmDVendorEdit.attachList=[
+      this.$refs.scmDVendorEdit.attachList = [
         { title: "企业法人营业执照", isRequire: true, index: 1, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "中华人民共和国组织结构代码证", isRequire: true, index: 2, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "税务登记证", isRequire: true, index: 3, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "中华人民共和国药品经营许可证", isRequire: true, index: 4, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "中华人民共和国药品经营许可证副本及变更记录", isRequire: false, index: 5, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "中华人民共和国药品经营质量管理规范认证证书(GSP)", isRequire: true, index: 6, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 7, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 8, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "食品流通许可证", isRequire: false, index: 9, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "开发票资料及银行账户信息", isRequire: true, index: 10, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "企业税票模板", isRequire: true, index: 11, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "企业出库单模板", isRequire: true, index: 12, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "企业样章备案", isRequire: true, index: 13, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "药品销售单位首次开户应收集资料", isRequire: false, index: 14, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "企业基本情况和质量保证体系情况表", isRequire: true, index: 15, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "下游客户法人授权委托书模板", isRequire: true, index: 16, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "药品供需双方质量保证协议(正本)", isRequire: true, index: 17, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        { title: "药品供需双方质量保证协议(副本)", isRequire: true, index: 18, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "中华人民共和国组织结构代码证", isRequire: false, index: 2, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "税务登记证", isRequire: false, index: 3, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 4, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 5, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "开发票资料及银行账户信息", isRequire: true, index: 6, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "企业税票模板", isRequire: false, index: 7, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "企业样章备案", isRequire: false, index: 8, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "廉洁协议", isRequire: false, index: 9, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "采购合同", isRequire: false, index: 10, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 }
       ]
       this.editVisiable = true
     },
@@ -545,7 +491,7 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
-      params.lb=0
+      params.lb = 1
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
@@ -619,4 +565,3 @@ export default {
     margin-bottom: 8px;
   } */
 </style>
-

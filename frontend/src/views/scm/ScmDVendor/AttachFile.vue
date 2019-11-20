@@ -70,8 +70,8 @@ export default {
   name: "file",
   data () {
     return {
-      isShow:this.showV,
-      fileList:this.fileList2,
+      isShow: 1,
+      fileList:[],
       uploading: false,
       formItemLayout,
       form: this.$form.createForm(this),
@@ -92,14 +92,7 @@ export default {
     validdatestart: '',
     validdate: '',
     fileId: '',
-    fileName: '',
-    fileList2: {
-      type: Array,
-      default: () => []
-    },
-    showV: {
-      type: Number,
-      default: 1}
+    fileName: ''
   },
   methods: {
     handleRemove (file) {
