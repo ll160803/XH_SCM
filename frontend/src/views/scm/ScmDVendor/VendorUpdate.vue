@@ -136,10 +136,6 @@ export default {
         }
       })
       this.scmDVendor.id = scmDVendor.id
-      this.$get('scmDVendorD/attach/' + scmDVendor.id, {
-      }).then((r) => {
-
-      })
     },
     setscmDVendorFields () {
       let values = this.form.getFieldsValue(['name', 'linkPerson', 'phone', 'email', 'address'])
@@ -148,6 +144,7 @@ export default {
       }
     },
     handleSubmit () {
+        this.scmDVendorD=[]
       this.form.validateFields(err => {
         if (!err) {
           for (let i = 1; i < 19; i++) {
@@ -183,7 +180,6 @@ export default {
         this.saveF = true
         this.loading = false
         this.$message.success('修改成功')
-        this.returnLogin()
       }).catch(() => {
         this.saveF = false
         this.loading = false

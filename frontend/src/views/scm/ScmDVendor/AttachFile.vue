@@ -39,23 +39,28 @@
           @change="onChange"
         />
       </a-form-item>
-      <a-upload
-        :fileList="fileList"
-        :remove="handleRemove"
-        :beforeUpload="beforeUpload"
+      <a-form-item
+        v-bind="formItemLayout"
+        label="文件上传"
       >
-        <a-button>
-          <a-icon type="upload" /> 选择文件 </a-button>
-      </a-upload>
-      <a-button
-        type="primary"
-        @click="handleUpload"
-        :disabled="fileList.length === 0 ||isShow===0"
-        :loading="uploading"
-        style="margin-top: 16px"
-      >
-        {{uploading ? '上传中' : '开始上传' }}
-      </a-button>
+        <a-upload
+          :fileList="fileList"
+          :remove="handleRemove"
+          :beforeUpload="beforeUpload"
+        >
+          <a-button>
+            <a-icon type="upload" /> 选择文件 </a-button>
+        </a-upload>
+        <a-button
+          type="primary"
+          @click="handleUpload"
+          :disabled="fileList.length === 0 ||isShow===0"
+          :loading="uploading"
+          style="margin-top: 16px"
+        >
+          {{uploading ? '上传中' : '开始上传' }}
+        </a-button>
+      </a-form-item>
     </a-form>
   </a-card>
 </template>
@@ -71,7 +76,7 @@ export default {
   data () {
     return {
       isShow: 1,
-      fileList:[],
+      fileList: [],
       uploading: false,
       formItemLayout,
       form: this.$form.createForm(this),
