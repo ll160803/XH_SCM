@@ -57,7 +57,7 @@
                :pagination="pagination"
                :loading="loading"
                :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-               @change="handleTableChange" :scroll="{ x: 1500 }">
+               @change="handleTableChange" :scroll="scroll">
         <template v-if="text" slot="icon" slot-scope="text, record">
          <a-icon :type="text" />
         </template>
@@ -108,6 +108,10 @@ export default {
   components: {ButtonAdd, ButtonEdit, RangeDate, MenuAdd, MenuEdit},
   data () {
     return {
+      scroll:{
+        x:1500,
+        y:window.innerHeight-400+100-50-10+12+10+10
+      },
       advanced: false,
       key: +new Date(),
       queryParams: {},

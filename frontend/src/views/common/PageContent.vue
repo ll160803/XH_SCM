@@ -44,7 +44,7 @@ export default {
 <style lang="less" scoped>
   .page-content{
     background: #fff;
-    padding: 14px 22px;
+    padding: 14px 22px 0px 22px;
     border-left: 1px solid #e8e8e8;
     border-right: 1px solid #e8e8e8;
     border-bottom: 1px solid #e8e8e8;
@@ -54,7 +54,7 @@ export default {
       }
       .detail{
         display: flex;
-        padding: 0 0 1rem 0;
+        padding: 0 0 0.2rem 0;
         .row {
           display: flex;
           width: 100%;
