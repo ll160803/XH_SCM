@@ -81,18 +81,13 @@ public void deleteScmDVendorDs(String[]Ids){
         public List<ScmDVendorD> findScmDVendorDByBaseId(String base_id){
                 try{
                        List<ScmDVendorD> scmDVendorDs=this.baseMapper.selectList(new LambdaQueryWrapper<ScmDVendorD>().eq(ScmDVendorD::getBaseId, base_id));
-                        log.error("000000000000000000000");
+
                         for (ScmDVendorD item:
                              scmDVendorDs) {
                                 String file_id=item.getFileId();
-                                log.error("1111111111111111111111");
-                                log.error(file_id);
                                 if(StringUtils.isNotBlank(file_id)){
-                                        log.error("33333333333333333333");
                                         ComFile comFile = this.comFileMapper.selectById(file_id);
-                                        log.error("222222222222222222222");
                                         if (comFile != null) {
-                                                log.error(comFile.getId());
                                                 item.attachfile=comFile;
                                         }
                                 }
