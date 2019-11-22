@@ -141,7 +141,8 @@ export default {
           })
         }
       }
-    }, handleRemove (file) {
+    },
+    handleRemove (file) {
       const index = this.fileList.indexOf(file)
       const newFileList = this.fileList.slice()
       newFileList.splice(index, 1)

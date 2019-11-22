@@ -12,48 +12,13 @@
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
-        label="主键"
+        label="药品"
       >
-        <a-input
-          placeholder="请输入主键"
-          v-decorator="['id', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="编码"
-      >
-        <a-input
-          placeholder="请输入编码"
-          v-decorator="['code', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="姓名"
-      >
-        <a-input
-          placeholder="请输入姓名"
-          v-decorator="['name', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="供应商账号"
-      >
-        <a-input
-          placeholder="请输入供应商账号"
-          v-decorator="['gysaccount', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="药品编码"
-      >
-        <a-input
-          placeholder="请输入药品编码"
-          v-decorator="['materId', {}]"
-        />
+        <up-fc
+        ref="upfc"
+        v-decorator="['matnr2', {rules: [{ required: true, message: '药品不能为空' }]}]"
+        >
+        </up-fc>
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
@@ -61,7 +26,7 @@
       >
         <a-input
           placeholder="请输入批次号"
-          v-decorator="['charge', {}]"
+          v-decorator="['charge', {rules: [{ required: true, message: '批次号不能为空' }]}]"
         />
       </a-form-item>
       <a-form-item
@@ -75,68 +40,25 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="状态"
+        label="文件上传"
       >
-        <a-input
-          placeholder="请输入状态"
-          v-decorator="['state', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="附件ID"
-      >
-        <a-input
-          placeholder="请输入附件ID"
-          v-decorator="['fileId', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="是否删除"
-      >
-        <a-input
-          placeholder="请输入是否删除"
-          v-decorator="['isDeletemark', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="创建时间"
-      >
-        <a-date-picker
-          showTime
-          format='YYYY-MM-DD HH:mm:ss'
-          v-decorator="[ 'createTime', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="修改时间"
-      >
-        <a-date-picker
-          showTime
-          format='YYYY-MM-DD HH:mm:ss'
-          v-decorator="[ 'modifyTime', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="创建人"
-      >
-        <a-input
-          placeholder="请输入创建人"
-          v-decorator="['createUserId', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="修改人"
-      >
-        <a-input
-          placeholder="请输入修改人"
-          v-decorator="['modifyUserId', {}]"
-        />
+        <a-upload
+          :fileList="fileList"
+          :remove="handleRemove"
+          :beforeUpload="beforeUpload"
+        >
+          <a-button>
+            <a-icon type="upload" /> 选择文件 </a-button>
+        </a-upload>
+        <a-button
+          type="primary"
+          @click="handleUpload"
+          :disabled="fileList.length === 0 ||isShow===0"
+          :loading="uploading"
+          style="margin-top: 16px"
+        >
+          {{uploading ? '上传中' : '开始上传' }}
+        </a-button>
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
@@ -161,8 +83,10 @@ const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 18 }
 }
+import upFc from '../../common/UpFileCustomer'
 export default {
   name: 'ScmBGysMaterPicAdd',
+  components: { upFc },
   props: {
     addVisiable: {
       default: false
@@ -170,16 +94,26 @@ export default {
   },
   data () {
     return {
+      isShow: 1,
+      fileList: [],
+      uploading: false,
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      scmBGysMaterPic: {}
+      scmBGysMaterPic: {
+        fileId: '',
+        materId:''
+      }
     }
   },
   methods: {
     reset () {
       this.loading = false
       this.scmBGysMaterPic = {}
+      this.$refs.upfc.reset()
+      this.$refs.upfc.matnr=''
+      this.scmBGysMaterPic.matnr=''
+      this.scmBGysMaterPic.fileId=''
       this.form.resetFields()
     },
     onClose () {
@@ -187,6 +121,18 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
+      this.scmBGysMaterPic.materId=this.$refs.upfc.matnr
+      if(this.scmBGysMaterPic.materId=='')
+      {
+        this.$message.warning('请在下列列表里选择药品.')
+        return false
+      }
+       if(this.scmBGysMaterPic.fileId=='')
+      {
+        this.$message.warning('请上传资质附件.')
+        return false
+      }
+      this.form.setFieldsValue({matnr2:'2'})
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
@@ -202,10 +148,43 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['id', 'code', 'name', 'gysaccount', 'materId', 'charge', 'comments', 'state', 'fileId', 'isDeletemark', 'createTime', 'modifyTime', 'createUserId', 'modifyUserId'])
+      let values = this.form.getFieldsValue(['charge', 'comments'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmBGysMaterPic[_key] = values[_key] })
       }
+    },
+    handleRemove (file) {
+      const index = this.fileList.indexOf(file)
+      const newFileList = this.fileList.slice()
+      newFileList.splice(index, 1)
+      this.fileList = newFileList
+      this.isShow = 1
+    },
+    onChange (date, dateString) {
+      console.log(date, dateString);
+    },
+    beforeUpload (file) {
+      this.fileList = [...this.fileList, file]
+      return false
+    },
+    handleUpload () {
+      const { fileList } = this
+      const formData = new FormData()
+      formData.append('file', fileList[0])
+      this.uploading = true
+
+      // You can use any AJAX library you like
+      this.$upload('comFile/upload', formData).then((r) => {
+        this.scmBGysMaterPic.fileId = r.data.data
+      
+        //this.fileList = []
+        this.isShow = 0
+        this.uploading = false
+        this.$message.success('上传成功.')
+      }).catch(() => {
+        this.uploading = false
+        this.$message.error('上传失败.')
+      })
     }
   }
 }

@@ -137,7 +137,8 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
-
+    @TableField(exist = false)
+    public  String keyword;
 
     public String getId(){
             return id;

@@ -52,7 +52,9 @@ public IScmDMaterService iScmDMaterService;
  */
 @GetMapping
 @RequiresPermissions("scmDMater:view")
-public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater){
+public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater,String keyWord){
+        log.error("关键字"+keyWord);
+        scmDMater.keyword=keyWord;
         return getDataTable(this.iScmDMaterService.findScmDMaters(request, scmDMater));
         }
 

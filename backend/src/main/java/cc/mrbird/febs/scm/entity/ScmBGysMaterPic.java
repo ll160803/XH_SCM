@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.entity;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -18,238 +19,309 @@ import com.wuwenze.poi.annotation.ExcelField;
  */
 
 @Excel("scm_b_gys_mater_pic")
-public class ScmBGysMaterPic implements Serializable{
+public class ScmBGysMaterPic implements Serializable {
 
-private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * 主键
      */
-                    @TableId("ID")
-                    @ExcelField(value ="主键")
-private String id;
+    @TableId("ID")
+    @ExcelField(value = "主键")
+    private String id;
     /**
      * 编码
      */
     @TableField("CODE")
-            @ExcelField(value ="编码")
-private String code;
+    @ExcelField(value = "编码")
+    private String code;
     /**
      * 姓名
      */
     @TableField("NAME")
-            @ExcelField(value ="姓名")
-private String name;
+    @ExcelField(value = "姓名")
+    private String name;
     /**
      * 供应商账号
      */
     @TableField("GYSACCOUNT")
-            @ExcelField(value ="供应商账号")
-private String gysaccount;
+    @ExcelField(value = "供应商账号")
+    private String gysaccount;
     /**
      * 药品编码
      */
     @TableField("MATER_ID")
-            @ExcelField(value ="药品编码")
-private String materId;
+    @ExcelField(value = "药品编码")
+    private String materId;
     /**
      * 批次号
      */
     @TableField("CHARGE")
-            @ExcelField(value ="批次号")
-private String charge;
+    @ExcelField(value = "批次号")
+    private String charge;
     /**
      * 备注
      */
     @TableField("COMMENTS")
-            @ExcelField(value ="备注")
-private String comments;
+    @ExcelField(value = "备注")
+    private String comments;
     /**
      * 状态
      */
     @TableField("STATE")
-            @ExcelField(value ="状态")
-private Integer state;
+    @ExcelField(value = "状态")
+    private Integer state;
     /**
      * 附件ID
      */
     @TableField("FILE_ID")
-            @ExcelField(value ="附件ID")
-private String fileId;
+    @ExcelField(value = "附件ID")
+    private String fileId;
     /**
      * 是否删除
      */
     @TableField("IS_DELETEMARK")
-            @ExcelField(value ="是否删除")
-private Integer isDeletemark;
+    @ExcelField(value = "是否删除")
+    private Integer isDeletemark;
     /**
      * 创建时间
      */
     @TableField("CREATE_TIME")
-            @ExcelField(value ="创建时间")
-private Date createTime;
+    @ExcelField(value = "创建时间")
+    private Date createTime;
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
-            @ExcelField(value ="修改时间")
-private Date modifyTime;
+    @ExcelField(value = "修改时间")
+    private Date modifyTime;
     /**
      * 创建人
      */
     @TableField("CREATE_USER_ID")
-            @ExcelField(value ="创建人")
-private Long createUserId;
+    @ExcelField(value = "创建人")
+    private Long createUserId;
     /**
      * 修改人
      */
     @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="修改人")
-private Long modifyUserId;
+    @ExcelField(value = "修改人")
+    private Long modifyUserId;
 
+    /**
+     * 单位描述
+     */
+    @TableField("MSEHT")
+    @ExcelField(value = "单位描述")
+    private String mseht;
+    /**
+     * 物料描述
+     */
+    @TableField("TXZ01")
+    @ExcelField(value = "物料描述")
+    private String txz01;
+    /**
+     * 生产厂家
+     */
+    @TableField("PRODUCE_AREA")
+    @ExcelField(value = "生产厂家")
+    private String produceArea;
+    /**
+     * 规格
+     */
+    @TableField("SPEC")
+    @ExcelField(value = "规格")
+    private String spec;
 
-    public String getId(){
-            return id;
-            }
+    /**
+     * 拼音码
+     */
+    @TableField("SPELL_CODE")
+    @ExcelField(value = "拼音码")
+    private String spellCode;
 
-        public void setId(String id) {
-            this.id = id;
-            }
+    public String getId() {
+        return id;
+    }
 
-    public String getCode(){
-            return code;
-            }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-        public void setCode(String code) {
-            this.code = code;
-            }
+    public String getCode() {
+        return code;
+    }
 
-    public String getName(){
-            return name;
-            }
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-        public void setName(String name) {
-            this.name = name;
-            }
+    public String getName() {
+        return name;
+    }
 
-    public String getGysaccount(){
-            return gysaccount;
-            }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        public void setGysaccount(String gysaccount) {
-            this.gysaccount = gysaccount;
-            }
+    public String getGysaccount() {
+        return gysaccount;
+    }
 
-    public String getMaterId(){
-            return materId;
-            }
+    public void setGysaccount(String gysaccount) {
+        this.gysaccount = gysaccount;
+    }
 
-        public void setMaterId(String materId) {
-            this.materId = materId;
-            }
+    public String getSpellCode() {
+        return spellCode;
+    }
 
-    public String getCharge(){
-            return charge;
-            }
+    public void setSpellCode(String spellCode) {
+        this.spellCode = spellCode;
+    }
 
-        public void setCharge(String charge) {
-            this.charge = charge;
-            }
+    public String getMaterId() {
+        return materId;
+    }
 
-    public String getComments(){
-            return comments;
-            }
+    public void setMaterId(String materId) {
+        this.materId = materId;
+    }
 
-        public void setComments(String comments) {
-            this.comments = comments;
-            }
+    public String getCharge() {
+        return charge;
+    }
 
-    public Integer getState(){
-            return state;
-            }
+    public void setCharge(String charge) {
+        this.charge = charge;
+    }
 
-        public void setState(Integer state) {
-            this.state = state;
-            }
+    public String getComments() {
+        return comments;
+    }
 
-    public String getFileId(){
-            return fileId;
-            }
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
 
-        public void setFileId(String fileId) {
-            this.fileId = fileId;
-            }
+    public String getMseht() {
+        return mseht;
+    }
 
-    public Integer getIsDeletemark(){
-            return isDeletemark;
-            }
+    public void setMseht(String mseht) {
+        this.mseht = mseht;
+    }
 
-        public void setIsDeletemark(Integer isDeletemark) {
-            this.isDeletemark = isDeletemark;
-            }
+    public String getTxz01() {
+        return txz01;
+    }
 
-    public Date getCreateTime(){
-            return createTime;
-            }
+    public void setTxz01(String txz01) {
+        this.txz01 = txz01;
+    }
 
-        public void setCreateTime(Date createTime) {
-            this.createTime = createTime;
-            }
+    public String getProduceArea() {
+        return produceArea;
+    }
 
-    public Date getModifyTime(){
-            return modifyTime;
-            }
+    public void setProduceArea(String produceArea) {
+        this.produceArea = produceArea;
+    }
 
-        public void setModifyTime(Date modifyTime) {
-            this.modifyTime = modifyTime;
-            }
+    public String getSpec() {
+        return spec;
+    }
 
-    public Long getCreateUserId(){
-            return createUserId;
-            }
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
 
-        public void setCreateUserId(Long createUserId) {
-            this.createUserId = createUserId;
-            }
+    public Integer getState() {
+        return state;
+    }
 
-    public Long getModifyUserId(){
-            return modifyUserId;
-            }
+    public void setState(Integer state) {
+        this.state = state;
+    }
 
-        public void setModifyUserId(Long modifyUserId) {
-            this.modifyUserId = modifyUserId;
-            }
+    public String getFileId() {
+        return fileId;
+    }
 
-    public static final String ID ="ID" ;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
 
-    public static final String CODE ="CODE" ;
+    public Integer getIsDeletemark() {
+        return isDeletemark;
+    }
 
-    public static final String NAME ="NAME" ;
+    public void setIsDeletemark(Integer isDeletemark) {
+        this.isDeletemark = isDeletemark;
+    }
 
-    public static final String GYSACCOUNT ="GYSACCOUNT" ;
+    public Date getCreateTime() {
+        return createTime;
+    }
 
-    public static final String MATER_ID ="MATER_ID" ;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
-    public static final String CHARGE ="CHARGE" ;
+    public Date getModifyTime() {
+        return modifyTime;
+    }
 
-    public static final String COMMENTS ="COMMENTS" ;
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
+    }
 
-    public static final String STATE ="STATE" ;
+    public Long getCreateUserId() {
+        return createUserId;
+    }
 
-    public static final String FILE_ID ="FILE_ID" ;
+    public void setCreateUserId(Long createUserId) {
+        this.createUserId = createUserId;
+    }
 
-    public static final String IS_DELETEMARK ="IS_DELETEMARK" ;
+    public Long getModifyUserId() {
+        return modifyUserId;
+    }
 
-    public static final String CREATE_TIME ="CREATE_TIME" ;
+    public void setModifyUserId(Long modifyUserId) {
+        this.modifyUserId = modifyUserId;
+    }
 
-    public static final String MODIFY_TIME ="MODIFY_TIME" ;
+    public static final String ID = "ID";
 
-    public static final String CREATE_USER_ID ="CREATE_USER_ID" ;
+    public static final String CODE = "CODE";
 
-    public static final String MODIFY_USER_ID ="MODIFY_USER_ID" ;
+    public static final String NAME = "NAME";
 
-@Override
-public String toString() {
+    public static final String GYSACCOUNT = "GYSACCOUNT";
+
+    public static final String MATER_ID = "MATER_ID";
+
+    public static final String CHARGE = "CHARGE";
+
+    public static final String COMMENTS = "COMMENTS";
+
+    public static final String STATE = "STATE";
+
+    public static final String FILE_ID = "FILE_ID";
+
+    public static final String IS_DELETEMARK = "IS_DELETEMARK";
+
+    public static final String CREATE_TIME = "CREATE_TIME";
+
+    public static final String MODIFY_TIME = "MODIFY_TIME";
+
+    public static final String CREATE_USER_ID = "CREATE_USER_ID";
+
+    public static final String MODIFY_USER_ID = "MODIFY_USER_ID";
+
+    @Override
+    public String toString() {
         return "ScmBGysMaterPic{" +
                 ", id=" + id +
                 ", code=" + code +
@@ -265,6 +337,6 @@ public String toString() {
                 ", modifyTime=" + modifyTime +
                 ", createUserId=" + createUserId +
                 ", modifyUserId=" + modifyUserId +
-        "}";
-        }
-        }
+                "}";
+    }
+}

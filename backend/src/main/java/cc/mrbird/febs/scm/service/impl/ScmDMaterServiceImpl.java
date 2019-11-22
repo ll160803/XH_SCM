@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.Date;
+
 /**
  * <p>
  * 药品物料库 服务实现类
@@ -35,43 +36,47 @@ import java.util.Date;
 public class ScmDMaterServiceImpl extends ServiceImpl<ScmDMaterMapper, ScmDMater> implements IScmDMaterService {
 
 
-@Override
-public IPage<ScmDMater> findScmDMaters(QueryRequest request, ScmDMater scmDMater){
-        try{
-        LambdaQueryWrapper<ScmDMater> queryWrapper=new LambdaQueryWrapper<>();
-        if (StringUtils.isNotBlank(scmDMater.getCode())) {
-        queryWrapper.eq(ScmDMater::getCode, scmDMater.getCode());
+    @Override
+    public IPage<ScmDMater> findScmDMaters(QueryRequest request, ScmDMater scmDMater) {
+        try {
+            LambdaQueryWrapper<ScmDMater> queryWrapper = new LambdaQueryWrapper<>();
+            if (StringUtils.isNotBlank(scmDMater.getCode())) {
+                queryWrapper.eq(ScmDMater::getCode, scmDMater.getCode());
+            }
+            if (StringUtils.isNotBlank(scmDMater.keyword)) {
+                queryWrapper.and(wrapper -> wrapper.eq(ScmDMater::getId, scmDMater.keyword).or().like(ScmDMater::getSpellCode, scmDMater.keyword).or().like(ScmDMater::getTxz01, scmDMater.keyword));
+            }
+            Page<ScmDMater> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
         }
-        Page<ScmDMater> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
-        }
-        }
+    }
 
-@Override
-@Transactional
-public void createScmDMater(ScmDMater scmDMater){
-        scmDMater.setId(UUID.randomUUID().toString());
+    @Override
+    @Transactional
+    public void createScmDMater(ScmDMater scmDMater) {
+        scmDMater.setId(scmDMater.getMatnr());
         scmDMater.setCreateTime(new Date());
         this.save(scmDMater);
-        }
+    }
 
-@Override
-@Transactional
-public void updateScmDMater(ScmDMater scmDMater){
+    @Override
+    @Transactional
+    public void updateScmDMater(ScmDMater scmDMater) {
+        scmDMater.setId(scmDMater.getMatnr());//药品编码和ID一致
         scmDMater.setModifyTime(new Date());
         this.baseMapper.updateScmDMater(scmDMater);
-        }
+    }
 
-@Override
-@Transactional
-public void deleteScmDMaters(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
+    @Override
+    @Transactional
+    public void deleteScmDMaters(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
-        }
+    }
 
 
-        }
+}

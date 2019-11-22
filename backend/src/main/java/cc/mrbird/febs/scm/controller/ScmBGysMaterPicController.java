@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *
  * @author viki
  * @since 2019-11-21
  */
@@ -36,99 +35,108 @@ import java.util.Map;
 @RestController
 @RequestMapping("scmBGysMaterPic")
 
-public class ScmBGysMaterPicController extends BaseController{
+public class ScmBGysMaterPicController extends BaseController {
 
-private String message;
-@Autowired
-public IScmBGysMaterPicService iScmBGysMaterPicService;
+    private String message;
+    @Autowired
+    public IScmBGysMaterPicService iScmBGysMaterPicService;
 
 
-/**
- * 分页查询数据
- *
- * @param bootStrapTable  分页信息
- * @param scmBGysMaterPic 查询条件
- * @return
- */
-@GetMapping
-@RequiresPermissions("scmBGysMaterPic:view")
-public Map<String, Object> List(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic){
+    /**
+     * 分页查询数据
+     *
+     * @param bootStrapTable  分页信息
+     * @param scmBGysMaterPic 查询条件
+     * @return
+     */
+    @GetMapping
+    @RequiresPermissions("scmBGysMaterPic:view")
+    public Map<String, Object> List(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic) {
+        User currentUser = FebsUtil.getCurrentUser();
+        scmBGysMaterPic.setGysaccount(currentUser.getUsername());
         return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic));
-        }
+    }
 
-/**
- * 跳转添加页面
- * @param request
- * @param response
- * @param model
- * @return
- */
-@Log("新增/按钮")
-@PostMapping
-@RequiresPermissions("scmBGysMaterPic:add")
-public void addScmBGysMaterPic(@Valid ScmBGysMaterPic scmBGysMaterPic)throws FebsException{
-        try{
-        User currentUser= FebsUtil.getCurrentUser();
-        scmBGysMaterPic.setCreateUserId(currentUser.getUserId());
-        this.iScmBGysMaterPicService.createScmBGysMaterPic(scmBGysMaterPic);
-        }catch(Exception e){
-        message="新增/按钮失败" ;
-        log.error(message,e);
-        throw new FebsException(message);
-        }
-        }
-
-/**
- * 跳转修改页面
- * @param request
- * @param id  实体ID
- * @return
- */
-@Log("修改")
-@PutMapping
-@RequiresPermissions("scmBGysMaterPic:update")
-public void updateScmBGysMaterPic(@Valid ScmBGysMaterPic scmBGysMaterPic)throws FebsException{
-        try{
-        User currentUser= FebsUtil.getCurrentUser();
-      scmBGysMaterPic.setModifyUserId(currentUser.getUserId());
-        this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
-        }catch(Exception e){
-        message="修改成功" ;
-        log.error(message,e);
-        throw new FebsException(message);
-        }
-        }
-
-
-@Log("删除")
-@DeleteMapping("/{ids}")
-@RequiresPermissions("scmBGysMaterPic:delete")
-public void deleteScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
-        try{
-        String[]arr_ids=ids.split(StringPool.COMMA);
-        this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids);
-        }catch(Exception e){
-        message="删除成功" ;
-        log.error(message,e);
-        throw new FebsException(message);
-        }
-        }
-@PostMapping("excel")
-@RequiresPermissions("scmBGysMaterPic:export")
-public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response) throws FebsException {
+    /**
+     * 跳转添加页面
+     *
+     * @param request
+     * @param response
+     * @param model
+     * @return
+     */
+    @Log("新增/按钮")
+    @PostMapping
+    @RequiresPermissions("scmBGysMaterPic:add")
+    public void addScmBGysMaterPic(@Valid ScmBGysMaterPic scmBGysMaterPic) throws FebsException {
         try {
-        List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic).getRecords();
-        ExcelKit.$Export(ScmBGysMaterPic.class, response).downXlsx(scmBGysMaterPics, false);
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBGysMaterPic.setCreateUserId(currentUser.getUserId());
+            scmBGysMaterPic.setGysaccount(currentUser.getUsername());
+            scmBGysMaterPic.setName(currentUser.getRealname());
+            scmBGysMaterPic.setState(0);
+            scmBGysMaterPic.setIsDeletemark(1);
+            this.iScmBGysMaterPicService.createScmBGysMaterPic(scmBGysMaterPic);
         } catch (Exception e) {
-        message = "导出Excel失败";
-        log.error(message, e);
-        throw new FebsException(message);
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
         }
-        }
+    }
 
-@GetMapping("/{id}")
-public ScmBGysMaterPic detail(@NotBlank(message = "{required}") @PathVariable String id) {
-    ScmBGysMaterPic scmBGysMaterPic=this.iScmBGysMaterPicService.getById(id);
+    /**
+     * 跳转修改页面
+     *
+     * @param request
+     * @param id      实体ID
+     * @return
+     */
+    @Log("修改")
+    @PutMapping
+    @RequiresPermissions("scmBGysMaterPic:update")
+    public void updateScmBGysMaterPic(@Valid ScmBGysMaterPic scmBGysMaterPic) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBGysMaterPic.setModifyUserId(currentUser.getUserId());
+            this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+
+    @Log("删除")
+    @DeleteMapping("/{ids}")
+    @RequiresPermissions("scmBGysMaterPic:delete")
+    public void deleteScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
+        try {
+            String[] arr_ids = ids.split(StringPool.COMMA);
+            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids);
+        } catch (Exception e) {
+            message = "删除成功";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("excel")
+    @RequiresPermissions("scmBGysMaterPic:export")
+    public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response) throws FebsException {
+        try {
+            List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic).getRecords();
+            ExcelKit.$Export(ScmBGysMaterPic.class, response).downXlsx(scmBGysMaterPics, false);
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ScmBGysMaterPic detail(@NotBlank(message = "{required}") @PathVariable String id) {
+        ScmBGysMaterPic scmBGysMaterPic = this.iScmBGysMaterPicService.getById(id);
         return scmBGysMaterPic;
-        }
-        }
+    }
+}

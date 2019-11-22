@@ -12,7 +12,7 @@
               :sm="24"
             >
               <a-form-item
-                label="名称"
+                label="供应商名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
@@ -24,25 +24,11 @@
               :sm="24"
             >
               <a-form-item
-                label="编码"
+                label="药品编码"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.code" />
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row v-if="advanced">
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="备注"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-input v-model="queryParams.comments" />
+                <a-input v-model="queryParams.materId" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -135,19 +121,20 @@
         </template>
       </a-table>
     </div>
-    <!-- 新增字典 -->
+    <!-- 新增资质文件 -->
     <scmBGysMaterPic-add
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
     >
     </scmBGysMaterPic-add>
-    <!-- 修改字典 -->
+    <!-- 修改资质文件 -->
     <scmBGysMaterPic-edit
       ref="scmBGysMaterPicEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
+      :isShowsub="isShowsub"
     >
     </scmBGysMaterPic-edit>
   </a-card>
@@ -178,6 +165,7 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      isShowsub: true,
       loading: false,
       bordered: true
     }
@@ -187,13 +175,7 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '主键',
-        dataIndex: 'id'
-      }, {
-        title: '编码',
-        dataIndex: 'code'
-      }, {
-        title: '姓名',
+        title: '供应商名称',
         dataIndex: 'name'
       }, {
         title: '供应商账号',
@@ -205,29 +187,20 @@ export default {
         title: '批次号',
         dataIndex: 'charge'
       }, {
-        title: '备注',
-        dataIndex: 'comments'
-      }, {
         title: '状态',
-        dataIndex: 'state'
-      }, {
-        title: '附件ID',
-        dataIndex: 'fileId'
-      }, {
-        title: '是否删除',
-        dataIndex: 'isDeletemark'
-      }, {
-        title: '创建时间',
-        dataIndex: 'createTime'
-      }, {
-        title: '修改时间',
-        dataIndex: 'modifyTime'
-      }, {
-        title: '创建人',
-        dataIndex: 'createUserId'
-      }, {
-        title: '修改人',
-        dataIndex: 'modifyUserId'
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未审核</a-tag>
+            case 1:
+              return <a-tag color="green">已审核</a-tag>
+            case 2:
+              return <a-tag color="red">审核未通过</a-tag>
+            default:
+              return text
+          }
+        }
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -252,7 +225,7 @@ export default {
     },
     handleAddSuccess () {
       this.addVisiable = false
-      this.$message.success('新增字典成功')
+      this.$message.success('新增资质文件成功')
       this.search()
     },
     handleAddClose () {
@@ -263,7 +236,7 @@ export default {
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改字典成功')
+      this.$message.success('修改资质文件成功')
       this.search()
     },
     handleEditClose () {
@@ -271,6 +244,12 @@ export default {
     },
     edit (record) {
       this.$refs.scmBGysMaterPicEdit.setFormValues(record)
+      if (record.state == 1) {
+        this.isShowsub = false
+      }
+      else {
+        this.isShowsub = true
+      }
       this.editVisiable = true
     },
     batchDelete () {
@@ -284,12 +263,25 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let scmBGysMaterPicIds = that.selectedRowKeys.join(',')
-          that.$delete('scmBGysMaterPic/' + scmBGysMaterPicIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
-          })
+          const dataSource = [...that.dataSource]
+          let IsValid = 0
+          for (let key in that.selectedRowKeys) {
+            let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
+
+            if (row.state == 1) {
+              IsValid = 1
+              that.$message.warning(`该${row.materId}_${row.charge}已经审核不能删除,请确认操作`)
+            }
+
+          }
+          if (IsValid == 0) {
+            let scmBGysMaterPicIds = that.selectedRowKeys.join(',')
+            that.$delete('scmBGysMaterPic/' + scmBGysMaterPicIds).then(() => {
+              that.$message.success('删除成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          }
         },
         onCancel () {
           that.selectedRowKeys = []
