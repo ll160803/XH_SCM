@@ -98,6 +98,8 @@ public class ScmBGysMaterPicController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             scmBGysMaterPic.setModifyUserId(currentUser.getUserId());
+            scmBGysMaterPic.setGysaccount(currentUser.getUsername());
+            scmBGysMaterPic.setName(currentUser.getRealname());
             this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
         } catch (Exception e) {
             message = e.getMessage();
