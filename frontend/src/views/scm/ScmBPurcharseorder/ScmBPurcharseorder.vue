@@ -69,27 +69,11 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['scmBPurcharseorder:add']"
+          v-hasPermission="['scmBSupplyPlan:add']"
           type="primary"
           ghost
           @click="add"
         >新增</a-button>
-        <a-button
-          v-hasPermission="['scmBPurcharseorder:delete']"
-          @click="batchDelete"
-        >删除</a-button>
-        <a-dropdown v-hasPermission="['scmBPurcharseorder:export']">
-          <a-menu slot="overlay">
-            <a-menu-item
-              key="export-data"
-              @click="exportExcel"
-            >导出Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -102,7 +86,8 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :scroll="{ x: 1500 }"
+        @expand="expandSubGrid"
       >
         <template
           slot="remark"
@@ -115,55 +100,160 @@
             <p style="width: 200px;margin-bottom: 0">{{text}}</p>
           </a-popover>
         </template>
-        <template
-          slot="operation"
-          slot-scope="text, record"
+
+        <a-table
+          slot="expandedRowRender"
+          slot-scope="text"
+          :columns="innerColumns"
+          :dataSource="innerData"
+          :pagination="false"
+          :rowKey="record => record.id"
         >
-          <a-icon
-            v-hasPermission="['scmBPurcharseorder:update']"
-            type="setting"
-            theme="twoTone"
-            twoToneColor="#4a9ff5"
-            @click="edit(record)"
-            title="修改"
-          ></a-icon>
-          <a-badge
-            v-hasNoPermission="['scmBPurcharseorder:update']"
-            status="warning"
-            text="无权限"
-          ></a-badge>
-        </template>
+          <template
+            slot="operation"
+            slot-scope="text, record"
+          >
+            <a-icon
+              type="setting"
+              theme="twoTone"
+              twoToneColor="#4a9ff5"
+              @click="edit(record)"
+              title="修改"
+            ></a-icon>
+            <a-icon
+              type="delete"
+              theme="twoTone"
+              twoToneColor="#4a9ff5"
+              @click="edit(record)"
+              title="删除"
+            ></a-icon>
+           <!-- <a-badge
+              v-hasNoPermission="['scmBSupplyplan:update']"
+              status="warning"
+              text="无权限"
+            ></a-badge>-->
+          </template>
+        </a-table>
       </a-table>
     </div>
     <!-- 新增字典 -->
-    <scmBPurcharseorder-add
+    <scmBSupplyplan-add
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
     >
-    </scmBPurcharseorder-add>
+    </scmBSupplyplan-add>
     <!-- 修改字典 -->
-    <scmBPurcharseorder-edit
+    <scmBSupplyplan-edit
       ref="scmBPurcharseorderEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
     >
-    </scmBPurcharseorder-edit>
+    </scmBSupplyplan-edit>
   </a-card>
 </template>
-
 <script>
-import ScmBPurcharseorderAdd from './ScmBPurcharseorderAdd'
-import ScmBPurcharseorderEdit from './ScmBPurcharseorderEdit'
+const columns = [{
+  title: '订单号',
+  dataIndex: 'ebeln'
+}, {
+  title: '项目号',
+  dataIndex: 'ebelp'
+}, {
+  title: '供应计划号',
+  dataIndex: 'lifnr'
+}, {
+  title: '物料ID',
+  dataIndex: 'matnr'
+}, {
+  title: '物料描述',
+  dataIndex: 'txz01'
+}, {
+  title: '院区名称',
+  dataIndex: 'werkst'
+}, {
+  title: '库房名称',
+  dataIndex: 'lgortName'
+}, {
+  title: '订单数量',
+  dataIndex: 'menge'
+}, {
+  title: '计量单位',
+  dataIndex: 'mseht'
+}, {
+  title: '单价',
+  dataIndex: 'netpr'
+}, {
+  title: '订单开始时间',
+  dataIndex: 'eindt'
+}, {
+  title: '订单结束时间',
+  dataIndex: 'bedat'
+}, {
+  title: '状态',
+  dataIndex: 'status'
+}, {
+  title: '供应数量',
+  dataIndex: 'allmenge'
+}, {
+  title: '收货数量',
+  dataIndex: 'suremenge'
+}];
+const innerColumns = [{
+  title: '供应计划号',
+  dataIndex: 'id'
+}, {
+  title: '供应数量',
+  dataIndex: 'gMenge'
+}, {
+  title: '批号',
+  dataIndex: 'charge'
+}, {
+  title: '有效期',
+  dataIndex: 'vfdat'
+}, {
+  title: '生产日期',
+  dataIndex: 'hsdat'
+}, {
+  title: '发票号码',
+  dataIndex: 'fphm'
+}, {
+  title: '发票金额',
+  dataIndex: 'fpjr'
+}, {
+  title: '发票日期',
+  dataIndex: 'fprq'
+}, {
+  title: '状态',
+  dataIndex: 'status'
+}, {
+  title: '发票编码',
+  dataIndex: 'fpbm'
+}, {
+  title: '包装规格',
+  dataIndex: 'pkgAmount'
+}, {
+  title: '包装数量',
+  dataIndex: 'pkgNumber'
+}, {
+  title: '操作',
+  dataIndex: 'operation',
+  scopedSlots: { customRender: 'operation' },
+  fixed: 'right',
+  width: 100
+}]
+import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
+import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
 
 export default {
   name: 'ScmBPurcharseorder',
-  components: { ScmBPurcharseorderAdd, ScmBPurcharseorderEdit },
+  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit },
   data () {
     return {
       advanced: false,
       dataSource: [],
+      innerData: [],
       selectedRowKeys: [],
       sortedInfo: null,
       paginationInfo: null,
@@ -186,110 +276,11 @@ export default {
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
-      return [{
-        title: '主键',
-        dataIndex: 'id'
-      }, {
-        title: '编码',
-        dataIndex: 'code'
-      }, {
-        title: '名字',
-        dataIndex: 'name'
-      }, {
-        title: '订单号',
-        dataIndex: 'ebeln'
-      }, {
-        title: '项目号',
-        dataIndex: 'ebelp'
-      }, {
-        title: '供应计划号',
-        dataIndex: 'lifnr'
-      }, {
-        title: '物料ID',
-        dataIndex: 'matnr'
-      }, {
-        title: '物料描述',
-        dataIndex: 'txz01'
-      }, {
-        title: '院区名称',
-        dataIndex: 'werkst'
-      }, {
-        title: '院区ID',
-        dataIndex: 'werks'
-      }, {
-        title: '库房ID',
-        dataIndex: 'lgort'
-      }, {
-        title: '库房名称',
-        dataIndex: 'lgortName'
-      }, {
-        title: '订单数量',
-        dataIndex: 'menge'
-      }, {
-        title: '计量单位ID',
-        dataIndex: 'meins'
-      }, {
-        title: '计量单位',
-        dataIndex: 'mseht'
-      }, {
-        title: '单价',
-        dataIndex: 'netpr'
-      }, {
-        title: '订单开始时间',
-        dataIndex: 'eindt'
-      }, {
-        title: '订单结束时间',
-        dataIndex: 'bedat'
-      }, {
-        title: '状态',
-        dataIndex: 'status'
-      }, {
-        title: '备注',
-        dataIndex: 'comments'
-      }, {
-        title: '供应数量',
-        dataIndex: 'allmenge'
-      }, {
-        title: '收货数量',
-        dataIndex: 'suremenge'
-      }, {
-        title: '类型',
-        dataIndex: 'bsart'
-      }, {
-        title: '送货部门ID',
-        dataIndex: 'sendDeaprtId'
-      }, {
-        title: '送货部门名称',
-        dataIndex: 'sendDeaprtName'
-      }, {
-        title: '联系人',
-        dataIndex: 'sendDeaprtContact'
-      }, {
-        title: '联系电话',
-        dataIndex: 'sendDeaprtPhone'
-      }, {
-        title: '是否删除',
-        dataIndex: 'isDeletemark'
-      }, {
-        title: '创建时间',
-        dataIndex: 'createTime'
-      }, {
-        title: '修改时间',
-        dataIndex: 'modifyTime'
-      }, {
-        title: '创建人',
-        dataIndex: 'createUserId'
-      }, {
-        title: '修改人',
-        dataIndex: 'modifyUserId'
-      }, {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 100
-      }]
-    }
+      return columns
+    },
+    innerColumns () {
+      return innerColumns
+    },
   },
   mounted () {
     this.fetch()
@@ -306,7 +297,7 @@ export default {
     },
     handleAddSuccess () {
       this.addVisiable = false
-      this.$message.success('新增字典成功')
+      this.$message.success('新增供应计划成功')
       this.search()
     },
     handleAddClose () {
@@ -315,9 +306,9 @@ export default {
     add () {
       this.addVisiable = true
     },
-    handleEditSuccess () {
+    handleEditSuccess (baseId) {
       this.editVisiable = false
-      this.$message.success('修改字典成功')
+      this.$message.success('修改供应计划成功')
       this.search()
     },
     handleEditClose () {
@@ -326,6 +317,19 @@ export default {
     edit (record) {
       this.$refs.scmBPurcharseorderEdit.setFormValues(record)
       this.editVisiable = true
+    },
+    expandSubGrid (expanded, record) {//获取供应计划的数量
+      this.handleSubData(record.id)
+    },
+    handleSubData (baseid) {
+      this.loading = true
+      this.$get('scmBSupplyplan', {
+        baseId: baseid
+      }).then((r) => {
+        let data = r.data
+        this.loading = false
+        this.innerData = data.rows
+      })
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {

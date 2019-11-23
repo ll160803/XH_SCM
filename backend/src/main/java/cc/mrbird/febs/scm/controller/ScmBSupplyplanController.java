@@ -51,7 +51,6 @@ public IScmBSupplyplanService iScmBSupplyplanService;
  * @return
  */
 @GetMapping
-@RequiresPermissions("scmBSupplyplan:view")
 public Map<String, Object> List(QueryRequest request, ScmBSupplyplan scmBSupplyplan){
         return getDataTable(this.iScmBSupplyplanService.findScmBSupplyplans(request, scmBSupplyplan));
         }

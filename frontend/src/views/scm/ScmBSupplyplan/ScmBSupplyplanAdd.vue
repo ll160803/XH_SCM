@@ -12,33 +12,6 @@
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
-        label="主键"
-      >
-        <a-input
-          placeholder="请输入主键"
-          v-decorator="['id', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="编码"
-      >
-        <a-input
-          placeholder="请输入编码"
-          v-decorator="['code', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label=""
-      >
-        <a-input
-          placeholder="请输入"
-          v-decorator="['name', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
         label="供应数量"
       >
         <a-input
@@ -93,56 +66,11 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="父ID"
-      >
-        <a-input
-          placeholder="请输入父ID"
-          v-decorator="['baseId', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="状态"
-      >
-        <a-input
-          placeholder="请输入状态"
-          v-decorator="['status', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="备注"
-      >
-        <a-input
-          placeholder="请输入备注"
-          v-decorator="['comments', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
         label="发票编码"
       >
         <a-input
           placeholder="请输入发票编码"
           v-decorator="['fpbm', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="供应商账号"
-      >
-        <a-input
-          placeholder="请输入供应商账号"
-          v-decorator="['gysaccount', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="供应商名称"
-      >
-        <a-input
-          placeholder="请输入供应商名称"
-          v-decorator="['gysname', {}]"
         />
       </a-form-item>
       <a-form-item
@@ -165,78 +93,6 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label=""
-      >
-        <a-input
-          placeholder="请输入"
-          v-decorator="['uninformedState', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label=""
-      >
-        <a-input
-          placeholder="请输入"
-          v-decorator="['informedState', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="订单类型"
-      >
-        <a-input
-          placeholder="请输入订单类型"
-          v-decorator="['bsartD', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="联系人"
-      >
-        <a-input
-          placeholder="请输入联系人"
-          v-decorator="['linkPerson', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="送达科室"
-      >
-        <a-input
-          placeholder="请输入送达科室"
-          v-decorator="['sendDepart', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="联系方式"
-      >
-        <a-input
-          placeholder="请输入联系方式"
-          v-decorator="['linkTelephone', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="商品条码"
-      >
-        <a-input
-          placeholder="请输入商品条码"
-          v-decorator="['materCode', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="送货清单号"
-      >
-        <a-input
-          placeholder="请输入送货清单号"
-          v-decorator="['sendOrderCode', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
         label="缺货原因"
       >
         <a-input
@@ -249,53 +105,6 @@
         label="补货日期"
       >
         <a-date-picker v-decorator="[ 'outDate', {}]" />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="是否删除"
-      >
-        <a-input
-          placeholder="请输入是否删除"
-          v-decorator="['isDeletemark', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="创建时间"
-      >
-        <a-date-picker
-          showTime
-          format='YYYY-MM-DD HH:mm:ss'
-          v-decorator="[ 'createTime', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="修改时间"
-      >
-        <a-date-picker
-          showTime
-          format='YYYY-MM-DD HH:mm:ss'
-          v-decorator="[ 'modifyTime', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="创建人"
-      >
-        <a-input
-          placeholder="请输入创建人"
-          v-decorator="['createUserId', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="修改人"
-      >
-        <a-input
-          placeholder="请输入修改人"
-          v-decorator="['modifyUserId', {}]"
-        />
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
@@ -361,7 +170,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['id', 'code', 'name', 'gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'baseId', 'status', 'comments', 'fpbm', 'gysaccount', 'gysname', 'pkgAmount', 'pkgNumber', 'uninformedState', 'informedState', 'bsartD', 'linkPerson', 'sendDepart', 'linkTelephone', 'materCode', 'sendOrderCode', 'outCause', 'outDate', 'isDeletemark', 'createTime', 'modifyTime', 'createUserId', 'modifyUserId'])
+      let values = this.form.getFieldsValue(['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmBSupplyplan[_key] = values[_key] })
       }
