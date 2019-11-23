@@ -133,6 +133,16 @@ public class ScmBGysMaterPic implements Serializable {
     @ExcelField(value = "规格")
     private String spec;
 
+    @TableField("AUDITCAUSE")
+    private  String auditCause;
+
+    public String getAuditCause() {
+        return auditCause;
+    }
+
+    public void setAuditCause(String auditCause) {
+        this.auditCause = auditCause;
+    }
     /**
      * 拼音码
      */

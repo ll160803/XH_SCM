@@ -3,7 +3,6 @@
     v-model="show"
     :centered="true"
     :keyboard="false"
-    :footer="null"
     :width="750"
     @cancel="handleCancleClick"
     title="资质文件"
@@ -38,9 +37,7 @@
         v-bind="formItemLayout"
         label="文件上传"
       >
-        <a-upload
-          :fileList="fileList"
-        >
+        <a-upload :fileList="fileList">
           <a-button>
             <a-icon type="upload" /> 选择文件 </a-button>
         </a-upload>
@@ -54,9 +51,33 @@
         </a-button>
       </a-form-item>
     </a-form>
+    <template slot="footer">
+      <a-button
+        key="back"
+        @click="handleCancel"
+      >关闭</a-button>
+      <a-button
+        key="submit"
+        type="primary"
+        :loading="loading"
+        @click="handleOk"
+        v-show="showAudit"
+      >
+        审核
+      </a-button>
+    </template>
+    <audit-mater
+      @success="handleAuditSuccess"
+      @close="handleAuditClick"
+      :auditVisiable="auditVisiable"
+      :id="scmBGysMaterPic.id"
+      url="scmBGysMaterPic/audit"
+    >
+    </audit-mater>
   </a-modal>
 </template>
 <script>
+import auditMater from './AuditMater'
 import upFc from '../../common/UpFileCustomer'
 
 const formItemLayout = {
@@ -65,11 +86,15 @@ const formItemLayout = {
 }
 export default {
   name: 'ScmBGysMaterPicView',
-  components: { upFc },
+  components: { upFc, auditMater },
   props: {
     editVisiable: {
       require: true,
       default: false
+    },
+    isShowAudit: {
+      require: true,
+      default: true
     }
   },
   data () {
@@ -82,8 +107,11 @@ export default {
       form: this.$form.createForm(this),
       scmBGysMaterPic: {
         fileId: '',
-        materId: ''
-      }
+        materId: '',
+        state: 0
+      },
+      auditVisiable: false,
+      isShowAudit: true
     }
   },
   methods: {
@@ -96,7 +124,24 @@ export default {
       this.scmBGysMaterPic.fileId = ''
       this.form.resetFields()
     },
-    handleCancleClick () {
+    handleOk (e) {
+      this.loading = true
+      this.auditVisiable = true
+    },
+    handleAuditSuccess (e) {
+      this.reset()
+      this.auditVisiable = false
+      this.$emit('success')
+    },
+    handleAuditClick (e) {
+      this.loading = false
+      this.auditVisiable = false
+    },
+    handleCancleClick (e) {
+      this.$emit('close')
+    },
+    handleCancel (e) {
+      this.reset()
       this.$emit('close')
     },
     setFormValues ({ ...scmBGysMaterPic }) {
@@ -142,6 +187,13 @@ export default {
     show: {
       get: function () {
         return this.editVisiable
+      },
+      set: function () {
+      }
+    },
+    showAudit: {
+      get: function () {
+        return this.isShowAudit
       },
       set: function () {
       }

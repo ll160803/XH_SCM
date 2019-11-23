@@ -70,7 +70,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :scroll="scroll"
       >
         <template
           slot="remark"
@@ -87,7 +87,7 @@
           slot="operation"
           slot-scope="text, record"
         >
-           <a-icon
+          <a-icon
             v-hasPermission="['scmBGysMaterPic:view']"
             type="eye"
             theme="twoTone"
@@ -107,7 +107,9 @@
     <scmBGysMaterPic-view
       ref="scmBGysMaterPicView"
       @close="handleEditClose"
+      @success="handleAuditSuccess"
       :editVisiable="editVisiable"
+      :isShowAudit="isShowAudit"
     >
     </scmBGysMaterPic-view>
   </a-card>
@@ -121,6 +123,10 @@ export default {
   components: { ScmBGysMaterPicView },
   data () {
     return {
+      scroll:{
+        x:900,
+        y:window.innerHeight-400+100-50-10+12+10+10+100
+      },
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
@@ -137,6 +143,7 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      isShowAudit: true,
       isShowsub: true,
       loading: false,
       bordered: true
@@ -198,13 +205,23 @@ export default {
     handleEditClose () {
       this.editVisiable = false
     },
-    batchAudit ()
-    {
+    batchAudit () {
 
+    },
+    handleAuditSuccess () {
+      this.editVisiable = false
+      this.$message.success('审核成功')
+      this.search()
     },
     edit (record) {
       this.$refs.scmBGysMaterPicView.setFormValues(record)
       this.editVisiable = true
+      if (record.state == 1) {
+        this.isShowAudit = false
+      }
+      if (record.state == 0) {
+        this.isShowAudit = true
+      }
     },
     exportExcel () {
       let { sortedInfo } = this

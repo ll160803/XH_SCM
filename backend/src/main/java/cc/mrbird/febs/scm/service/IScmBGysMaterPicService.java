@@ -25,5 +25,7 @@ public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
 
         void updateScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException;
 
+        void auditScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic);
+
         void deleteScmBGysMaterPics(String[]Ids);
         }

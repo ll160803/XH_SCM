@@ -107,7 +107,26 @@ public class ScmBGysMaterPicController extends BaseController {
             throw new FebsException(message);
         }
     }
-
+    /**
+     * 审核数据
+     *
+     * @param request
+     * @param id      实体ID
+     * @return
+     */
+    @Log("审核")
+    @PutMapping("audit")
+    public void auditScmBGysMaterPic(@Valid ScmBGysMaterPic scmBGysMaterPic) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBGysMaterPic.setModifyUserId(currentUser.getUserId());
+            this.iScmBGysMaterPicService.auditScmBGysMaterPic(scmBGysMaterPic);
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
 
     @Log("删除")
     @DeleteMapping("/{ids}")

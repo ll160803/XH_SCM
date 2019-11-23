@@ -97,6 +97,13 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
 
     @Override
     @Transactional
+    public void auditScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) {
+        scmBGysMaterPic.setModifyTime(new Date());
+        this.baseMapper.updateScmBGysMaterPic(scmBGysMaterPic);
+    }
+
+    @Override
+    @Transactional
     public void updateScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException {
         scmBGysMaterPic.setModifyTime(new Date());
         String matnr = scmBGysMaterPic.getMaterId();
