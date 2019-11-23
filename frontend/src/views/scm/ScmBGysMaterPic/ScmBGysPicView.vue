@@ -110,8 +110,7 @@ export default {
         materId: '',
         state: 0
       },
-      auditVisiable: false,
-      isShowAudit: true
+      auditVisiable: false
     }
   },
   methods: {

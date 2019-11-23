@@ -123,9 +123,9 @@ export default {
   components: { ScmBGysMaterPicView },
   data () {
     return {
-      scroll:{
-        x:900,
-        y:window.innerHeight-400+100-50-10+12+10+10+100
+      scroll: {
+        x: 900,
+        y: window.innerHeight - 400 + 100 - 50 - 10 + 12 + 10 + 10 + 100
       },
       advanced: false,
       dataSource: [],
@@ -155,19 +155,27 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '供应商名称',
-        dataIndex: 'name'
+        dataIndex: 'name',
+        width:100
       }, {
         title: '供应商账号',
-        dataIndex: 'gysaccount'
+        dataIndex: 'gysaccount',
+        width:100
       }, {
         title: '药品编码',
-        dataIndex: 'materId'
+        dataIndex: 'materId',
+        width:100
       }, {
         title: '批次号',
-        dataIndex: 'charge'
+        dataIndex: 'charge',
+        width:100
+      }, {
+        title: '审核原因',
+        dataIndex: 'auditCause'
       }, {
         title: '状态',
         dataIndex: 'state',
+        width:150,
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
@@ -206,7 +214,40 @@ export default {
       this.editVisiable = false
     },
     batchAudit () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要审核的记录')
+        return
+      }
+      let that = this
+      this.$confirm({
+        title: '确定审核所选中的记录?',
+        content: '当您点击确定按钮后，所选数据将审核通过',
+        centered: true,
+        onOk () {
+          const dataSource = [...that.dataSource]
+          let IsValid = 0
+          for (let key in that.selectedRowKeys) {
+            let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
 
+            if (row.state == 1) {
+              IsValid = 1
+              that.$message.warning(`该${row.materId}_${row.charge}记录已经审核不能重复操作,请确认操作`)
+            }
+
+          }
+          if (IsValid == 0) {
+            let scmBGysMaterPicIds = that.selectedRowKeys.join(',')
+            that.$delete('scmBGysMaterPic/audit/' + scmBGysMaterPicIds).then(() => {
+              that.$message.success('审核成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          }
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
+      })
     },
     handleAuditSuccess () {
       this.editVisiable = false

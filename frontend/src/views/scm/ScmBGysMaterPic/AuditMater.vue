@@ -62,7 +62,8 @@ export default {
       console.info("ssss"+this.url)
       this.$put(this.url, {
              id:this.id,
-             state:state
+             state:state,
+             auditCause:this.v_suggestion
           }).then(() => {
             this.reset()
             this.$emit('success')

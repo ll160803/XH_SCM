@@ -131,13 +131,16 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
 
     @Override
     @Transactional
-    public void deleteScmBGysMaterPics(String[] Ids) {
+    public void deleteScmBGysMaterPics(String[] Ids,int state) {
         List<String> list = Arrays.asList(Ids);
         for (String item :list
         ) {
             ScmBGysMaterPic scmBGysMaterPic = new ScmBGysMaterPic();
             scmBGysMaterPic.setId(item);
-            scmBGysMaterPic.setIsDeletemark(0);
+            scmBGysMaterPic.setState(state);
+            if(state==0) {//0是删除 1是审核
+                scmBGysMaterPic.setIsDeletemark(0);
+            }
             this.baseMapper.updateScmBGysMaterPic(scmBGysMaterPic);
         }
     }

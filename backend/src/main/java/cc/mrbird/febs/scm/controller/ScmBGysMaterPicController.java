@@ -134,14 +134,26 @@ public class ScmBGysMaterPicController extends BaseController {
     public void deleteScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
             String[] arr_ids = ids.split(StringPool.COMMA);
-            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids);
+            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids,0);
         } catch (Exception e) {
             message = "删除成功";
             log.error(message, e);
             throw new FebsException(message);
         }
     }
-
+    @Log("删除")
+    @DeleteMapping("/audit/{ids}")
+    @RequiresPermissions("scmBGysMaterPic:delete")
+    public void deleteAuditScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
+        try {
+            String[] arr_ids = ids.split(StringPool.COMMA);
+            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids,1);
+        } catch (Exception e) {
+            message = "删除成功";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
     @PostMapping("excel")
     @RequiresPermissions("scmBGysMaterPic:export")
     public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response) throws FebsException {

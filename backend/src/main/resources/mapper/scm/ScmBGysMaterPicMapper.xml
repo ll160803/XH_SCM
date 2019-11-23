@@ -11,6 +11,7 @@
                     <result column="MATER_ID" property="materId"/>
                     <result column="CHARGE" property="charge"/>
                     <result column="COMMENTS" property="comments"/>
+                    <result column="AUDITCAUSE" property="auditCause"/>
                     <result column="STATE" property="state"/>
                     <result column="FILE_ID" property="fileId"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -34,6 +35,7 @@
 <if test="charge != null">CHARGE=#{charge},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
+<if test="auditCause != null">AUDITCAUSE=#{auditCause},</if>
 <if test="fileId != null">FILE_ID=#{fileId},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>

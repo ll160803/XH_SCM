@@ -176,16 +176,24 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '供应商名称',
-        dataIndex: 'name'
+        dataIndex: 'name',
+        width:100
       }, {
         title: '供应商账号',
-        dataIndex: 'gysaccount'
+        dataIndex: 'gysaccount',
+        width:100
       }, {
         title: '药品编码',
-        dataIndex: 'materId'
+        dataIndex: 'materId',
+        width:100
       }, {
         title: '批次号',
-        dataIndex: 'charge'
+        dataIndex: 'charge',
+        width:100
+      }, {
+        title: '审核原因',
+        dataIndex: 'auditCause'
+        
       }, {
         title: '状态',
         dataIndex: 'state',
@@ -200,7 +208,8 @@ export default {
             default:
               return text
           }
-        }
+        },
+        width:150
       }, {
         title: '操作',
         dataIndex: 'operation',

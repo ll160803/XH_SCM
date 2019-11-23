@@ -27,5 +27,5 @@ public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
 
         void auditScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic);
 
-        void deleteScmBGysMaterPics(String[]Ids);
+        void deleteScmBGysMaterPics(String[]Ids,int state);
         }
