@@ -258,7 +258,11 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           let scmBSupplyplan = this.form.getFieldsValue()
+          if(scmBSupplyplan.outDate==''){
+            scmBSupplyplan.outDate=null
+          }
           scmBSupplyplan.id = this.scmBSupplyplan.id
+          scmBSupplyplan.baseId = this.scmBSupplyplan.baseId
           this.$put('scmBSupplyplan', {
             ...scmBSupplyplan
           }).then(() => {
@@ -281,6 +285,10 @@ export default {
         }
       }
     }
+  },
+  mounted ()
+  {
+    amount
   }
 }
 </script>

@@ -1,5 +1,6 @@
 package cc.mrbird.febs.scm.service;
 
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
@@ -20,9 +21,9 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
 
         IPage<ScmBSupplyplan> findScmBSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan);
 
-        void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan);
+        void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException;
 
-        void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan);
+        void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException;
 
         void deleteScmBSupplyplans(String[]Ids);
         }

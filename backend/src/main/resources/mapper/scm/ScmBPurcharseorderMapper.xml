@@ -79,4 +79,60 @@
         </trim>
         where id=#{id}
     </update>
+    <select id="findPurcharseorder" resultType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder">
+        SELECT
+        ID,
+        CREATE_USER_ID,
+        send_deaprt_contact,
+        MODIFY_USER_ID,
+        ( SELECT sum( G_MENGE ) FROM scm_b_supplyplan WHERE scm_b_supplyplan.BASE_ID = scm_b_purcharseorder.ID AND scm_b_supplyplan.STATUS = 1 ) suremenge,
+        matnr,
+        MODIFY_TIME,
+        eindt,
+        lgortName,
+        menge,
+        send_deaprt_name,
+        lifnr,
+        lgort,
+        NAME,
+        STATUS,
+        CODE,
+        send_deaprt_id,
+        send_deaprt_phone,
+        ebelp,
+        ebeln,
+        ( SELECT sum( G_MENGE ) FROM scm_b_supplyplan WHERE scm_b_supplyplan.BASE_ID = scm_b_purcharseorder.ID ) allmenge,
+        bedat,
+        IS_DELETEMARK,
+        netpr,
+        comments,
+        bsart,
+        txz01,
+        werks,
+        CREATE_TIME,
+        meins,
+        werkst,
+        mseht
+        FROM
+        scm_b_purcharseorder
+        WHERE 1 = 1
+        <if test="order.eindt != null">
+            AND CREATE_TIME <![CDATA[ >= ]]> #{order.eindt}
+        </if>
+        <if test="order.bedat != null">
+            AND CREATE_TIME <![CDATA[ <= ]]> #{order.bedat}
+        </if>
+        <if test="order.ebelp != null and order.ebelp !=''">
+            And ebelp = #{order.ebelp}
+        </if>
+        <if test="order.lifnr!= null and order.lifnr !=''">
+            And lifnr = #{order.lifnr}
+        </if>
+        <if test="order.matnr != null and order.matnr != ''">
+            AND matnr = #{order.matnr}
+        </if>
+        <if test="order.txz01 != null and order.txz01 != ''">
+            AND txz01 like concat('%',#{order.txz01},'%')
+        </if>
+    </select>
 </mapper>

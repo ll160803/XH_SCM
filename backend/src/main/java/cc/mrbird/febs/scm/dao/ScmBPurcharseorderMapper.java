@@ -2,6 +2,10 @@ package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -13,4 +17,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ScmBPurcharseorderMapper extends BaseMapper<ScmBPurcharseorder> {
         void updateScmBPurcharseorder(ScmBPurcharseorder scmBPurcharseorder);
+        IPage<ScmBPurcharseorder> findPurcharseorder(Page page, @Param("order") ScmBPurcharseorder order);
+
+
         }

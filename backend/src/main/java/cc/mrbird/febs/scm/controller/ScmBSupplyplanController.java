@@ -72,7 +72,7 @@ public void addScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan)throws FebsEx
         scmBSupplyplan.setCreateUserId(currentUser.getUserId());
         this.iScmBSupplyplanService.createScmBSupplyplan(scmBSupplyplan);
         }catch(Exception e){
-        message="新增/按钮失败" ;
+        message=e.getMessage();
         log.error(message,e);
         throw new FebsException(message);
         }
@@ -93,7 +93,7 @@ public void updateScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan)throws Feb
       scmBSupplyplan.setModifyUserId(currentUser.getUserId());
         this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
         }catch(Exception e){
-        message="修改成功" ;
+        message=e.getMessage() ;
         log.error(message,e);
         throw new FebsException(message);
         }

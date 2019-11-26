@@ -81,4 +81,13 @@
         </trim>
         where id=#{id}
     </update>
+    <select id="IsOutMenge" parameterType="cc.mrbird.febs.scm.entity.ScmBSupplyplan" resultType="Long">
+      select SUM(scm_b_supplyplan.G_MENGE)-scm_b_purcharseorder.menge+${plan.gMenge} men from scm_b_supplyplan
+      inner JOIN scm_b_purcharseorder on scm_b_supplyplan.BASE_ID=scm_b_purcharseorder.id
+      where scm_b_supplyplan.BASE_ID=${plan.baseId} and  scm_b_supplyplan.IS_DELETEMARK=1
+        <if test="plan.id != null">
+            AND scm_b_supplyplan.id =${plan.id}
+        </if>
+      GROUP BY scm_b_purcharseorder.menge
+    </select>
 </mapper>
