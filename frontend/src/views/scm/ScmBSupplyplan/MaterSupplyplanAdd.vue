@@ -28,40 +28,34 @@
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="批号"
+            label="联系人"
           >
-            <a-select
-              mode="single"
-              :allowClear="true"
-              style="width: 100%"
-              v-decorator="[
-          'charge',
-          { rules: [{ required: true, message: '请选择批号' }] }
-        ]"
-            >
-              <a-select-option
-                v-for="r in chargeData"
-                :key="r"
-              >{{
-          r
-        }}</a-select-option>
-            </a-select>
+            <a-input
+              placeholder="请输入联系人"
+              v-decorator="['linkPerson', { rules: [{ required: true, message: '联系人不能为空' }] }]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="有效期"
+            label="送达科室"
           >
-            <a-date-picker v-decorator="[ 'vfdat', { rules: [{ required: true, message: '有效期不能为空' }] }]" />
+           <a-input
+              placeholder="请输入送达科室"
+              v-decorator="['sendDepart', { rules: [{ required: true, message: '送达科室不能为空' }] }]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="生产日期"
+            label="联系方式"
           >
-            <a-date-picker v-decorator="[ 'hsdat', { rules: [{ required: true, message: '生产日期不能为空' }] }]" />
+            <a-input
+              placeholder="请输入联系方式"
+              v-decorator="['linkTelephone', { rules: [{ required: true, message: '联系方式不能为空' }] }]"
+            />
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -90,62 +84,20 @@
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="发票日期"
+            label="开票日期"
           >
-            <a-date-picker v-decorator="[ 'fprq', { rules: [{ required: true, message: '发票日期不能为空' }] }]" />
+            <a-date-picker v-decorator="[ 'fprq', { rules: [{ required: true, message: '开票日期不能为空' }] }]" />
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="发票编码"
+            label="商品条码"
           >
             <a-input
-              placeholder="请输入发票编码"
+              placeholder="请输入商品条码"
               v-decorator="['fpbm', {}]"
             />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="包装规格"
-          >
-            <a-input-number
-              @blur="pkgNumberBlur"
-              placeholder="请输入包装规格"
-              v-decorator="['pkgAmount', { rules: [{ required: true, message: '包装规格不能为空' }] }]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="包装数量"
-          >
-            <a-input
-              placeholder="请输入包装数量"
-              v-decorator="['pkgNumber',{ rules: [{ required: true, message: '包装数量不能为空' }] }]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="缺货原因"
-          >
-            <a-input
-              placeholder="请输入缺货原因"
-              v-decorator="['outCause', {}]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="补货日期"
-          >
-            <a-date-picker v-decorator="[ 'outDate', {}]" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -212,22 +164,8 @@ export default {
       if (e.target.value) {
         let money = this.price * e.target.value
         this.form.setFields({ fpjr: { value: money } })
-        let pkg = this.form.getFieldValue('pkgAmount')
-        if (pkg) {
-          let num = e.target.value / pkg
-          this.form.setFields({ pkgNumber: { value: num } })
-        }
       }
 
-    },
-    pkgNumberBlur (e) {
-      if (e.target.value) {
-        let gMenge = this.form.getFieldValue('gMenge')
-        if (gMenge) {
-          let num = gMenge / e.target.value
-          this.form.setFields({ pkgNumber: { value: num } })
-        }
-      }
     },
     handleSubmit () {
       this.form.validateFields((err, values) => {
@@ -235,7 +173,7 @@ export default {
           this.setFields()
           this.scmBSupplyplan.baseId=this.baseId
           this.scmBSupplyplan.status=0
-          this.scmBSupplyplan.bsartD=0//订单类型
+          this.scmBSupplyplan.bsartD=1//订单类型 物资
           this.$post('scmBSupplyplan', {
             ...this.scmBSupplyplan
           }).then(() => {
@@ -248,7 +186,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate'])
+      let values = this.form.getFieldsValue(['gMenge', 'linkPerson', 'fphm', 'fpjr', 'fprq', 'sendDepart', 'linkTelephone', 'materCode'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmBSupplyplan[_key] = values[_key] })
       }
@@ -257,11 +195,11 @@ export default {
   watch: {
     addVisiable: {
       handler: function () {
-        if (this.addVisiable) {
-          this.$get("scmBGysMaterPic/charge/" + this.baseId).then(r => {
-            this.chargeData = r.data
-          })
-        }
+        // if (this.addVisiable) {
+        //   this.$get("scmBGysMaterPic/charge/" + this.baseId).then(r => {
+        //     this.chargeData = r.data
+        //   })
+        // }
       }
     }
   }

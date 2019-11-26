@@ -12,7 +12,7 @@
               :sm="24"
             >
               <a-form-item
-                label="药品名称"
+                label="物料名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
@@ -24,7 +24,7 @@
               :sm="24"
             >
               <a-form-item
-                label="药品编码"
+                label="物料编码"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
@@ -176,8 +176,8 @@
   </a-card>
 </template>
 <script>
-import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
-import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
+import ScmBSupplyplanAdd from '../ScmBSupplyplan/MaterSupplyplanAdd'
+import ScmBSupplyplanEdit from '../ScmBSupplyplan/MaterSupplyplanEdit'
 import moment from 'moment'
 
 export default {
@@ -248,7 +248,7 @@ export default {
         title: '供应计划号',
         dataIndex: 'lifnr'
       }, {
-        title: '物料ID',
+        title: '物料号',
         dataIndex: 'matnr'
       }, {
         title: '物料描述',
@@ -269,10 +269,10 @@ export default {
         title: '单价',
         dataIndex: 'netpr'
       }, {
-        title: '订单开始时间',
+        title: '交货日期',
         dataIndex: 'eindt'
       }, {
-        title: '订单结束时间',
+        title: '订单日期',
         dataIndex: 'bedat'
       }, {
         title: '状态',
@@ -300,17 +300,17 @@ export default {
         title: '供应计划号',
         dataIndex: 'id'
       }, {
-        title: '供应数量',
+        title: '送货数量',
         dataIndex: 'gMenge'
       }, {
-        title: '批号',
-        dataIndex: 'charge'
+        title: '联系人',
+        dataIndex: 'linkPerson'
       }, {
-        title: '有效期',
-        dataIndex: 'vfdat'
+        title: '送达科室',
+        dataIndex: 'sendDepart'
       }, {
-        title: '生产日期',
-        dataIndex: 'hsdat'
+        title: '联系方式',
+        dataIndex: 'linkTelephone'
       }, {
         title: '发票号码',
         dataIndex: 'fphm'
@@ -318,8 +318,11 @@ export default {
         title: '发票金额',
         dataIndex: 'fpjr'
       }, {
-        title: '发票日期',
+        title: '开票日期',
         dataIndex: 'fprq'
+      }, {
+        title: '商品条码',
+        dataIndex: 'materCode'
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -333,15 +336,6 @@ export default {
               return text
           }
         }
-      }, {
-        title: '发票编码',
-        dataIndex: 'fpbm'
-      }, {
-        title: '包装规格',
-        dataIndex: 'pkgAmount'
-      }, {
-        title: '包装数量',
-        dataIndex: 'pkgNumber'
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -555,7 +549,7 @@ export default {
       {
         params.bedat=this.defultDate()
       }
-      params.bsart=0//药品
+      params.bsart=1//药品
       this.$get('scmBPurcharseorder', {
         ...params
       }).then((r) => {

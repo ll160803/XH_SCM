@@ -117,13 +117,16 @@
         scm_b_purcharseorder
         WHERE 1 = 1
         <if test="order.eindt != null">
-            AND CREATE_TIME <![CDATA[ >= ]]> #{order.eindt}
+            AND bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>
         <if test="order.bedat != null">
-            AND CREATE_TIME <![CDATA[ <= ]]> #{order.bedat}
+            AND bedat <![CDATA[ <= ]]> #{order.bedat}
         </if>
         <if test="order.ebelp != null and order.ebelp !=''">
             And ebelp = #{order.ebelp}
+        </if>
+        <if test="order.bsart != null and order.bsart !=''">
+            And bsart = #{order.bsart}
         </if>
         <if test="order.lifnr!= null and order.lifnr !=''">
             And lifnr = #{order.lifnr}
