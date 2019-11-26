@@ -207,22 +207,10 @@ export default {
       baseId: '',//采购订单的id
       editRecord: {},//编辑行
       addKey: '',//添加的订单id
-      amount: {
-        type: Number,
-        default: 0
-      },
-      price: {
-        type: Number,
-        default: 0
-      },
-      eAmount: {
-        type: Number,
-        default: 0
-      },
-      ePrice: {
-        type: Number,
-        default: 0
-      },
+      amount: 0,
+      price: 0,
+      eAmount: 0,
+      ePrice: 0,
       editVisiable: false,
       loading: false,
       bordered: true
