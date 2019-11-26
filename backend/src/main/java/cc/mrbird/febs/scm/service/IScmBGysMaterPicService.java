@@ -28,4 +28,6 @@ public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
         void auditScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic);
 
         void deleteScmBGysMaterPics(String[]Ids,int state);
+
+        List<String> findChargeByBaseId(String base_Id,String account);
         }

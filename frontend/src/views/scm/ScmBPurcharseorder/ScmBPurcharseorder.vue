@@ -12,11 +12,11 @@
               :sm="24"
             >
               <a-form-item
-                label="名称"
+                label="药品名称"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.name" />
+                <a-input v-model="queryParams.txz01" />
               </a-form-item>
             </a-col>
             <a-col
@@ -24,11 +24,11 @@
               :sm="24"
             >
               <a-form-item
-                label="编码"
+                label="药品编码"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.code" />
+                <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -38,11 +38,23 @@
               :sm="24"
             >
               <a-form-item
-                label="备注"
+                label="开始时间"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.comments" />
+                <a-date-picker @change="onChange" :defaultValue="start"  />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="结束时间"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
+              >
+                <a-date-picker @change="onChange2" :defaultValue="enddate" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -82,6 +94,7 @@
         :rowKey="record => record.id"
         :dataSource="dataSource"
         :pagination="pagination"
+        :expandedRowKeys="expandedRowKeys"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
@@ -102,32 +115,36 @@
         </template>
 
         <a-table
+          ref="subTable"
           slot="expandedRowRender"
-          slot-scope="text"
+          slot-scope="record"
           :columns="innerColumns"
-          :dataSource="innerData"
+          :dataSource="record.innerData"
           :pagination="false"
-          :rowKey="record => record.id"
+          :rowKey="record2 => record2.id"
         >
           <template
             slot="operation"
-            slot-scope="text, record"
+            slot-scope="text, record2"
           >
             <a-icon
               type="setting"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              @click="edit(record)"
+              v-show="record2.status==0 && record.status==1"
+              @click="edit(record2,record)"
               title="修改"
             ></a-icon>
             <a-icon
+              v-hasPermission="['scmBSupplyplan:delete']"
               type="delete"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              @click="edit(record)"
+              v-show="record2.status==0 && record.status==1"
+              @click="subDelete(record2)"
               title="删除"
             ></a-icon>
-           <!-- <a-badge
+            <!-- <a-badge
               v-hasNoPermission="['scmBSupplyplan:update']"
               status="warning"
               text="无权限"
@@ -141,6 +158,9 @@
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
+      :price="price"
+      :baseId="baseId"
+      :amount="amount"
     >
     </scmBSupplyplan-add>
     <!-- 修改字典 -->
@@ -149,112 +169,28 @@
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
+      :price="ePrice"
+      :amount="eAmount"
     >
     </scmBSupplyplan-edit>
   </a-card>
 </template>
 <script>
-const columns = [{
-  title: '订单号',
-  dataIndex: 'ebeln'
-}, {
-  title: '项目号',
-  dataIndex: 'ebelp'
-}, {
-  title: '供应计划号',
-  dataIndex: 'lifnr'
-}, {
-  title: '物料ID',
-  dataIndex: 'matnr'
-}, {
-  title: '物料描述',
-  dataIndex: 'txz01'
-}, {
-  title: '院区名称',
-  dataIndex: 'werkst'
-}, {
-  title: '库房名称',
-  dataIndex: 'lgortName'
-}, {
-  title: '订单数量',
-  dataIndex: 'menge'
-}, {
-  title: '计量单位',
-  dataIndex: 'mseht'
-}, {
-  title: '单价',
-  dataIndex: 'netpr'
-}, {
-  title: '订单开始时间',
-  dataIndex: 'eindt'
-}, {
-  title: '订单结束时间',
-  dataIndex: 'bedat'
-}, {
-  title: '状态',
-  dataIndex: 'status'
-}, {
-  title: '供应数量',
-  dataIndex: 'allmenge'
-}, {
-  title: '收货数量',
-  dataIndex: 'suremenge'
-}];
-const innerColumns = [{
-  title: '供应计划号',
-  dataIndex: 'id'
-}, {
-  title: '供应数量',
-  dataIndex: 'gMenge'
-}, {
-  title: '批号',
-  dataIndex: 'charge'
-}, {
-  title: '有效期',
-  dataIndex: 'vfdat'
-}, {
-  title: '生产日期',
-  dataIndex: 'hsdat'
-}, {
-  title: '发票号码',
-  dataIndex: 'fphm'
-}, {
-  title: '发票金额',
-  dataIndex: 'fpjr'
-}, {
-  title: '发票日期',
-  dataIndex: 'fprq'
-}, {
-  title: '状态',
-  dataIndex: 'status'
-}, {
-  title: '发票编码',
-  dataIndex: 'fpbm'
-}, {
-  title: '包装规格',
-  dataIndex: 'pkgAmount'
-}, {
-  title: '包装数量',
-  dataIndex: 'pkgNumber'
-}, {
-  title: '操作',
-  dataIndex: 'operation',
-  scopedSlots: { customRender: 'operation' },
-  fixed: 'right',
-  width: 100
-}]
 import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
 import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
+import moment from 'moment'
 
 export default {
   name: 'ScmBPurcharseorder',
   components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit },
   data () {
     return {
+      dateFormat: 'YYYY-MM-DD',
       advanced: false,
       dataSource: [],
       innerData: [],
       selectedRowKeys: [],
+      expandedRowKeys: [],
       sortedInfo: null,
       paginationInfo: null,
       pagination: {
@@ -265,24 +201,158 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {},
+      queryParams: {
+      },
       addVisiable: false,
+      baseId: '',//采购订单的id
+      editRecord: {},//编辑行
+      addKey: '',//添加的订单id
+      amount: {
+        type: Number,
+        default: 0
+      },
+      price: {
+        type: Number,
+        default: 0
+      },
+      eAmount: {
+        type: Number,
+        default: 0
+      },
+      ePrice: {
+        type: Number,
+        default: 0
+      },
       editVisiable: false,
       loading: false,
       bordered: true
     }
   },
   computed: {
+    start () {
+       return moment(this.defultDate_pre())
+    },
+    enddate () {
+       return moment(this.defultDate())
+    },
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
-      return columns
+      return [{
+        title: '订单号',
+        dataIndex: 'ebeln'
+      }, {
+        title: '项目号',
+        dataIndex: 'ebelp'
+      }, {
+        title: '供应计划号',
+        dataIndex: 'lifnr'
+      }, {
+        title: '物料ID',
+        dataIndex: 'matnr'
+      }, {
+        title: '物料描述',
+        dataIndex: 'txz01'
+      }, {
+        title: '院区名称',
+        dataIndex: 'werkst'
+      }, {
+        title: '库房名称',
+        dataIndex: 'lgortName'
+      }, {
+        title: '订单数量',
+        dataIndex: 'menge'
+      }, {
+        title: '计量单位',
+        dataIndex: 'mseht'
+      }, {
+        title: '单价',
+        dataIndex: 'netpr'
+      }, {
+        title: '订单开始时间',
+        dataIndex: 'eindt'
+      }, {
+        title: '订单结束时间',
+        dataIndex: 'bedat'
+      }, {
+        title: '状态',
+        dataIndex: 'status',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">无效</a-tag>
+            case 1:
+              return <a-tag color="green">有效</a-tag>
+            default:
+              return text
+          }
+        }
+      }, {
+        title: '供应数量',
+        dataIndex: 'allmenge'
+      }, {
+        title: '收货数量',
+        dataIndex: 'suremenge'
+      }]
     },
     innerColumns () {
-      return innerColumns
-    },
+      return [{
+        title: '供应计划号',
+        dataIndex: 'id'
+      }, {
+        title: '供应数量',
+        dataIndex: 'gMenge'
+      }, {
+        title: '批号',
+        dataIndex: 'charge'
+      }, {
+        title: '有效期',
+        dataIndex: 'vfdat'
+      }, {
+        title: '生产日期',
+        dataIndex: 'hsdat'
+      }, {
+        title: '发票号码',
+        dataIndex: 'fphm'
+      }, {
+        title: '发票金额',
+        dataIndex: 'fpjr'
+      }, {
+        title: '发票日期',
+        dataIndex: 'fprq'
+      }, {
+        title: '状态',
+        dataIndex: 'status',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未收货</a-tag>
+            case 1:
+              return <a-tag color="green">已收货</a-tag>
+            default:
+              return text
+          }
+        }
+      }, {
+        title: '发票编码',
+        dataIndex: 'fpbm'
+      }, {
+        title: '包装规格',
+        dataIndex: 'pkgAmount'
+      }, {
+        title: '包装数量',
+        dataIndex: 'pkgNumber'
+      }, {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 100
+      }]
+    }
   },
   mounted () {
+    
     this.fetch()
   },
   methods: {
@@ -295,40 +365,97 @@ export default {
         this.queryParams.comments = ''
       }
     },
+    onChange(date, dateString) {
+      console.info(2222+dateString);
+        this.queryParams.eindt=dateString
+      },
+      onChange2(date, dateString) {
+        this.queryParams.bedat=dateString
+      },
     handleAddSuccess () {
       this.addVisiable = false
       this.$message.success('新增供应计划成功')
-      this.search()
+      // this.expandedRowKeys=[]
+      //this.search()
+      // const dataSource = [...this.dataSource]
+      let row = this.dataSource.find(item => item.id === this.baseId);
+      this.handleSubData(row)
     },
     handleAddClose () {
       this.addVisiable = false
     },
     add () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择采购订单')
+        return
+      }
+      if (this.selectedRowKeys.length > 1) {
+        this.$message.warning('请只选择一个采购订单')
+        return
+      }
+      const dataSource = [...this.dataSource]
+      this.baseId = this.selectedRowKeys[0]
+      let row = dataSource.find(item => item.id === this.selectedRowKeys[0]);
+      if (row.status == 0) {
+        this.$message.warning('当前采购订单无效,请联系库房人员')
+        return
+      }
+      this.price = row.netpr
+      this.amount = row.menge
       this.addVisiable = true
     },
     handleEditSuccess (baseId) {
       this.editVisiable = false
       this.$message.success('修改供应计划成功')
-      this.search()
+      //this.expandedRowKeys=[]
+      //this.search()
+      this.handleSubData(this.editRecord)
     },
     handleEditClose () {
       this.editVisiable = false
     },
-    edit (record) {
+    edit (record, pRecord) {
       this.$refs.scmBPurcharseorderEdit.setFormValues(record)
       this.editVisiable = true
+      this.ePrice = pRecord.netpr
+      this.eAmount = pRecord.menge
+      this.editRecord = pRecord
+    },
+    subDelete (record, pRecord) {
+      let that = this
+      this.$confirm({
+        title: '确定删除所选中的记录?',
+        content: '当您点击确定按钮后，此记录将会被彻底删除',
+        centered: true,
+        onOk () {
+          that.$delete('scmBSupplyplan/' + record.id).then(() => {
+            that.$message.success('删除成功')
+            that.search()
+            that.expandedRowKeys = []
+          })
+        },
+        onCancel () {
+
+        }
+      })
     },
     expandSubGrid (expanded, record) {//获取供应计划的数量
-      this.handleSubData(record.id)
+      if (expanded) {
+        this.expandedRowKeys.push(record.id)
+        this.handleSubData(record) //获取子表数据
+      } else {
+        let expandedRowKeys = this.expandedRowKeys.filter(RowKey => RowKey !== record.id)
+        this.expandedRowKeys = expandedRowKeys
+      }
     },
-    handleSubData (baseid) {
+    handleSubData (record) {
       this.loading = true
       this.$get('scmBSupplyplan', {
-        baseId: baseid
+        baseId: record.id
       }).then((r) => {
         let data = r.data
         this.loading = false
-        this.innerData = data.rows
+        record.innerData = data.rows
       })
     },
     batchDelete () {
@@ -381,6 +508,7 @@ export default {
         sortOrder: sortOrder,
         ...this.queryParams
       })
+      this.expandedRowKeys = [] //合并所有展开子项
     },
     reset () {
       // 取消选中
@@ -395,7 +523,7 @@ export default {
       this.sortedInfo = null
       this.paginationInfo = null
       // 重置查询参数
-      this.queryParams = {}
+      
       this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {
@@ -420,6 +548,13 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      if(params.eindt==null){
+        params.eindt=this.defultDate_pre()
+      }
+      if(params.bedat==null)
+      {
+        params.bedat=this.defultDate()
+      }
       this.$get('scmBPurcharseorder', {
         ...params
       }).then((r) => {
@@ -430,6 +565,37 @@ export default {
         this.dataSource = data.rows
         this.pagination = pagination
       })
+    },
+    defultDate () {
+      var date = new Date()
+      var seperator1 = "-"
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      var strDate = date.getDate()
+      if (month >= 1 && month <= 9) {
+        month = "0" + month
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate
+      }
+      var currentdate = year + seperator1 + month + seperator1 + strDate
+      return currentdate
+    },
+    defultDate_pre () {
+      var date = new Date()
+      date.setDate(date.getDate()-7)
+      var seperator1 = "-"
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      var strDate = date.getDate()
+      if (month >= 1 && month <= 9) {
+        month = "0" + month
+      }
+      if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate
+      }
+      var currentdate = year + seperator1 + month + seperator1 + strDate
+      return currentdate
     }
   }
 }

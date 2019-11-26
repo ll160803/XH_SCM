@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -111,11 +112,13 @@ private BigDecimal netpr;
      * 订单开始时间
      */
             @ExcelField(value ="订单开始时间")
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
 private Date eindt;
     /**
      * 订单结束时间
      */
             @ExcelField(value ="订单结束时间")
+            @DateTimeFormat(pattern = "yyyy-MM-dd")
 private Date bedat;
     /**
      * 状态
@@ -186,6 +189,9 @@ private Date modifyTime;
     @TableField("CREATE_USER_ID")
             @ExcelField(value ="创建人")
 private Long createUserId;
+
+    @TableField(exist = false)
+    public ScmBSupplyplan[] innerData;
     /**
      * 修改人
      */

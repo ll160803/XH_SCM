@@ -20,6 +20,13 @@
                     <result column="CREATE_USER_ID" property="createUserId"/>
                     <result column="MODIFY_USER_ID" property="modifyUserId"/>
         </resultMap>
+         <!--获取批号根据物料ID-->
+    <select id="findChargeByBaseId" resultType="String">
+  select Charge from scm_b_gys_mater_pic
+inner JOIN scm_b_purcharseorder on
+scm_b_gys_mater_pic.MATER_ID=scm_b_purcharseorder.matnr
+where scm_b_purcharseorder.ID=#{base_Id} and scm_b_gys_mater_pic.GYSACCOUNT=#{account} and scm_b_purcharseorder.lifnr=#{account}
+    </select>
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">

@@ -144,6 +144,11 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
             this.baseMapper.updateScmBGysMaterPic(scmBGysMaterPic);
         }
     }
+    @Override
+    @Transactional
+   public List<String> findChargeByBaseId(String base_Id,String account){
+       return this.baseMapper.findChargeByBaseId(base_Id,account);
+    }
 
 
 }

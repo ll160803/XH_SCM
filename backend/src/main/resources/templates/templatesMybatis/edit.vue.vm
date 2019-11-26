@@ -79,6 +79,10 @@
                         if(${table.entityPath}[key]!=='') {
                             obj[key] = moment(${table.entityPath}[key])
                         }
+                        else
+                        {
+                            obj[key] =''
+                        }
                     } else {
                         obj[key] = ${table.entityPath}[key]
                     }

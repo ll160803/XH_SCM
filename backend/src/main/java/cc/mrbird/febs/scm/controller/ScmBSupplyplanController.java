@@ -52,6 +52,7 @@ public IScmBSupplyplanService iScmBSupplyplanService;
  */
 @GetMapping
 public Map<String, Object> List(QueryRequest request, ScmBSupplyplan scmBSupplyplan){
+        scmBSupplyplan.setIsDeletemark(1);
         return getDataTable(this.iScmBSupplyplanService.findScmBSupplyplans(request, scmBSupplyplan));
         }
 
@@ -101,13 +102,19 @@ public void updateScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan)throws Feb
 
 @Log("删除")
 @DeleteMapping("/{ids}")
-@RequiresPermissions("scmBSupplyplan:delete")
 public void deleteScmBSupplyplans(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
         try{
         String[]arr_ids=ids.split(StringPool.COMMA);
-        this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
+            for (String id:
+                    arr_ids) {
+                ScmBSupplyplan scmBSupplyplan=new ScmBSupplyplan();
+                scmBSupplyplan.setId(Long.parseLong(id));
+                scmBSupplyplan.setIsDeletemark(0);
+                this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
+            }
+        //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
         }catch(Exception e){
-        message="删除成功" ;
+        message="删除失败" ;
         log.error(message,e);
         throw new FebsException(message);
         }

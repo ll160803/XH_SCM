@@ -172,4 +172,11 @@ public class ScmBGysMaterPicController extends BaseController {
         ScmBGysMaterPic scmBGysMaterPic = this.iScmBGysMaterPicService.getById(id);
         return scmBGysMaterPic;
     }
+
+    @GetMapping("/charge/{id}")
+    public List<String>GetChargeByBaseId(@NotBlank(message = "{required}") @PathVariable String id) {
+        User currentUser = FebsUtil.getCurrentUser();
+        String account=currentUser.getUsername();
+        return this.iScmBGysMaterPicService.findChargeByBaseId(id,account);
+    }
 }
