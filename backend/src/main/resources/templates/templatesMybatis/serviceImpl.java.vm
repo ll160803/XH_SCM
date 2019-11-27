@@ -43,6 +43,7 @@ public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.e
         if (StringUtils.isNotBlank(${table.entityPath}.getCode())) {
         queryWrapper.eq(${entity}::getCode, ${table.entityPath}.getCode());
         }
+        queryWrapper.eq(${entity}::getIsDeletemark, 1);//1是未删 0是已删
         Page<${entity}> page=new Page<>();
         SortUtil.handlePageSort(request,page,true);
         return this.page(page,queryWrapper);
@@ -57,6 +58,7 @@ public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.e
 public void create${entity}(${entity} ${table.entityPath}){
         ${table.entityPath}.setId(UUID.randomUUID().toString());
         ${table.entityPath}.setCreateTime(new Date());
+        ${table.entityPath}.setIsDeletemark(1);
         this.save(${table.entityPath});
         }
 

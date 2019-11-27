@@ -1,4 +1,4 @@
-package ${package.Controller};
+package cc.mrbird.febs.scm.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
@@ -6,8 +6,8 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
-import ${package.Service}.${table.serviceName};
-import ${package.Entity}.${entity};
+import cc.mrbird.febs.scm.service.IScmDHrpmaterService;
+import cc.mrbird.febs.scm.entity.ScmDHrpmater;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
@@ -28,32 +28,32 @@ import java.util.Map;
 
 /**
  *
- * @author ${author}
- * @since ${date}
+ * @author viki
+ * @since 2019-11-26
  */
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("${table.entityPath}")
+@RequestMapping("scmDHrpmater")
 
-public class ${table.controllerName} extends BaseController{
+public class ScmDHrpmaterController extends BaseController{
 
 private String message;
 @Autowired
-public ${table.serviceName} i${entity}Service;
+public IScmDHrpmaterService iScmDHrpmaterService;
 
 
 /**
  * 分页查询数据
  *
  * @param bootStrapTable  分页信息
- * @param ${table.entityPath} 查询条件
+ * @param scmDHrpmater 查询条件
  * @return
  */
 @GetMapping
-@RequiresPermissions("${table.entityPath}:view")
-public Map<String, Object> List(QueryRequest request, ${entity} ${table.entityPath}){
-        return getDataTable(this.i${entity}Service.find${entity}s(request, ${table.entityPath}));
+public Map<String, Object> List(QueryRequest request, ScmDHrpmater scmDHrpmater,String keyWord){
+        scmDHrpmater.keyword=keyWord;
+        return getDataTable(this.iScmDHrpmaterService.findScmDHrpmaters(request, scmDHrpmater));
         }
 
 /**
@@ -65,12 +65,12 @@ public Map<String, Object> List(QueryRequest request, ${entity} ${table.entityPa
  */
 @Log("新增/按钮")
 @PostMapping
-@RequiresPermissions("${table.entityPath}:add")
-public void add${entity}(@Valid ${entity} ${table.entityPath})throws FebsException{
+@RequiresPermissions("scmDHrpmater:add")
+public void addScmDHrpmater(@Valid ScmDHrpmater scmDHrpmater)throws FebsException{
         try{
         User currentUser= FebsUtil.getCurrentUser();
-        ${table.entityPath}.setCreateUserId(currentUser.getUserId());
-        this.i${entity}Service.create${entity}(${table.entityPath});
+        scmDHrpmater.setCreateUserId(currentUser.getUserId());
+        this.iScmDHrpmaterService.createScmDHrpmater(scmDHrpmater);
         }catch(Exception e){
         message="新增/按钮失败" ;
         log.error(message,e);
@@ -86,12 +86,12 @@ public void add${entity}(@Valid ${entity} ${table.entityPath})throws FebsExcepti
  */
 @Log("修改")
 @PutMapping
-@RequiresPermissions("${table.entityPath}:update")
-public void update${entity}(@Valid ${entity} ${table.entityPath})throws FebsException{
+@RequiresPermissions("scmDHrpmater:update")
+public void updateScmDHrpmater(@Valid ScmDHrpmater scmDHrpmater)throws FebsException{
         try{
         User currentUser= FebsUtil.getCurrentUser();
-      ${table.entityPath}.setModifyUserId(currentUser.getUserId());
-        this.i${entity}Service.update${entity}(${table.entityPath});
+      scmDHrpmater.setModifyUserId(currentUser.getUserId());
+        this.iScmDHrpmaterService.updateScmDHrpmater(scmDHrpmater);
         }catch(Exception e){
         message="修改失败" ;
         log.error(message,e);
@@ -102,11 +102,11 @@ public void update${entity}(@Valid ${entity} ${table.entityPath})throws FebsExce
 
 @Log("删除")
 @DeleteMapping("/{ids}")
-@RequiresPermissions("${table.entityPath}:delete")
-public void delete${entity}s(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
+@RequiresPermissions("scmDHrpmater:delete")
+public void deleteScmDHrpmaters(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
         try{
         String[]arr_ids=ids.split(StringPool.COMMA);
-        this.i${entity}Service.delete${entity}s(arr_ids);
+        this.iScmDHrpmaterService.deleteScmDHrpmaters(arr_ids);
         }catch(Exception e){
         message="删除失败" ;
         log.error(message,e);
@@ -114,11 +114,11 @@ public void delete${entity}s(@NotBlank(message = "{required}") @PathVariable Str
         }
         }
 @PostMapping("excel")
-@RequiresPermissions("${table.entityPath}:export")
-public void export(QueryRequest request, ${entity} ${table.entityPath}, HttpServletResponse response) throws FebsException {
+@RequiresPermissions("scmDHrpmater:export")
+public void export(QueryRequest request, ScmDHrpmater scmDHrpmater, HttpServletResponse response) throws FebsException {
         try {
-        List<${entity}> ${table.entityPath}s = this.i${entity}Service.find${entity}s(request, ${table.entityPath}).getRecords();
-        ExcelKit.$Export(${entity}.class, response).downXlsx(${table.entityPath}s, false);
+        List<ScmDHrpmater> scmDHrpmaters = this.iScmDHrpmaterService.findScmDHrpmaters(request, scmDHrpmater).getRecords();
+        ExcelKit.$Export(ScmDHrpmater.class, response).downXlsx(scmDHrpmaters, false);
         } catch (Exception e) {
         message = "导出Excel失败";
         log.error(message, e);
@@ -127,8 +127,8 @@ public void export(QueryRequest request, ${entity} ${table.entityPath}, HttpServ
         }
 
 @GetMapping("/{id}")
-public ${entity} detail(@NotBlank(message = "{required}") @PathVariable String id) {
-    ${entity} ${table.entityPath}=this.i${entity}Service.getById(id);
-        return ${table.entityPath};
+public ScmDHrpmater detail(@NotBlank(message = "{required}") @PathVariable String id) {
+    ScmDHrpmater scmDHrpmater=this.iScmDHrpmaterService.getById(id);
+        return scmDHrpmater;
         }
         }
