@@ -58,6 +58,14 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
                 queryWrapper.eq(ScmBSupplyplan::getBaseId, scmBSupplyplan.getBaseId());
             }
+            if (StringUtils.isNotBlank(scmBSupplyplan.getGysaccount())) {
+                queryWrapper.eq(ScmBSupplyplan::getGysaccount, scmBSupplyplan.getGysaccount());
+            }
+            if (StringUtils.isNotBlank(scmBSupplyplan.getFphm())) {
+                queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, scmBSupplyplan.getFphm()).or().eq(ScmBSupplyplan::getFphm, null
+                ).or().eq(ScmBSupplyplan::getFphm, ""
+                ));
+            }
             if (scmBSupplyplan.getIsDeletemark() != null) {
                 queryWrapper.eq(ScmBSupplyplan::getIsDeletemark, scmBSupplyplan.getIsDeletemark());
             }

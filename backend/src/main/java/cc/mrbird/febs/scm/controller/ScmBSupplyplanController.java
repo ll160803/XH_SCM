@@ -55,6 +55,13 @@ public Map<String, Object> List(QueryRequest request, ScmBSupplyplan scmBSupplyp
         scmBSupplyplan.setIsDeletemark(1);
         return getDataTable(this.iScmBSupplyplanService.findScmBSupplyplans(request, scmBSupplyplan));
         }
+    @GetMapping("sendOrder")
+    public Map<String, Object> ListOrder(QueryRequest request, ScmBSupplyplan scmBSupplyplan){
+        scmBSupplyplan.setIsDeletemark(1);
+        User currentUser= FebsUtil.getCurrentUser();
+        scmBSupplyplan.setGysaccount(currentUser.getUsername());
+        return getDataTable(this.iScmBSupplyplanService.findScmBSupplyplans(request, scmBSupplyplan));
+    }
 
 /**
  * 跳转添加页面
