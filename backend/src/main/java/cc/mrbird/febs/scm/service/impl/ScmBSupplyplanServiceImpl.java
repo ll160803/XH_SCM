@@ -3,6 +3,10 @@ package cc.mrbird.febs.scm.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
+import cc.mrbird.febs.scm.dao.ScmBSendinfoMapper;
+import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
+import cc.mrbird.febs.scm.entity.ScmBSendinfo;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.service.IScmBSupplyplanService;
@@ -15,6 +19,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.datatype.jsr310.DecimalUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +42,11 @@ import java.time.LocalDate;
 @Service("IScmBSupplyplanService")
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper, ScmBSupplyplan> implements IScmBSupplyplanService {
+    @Autowired
+    private ScmBPurcharseorderMapper scmBPurcharseorderMapper;
 
+    @Autowired
+    private ScmBSendinfoMapper scmBSendinfoMapper;
 
     @Override
     public IPage<ScmBSupplyplan> findScmBSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan) {
@@ -49,7 +58,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
                 queryWrapper.eq(ScmBSupplyplan::getBaseId, scmBSupplyplan.getBaseId());
             }
-            if (scmBSupplyplan.getIsDeletemark()!=null) {
+            if (scmBSupplyplan.getIsDeletemark() != null) {
                 queryWrapper.eq(ScmBSupplyplan::getIsDeletemark, scmBSupplyplan.getIsDeletemark());
             }
             Page<ScmBSupplyplan> page = new Page<>();
@@ -63,22 +72,48 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
 
     @Override
     @Transactional
-    public void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException
-    {
+    public void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
         //scmBSupplyplan.setId(UUID.randomUUID().toString());
-        Long isMenge =this.baseMapper.IsOutMenge(scmBSupplyplan);
-        if(isMenge!=null && isMenge>0) {
-           throw  new FebsException("供应计划数量超出订单数量");
+        Long isMenge = this.baseMapper.IsOutMenge(scmBSupplyplan);
+        if (isMenge != null && isMenge > 0) {
+            throw new FebsException("供应计划数量超出订单数量");
         }
         scmBSupplyplan.setCreateTime(new Date());
         this.save(scmBSupplyplan);
+        log.error("sadasdasd:" + scmBSupplyplan.getBsartD());
+        String artd = scmBSupplyplan.getBsartD();
+        String typear="1";//z真是坑爹 不这么些 就是不行
+        if (artd.equals(typear)) {//物资供应商才能生成送货单
+            log.error("sadasdasd");
+            // if(StringUtils.isNotBlank(scmBSupplyplan.getSendOrderCode())) { //从送货单引入 不生成送货单
+            ScmBPurcharseorder order = scmBPurcharseorderMapper.selectById(scmBSupplyplan.getBaseId());
+            ScmBSendinfo scmBSendinfo = new ScmBSendinfo();
+            scmBSendinfo.setGysname(scmBSupplyplan.getGysname());
+            scmBSendinfo.setIsDeletemark(1);
+            scmBSendinfo.setGysaccount(scmBSupplyplan.getGysaccount());
+            scmBSendinfo.setCreateTime(new Date());
+            scmBSendinfo.setAmount(scmBSupplyplan.getgMenge());
+            scmBSendinfo.setGyjh(scmBSupplyplan.getId());
+            scmBSendinfo.setLinkPerson(scmBSupplyplan.getLinkPerson());
+            scmBSendinfo.setMatnr(order.getMatnr());
+            scmBSendinfo.setMoney(scmBSupplyplan.getFpjr());
+            scmBSendinfo.setPrice(order.getNetpr());
+            scmBSendinfo.setSendDepart(scmBSupplyplan.getSendDepart());
+            scmBSendinfo.setTxz01(order.getTxz01());
+            scmBSendinfo.setMseht(order.getMseht());
+            scmBSendinfo.setMeins(order.getMeins());
+            scmBSendinfo.setWerks(order.getWerks());
+            scmBSendinfo.setWerkst(order.getWerkst());
+            scmBSendinfoMapper.insert(scmBSendinfo);
+        }
+        //  }
     }
 
 
     @Override
     @Transactional
     public void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
-        if(scmBSupplyplan.getIsDeletemark()==0) {//s删除不需要做验证
+        if (scmBSupplyplan.getIsDeletemark() == 0) {//s删除不需要做验证
             Long isMenge = this.baseMapper.IsOutMenge(scmBSupplyplan);
             if (isMenge != null && isMenge > 0) {
                 throw new FebsException("供应计划数量超出订单数量");
@@ -86,6 +121,28 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             scmBSupplyplan.setModifyTime(new Date());
         }
         this.baseMapper.updateScmBSupplyplan(scmBSupplyplan);
+
+        LambdaQueryWrapper<ScmBSendinfo> queryWrapper = new LambdaQueryWrapper<>();
+
+        queryWrapper.eq(ScmBSendinfo::getGyjh, scmBSupplyplan.getId());
+
+        ScmBSendinfo scmBSendinfo = scmBSendinfoMapper.selectOne(queryWrapper);
+        if (scmBSendinfo != null) {
+            if (scmBSupplyplan.getIsDeletemark() == 0) {
+                scmBSendinfo.setIsDeletemark(0);
+            } else {
+                scmBSendinfo.setModifyTime(new Date());
+                scmBSendinfo.setAmount(scmBSupplyplan.getgMenge());
+
+                scmBSendinfo.setLinkPerson(scmBSupplyplan.getLinkPerson());
+
+                scmBSendinfo.setMoney(scmBSupplyplan.getFpjr());
+
+                scmBSendinfo.setSendDepart(scmBSupplyplan.getSendDepart());
+            }
+
+            scmBSendinfoMapper.updateScmBSendinfo(scmBSendinfo);
+        }
     }
 
     @Override

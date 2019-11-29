@@ -70,6 +70,8 @@ public void addScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan)throws FebsEx
         try{
         User currentUser= FebsUtil.getCurrentUser();
         scmBSupplyplan.setCreateUserId(currentUser.getUserId());
+        scmBSupplyplan.setGysaccount(currentUser.getUsername());
+        scmBSupplyplan.setGysname(currentUser.getRealname());
         this.iScmBSupplyplanService.createScmBSupplyplan(scmBSupplyplan);
         }catch(Exception e){
         message=e.getMessage();

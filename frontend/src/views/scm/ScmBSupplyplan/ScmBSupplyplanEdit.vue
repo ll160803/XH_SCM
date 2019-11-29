@@ -171,8 +171,8 @@
 import moment from 'moment'
 
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 15 }
 }
 export default {
   name: 'ScmBSupplyplanEdit',

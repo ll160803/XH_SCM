@@ -157,12 +157,14 @@ private BigDecimal amount;
     @TableField("MONEY")
             @ExcelField(value ="送货金额")
 private BigDecimal money;
+
     /**
      * 单价
      */
     @TableField("PRICE")
-            @ExcelField(value ="单价")
-private BigDecimal price;
+    @ExcelField(value ="单价")
+    private BigDecimal price;
+
     /**
      * 院区ID
      */
@@ -345,13 +347,14 @@ private String werkst;
             this.amount = amount;
             }
 
-    public BigDecimal getMoney(){
-            return money;
-            }
 
-        public void setMoney(BigDecimal money) {
-            this.money = money;
-            }
+    public BigDecimal getMoney(){
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
 
     public BigDecimal getPrice(){
             return price;

@@ -100,6 +100,7 @@
         @change="handleTableChange"
         :bordered="bordered"
         @expand="expandSubGrid"
+        :scroll="{x:1500}"
       >
         <template
           slot="remark"
@@ -154,6 +155,7 @@
     </div>
     <!-- 新增字典 -->
     <scmBSupplyplan-add
+      ref="scmBPurcharseorderAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -347,7 +349,6 @@ export default {
       }
     },
     onChange(date, dateString) {
-      console.info(2222+dateString);
         this.queryParams.eindt=dateString
       },
       onChange2(date, dateString) {
@@ -374,6 +375,9 @@ export default {
         this.$message.warning('请只选择一个采购订单')
         return
       }
+      
+
+      
       const dataSource = [...this.dataSource]
       this.baseId = this.selectedRowKeys[0]
       let row = dataSource.find(item => item.id === this.selectedRowKeys[0]);
@@ -384,6 +388,11 @@ export default {
       this.price = row.netpr
       this.amount = row.menge-(row.allmenge==null?0:row.allmenge)
       this.addVisiable = true
+      let that=this
+      setTimeout(function(){
+        that.$refs.scmBPurcharseorderAdd.setFormValues(row)
+      },200)
+      
     },
     handleEditSuccess (baseId) {
       this.editVisiable = false

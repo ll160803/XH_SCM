@@ -147,7 +147,7 @@ export default {
   line-height: 59px !important;
 }
 .ant-form-item {
-  margin-bottom: 1rem !important;
+  margin-bottom: 0.25rem !important;
 }
 .ant-menu-inline,
 .ant-menu-vertical,
@@ -176,7 +176,7 @@ export default {
   border-radius: 0 0 2px 2px;
 }
 .search {
-  margin-bottom: 0.5rem !important;
+  margin-bottom: 0.125rem !important;
 }
 i {
   font-size: 0.97rem;
@@ -217,5 +217,31 @@ p {
   .page-tabs .ant-tabs-nav-container {
     font-size: 13px !important;
   }
+}
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+    padding: 8px 8px;
+}
+tr.ant-table-expanded-row td > .ant-table-wrapper {
+    margin: -8px -8px -9px;
+}
+.ant-modal-body{
+  padding: 8px 24px;
+}
+.ant-modal-body{
+  padding: 8px 24px;
+}
+.ant-modal-header{
+  padding: 4px 24px;
+}
+.ant-modal-footer{
+  padding: 5px 16px;
+}
+.ant-modal-close-x{
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+}
+.ant-table-pagination.ant-pagination{
+  margin: 4px 0 0 0 !important;
 }
 </style>

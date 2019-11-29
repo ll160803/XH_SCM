@@ -124,6 +124,7 @@
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
+            v-show="record.gyjh==null?true:false"
             @click="edit(record)"
             title="修改"
           ></a-icon>

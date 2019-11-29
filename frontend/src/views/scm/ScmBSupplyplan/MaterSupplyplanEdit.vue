@@ -2,14 +2,14 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=650
+    width=700
     placement="right"
     :closable="false"
     @close="onClose"
     :visible="editVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
-    <a-form :form="form">
+     <a-form :form="form">
       <a-row>
         <a-col :span="12">
           <a-form-item
@@ -31,19 +31,23 @@
             label="联系人"
           >
             <a-input
+              :disabled="true"
               placeholder="请输入联系人"
-              v-decorator="['linkPerson', { rules: [{ required: true, message: '联系人不能为空' }] }]"
+              v-decorator="['linkPerson', { rules: [{  message: '联系人不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
+      </a-row>
+      <a-row>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
             label="送达科室"
           >
-           <a-input
+            <a-input
+              :disabled="true"
               placeholder="请输入送达科室"
-              v-decorator="['sendDepart', { rules: [{ required: true, message: '送达科室不能为空' }] }]"
+              v-decorator="['sendDepart', { rules: [{  message: '送达科室不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
@@ -54,10 +58,12 @@
           >
             <a-input
               placeholder="请输入联系方式"
-              v-decorator="['linkTelephone', { rules: [{ required: true, message: '联系方式不能为空' }] }]"
+              v-decorator="['linkTelephone', { rules: [{ message: '联系方式不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
+      </a-row>
+      <a-row>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
@@ -76,11 +82,14 @@
           >
             <a-input
               :disabled="true"
+              :precision="4"
               placeholder="请输入发票金额"
               v-decorator="['fpjr', { rules: [{ required: true, message: '发票金额不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
+      </a-row>
+      <a-row>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
@@ -123,8 +132,8 @@
 import moment from 'moment'
 
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 15 }
 }
 export default {
   name: 'ScmBSupplyplanEdit',
