@@ -108,7 +108,26 @@ public void updateScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan)throws Feb
         }
         }
 
-
+@Log("去除送货单号")
+@DeleteMapping("deleteSendOrder/{ids}")
+public void deleteSendOrders(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
+    try{
+        String[]arr_ids=ids.split(StringPool.COMMA);
+        for (String id:
+                arr_ids) {
+            ScmBSupplyplan scmBSupplyplan=new ScmBSupplyplan();
+            scmBSupplyplan.setId(Long.parseLong(id));
+            scmBSupplyplan.setSendOrderCode("");
+            scmBSupplyplan.setFphm("");
+            this.iScmBSupplyplanService.updateSupplyplanOnly(scmBSupplyplan);
+        }
+        //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
+    }catch(Exception e){
+        message="删除失败" ;
+        log.error(message,e);
+        throw new FebsException(message);
+    }
+}
 @Log("删除")
 @DeleteMapping("/{ids}")
 public void deleteScmBSupplyplans(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{

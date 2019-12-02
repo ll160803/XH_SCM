@@ -71,19 +71,9 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :expandedRowKeys="expandedRowKeys"
+        @expand="expandSubGrid"
       >
-        <template
-          slot="remark"
-          slot-scope="text, record"
-        >
-          <a-popover placement="topLeft">
-            <template slot="content">
-              <div style="max-width: 200px">{{text}}</div>
-            </template>
-            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-          </a-popover>
-        </template>
         <template
           slot="operation"
           slot-scope="text, record"
@@ -102,6 +92,28 @@
             text="无权限"
           ></a-badge>
         </template>
+        <a-table
+          ref="subTable"
+          slot="expandedRowRender"
+          slot-scope="record"
+          :columns="innerColumns"
+          :dataSource="record.innerData"
+          :pagination="false"
+          :rowKey="record2 => record2.id"
+        >
+          <template
+            slot="operation"
+            slot-scope="text, record2"
+          >
+            <a-icon
+              type="delete"
+              theme="twoTone"
+              twoToneColor="#4a9ff5"
+              @click="subDelete(record2)"
+              title="删除"
+            ></a-icon>
+          </template>
+        </a-table>
       </a-table>
     </div>
     <!-- 新增字典 -->
@@ -117,6 +129,7 @@
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
+      :fp="fph"
     >
     </scmBSendorder-edit>
   </a-card>
@@ -134,6 +147,7 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
+      expandedRowKeys: [],
       sortedInfo: null,
       paginationInfo: null,
       pagination: {
@@ -148,7 +162,8 @@ export default {
       addVisiable: false,
       editVisiable: false,
       loading: false,
-      bordered: true
+      bordered: true,
+      fph:''
     }
   },
   computed: {
@@ -172,6 +187,55 @@ export default {
         dataIndex: 'isDeletemark'
       }, {
         title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 100
+      }]
+    },
+    innerColumns () {
+      return [{
+        title: '供应计划号',
+        dataIndex: 'id'
+      }, {
+        title: '送货数量',
+        dataIndex: 'gMenge'
+      }, {
+        title: '联系人',
+        dataIndex: 'linkPerson'
+      }, {
+        title: '送达科室',
+        dataIndex: 'sendDepart'
+      }, {
+        title: '联系方式',
+        dataIndex: 'linkTelephone'
+      }, {
+        title: '发票号码',
+        dataIndex: 'fphm'
+      }, {
+        title: '发票金额',
+        dataIndex: 'fpjr'
+      }, {
+        title: '开票日期',
+        dataIndex: 'fprq'
+      }, {
+        title: '商品条码',
+        dataIndex: 'materCode'
+      }, {
+        title: '状态',
+        dataIndex: 'status',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未收货</a-tag>
+            case 1:
+              return <a-tag color="green">已收货</a-tag>
+            default:
+              return text
+          }
+        }
+      }, {
+        title: '操作2',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
@@ -212,8 +276,49 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      this.$refs.scmBSendorderEdit.setFormValues(record)
+      let that=this
       this.editVisiable = true
+      this.fph=record.fphm
+      setTimeout(function(){
+        that.$refs.scmBSendorderEdit.setFormValues(record.fphm)
+      },100);
+    },
+    subDelete (record, pRecord) {
+      let that = this
+      this.$confirm({
+        title: '确定删除所选中的记录?',
+        content: '当您点击确定按钮后，此记录将会被彻底删除',
+        centered: true,
+        onOk () {
+          that.$delete('scmBSupplyplan/deleteSendOrder/' + record.id).then(() => {
+            that.$message.success('删除成功')
+            that.search()
+            that.expandedRowKeys = []
+          })
+        },
+        onCancel () {
+
+        }
+      })
+    },
+    expandSubGrid (expanded, record) {//获取供应计划的数量
+      if (expanded) {
+        this.expandedRowKeys.push(record.id)
+        this.handleSubData(record) //获取子表数据
+      } else {
+        let expandedRowKeys = this.expandedRowKeys.filter(RowKey => RowKey !== record.id)
+        this.expandedRowKeys = expandedRowKeys
+      }
+    },
+    handleSubData (record) {
+      this.loading = true
+      this.$get('scmBSupplyplan', {
+        sendOrderCode: record.id
+      }).then((r) => {
+        let data = r.data
+        this.loading = false
+        record.innerData = data.rows
+      })
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {
@@ -265,6 +370,7 @@ export default {
         sortOrder: sortOrder,
         ...this.queryParams
       })
+      this.expandedRowKeys = [] //合并所有展开子项
     },
     reset () {
       // 取消选中

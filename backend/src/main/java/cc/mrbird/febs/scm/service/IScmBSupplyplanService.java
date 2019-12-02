@@ -26,5 +26,7 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
 
         void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException;
 
+        void updateSupplyplanOnly(ScmBSupplyplan scmBSupplyplan) throws FebsException;
+
         void deleteScmBSupplyplans(String[]Ids);
         }

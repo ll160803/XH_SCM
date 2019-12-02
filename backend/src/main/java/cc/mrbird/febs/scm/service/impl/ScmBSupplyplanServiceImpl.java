@@ -58,6 +58,9 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
                 queryWrapper.eq(ScmBSupplyplan::getBaseId, scmBSupplyplan.getBaseId());
             }
+            if (StringUtils.isNotBlank(scmBSupplyplan.getSendOrderCode())) {
+                queryWrapper.eq(ScmBSupplyplan::getSendOrderCode, scmBSupplyplan.getSendOrderCode());
+            }
             if (StringUtils.isNotBlank(scmBSupplyplan.getGysaccount())) {
                 queryWrapper.eq(ScmBSupplyplan::getGysaccount, scmBSupplyplan.getGysaccount());
             }
@@ -188,6 +191,11 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
         }
     }
 
+    @Override
+    @Transactional
+    public void updateSupplyplanOnly(ScmBSupplyplan scmBSupplyplan) throws FebsException {
+        this.baseMapper.updateScmBSupplyplan(scmBSupplyplan);
+    }
     @Override
     @Transactional
     public void deleteScmBSupplyplans(String[] Ids) {
