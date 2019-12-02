@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
 
         IPage<ScmBSupplyplan> findScmBSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan);
+        IPage<ScmBSupplyplan> findSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan);
 
         void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException;
 

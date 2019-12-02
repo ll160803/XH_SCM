@@ -2,9 +2,12 @@ package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.entity.ScmBSendorder;
 import cc.mrbird.febs.scm.dao.ScmBSendorderMapper;
+import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBSendorderService;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -13,15 +16,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
+
 /**
  * <p>
  * 药品的送货清单 服务实现类
@@ -35,46 +37,80 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, ScmBSendorder> implements IScmBSendorderService {
 
+    @Autowired
+    private ScmBSupplyplanMapper scmBSupplyplanMapper;
 
-@Override
-public IPage<ScmBSendorder> findScmBSendorders(QueryRequest request, ScmBSendorder scmBSendorder){
-        try{
-        LambdaQueryWrapper<ScmBSendorder> queryWrapper=new LambdaQueryWrapper<>();
-        if (StringUtils.isNotBlank(scmBSendorder.getCode())) {
-        queryWrapper.eq(ScmBSendorder::getCode, scmBSendorder.getCode());
-        }
-        queryWrapper.eq(ScmBSendorder::getIsDeletemark, 1);
-        Page<ScmBSendorder> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
-        }
-        }
+    @Override
+    public IPage<ScmBSendorder> findScmBSendorders(QueryRequest request, ScmBSendorder scmBSendorder) {
+        try {
+//        LambdaQueryWrapper<ScmBSendorder> queryWrapper=new LambdaQueryWrapper<>();
+//        if (StringUtils.isNotBlank(scmBSendorder.getCode())) {
+//        queryWrapper.eq(ScmBSendorder::getCode, scmBSendorder.getCode());
+//        }
+//        queryWrapper.eq(ScmBSendorder::getIsDeletemark, 1);
+//        Page<ScmBSendorder> page=new Page<>();
+//        SortUtil.handlePageSort(request,page,true);
+// return this.page(page,queryWrapper);
+            Page<ScmBSendorder> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);
+            // return this.page(page, queryWrapper);
+            return this.baseMapper.findSendInfos(page, scmBSendorder);
 
-@Override
-@Transactional
-public void createScmBSendorder(ScmBSendorder scmBSendorder){
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
+    public void createScmBSendorder(ScmBSendorder scmBSendorder) {
         //scmBSendorder.setId(UUID.randomUUID().toString());
         scmBSendorder.setIsDeletemark(1);
         scmBSendorder.setCreateTime(new Date());
         this.save(scmBSendorder);
+        String supplyPlanIds = scmBSendorder.supplyPlanIds;
+        log.error("444444" + supplyPlanIds);
+        if (StringUtils.isNotBlank(supplyPlanIds)) {
+            log.error("333333" + supplyPlanIds);
+            String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
+            String fphm = scmBSendorder.getFphm();
+            List<Long> ids = new ArrayList<>();
+            for (String idStr : arr_ids
+            ) {
+                ids.add(Long.parseLong(idStr));
+            }
+            this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm);
+//                for (String id :
+//                        arr_ids) {
+//                        ScmBSupplyplan scmBSupplyplan = new ScmBSupplyplan();
+//                        scmBSupplyplan.setId(Long.parseLong(id));
+//                        scmBSupplyplan.setFphm(fphm);
+//                        scmBSupplyplan.setSendOrderCode(scmBSendorder.getId().toString());
+//                        scmBSupplyplanMapper.updateScmBSupplyplan(scmBSupplyplan);
+//                }
         }
+    }
 
-@Override
-@Transactional
-public void updateScmBSendorder(ScmBSendorder scmBSendorder){
+    @Override
+    @Transactional
+    public void updateScmBSendorder(ScmBSendorder scmBSendorder) {
         scmBSendorder.setModifyTime(new Date());
         this.baseMapper.updateScmBSendorder(scmBSendorder);
+    }
+
+    /*
+    设置为0 并清除供应计划里的发票号码值
+     */
+    @Override
+    @Transactional
+    public void deleteScmBSendorders(String[] Ids) {
+        for (String id :
+                Ids) {
+            this.baseMapper.updateDeleteOrder(id, Long.parseLong(id));
         }
 
-@Override
-@Transactional
-public void deleteScmBSendorders(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
-        this.baseMapper.deleteBatchIds(list);
-        }
+    }
 
 
-        }
+}

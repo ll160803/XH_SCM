@@ -60,7 +60,7 @@ public Map<String, Object> List(QueryRequest request, ScmBSupplyplan scmBSupplyp
         scmBSupplyplan.setIsDeletemark(1);
         User currentUser= FebsUtil.getCurrentUser();
         scmBSupplyplan.setGysaccount(currentUser.getUsername());
-        return getDataTable(this.iScmBSupplyplanService.findScmBSupplyplans(request, scmBSupplyplan));
+        return getDataTable(this.iScmBSupplyplanService.findSupplyplans(request, scmBSupplyplan));
     }
 
 /**

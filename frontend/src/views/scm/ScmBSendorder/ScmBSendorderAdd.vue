@@ -87,31 +87,40 @@ export default {
     columns () {
       return [{
         title: '供应计划号',
-        dataIndex: 'id'
+        dataIndex: 'id',
+        width:120
       }, {
         title: '送货数量',
-        dataIndex: 'gMenge'
+        dataIndex: 'gMenge',
+        width:100
       }, {
         title: '联系人',
-        dataIndex: 'linkPerson'
+        dataIndex: 'linkPerson',
+        width:100
       }, {
         title: '送达科室',
-        dataIndex: 'sendDepart'
+        dataIndex: 'sendDepart',
+        width:100
       }, {
         title: '联系方式',
-        dataIndex: 'linkTelephone'
+        dataIndex: 'linkTelephone',
+        width:120
       }, {
         title: '发票号码',
-        dataIndex: 'fphm'
+        dataIndex: 'fphm',
+        width:120
       }, {
         title: '发票金额',
-        dataIndex: 'fpjr'
+        dataIndex: 'fpjr',
+        width:100
       }, {
         title: '开票日期',
-        dataIndex: 'fprq'
+        dataIndex: 'fprq',
+        width:100
       }, {
         title: '商品条码',
-        dataIndex: 'materCode'
+        dataIndex: 'materCode',
+        width:100
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -240,6 +249,8 @@ export default {
       })
     },
     handleSubmit () {
+      let supplyPlanIds=this.selectedRowKeys.join(",")
+      this.scmBSendorder["supplyPlanIds"]=supplyPlanIds
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()

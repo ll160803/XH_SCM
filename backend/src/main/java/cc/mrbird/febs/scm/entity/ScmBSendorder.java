@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.entity;
 
 import java.math.BigDecimal;
 
+import cc.mrbird.febs.common.annotation.Log;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -31,7 +32,10 @@ private static final long serialVersionUID=1L;
      */
     @TableId(value="ID",type = IdType.AUTO)
                     @ExcelField(value ="主键")
-private String id;
+private Long id;
+
+    @TableField(exist = false)
+    public String supplyPlanIds;
     /**
      * 编码
      */
@@ -112,11 +116,11 @@ private Long createUserId;
 private Long modifyUserId;
 
 
-    public String getId(){
+    public Long getId(){
             return id;
             }
 
-        public void setId(String id) {
+        public void setId(Long id) {
             this.id = id;
             }
 

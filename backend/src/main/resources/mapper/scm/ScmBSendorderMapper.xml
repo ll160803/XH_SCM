@@ -43,4 +43,46 @@
         </trim>
         where id=#{id}
     </update>
+    <select id="findSendInfos" resultType="cc.mrbird.febs.scm.entity.ScmBSendorder" parameterType="cc.mrbird.febs.scm.entity.ScmBSendorder">
+        SELECT
+        ID,
+        CODE,
+        NAME,
+        FPHM,
+        ( SELECT SUM( G_MENGE ) FROM scm_b_supplyplan WHERE SEND_ORDER_CODE = scm_b_sendorder.ID ) FPJR,
+        GYSACCOUNT,
+        GYSNAME,
+        COMMENTS,
+        STATUS,
+        IS_DELETEMARK,
+        CREATE_TIME,
+        MODIFY_TIME,
+        CREATE_USER_ID,
+        MODIFY_USER_ID
+        FROM
+        scm_b_sendorder
+        WHERE 1 = 1
+
+        <if test="order.isDeletemark != null and order.isDeletemark !=''">
+            And IS_DELETEMARK = #{order.isDeletemark}
+        </if>
+        <if test="order.gysaccount!= null and order.gysaccount !=''">
+            And GYSACCOUNT = #{order.gysaccount}
+        </if>
+        <if test="order.fphm != null and order.fphm != ''">
+            AND FPHM = #{order.fphm}
+        </if>
+
+    </select>
+
+    <update id="updateSupplyPlan" >
+        UPDATE scm_b_supplyplan
+       SET SEND_ORDER_CODE = #{id},
+       FPHM = #{fphm}
+       WHERE
+	   ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

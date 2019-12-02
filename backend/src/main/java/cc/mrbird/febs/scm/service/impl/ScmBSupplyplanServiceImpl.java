@@ -79,6 +79,41 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     }
 
     @Override
+    public IPage<ScmBSupplyplan> findSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan) {
+        try {
+            LambdaQueryWrapper<ScmBSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
+            if (StringUtils.isNotBlank(scmBSupplyplan.getCode())) {
+                queryWrapper.eq(ScmBSupplyplan::getCode, scmBSupplyplan.getCode());
+            }
+            if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
+                queryWrapper.eq(ScmBSupplyplan::getBaseId, scmBSupplyplan.getBaseId());
+            }
+            if (StringUtils.isNotBlank(scmBSupplyplan.getGysaccount())) {
+                queryWrapper.eq(ScmBSupplyplan::getGysaccount, scmBSupplyplan.getGysaccount());
+            }
+            if (StringUtils.isNotBlank(scmBSupplyplan.getFphm())) {
+                queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, scmBSupplyplan.getFphm()).or().eq(ScmBSupplyplan::getFphm, null
+                ).or().eq(ScmBSupplyplan::getFphm, ""
+                ));
+            }
+            else
+            {
+                queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, null
+                ).or().eq(ScmBSupplyplan::getFphm, ""
+                ));
+            }
+            if (scmBSupplyplan.getIsDeletemark() != null) {
+                queryWrapper.eq(ScmBSupplyplan::getIsDeletemark, scmBSupplyplan.getIsDeletemark());
+            }
+            Page<ScmBSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+    @Override
     @Transactional
     public void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
         //scmBSupplyplan.setId(UUID.randomUUID().toString());
