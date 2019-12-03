@@ -183,7 +183,9 @@ export default {
         dataIndex: 'sendDate',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
-        }
+        },
+        sorter: true,
+        sortOrder: sortedInfo.columnKey === 'sendDate' && sortedInfo.order
       }, {
         title: '操作',
         dataIndex: 'operation',
