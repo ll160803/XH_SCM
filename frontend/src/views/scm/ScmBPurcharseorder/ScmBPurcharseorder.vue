@@ -8,39 +8,37 @@
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
-                label="药品名称"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                label="物料名称"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.txz01" />
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
-                label="药品编码"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                label="物料编码"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
-          </a-row>
-          <a-row v-if="advanced">
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
                 label="开始时间"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-date-picker
                   @change="onChange"
@@ -49,13 +47,13 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
                 label="结束时间"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-date-picker
                   @change="onChange2"
@@ -74,13 +72,6 @@
             style="margin-left: 8px"
             @click="reset"
           >重置</a-button>
-          <a
-            @click="toggleAdvanced"
-            style="margin-left: 8px"
-          >
-            {{advanced ? '收起' : '展开'}}
-            <a-icon :type="advanced ? 'up' : 'down'" />
-          </a>
         </span>
       </a-form>
     </div>
@@ -105,7 +96,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 1500 }"
+        :scroll="scroll"
         @expand="expandSubGrid"
       >
         <template
@@ -191,6 +182,10 @@ export default {
   components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit },
   data () {
     return {
+      scroll: {
+        x: 1500,
+        y: window.innerHeight - 200 - 100 - 20
+      },
       dateFormat: 'YYYY-MM-DD',
       advanced: false,
       dataSource: [],
@@ -234,46 +229,60 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '订单号',
-        dataIndex: 'ebeln'
+        dataIndex: 'ebeln',
+        sorter: true,
+        sortOrder: sortedInfo.columnKey === 'ebeln' && sortedInfo.order,
+        width: 100
       }, {
         title: '项目号',
-        dataIndex: 'ebelp'
+        dataIndex: 'ebelp',
+        width: 60
       }, {
-        title: '供应计划号',
-        dataIndex: 'lifnr'
+        title: '供应商账号',
+        dataIndex: 'lifnr',
+        width: 80
       }, {
-        title: '物料ID',
-        dataIndex: 'matnr'
+        title: '物料号',
+        dataIndex: 'matnr',
+        width: 80
       }, {
         title: '物料描述',
-        dataIndex: 'txz01'
+        dataIndex: 'txz01',
+        width: 200
       }, {
         title: '院区名称',
-        dataIndex: 'werkst'
+        dataIndex: 'werkst',
+        width: 100
       }, {
         title: '库房名称',
-        dataIndex: 'lgortName'
+        dataIndex: 'lgortName',
+        width: 100
       }, {
         title: '订单数量',
-        dataIndex: 'menge'
+        dataIndex: 'menge',
+        width: 80
       }, {
         title: '计量单位',
-        dataIndex: 'mseht'
+        dataIndex: 'mseht',
+        width: 80
       }, {
         title: '单价',
-        dataIndex: 'netpr'
+        dataIndex: 'netpr',
+        width: 60
       }, {
-        title: '订单开始时间',
+        title: '交货日期',
         dataIndex: 'eindt',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
-        }
+        },
+        width: 90
       }, {
-        title: '订单结束时间',
+        title: '订单日期',
         dataIndex: 'bedat',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
-        }
+        },
+        width: 90
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -286,10 +295,12 @@ export default {
             default:
               return text
           }
-        }
+        },
+        width: 80
       }, {
         title: '供应数量',
-        dataIndex: 'allmenge'
+        dataIndex: 'allmenge',
+        width: 80
       }, {
         title: '收货数量',
         dataIndex: 'suremenge'
