@@ -42,7 +42,10 @@
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-date-picker @change="onChange" :defaultValue="start"  />
+                <a-date-picker
+                  @change="onChange"
+                  :defaultValue="start"
+                />
               </a-form-item>
             </a-col>
             <a-col
@@ -54,7 +57,10 @@
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-date-picker @change="onChange2" :defaultValue="enddate" />
+                <a-date-picker
+                  @change="onChange2"
+                  :defaultValue="enddate"
+                />
               </a-form-item>
             </a-col>
           </a-row>
@@ -219,10 +225,10 @@ export default {
   },
   computed: {
     start () {
-       return moment(this.defultDate_pre())
+      return moment(this.defultDate_pre())
     },
     enddate () {
-       return moment(this.defultDate())
+      return moment(this.defultDate())
     },
     columns () {
       let { sortedInfo } = this
@@ -259,10 +265,16 @@ export default {
         dataIndex: 'netpr'
       }, {
         title: '交货日期',
-        dataIndex: 'eindt'
+        dataIndex: 'eindt',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '订单日期',
-        dataIndex: 'bedat'
+        dataIndex: 'bedat',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -308,7 +320,10 @@ export default {
         dataIndex: 'fpjr'
       }, {
         title: '开票日期',
-        dataIndex: 'fprq'
+        dataIndex: 'fprq',
+        customRender: (text, row, index) => {
+         return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '商品条码',
         dataIndex: 'materCode'
@@ -335,7 +350,7 @@ export default {
     }
   },
   mounted () {
-    
+
     this.fetch()
   },
   methods: {
@@ -348,12 +363,12 @@ export default {
         this.queryParams.comments = ''
       }
     },
-    onChange(date, dateString) {
-        this.queryParams.eindt=dateString
-      },
-      onChange2(date, dateString) {
-        this.queryParams.bedat=dateString
-      },
+    onChange (date, dateString) {
+      this.queryParams.eindt = dateString
+    },
+    onChange2 (date, dateString) {
+      this.queryParams.bedat = dateString
+    },
     handleAddSuccess () {
       this.addVisiable = false
       this.$message.success('新增供应计划成功')
@@ -375,9 +390,9 @@ export default {
         this.$message.warning('请只选择一个采购订单')
         return
       }
-      
 
-      
+
+
       const dataSource = [...this.dataSource]
       this.baseId = this.selectedRowKeys[0]
       let row = dataSource.find(item => item.id === this.selectedRowKeys[0]);
@@ -386,13 +401,13 @@ export default {
         return
       }
       this.price = row.netpr
-      this.amount = row.menge-(row.allmenge==null?0:row.allmenge)
+      this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
       this.addVisiable = true
-      let that=this
-      setTimeout(function(){
+      let that = this
+      setTimeout(function () {
         that.$refs.scmBPurcharseorderAdd.setFormValues(row)
-      },200)
-      
+      }, 200)
+
     },
     handleEditSuccess (baseId) {
       this.editVisiable = false
@@ -408,7 +423,7 @@ export default {
       this.$refs.scmBPurcharseorderEdit.setFormValues(record)
       this.editVisiable = true
       this.ePrice = pRecord.netpr
-      this.eAmount = pRecord.menge-(pRecord.allmenge==null?0:pRecord.allmenge)+record.gMenge
+      this.eAmount = pRecord.menge - (pRecord.allmenge == null ? 0 : pRecord.allmenge) + record.gMenge
       this.editRecord = pRecord
     },
     subDelete (record, pRecord) {
@@ -513,7 +528,7 @@ export default {
       this.sortedInfo = null
       this.paginationInfo = null
       // 重置查询参数
-      
+
       this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {
@@ -538,14 +553,13 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      if(params.eindt==null){
-        params.eindt=this.defultDate_pre()
+      if (params.eindt == null) {
+        params.eindt = this.defultDate_pre()
       }
-      if(params.bedat==null)
-      {
-        params.bedat=this.defultDate()
+      if (params.bedat == null) {
+        params.bedat = this.defultDate()
       }
-      params.bsart=1//药品
+      params.bsart = 1//药品
       this.$get('scmBPurcharseorder', {
         ...params
       }).then((r) => {
@@ -574,7 +588,7 @@ export default {
     },
     defultDate_pre () {
       var date = new Date()
-      date.setDate(date.getDate()-7)
+      date.setDate(date.getDate() - 7)
       var seperator1 = "-"
       var year = date.getFullYear()
       var month = date.getMonth() + 1

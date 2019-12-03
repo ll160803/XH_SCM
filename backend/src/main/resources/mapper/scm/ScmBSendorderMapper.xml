@@ -58,7 +58,9 @@
         CREATE_TIME,
         MODIFY_TIME,
         CREATE_USER_ID,
-        MODIFY_USER_ID
+        MODIFY_USER_ID,
+        BSART,
+        SEND_DATE
         FROM
         scm_b_sendorder
         WHERE 1 = 1
@@ -72,15 +74,27 @@
         <if test="order.fphm != null and order.fphm != ''">
             AND FPHM = #{order.fphm}
         </if>
-
+        <if test="order.bsart != null and order.bsart != ''">
+            AND BSART = #{order.bsart}
+        </if>
     </select>
-
+    <!-- 物资 -->
     <update id="updateSupplyPlan" >
         UPDATE scm_b_supplyplan
        SET SEND_ORDER_CODE = #{id},
        FPHM = #{fphm}
        WHERE
 	   ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <!-- 药品 -->
+    <update id="updateSupplyPlan2" >
+        UPDATE scm_b_supplyplan
+        SET SEND_ORDER_CODE = #{id}
+        WHERE
+        ID in
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>

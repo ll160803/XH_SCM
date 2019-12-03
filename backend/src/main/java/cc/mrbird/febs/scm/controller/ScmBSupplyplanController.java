@@ -60,6 +60,7 @@ public Map<String, Object> List(QueryRequest request, ScmBSupplyplan scmBSupplyp
         scmBSupplyplan.setIsDeletemark(1);
         User currentUser= FebsUtil.getCurrentUser();
         scmBSupplyplan.setGysaccount(currentUser.getUsername());
+
         return getDataTable(this.iScmBSupplyplanService.findSupplyplans(request, scmBSupplyplan));
     }
 
@@ -108,7 +109,7 @@ public void updateScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan)throws Feb
         }
         }
 
-@Log("去除送货单号")
+@Log("物资去除送货单号")
 @DeleteMapping("deleteSendOrder/{ids}")
 public void deleteSendOrders(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
     try{
@@ -128,6 +129,27 @@ public void deleteSendOrders(@NotBlank(message = "{required}") @PathVariable Str
         throw new FebsException(message);
     }
 }
+
+    @Log("药品去除送货单号")
+    @DeleteMapping("deleteSendOrder2/{ids}")
+    public void deleteSendOrders2(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{
+        try{
+            String[]arr_ids=ids.split(StringPool.COMMA);
+            for (String id:
+                    arr_ids) {
+                ScmBSupplyplan scmBSupplyplan=new ScmBSupplyplan();
+                scmBSupplyplan.setId(Long.parseLong(id));
+                scmBSupplyplan.setSendOrderCode("");
+                this.iScmBSupplyplanService.updateSupplyplanOnly(scmBSupplyplan);
+            }
+            //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
+        }catch(Exception e){
+            message="删除失败" ;
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
+
 @Log("删除")
 @DeleteMapping("/{ids}")
 public void deleteScmBSupplyplans(@NotBlank(message = "{required}") @PathVariable String ids)throws FebsException{

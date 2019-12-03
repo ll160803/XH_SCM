@@ -55,6 +55,7 @@ public class ScmBSendorderController extends BaseController {
         scmBSendorder.setIsDeletemark(1);
         User currentUser = FebsUtil.getCurrentUser();
         scmBSendorder.setGysaccount(currentUser.getUsername());
+        log.error("art:"+scmBSendorder.getBsart());
         return getDataTable(this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder));
     }
 
@@ -66,7 +67,7 @@ public class ScmBSendorderController extends BaseController {
      * @param model
      * @return
      */
-    @Log("新增/按钮")
+    @Log("物资新增/按钮")
     @PostMapping
     @RequiresPermissions("scmBSendorder:add")
     public void addScmBSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
@@ -83,7 +84,23 @@ public class ScmBSendorderController extends BaseController {
             throw new FebsException(message);
         }
     }
-
+    @Log("药品新增/按钮")
+    @PostMapping("OrderAdd")
+    @RequiresPermissions("sendorder:add")
+    public void addSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBSendorder.setCreateUserId(currentUser.getUserId());
+            scmBSendorder.setGysaccount(currentUser.getUsername());
+            scmBSendorder.setGysname(currentUser.getRealname());
+            scmBSendorder.supplyPlanIds = supplyPlanIds;
+            this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
+        } catch (Exception e) {
+            message = "新增/按钮失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
     /**
      * 跳转修改页面
      *

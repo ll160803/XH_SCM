@@ -1,3 +1,4 @@
+
 <template>
   <a-drawer
     title="修改"
@@ -11,25 +12,24 @@
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="18">
+        <a-col :span="10">
           <a-form-item
             v-bind="formItemLayout"
-            label="发票号码"
+            label="送货时间"
           >
-            <a-input
-              placeholder="请输入发票号码"
-              v-decorator="['fphm', { rules: [{ required: true, message: '发票号码不能为空' }] }]"
-            />
+            <a-date-picker v-decorator="[ 'sendDate', { rules: [{ required: true, message: '送货时间不能为空' }] }]" />
           </a-form-item>
         </a-col>
         <a-col
-          :span="4"
+          :span="13"
           :offset="1"
         >
-          <a-button
-            @click="search"
-            type="primary"
-          >查询</a-button>
+          <a-input-search
+            placeholder="输入供应计划号"
+            v-model="queryParams.id"
+            @search="search"
+            enterButton="查询"
+          />
         </a-col>
       </a-row>
 
@@ -70,17 +70,16 @@ const formItemLayout = {
   wrapperCol: { span: 18 }
 }
 export default {
-  name: 'ScmBSendorderEdit',
+  name: 'SendorderEdit',
   props: {
     editVisiable: {
       default: false
-    },
-    fp:''
+    }
   },
   watch: {
     editVisiable () {
       if (this.editVisiable) {
-        this.fetch({ fphm: this.fp })
+        this.fetch({})
       }
     }
   },
@@ -89,38 +88,43 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id',
-        width: 120
+        width: 100
       }, {
-        title: '送货数量',
+        title: '供应数量',
         dataIndex: 'gMenge',
+        width: 80
+      }, {
+        title: '批号',
+        dataIndex: 'charge',
+        width: 80
+      }, {
+        title: '有效期',
+        dataIndex: 'vfdat',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        },
         width: 100
       }, {
-        title: '联系人',
-        dataIndex: 'linkPerson',
+        title: '生产日期',
+        dataIndex: 'hsdat',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        },
         width: 100
-      }, {
-        title: '送达科室',
-        dataIndex: 'sendDepart',
-        width: 100
-      }, {
-        title: '联系方式',
-        dataIndex: 'linkTelephone',
-        width: 120
       }, {
         title: '发票号码',
         dataIndex: 'fphm',
-        width: 120
+        width: 100
       }, {
         title: '发票金额',
         dataIndex: 'fpjr',
-        width: 100
+        width: 80
       }, {
-        title: '开票日期',
+        title: '发票日期',
         dataIndex: 'fprq',
-        width: 100
-      }, {
-        title: '商品条码',
-        dataIndex: 'materCode',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        },
         width: 100
       }, {
         title: '状态',
@@ -134,7 +138,20 @@ export default {
             default:
               return text
           }
-        }
+        },
+        width: 80
+      }, {
+        title: '发票编码',
+        dataIndex: 'fpbm',
+        width: 80
+      }, {
+        title: '包装规格',
+        dataIndex: 'pkgAmount',
+        width: 80
+      }, {
+        title: '包装数量',
+        dataIndex: 'pkgNumber',
+        width: 80
       }]
     }
   },
@@ -185,13 +202,11 @@ export default {
       let { sortedInfo } = this
       let sortField, sortOrder
 
-      let fphm = this.form.getFieldValue('fphm');
       // 获取当前列的排序和列的过滤规则
       if (sortedInfo) {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.queryParams.fphm = fphm
       this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
@@ -237,7 +252,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.bsartD = "1"
+      params.bsartD = "0"
       this.$get('scmBSupplyplan/sendOrder', {
         ...params
       }).then((r) => {
@@ -267,16 +282,16 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['fphm'])
+      let values = this.form.getFieldsValue(['sendDate'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmBSendorder[_key] = values[_key] })
       }
     },
-    setFormValues (fphm,id) {
-        console.info(fphm)
-      this.form.setFieldsValue({ fphm: fphm })
-      this.scmBSendorder.id=id
+    setFormValues (sendDate, id) {
+      this.form.setFieldsValue({ sendDate: sendDate })
+      this.scmBSendorder.id = id
     }
   }
 }
 </script>
+

@@ -236,7 +236,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.bsartD = 1
+      params.bsartD = "1"//物资单类型
       this.$get('scmBSupplyplan/sendOrder', {
         ...params
       }).then((r) => {
@@ -251,6 +251,7 @@ export default {
     handleSubmit () {
       let supplyPlanIds=this.selectedRowKeys.join(",")
       this.scmBSendorder["supplyPlanIds"]=supplyPlanIds
+      this.scmBSendorder["bsart"]="1"
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()

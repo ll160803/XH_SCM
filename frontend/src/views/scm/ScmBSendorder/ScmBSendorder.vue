@@ -102,7 +102,7 @@
           :rowKey="record2 => record2.id"
         >
           <template
-            slot="operation"
+            slot="operation2"
             slot-scope="text, record2"
           >
             <a-icon
@@ -138,12 +138,17 @@
 <script>
 import ScmBSendorderAdd from './ScmBSendorderAdd'
 import ScmBSendorderEdit from './ScmBSendorderEdit'
+import moment from 'moment'
 
 export default {
   name: 'ScmBSendorder',
   components: { ScmBSendorderAdd, ScmBSendorderEdit },
   data () {
     return {
+      scroll: {
+        x: 1200,
+        y: window.innerHeight - 200 - 100 - 30
+      },
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
@@ -163,7 +168,7 @@ export default {
       editVisiable: false,
       loading: false,
       bordered: true,
-      fph:''
+      fph: ''
     }
   },
   computed: {
@@ -180,47 +185,51 @@ export default {
         title: '发票金额',
         dataIndex: 'fpjr'
       }, {
-        title: '状态',
-        dataIndex: 'Status'
-      }, {
-        title: '是否删除',
-        dataIndex: 'isDeletemark'
-      }, {
         title: '操作',
         dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 100
+        scopedSlots: { customRender: 'operation' }
       }]
     },
     innerColumns () {
       return [{
         title: '供应计划号',
-        dataIndex: 'id'
+        dataIndex: 'id',
+        width: 100
       }, {
         title: '送货数量',
-        dataIndex: 'gMenge'
+        dataIndex: 'gMenge',
+        width: 80
       }, {
         title: '联系人',
-        dataIndex: 'linkPerson'
+        dataIndex: 'linkPerson',
+        width: 100
       }, {
         title: '送达科室',
-        dataIndex: 'sendDepart'
+        dataIndex: 'sendDepart',
+        width: 100
       }, {
         title: '联系方式',
-        dataIndex: 'linkTelephone'
+        dataIndex: 'linkTelephone',
+        width: 120
       }, {
         title: '发票号码',
-        dataIndex: 'fphm'
+        dataIndex: 'fphm',
+        width: 100
       }, {
         title: '发票金额',
-        dataIndex: 'fpjr'
+        dataIndex: 'fpjr',
+        width: 80
       }, {
         title: '开票日期',
-        dataIndex: 'fprq'
+        dataIndex: 'fprq',
+        width: 100,
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '商品条码',
-        dataIndex: 'materCode'
+        dataIndex: 'materCode',
+        width: 100
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -233,13 +242,12 @@ export default {
             default:
               return text
           }
-        }
+        },
+        width: 80
       }, {
-        title: '操作2',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 100
+        title: '操作',
+        dataIndex: 'operation2',
+        scopedSlots: { customRender: 'operation2' }
       }]
     }
   },
@@ -276,12 +284,12 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
-      let that=this
+      let that = this
       this.editVisiable = true
-      this.fph=record.fphm
-      setTimeout(function(){
-        that.$refs.scmBSendorderEdit.setFormValues(record.fphm)
-      },100);
+      this.fph = record.fphm
+      setTimeout(function () {
+        that.$refs.scmBSendorderEdit.setFormValues(record.fphm,record.id)
+      }, 100);
     },
     subDelete (record, pRecord) {
       let that = this
@@ -410,6 +418,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      params.bsart="1"
       this.$get('scmBSendorder', {
         ...params
       }).then((r) => {

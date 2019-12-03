@@ -70,25 +70,23 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
         scmBSendorder.setCreateTime(new Date());
         this.save(scmBSendorder);
         String supplyPlanIds = scmBSendorder.supplyPlanIds;
-        log.error("444444" + supplyPlanIds);
+
         if (StringUtils.isNotBlank(supplyPlanIds)) {
-            log.error("333333" + supplyPlanIds);
             String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
-            String fphm = scmBSendorder.getFphm();
+
             List<Long> ids = new ArrayList<>();
             for (String idStr : arr_ids
             ) {
                 ids.add(Long.parseLong(idStr));
             }
-            this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm);
-//                for (String id :
-//                        arr_ids) {
-//                        ScmBSupplyplan scmBSupplyplan = new ScmBSupplyplan();
-//                        scmBSupplyplan.setId(Long.parseLong(id));
-//                        scmBSupplyplan.setFphm(fphm);
-//                        scmBSupplyplan.setSendOrderCode(scmBSendorder.getId().toString());
-//                        scmBSupplyplanMapper.updateScmBSupplyplan(scmBSupplyplan);
-//                }
+            if (scmBSendorder.getBsart() == "1") {//物资
+                String fphm = scmBSendorder.getFphm();
+                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm);
+            }
+            else//药品
+            {
+                this.baseMapper.updateSupplyPlan2(ids, scmBSendorder.getId().toString());
+            }
         }
     }
 

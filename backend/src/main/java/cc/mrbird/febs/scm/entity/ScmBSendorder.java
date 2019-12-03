@@ -84,6 +84,20 @@ private String comments;
     @TableField("Status")
             @ExcelField(value ="状态")
 private Integer Status;
+
+    /**
+     * 送货单类型 0是药品 1是物资
+     */
+    @TableField("BSART")
+    @ExcelField(value ="送货单类型")
+    private String bsart;
+
+    /**
+     * 送货时间
+     */
+    @TableField("SEND_DATE")
+    @ExcelField(value ="送货日期")
+    private Date sendDate;
     /**
      * 是否删除
      */
@@ -135,13 +149,21 @@ private Long modifyUserId;
             this.code = code;
             }
 
-    public String getName(){
-            return name;
+    public String getBsart(){
+            return bsart;
             }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setBsart(String bsart) {
+            this.bsart = bsart;
             }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getFphm(){
             return fphm;
@@ -199,13 +221,21 @@ private Long modifyUserId;
             this.isDeletemark = isDeletemark;
             }
 
-    public Date getCreateTime(){
-            return createTime;
+    public Date getSendDate(){
+            return sendDate;
             }
 
-        public void setCreateTime(Date createTime) {
-            this.createTime = createTime;
+        public void setSendDate(Date sendDate) {
+            this.sendDate = sendDate;
             }
+
+    public Date getCreateTime(){
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
     public Date getModifyTime(){
             return modifyTime;
@@ -234,6 +264,8 @@ private Long modifyUserId;
     public static final String ID ="ID" ;
 
     public static final String CODE ="CODE" ;
+
+    public  static  final  String BSART="BSART";
 
     public static final String NAME ="NAME" ;
 
@@ -271,6 +303,8 @@ public String toString() {
                 ", gysname=" + gysname +
                 ", comments=" + comments +
                 ", Status=" + Status +
+                ", bsart=" + bsart +
+                ", sendDate=" + sendDate +
                 ", isDeletemark=" + isDeletemark +
                 ", createTime=" + createTime +
                 ", modifyTime=" + modifyTime +

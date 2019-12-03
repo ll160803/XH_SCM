@@ -3,7 +3,7 @@
     :bordered="false"
     class="card-area"
   >
-    <div :class="advanced ? 'search' : null">
+    <div>
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row>
@@ -12,58 +12,16 @@
               :sm="24"
             >
               <a-form-item
-                label="药品名称"
+                label="送货单号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.txz01" />
+                <a-input v-model="queryParams.id" />
               </a-form-item>
             </a-col>
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="药品编码"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-input v-model="queryParams.matnr" />
-              </a-form-item>
-            </a-col>
+
           </a-row>
-          <a-row v-if="advanced">
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="开始时间"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-date-picker
-                  @change="onChange"
-                  :defaultValue="start"
-                />
-              </a-form-item>
-            </a-col>
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="结束时间"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-date-picker
-                  @change="onChange2"
-                  :defaultValue="enddate"
-                />
-              </a-form-item>
-            </a-col>
-          </a-row>
+
         </div>
         <span style="float: right; margin-top: 3px;">
           <a-button
@@ -74,24 +32,33 @@
             style="margin-left: 8px"
             @click="reset"
           >重置</a-button>
-          <a
-            @click="toggleAdvanced"
-            style="margin-left: 8px"
-          >
-            {{advanced ? '收起' : '展开'}}
-            <a-icon :type="advanced ? 'up' : 'down'" />
-          </a>
         </span>
       </a-form>
     </div>
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['scmBSupplyPlan:add']"
+          v-hasPermission="['sendorder:add']"
           type="primary"
           ghost
           @click="add"
         >新增</a-button>
+        <a-button
+          v-hasPermission="['sendorder:delete']"
+          @click="batchDelete"
+        >删除</a-button>
+        <a-dropdown v-hasPermission="['sendorder:export']">
+          <a-menu slot="overlay">
+            <a-menu-item
+              key="export-data"
+              @click="exportExcel"
+            >导出Excel</a-menu-item>
+          </a-menu>
+          <a-button>
+            更多操作
+            <a-icon type="down" />
+          </a-button>
+        </a-dropdown>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -100,26 +67,31 @@
         :rowKey="record => record.id"
         :dataSource="dataSource"
         :pagination="pagination"
-        :expandedRowKeys="expandedRowKeys"
         :loading="loading"
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 1500 }"
+        :expandedRowKeys="expandedRowKeys"
         @expand="expandSubGrid"
       >
         <template
-          slot="remark"
+          slot="operation"
           slot-scope="text, record"
         >
-          <a-popover placement="topLeft">
-            <template slot="content">
-              <div style="max-width: 200px">{{text}}</div>
-            </template>
-            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
-          </a-popover>
+          <a-icon
+            v-hasPermission="['sendorder:update']"
+            type="setting"
+            theme="twoTone"
+            twoToneColor="#4a9ff5"
+            @click="edit(record)"
+            title="修改"
+          ></a-icon>
+          <a-badge
+            v-hasNoPermission="['sendorder:update']"
+            status="warning"
+            text="无权限"
+          ></a-badge>
         </template>
-
         <a-table
           ref="subTable"
           slot="expandedRowRender"
@@ -130,71 +102,55 @@
           :rowKey="record2 => record2.id"
         >
           <template
-            slot="operation"
+            slot="operation2"
             slot-scope="text, record2"
           >
             <a-icon
-              type="setting"
-              theme="twoTone"
-              twoToneColor="#4a9ff5"
-              v-show="record2.status==0 && record.status==1"
-              @click="edit(record2,record)"
-              title="修改"
-            ></a-icon>
-            <a-icon
-              v-hasPermission="['scmBSupplyplan:delete']"
               type="delete"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              v-show="record2.status==0 && record.status==1"
               @click="subDelete(record2)"
               title="删除"
             ></a-icon>
-            <!-- <a-badge
-              v-hasNoPermission="['scmBSupplyplan:update']"
-              status="warning"
-              text="无权限"
-            ></a-badge>-->
           </template>
         </a-table>
       </a-table>
     </div>
     <!-- 新增字典 -->
-    <scmBSupplyplan-add
+    <scmBSendorder-add
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
-      :price="price"
-      :baseId="baseId"
-      :amount="amount"
     >
-    </scmBSupplyplan-add>
+    </scmBSendorder-add>
     <!-- 修改字典 -->
-    <scmBSupplyplan-edit
-      ref="scmBPurcharseorderEdit"
+    <scmBSendorder-edit
+      ref="scmBSendorderEdit"
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
-      :price="ePrice"
-      :amount="eAmount"
+      :fp="fph"
     >
-    </scmBSupplyplan-edit>
+    </scmBSendorder-edit>
   </a-card>
 </template>
+
 <script>
-import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
-import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
+import ScmBSendorderAdd from './SendOrderAdd'
+import ScmBSendorderEdit from './SendOrderEdit'
 import moment from 'moment'
 
 export default {
-  name: 'ScmBPurcharseorder',
-  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit },
+  name: 'Sendorder',
+  components: { ScmBSendorderAdd, ScmBSendorderEdit },
   data () {
     return {
-      dateFormat: 'YYYY-MM-DD',
+      scroll: {
+        x: 1200,
+        y: window.innerHeight - 200 - 100 - 30
+      },
       advanced: false,
       dataSource: [],
-      innerData: [],
       selectedRowKeys: [],
       expandedRowKeys: [],
       sortedInfo: null,
@@ -207,92 +163,31 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {
-      },
+      queryParams: {},
       addVisiable: false,
-      baseId: '',//采购订单的id
-      editRecord: {},//编辑行
-      addKey: '',//添加的订单id
-      amount: 0,
-      price: 0,
-      eAmount: 0,
-      ePrice: 0,
       editVisiable: false,
       loading: false,
-      bordered: true
+      bordered: true,
+      fph: ''
     }
   },
   computed: {
-    start () {
-      return moment(this.defultDate_pre())
-    },
-    enddate () {
-      return moment(this.defultDate())
-    },
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '订单号',
-        dataIndex: 'ebeln'
+        title: '送货清单号',
+        dataIndex: 'id'
       }, {
-        title: '项目号',
-        dataIndex: 'ebelp'
-      }, {
-        title: '供应计划号',
-        dataIndex: 'lifnr'
-      }, {
-        title: '物料ID',
-        dataIndex: 'matnr'
-      }, {
-        title: '物料描述',
-        dataIndex: 'txz01'
-      }, {
-        title: '院区名称',
-        dataIndex: 'werkst'
-      }, {
-        title: '库房名称',
-        dataIndex: 'lgortName'
-      }, {
-        title: '订单数量',
-        dataIndex: 'menge'
-      }, {
-        title: '计量单位',
-        dataIndex: 'mseht'
-      }, {
-        title: '单价',
-        dataIndex: 'netpr'
-      }, {
-        title: '订单开始时间',
-        dataIndex: 'eindt',
+        title: '送货日期',
+        dataIndex: 'sendDate',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         }
       }, {
-        title: '订单结束时间',
-        dataIndex: 'bedat',
-        customRender: (text, row, index) => {
-          return moment(text).format('YYYY-MM-DD')
-        }
-      }, {
-        title: '状态',
-        dataIndex: 'status',
-        customRender: (text, row, index) => {
-          switch (text) {
-            case 0:
-              return <a-tag color="purple">无效</a-tag>
-            case 1:
-              return <a-tag color="green">有效</a-tag>
-            default:
-              return text
-          }
-        }
-      }, {
-        title: '供应数量',
-        dataIndex: 'allmenge'
-      }, {
-        title: '收货数量',
-        dataIndex: 'suremenge'
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' }
       }]
     },
     innerColumns () {
@@ -353,15 +248,12 @@ export default {
         dataIndex: 'pkgNumber'
       }, {
         title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 100
+        dataIndex: 'operation2',
+        scopedSlots: { customRender: 'operation2' }
       }]
     }
   },
   mounted () {
-
     this.fetch()
   },
   methods: {
@@ -374,61 +266,32 @@ export default {
         this.queryParams.comments = ''
       }
     },
-    onChange (date, dateString) {
-      console.info(2222 + dateString);
-      this.queryParams.eindt = dateString
-    },
-    onChange2 (date, dateString) {
-      this.queryParams.bedat = dateString
-    },
     handleAddSuccess () {
       this.addVisiable = false
-      this.$message.success('新增供应计划成功')
-      // this.expandedRowKeys=[]
-      //this.search()
-      // const dataSource = [...this.dataSource]
-      let row = this.dataSource.find(item => item.id === this.baseId);
-      this.handleSubData(row)
+      this.$message.success('新增成功')
+      this.search()
     },
     handleAddClose () {
       this.addVisiable = false
     },
     add () {
-      if (!this.selectedRowKeys.length) {
-        this.$message.warning('请选择采购订单')
-        return
-      }
-      if (this.selectedRowKeys.length > 1) {
-        this.$message.warning('请只选择一个采购订单')
-        return
-      }
-      const dataSource = [...this.dataSource]
-      this.baseId = this.selectedRowKeys[0]
-      let row = dataSource.find(item => item.id === this.selectedRowKeys[0]);
-      if (row.status == 0) {
-        this.$message.warning('当前采购订单无效,请联系库房人员')
-        return
-      }
-      this.price = row.netpr
-      this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
       this.addVisiable = true
     },
-    handleEditSuccess (baseId) {
+    handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改供应计划成功')
-      //this.expandedRowKeys=[]
-      //this.search()
-      this.handleSubData(this.editRecord)
+      this.$message.success('修改成功')
+      this.search()
     },
     handleEditClose () {
       this.editVisiable = false
     },
-    edit (record, pRecord) {
-      this.$refs.scmBPurcharseorderEdit.setFormValues(record)
+    edit (record) {
+      let that = this
       this.editVisiable = true
-      this.ePrice = pRecord.netpr
-      this.eAmount = pRecord.menge - (pRecord.allmenge == null ? 0 : pRecord.allmenge) + record.gMenge
-      this.editRecord = pRecord
+      this.fph = record.fphm
+      setTimeout(function () {
+        that.$refs.scmBSendorderEdit.setFormValues(record.sendDate, record.id)
+      }, 100);
     },
     subDelete (record, pRecord) {
       let that = this
@@ -437,7 +300,7 @@ export default {
         content: '当您点击确定按钮后，此记录将会被彻底删除',
         centered: true,
         onOk () {
-          that.$delete('scmBSupplyplan/' + record.id).then(() => {
+          that.$delete('scmBSupplyplan/deleteSendOrder2/' + record.id).then(() => {
             that.$message.success('删除成功')
             that.search()
             that.expandedRowKeys = []
@@ -460,7 +323,7 @@ export default {
     handleSubData (record) {
       this.loading = true
       this.$get('scmBSupplyplan', {
-        baseId: record.id
+        sendOrderCode: record.id
       }).then((r) => {
         let data = r.data
         this.loading = false
@@ -478,8 +341,8 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          let scmBPurcharseorderIds = that.selectedRowKeys.join(',')
-          that.$delete('scmBPurcharseorder/' + scmBPurcharseorderIds).then(() => {
+          let scmBSendorderIds = that.selectedRowKeys.join(',')
+          that.$delete('scmBSendorder/' + scmBSendorderIds).then(() => {
             that.$message.success('删除成功')
             that.selectedRowKeys = []
             that.search()
@@ -498,7 +361,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('scmBPurcharseorder/excel', {
+      this.$export('scmBSendorder/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
@@ -532,7 +395,7 @@ export default {
       this.sortedInfo = null
       this.paginationInfo = null
       // 重置查询参数
-
+      this.queryParams = {}
       this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {
@@ -557,14 +420,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      if (params.eindt == null) {
-        params.eindt = this.defultDate_pre()
-      }
-      if (params.bedat == null) {
-        params.bedat = this.defultDate()
-      }
-      params.bsart = 0//药品
-      this.$get('scmBPurcharseorder', {
+      params.bsart = "0"
+      this.$get('scmBSendorder', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -574,37 +431,6 @@ export default {
         this.dataSource = data.rows
         this.pagination = pagination
       })
-    },
-    defultDate () {
-      var date = new Date()
-      var seperator1 = "-"
-      var year = date.getFullYear()
-      var month = date.getMonth() + 1
-      var strDate = date.getDate()
-      if (month >= 1 && month <= 9) {
-        month = "0" + month
-      }
-      if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate
-      }
-      var currentdate = year + seperator1 + month + seperator1 + strDate
-      return currentdate
-    },
-    defultDate_pre () {
-      var date = new Date()
-      date.setDate(date.getDate() - 7)
-      var seperator1 = "-"
-      var year = date.getFullYear()
-      var month = date.getMonth() + 1
-      var strDate = date.getDate()
-      if (month >= 1 && month <= 9) {
-        month = "0" + month
-      }
-      if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate
-      }
-      var currentdate = year + seperator1 + month + seperator1 + strDate
-      return currentdate
     }
   }
 }

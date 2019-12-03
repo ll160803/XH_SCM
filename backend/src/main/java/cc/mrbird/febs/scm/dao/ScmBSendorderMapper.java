@@ -25,5 +25,7 @@ public interface ScmBSendorderMapper extends BaseMapper<ScmBSendorder> {
         void updateDeleteOrder(@Param("id") String id,@Param("lid") Long lid);
 
         void updateSupplyPlan(@Param("ids") List<Long> ids,@Param("id") String id,@Param("fphm") String fphm);
+
+        void updateSupplyPlan2(@Param("ids") List<Long> ids,@Param("id") String id);
         IPage<ScmBSendorder> findSendInfos(Page page, @Param("order") ScmBSendorder order);
         }

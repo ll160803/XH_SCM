@@ -111,6 +111,7 @@
 <script>
 import ScmBReportAdd from './ScmBReportAdd'
 import ScmBReportEdit from './ScmBReportEdit'
+import moment from 'moment'
 
 export default {
   name: 'ScmBReport',
@@ -147,7 +148,10 @@ export default {
       },
       {
         title: '创建时间',
-        dataIndex: 'createTime'
+        dataIndex: 'createTime',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '操作',
         dataIndex: 'operation',

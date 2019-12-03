@@ -88,23 +88,33 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             if (StringUtils.isNotBlank(scmBSupplyplan.getCode())) {
                 queryWrapper.eq(ScmBSupplyplan::getCode, scmBSupplyplan.getCode());
             }
+            if (scmBSupplyplan.getId()!=null) {
+                queryWrapper.eq(ScmBSupplyplan::getId, scmBSupplyplan.getId());
+            }
             if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
                 queryWrapper.eq(ScmBSupplyplan::getBaseId, scmBSupplyplan.getBaseId());
             }
             if (StringUtils.isNotBlank(scmBSupplyplan.getGysaccount())) {
                 queryWrapper.eq(ScmBSupplyplan::getGysaccount, scmBSupplyplan.getGysaccount());
             }
-            if (StringUtils.isNotBlank(scmBSupplyplan.getFphm())) {
-                queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, scmBSupplyplan.getFphm()).or().eq(ScmBSupplyplan::getFphm, null
-                ).or().eq(ScmBSupplyplan::getFphm, ""
-                ));
+            if(scmBSupplyplan.getBsartD()=="1") {
+                if (StringUtils.isNotBlank(scmBSupplyplan.getFphm())) {
+                    queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, scmBSupplyplan.getFphm()).or().eq(ScmBSupplyplan::getFphm, null
+                    ).or().eq(ScmBSupplyplan::getFphm, ""
+                    ));
+                } else {
+                    queryWrapper.and(wrapper -> wrapper.isNull(ScmBSupplyplan::getFphm)
+                    .or().eq(ScmBSupplyplan::getFphm, ""
+                    ));
+                }
+
             }
             else
             {
-                queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, null
-                ).or().eq(ScmBSupplyplan::getFphm, ""
+                queryWrapper.and(wrapper -> wrapper.isNull(ScmBSupplyplan::getSendOrderCode).or().eq(ScmBSupplyplan::getSendOrderCode, ""
                 ));
             }
+            queryWrapper.eq(ScmBSupplyplan::getBsartD, scmBSupplyplan.getBsartD());//订单类型
             if (scmBSupplyplan.getIsDeletemark() != null) {
                 queryWrapper.eq(ScmBSupplyplan::getIsDeletemark, scmBSupplyplan.getIsDeletemark());
             }
