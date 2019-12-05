@@ -92,3 +92,4 @@ febs:
     email: 852252810@qq.com
     license: Apache 2.0
     licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
+  qrcodePath: D:/Project_SCM/XH_SCM/frontend/dist/static/uploadFile

@@ -78,18 +78,11 @@
           v-hasPermission="['scmBSendinfo:delete']"
           @click="batchDelete"
         >删除</a-button>
-        <a-dropdown v-hasPermission="['scmBSendinfo:export']">
-          <a-menu slot="overlay">
-            <a-menu-item
-              key="export-data"
-              @click="exportExcel"
-            >导出Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
+        <a-button
+          type="primary"
+          ghost
+          @click="print"
+        >打印</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -151,16 +144,25 @@
       :editVisiable="editVisiable"
     >
     </scmBSendinfo-edit>
+    <!-- 打印送货单 -->
+    <sendInfo-print
+      ref="sendinfoPrint"
+      @close="handlePrintClose"
+      :printVisiable="printVisiable"
+      :ids="printIds"
+    >
+    </sendInfo-print>
   </a-card>
 </template>
 
 <script>
 import ScmBSendinfoAdd from './ScmBSendinfoAdd'
 import ScmBSendinfoEdit from './ScmBSendinfoEdit'
+import SendInfoPrint from './SendInfoPrint'
 
 export default {
   name: 'ScmBSendinfo',
-  components: { ScmBSendinfoAdd, ScmBSendinfoEdit },
+  components: { ScmBSendinfoAdd, ScmBSendinfoEdit, SendInfoPrint },
   data () {
     return {
       advanced: false,
@@ -179,8 +181,10 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      printVisiable: false,
       loading: false,
-      bordered: true
+      bordered: true,
+      printIds: ''
     }
   },
   computed: {
@@ -256,6 +260,33 @@ export default {
     add () {
       this.addVisiable = true
     },
+    print () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要打印的记录')
+        return
+      }
+      const dataSource = [...this.dataSource]
+      let depart = "";
+      let flag = 0
+      this.selectedRowKeys.forEach(el => {
+        let row = dataSource.find(item => item.id === el)
+        if (depart === "") {
+          depart = row.sendDepart
+        }
+        else {
+          if (depart !== row.sendDepart) {
+            this.$message.warning('所选打印送货单的送货科室必须一致！！！')
+            flag = 1
+            return
+          }
+        }
+
+      });
+      if (flag == 0) {
+        this.printIds = this.selectedRowKeys.join(',')
+        this.printVisiable = true
+      }
+    },
     handleEditSuccess () {
       this.editVisiable = false
       this.$message.success('修改字典成功')
@@ -263,6 +294,9 @@ export default {
     },
     handleEditClose () {
       this.editVisiable = false
+    },
+    handlePrintClose () {
+      this.printVisiable = false
     },
     edit (record) {
       this.$refs.scmBSendinfoEdit.setFormValues(record)

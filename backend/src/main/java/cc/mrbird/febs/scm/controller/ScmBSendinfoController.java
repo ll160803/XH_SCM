@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
+import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
@@ -11,6 +12,7 @@ import cc.mrbird.febs.scm.entity.ScmBSendinfo;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +36,6 @@ import java.util.Map;
 @Validated
 @RestController
 @RequestMapping("scmBSendinfo")
-
 public class ScmBSendinfoController extends BaseController {
 
     private String message;
@@ -134,9 +135,124 @@ public class ScmBSendinfoController extends BaseController {
         }
     }
 
+
+    @PostMapping("print")
+    public FebsResponse Generate(@NotBlank(message = "{required}") String ids) {
+        log.error("ids:"+ids);
+        LambdaQueryWrapper<ScmBSendinfo> queryWrapper = new LambdaQueryWrapper<>();
+       String[] arrIds= ids.split(StringPool.COMMA);
+       List<Long> arr=new ArrayList<>();
+        for (String id:arrIds
+             ) {
+            arr.add(Long.parseLong(id));
+        }
+        queryWrapper.in(ScmBSendinfo::getId,arr);
+        List<ScmBSendinfo> list=this.iScmBSendinfoService.list(queryWrapper);
+        StringBuilder sb = new StringBuilder();
+        String gysName = "";
+        sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+        for (int i = 0; i < list.size(); i++)
+        {
+            ScmBSendinfo entity=list.get(i);
+            if (i == 0)
+            {
+                gysName = entity.getGysname();
+                sb.append(String.format("<tr><td colspan=\"8\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td></tr>", entity.getGysname() + "送货单"));
+                sb.append(String.format("<tr><td colspan=\"4\" style=\"height:30px;font-family:宋体;text-align:left;font-size: 12px;\" >送货科室：%1$s</td><td colspan=\"3\" style=\"height:30px;font-family:宋体;font-size: 12px;\" >送货日期：</td><td></td></tr>", entity.getSendDepart()));
+                GenerateHeadCode(sb, "序号", "物资名称", "物资编码", "送货数量", "单位", "单价", "金额", "备注说明");
+            }
+            // var data = GenerateMark(entity.CODE);
+            GenerateCode(sb,  Integer.toString(i+1), entity.getTxz01(), entity.getMatnr(), entity.getAmount().toString(), entity.getMseht(), entity.getPrice().toString(), entity.getMoney().toString(), "");
+        }
+        sb.append(String.format("<tr><td colspan=\"4\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"2\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >收货人：</td><td colspan=\"2\" style=\"border-top:solid 1px black;\"></td></tr>", gysName));
+        sb.append("</table>");
+        FebsResponse feb=new FebsResponse();
+        feb.data(sb.toString());
+        return  feb;
+    }
     @GetMapping("/{id}")
     public ScmBSendinfo detail(@NotBlank(message = "{required}") @PathVariable String id) {
         ScmBSendinfo scmBSendinfo = this.iScmBSendinfoService.getById(id);
         return scmBSendinfo;
+    }
+    public void GenerateCode(StringBuilder sb, String k, String TXZ01, String MATNR, String MENGE, String MSEHT, String PRICE, String MONEY, String COMMENTS)
+    {
+        String replaceStr = GenerateStr();
+        sb.append(String.format(replaceStr, k, MATNR, TXZ01, MENGE, MSEHT, PRICE, MONEY, COMMENTS));
+    }
+   /*
+   行样式
+    */
+    public String GenerateStr()
+    {
+        String reStr =
+                "<tr>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%1$s" +
+                        "</td>" +
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%2$s" +
+                        "</td>" +
+                        "<td style=\"width: 240px;border-left:solid 1px black;border-top:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%3$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%4$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%5$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%6$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%7$s" +
+                        "</td>" +
+                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;border-right:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%8$s" +
+                        "</td>" +
+                        "</tr>";
+
+        return reStr;
+
+    }
+
+    public void GenerateHeadCode(StringBuilder sb, String k, String TXZ01, String MATNR, String MENGE, String MSEHT, String PRICE, String MONEY, String COMMENTS)
+    {
+        String replaceStr = GenerateHeadStr();
+        sb.append(String.format(replaceStr, k, MATNR, TXZ01, MENGE, MSEHT, PRICE, MONEY, COMMENTS));
+    }
+    public String GenerateHeadStr()
+    {
+        String reStr =
+                "<tr>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%1$s" +
+                        "</td>" +
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%2$s" +
+                        "</td>" +
+                        "<td style=\"width: 240px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%3$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%4$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%5$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%6$s" +
+                        "</td>" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%7$s" +
+                        "</td>" +
+                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;border-right:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%8$s" +
+                        "</td>" +
+                        "</tr>";
+
+        return reStr;
+
     }
 }
