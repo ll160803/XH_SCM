@@ -43,6 +43,11 @@
           ghost
           @click="add"
         >新增</a-button>
+         <a-button
+          type="primary"
+          ghost
+          @click="print"
+        >打印送货清单</a-button>
         <a-button
           v-hasPermission="['sendorder:delete']"
           @click="batchDelete"
@@ -132,17 +137,27 @@
       :fp="fph"
     >
     </scmBSendorder-edit>
+    <!-- 打印送货清单 -->
+    <sendOrder-print
+      ref="sendinfoPrint"
+      @close="handlePrintClose"
+      :printVisiable="printVisiable"
+      :ids="printIds"
+      bsart="0"
+    >
+    </sendOrder-print>
   </a-card>
 </template>
 
 <script>
 import ScmBSendorderAdd from './SendOrderAdd'
 import ScmBSendorderEdit from './SendOrderEdit'
+import SendOrderPrint from './SendOrderPrint'
 import moment from 'moment'
 
 export default {
   name: 'Sendorder',
-  components: { ScmBSendorderAdd, ScmBSendorderEdit },
+  components: { ScmBSendorderAdd, ScmBSendorderEdit, SendOrderPrint  },
   data () {
     return {
       scroll: {
@@ -168,7 +183,9 @@ export default {
       editVisiable: false,
       loading: false,
       bordered: true,
-      fph: ''
+      fph: '',
+      printIds: '',
+      printVisiable: false
     }
   },
   computed: {
@@ -278,6 +295,22 @@ export default {
     },
     add () {
       this.addVisiable = true
+    },
+    print () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要打印的记录')
+        return
+      }
+      if (this.selectedRowKeys.length > 1) {
+        this.$message.warning('请选择一条需要打印的记录')
+        return
+      }
+
+      this.printIds = this.selectedRowKeys.join(',')
+      this.printVisiable = true
+    },
+    handlePrintClose () {
+      this.printVisiable = false
     },
     handleEditSuccess () {
       this.editVisiable = false

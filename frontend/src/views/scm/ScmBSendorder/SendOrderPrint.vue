@@ -44,7 +44,8 @@ export default {
       require: true,
       default: false
     },
-    ids: ''
+    ids: '',
+    bsart: ''
   },
   data () {
     return {
@@ -82,7 +83,8 @@ export default {
       this.$emit('close')
     },
     printContent () {
-      this.$post(`scmBSendorder/print`, { id: this.ids }).then((r) => {
+      console.info("bsart:" + this.bsart)
+      this.$post(`scmBSendorder/print`, { id: this.ids, bsart: this.bsart }).then((r) => {
         let data = r.data.data
         this.printHtml = data
       })

@@ -143,6 +143,7 @@
       @close="handlePrintClose"
       :printVisiable="printVisiable"
       :ids="printIds"
+      :bsart="bart"
     >
     </sendOrder-print>
   </a-card>
@@ -184,7 +185,8 @@ export default {
       bordered: true,
       fph: '',
       printIds: '',
-      printVisiable: false
+      printVisiable: false,
+      bart: ''
     }
   },
   computed: {
@@ -300,7 +302,7 @@ export default {
         this.$message.warning('请选择一条需要打印的记录')
         return
       }
-
+      this.bart = '1'
       this.printIds = this.selectedRowKeys.join(',')
       this.printVisiable = true
     },

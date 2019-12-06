@@ -177,13 +177,54 @@ public class ScmBSendorderController extends BaseController {
         return scmBSendorder;
     }
     @PostMapping("print")
-    public FebsResponse Generate(@NotBlank(message = "{required}") String id) {
+    public FebsResponse Generate(@NotBlank(message = "{required}") String id ,String bsart) {
         FebsResponse feb=new FebsResponse();
         LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ViewSupplyplan::getSendOrderCode,id);
         List<ViewSupplyplan> entitys= iViewSupplyplanService.list(queryWrapper);
         StringBuilder sb = new StringBuilder();
         String markCode = GenerateMark(id);//生成送货清单二维码
+        log.error("bsart:"+bsart);
+        if(bsart.equals("1"))
+        {
+            GenerMater(sb,entitys,id,markCode);
+        }
+        else
+        {
+            GenerYaoPin(sb,entitys,id,markCode);
+        }
+
+        feb.data(sb.toString());
+        return  feb;
+    }
+    private void GenerYaoPin(StringBuilder sb,List<ViewSupplyplan> entitys ,String id ,String markCode ){
+        sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+
+        String gysName = "";
+        BigDecimal FPJR = entitys.stream().map(ViewSupplyplan::getFpjr).reduce(BigDecimal.ZERO,BigDecimal::add);
+        for (int i = 0; i < entitys.size(); i++)
+        {
+            ViewSupplyplan entity = entitys.get(i);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            if (i == 0)
+            {
+                gysName = entity.getGysname();
+                sb.append(String.format("<tr><td colspan=\"14\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td></tr>",  "武汉协和医院药品送货清单"));
+                sb.append(String.format("<tr><td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商：%1$s</td>", entity.getGysaccount()));
+                sb.append(String.format("<td colspan=\"1\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：</td><td colspan=\"5\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >发票号码：%1$s</td><td colspan=\"3\" style=\"height:40px;font-family:宋体;font-size: 12px;\" >送货清单号：</td><td style=\"height:40px;font-family:宋体;font-size: 12px;\" rowspan=\"2\"> <img alt=\"显示出错\" id=\"im_1\" src=\"%4$s\"  style=\" width:80px; height:80px;\"/></td></tr>", entity.getFphm(), FPJR, id, markCode, "协和"));
+                sb.append(String.format("<tr><td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >%1$s</td>", entity.getGysname()));
+                sb.append(String.format("<td colspan=\"1\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >%5$s</td><td colspan=\"5\" style=\"height:40px;font-family:宋体;font-size: 12px;\" >发票金额：%2$.2f</td><td colspan=\"3\" style=\"height:40px;font-family:宋体;font-size: 12px;\" >%3$s</td></tr>", entity.getFphm(), FPJR, id, markCode, entity.getWerkst()));
+                GenerateHeadCode(sb, "订单日期", "采购订单", "行项目", "药品编码", "药品描述", "采购数量", "送货数量", "批次", "单价", "发票金额", "有效日期", "开票日期", "包装数量", "箱数");
+            }
+            // var data = GenerateMark(entity.CODE);
+
+            GenerateCode(sb, sdf.format(entity.getBedat()), entity.getEbeln(), entity.getId().toString(), entity.getMatnr(), entity.getTxz01(), entity.getMenge().toString(), entity.getgMenge().toString(), entity.getCharge(), entity.getNetpr().toString(), entity.getFpjr().toString(), sdf.format(entity.getHsdat()), sdf.format(entity.getFprq()), entity.getPkgAmount()==null?"":entity.getPkgAmount().toString(), entity.getPkgNumber()==null?"":entity.getPkgNumber().toString());
+        }
+        //GenerateBottomCode(sb, "", "", "", "", "", "", "", "", "", "", "", "", "", "");//最后一行空着
+        sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", gysName));
+        sb.append("</table>");
+    }
+    private void GenerMater(StringBuilder sb,List<ViewSupplyplan> entitys ,String id ,String markCode ){
         sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
 
         String gysName = "";
@@ -208,8 +249,6 @@ public class ScmBSendorderController extends BaseController {
         //GenerateBottomCode(sb, "", "", "", "", "", "", "", "", "", "", "", "", "", "");//最后一行空着
         sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", gysName));
         sb.append("</table>");
-        feb.data(sb.toString());
-        return  feb;
     }
     public void GenerateCode(StringBuilder sb, String BEDAT, String EBELN, String EBELP, String MATNR, String TXZ01, String order_menge, String MENGE, String MSEHT, String PRICE, String MONEY, String SEND_DEPART_NAME, String LINK_PERSON, String LINK_TELEPHONE, String MATER_CODE)
     {
