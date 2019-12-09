@@ -219,10 +219,10 @@ p {
   }
 }
 .ant-table-thead > tr > th, .ant-table-tbody > tr > td {
-    padding: 4px 4px;
+    padding: 6px 6px;
 }
 tr.ant-table-expanded-row td > .ant-table-wrapper {
-    margin: -4px -4px -5px;
+    margin: -6px -6px -7px;
 }
 .ant-modal-body{
   padding: 8px 24px;
@@ -243,5 +243,8 @@ tr.ant-table-expanded-row td > .ant-table-wrapper {
 }
 .ant-table-pagination.ant-pagination{
   margin: 4px 0 0 0 !important;
+}
+.ant-table{
+  font-size: 16px !important;
 }
 </style>
