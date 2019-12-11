@@ -20,6 +20,7 @@
               :min="0"
               :max="amount"
               @blur="mengeBlur"
+              style="width: 100%"
               placeholder="请输入供应数量"
               v-decorator="['gMenge',  { rules: [{ required: true, message: '供应数量不能为空' }] }]"
             />
@@ -124,6 +125,7 @@
             label="包装数量"
           >
             <a-input
+              style="width: 100%"
               placeholder="请输入包装数量"
               v-decorator="['pkgNumber',{ rules: [{ required: true, message: '包装数量不能为空' }] }]"
             />

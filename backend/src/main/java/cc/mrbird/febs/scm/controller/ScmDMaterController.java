@@ -51,7 +51,7 @@ public IScmDMaterService iScmDMaterService;
  * @return
  */
 @GetMapping
-@RequiresPermissions("scmDMater:view")
+//@RequiresPermissions("scmDMater:view")
 public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater,String keyWord){
         log.error("关键字"+keyWord);
         scmDMater.keyword=keyWord;

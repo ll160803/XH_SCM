@@ -82,13 +82,21 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     }
 
     @Override
+    @Transactional
+    public Boolean IsExistFphm(String id, String fphm,String gys) {
+        int count = this.baseMapper.IsExistFphm(id, fphm,gys);
+        if (count > 0) return false;
+        return true;
+    }
+
+    @Override
     public IPage<ScmBSupplyplan> findSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan) {
         try {
             LambdaQueryWrapper<ScmBSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
             if (StringUtils.isNotBlank(scmBSupplyplan.getCode())) {
                 queryWrapper.eq(ScmBSupplyplan::getCode, scmBSupplyplan.getCode());
             }
-            if (scmBSupplyplan.getId()!=null) {
+            if (scmBSupplyplan.getId() != null) {
                 queryWrapper.eq(ScmBSupplyplan::getId, scmBSupplyplan.getId());
             }
             if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
@@ -97,20 +105,18 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             if (StringUtils.isNotBlank(scmBSupplyplan.getGysaccount())) {
                 queryWrapper.eq(ScmBSupplyplan::getGysaccount, scmBSupplyplan.getGysaccount());
             }
-            if(scmBSupplyplan.getBsartD()=="1") {
+            if (scmBSupplyplan.getBsartD() == "1") {
                 if (StringUtils.isNotBlank(scmBSupplyplan.getFphm())) {
                     queryWrapper.and(wrapper -> wrapper.eq(ScmBSupplyplan::getFphm, scmBSupplyplan.getFphm()).or().eq(ScmBSupplyplan::getFphm, null
                     ).or().eq(ScmBSupplyplan::getFphm, ""
                     ));
                 } else {
                     queryWrapper.and(wrapper -> wrapper.isNull(ScmBSupplyplan::getFphm)
-                    .or().eq(ScmBSupplyplan::getFphm, ""
-                    ));
+                            .or().eq(ScmBSupplyplan::getFphm, ""
+                            ));
                 }
 
-            }
-            else
-            {
+            } else {
                 queryWrapper.and(wrapper -> wrapper.isNull(ScmBSupplyplan::getSendOrderCode).or().eq(ScmBSupplyplan::getSendOrderCode, ""
                 ));
             }
@@ -126,6 +132,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             return null;
         }
     }
+
     @Override
     @Transactional
     public void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
@@ -138,7 +145,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
         this.save(scmBSupplyplan);
         log.error("sadasdasd:" + scmBSupplyplan.getBsartD());
         String artd = scmBSupplyplan.getBsartD();
-        String typear="1";//z真是坑爹 不这么些 就是不行
+        String typear = "1";//z真是坑爹 不这么些 就是不行
         if (artd.equals(typear)) {//物资供应商才能生成送货单
             log.error("sadasdasd");
             // if(StringUtils.isNotBlank(scmBSupplyplan.getSendOrderCode())) { //从送货单引入 不生成送货单
@@ -206,6 +213,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     public void updateSupplyplanOnly(ScmBSupplyplan scmBSupplyplan) throws FebsException {
         this.baseMapper.updateScmBSupplyplan(scmBSupplyplan);
     }
+
     @Override
     @Transactional
     public void deleteScmBSupplyplans(String[] Ids) {

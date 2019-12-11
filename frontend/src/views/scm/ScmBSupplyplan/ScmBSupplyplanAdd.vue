@@ -20,6 +20,7 @@
               :min="0"
               :max="amount"
               @blur="mengeBlur"
+              style="width: 100%"
               placeholder="请输入供应数量"
               v-decorator="['gMenge',  { rules: [{ required: true, message: '供应数量不能为空' }] }]"
             />
@@ -125,6 +126,7 @@
           >
             <a-input
               placeholder="请输入包装数量"
+              style="width: 100%"
               v-decorator="['pkgNumber',{ rules: [{ required: true, message: '包装数量不能为空' }] }]"
             />
           </a-form-item>
@@ -230,8 +232,10 @@ export default {
       }
     },
     handleSubmit () {
+       
       this.form.validateFields((err, values) => {
         if (!err) {
+          this.loading = true
           this.setFields()
           this.scmBSupplyplan.baseId=this.baseId
           this.scmBSupplyplan.status=0

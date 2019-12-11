@@ -29,4 +29,6 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
         void updateSupplyplanOnly(ScmBSupplyplan scmBSupplyplan) throws FebsException;
 
         void deleteScmBSupplyplans(String[]Ids);
+
+        Boolean IsExistFphm(String id, String fphm,String gysAccount);
         }
