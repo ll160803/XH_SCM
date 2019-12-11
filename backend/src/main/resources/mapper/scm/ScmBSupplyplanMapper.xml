@@ -90,4 +90,17 @@
         </if>
       GROUP BY scm_b_purcharseorder.menge
     </select>
+    <select id="IsExistFphm" parameterType="String" resultType="Int">
+        SELECT
+        count( 1 )
+        FROM
+        scm_b_supplyplan
+        WHERE
+        scm_b_supplyplan.FPHM = #{fphm}
+        AND scm_b_supplyplan.IS_DELETEMARK =1
+        AND scm_b_supplyplan.GYSACCOUNT=#{gys}
+        <if test="id != null and id !=''">
+            AND scm_b_supplyplan.id !=#{id}
+        </if>
+    </select>
 </mapper>
