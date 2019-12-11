@@ -11,4 +11,6 @@ import java.util.List;
 public interface  ISAPtoSCMService {
     @WebMethod
     Boolean GetPucharseFromSap(List<Sap_PurchasePlan> purcharseList, String Flag);
+    @WebMethod
+    String HelloWorld();
 }

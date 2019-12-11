@@ -1,6 +1,9 @@
 server:
   port: 9527
 
+cxf:
+  path: /webservice
+
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -80,7 +83,7 @@ febs:
         num: 1000
   shiro:
     # 后端免认证接口 url
-    anonUrl: /login,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
+    anonUrl: /webservice/*,/login,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
     # token有效期，单位秒
     jwtTimeOut: 3600
   # Swagger相关配置
