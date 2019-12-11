@@ -1,10 +1,9 @@
 package cc.mrbird.febs.webService.SapToScm;
 
-import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
-import cc.mrbird.febs.scm.dao.ScmDSenddepartMapper;
-import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
-import cc.mrbird.febs.scm.entity.ScmDSenddepart;
+import cc.mrbird.febs.scm.dao.*;
+import cc.mrbird.febs.scm.entity.*;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 @Service
-@WebService(name = "sap",targetNamespace ="SapToScm.webService.febs.mrbird.cc",
+@WebService(name = "sap", targetNamespace = "SapToScm.webService.febs.mrbird.cc",
         endpointInterface = "cc.mrbird.febs.webService.SapToScm.ISAPtoSCMService"// 接口地址
 )
 public class SAPtoSCMImpl implements ISAPtoSCMService {
@@ -32,18 +32,27 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
     @Autowired
     private ScmBPurcharseorderMapper scmBPurcharseorderMapper;
 
+    @Autowired
+    private ScmDMaterMapper scmDMaterMapper;
+
+    @Autowired
+    private ScmBSupplyplanMapper scmBSupplyplanMapper;
+
+    @Autowired
+    private ScmDHrpmaterMapper scmDHrpmaterMapper;
+
     public String HelloWorld() {
-        return  "haha";
+        return "haha";
     }
 
     @Override
     public Boolean GetPucharseFromSap(List<Sap_PurchasePlan> purcharseList, String Flag) {
-        //log.info("从SAP获取订单开始");
+        log.info("从SAP获取订单开始");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<ScmDSenddepart> listDepart = this.scmDSenddepartMapper.selectList(null);
         if (purcharseList.size() > 0) {
-            //log.info("从SAP更新订单开始");
+            log.info("从SAP更新订单开始");
 
             List<ScmBPurcharseorder> list_Update = new ArrayList<>();
             List<ScmBPurcharseorder> list_Delete = new ArrayList<>();
@@ -55,7 +64,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                 ScmBPurcharseorder order = scmBPurcharseorderMapper.selectOne(queryWrapperOrder);
                 Flag = (order == null ? "C" : "U");
 
-                // LogHelper.Info("KOSTL:"+item.KOSTL);
+                log.info("KOSTL:" + item.getKostl());
                 if (Flag == "U") {
 
                     if (StringUtils.equals(item.getKostl(), "L")) {
@@ -166,7 +175,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     }
                     //return msg.Succeed;
                 } catch (Exception ex) {
-                    //log.info("新增采购订单报错");
+                    log.info("新增采购订单报错");
                 }
             }
             if (list_Update.size() > 0) {
@@ -184,5 +193,146 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
         }
         return false;
+    }
+
+    @Override
+    public Boolean GetMaterFromSap(List<SAP_MATER> materList, String Flag) {
+        log.info("从SAP获取物料开始");
+
+        if (materList.size() > 0) {
+
+            log.info("从SAP更新物料开始");
+
+            List<ScmDMater> list_Update = new ArrayList<>();
+            List<ScmDMater> list_purchase_C = new ArrayList<>();
+            for (SAP_MATER item : materList) {
+                LambdaQueryWrapper<ScmDMater> queryWrapperMater = new LambdaQueryWrapper<>();
+                queryWrapperMater.eq(ScmDMater::getGysaccount, item.getGysAccount());
+                queryWrapperMater.eq(ScmDMater::getMatnr, item.getMatnr());
+
+
+                ScmDMater ens = scmDMaterMapper.selectOne(queryWrapperMater);
+                if (ens != null) {
+                    ens.setMatnr(item.getMatnr().trim());
+                    ens.setGysaccount(item.getGysAccount().trim());
+                    ens.setProduceArea(item.getProduceArea() == null ? "" : item.getProduceArea().trim());
+                    ens.setSpec(item.getSpec() == null ? "" : item.getSpec().trim());
+                    ens.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
+                    ens.setBklas(item.getBklas() == null ? "" : item.getBklas().trim());
+                    ens.setTxz01(item.getTxz01());
+                    list_Update.add(ens);
+                } else {
+                    ScmDMater entity = new ScmDMater();
+                    entity.setMatnr(item.getMatnr().trim());
+                    entity.setGysaccount(item.getGysAccount().trim());
+                    entity.setProduceArea(item.getProduceArea() == null ? "" : item.getProduceArea().trim());
+                    entity.setSpec(item.getSpec() == null ? "" : item.getSpec().trim());
+                    entity.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
+                    entity.setBklas(item.getBklas() == null ? "" : item.getBklas().trim());
+                    entity.setTxz01(item.getTxz01());
+                    entity.setId(item.getMatnr().trim());
+
+                    list_purchase_C.add(entity);
+                }
+            }
+            try {
+                if (list_Update.size() > 0) {
+                    for (ScmDMater m : list_Update) {
+                        scmDMaterMapper.updateScmDMater(m);
+                    }
+                }
+                if (list_purchase_C.size() > 0) {
+                    for (ScmDMater am : list_purchase_C) {
+                        scmDMaterMapper.insert(am);
+                    }
+                }
+                return true;
+            } catch (Exception ex) {
+                log.info("新增药品报错" + ex.getMessage());
+                return false;
+            }
+        }
+        return false;
+
+    }
+
+    @Override
+    public Boolean ChangeStausFromSap(List<String> codeList, String status) {
+        log.info("从SAP更改供应计划状态");
+        try {
+            if (codeList.size() > 0) {
+                LambdaQueryWrapper<ScmBSupplyplan> queryWrapperPlan = new LambdaQueryWrapper<>();
+                List<Long> arr = new ArrayList<>();
+                for (String code : codeList) {
+                    ScmBSupplyplan plan = new ScmBSupplyplan();
+                    plan.setStatus(Integer.parseInt(status));
+                    plan.setId(Long.parseLong(code));
+                    scmBSupplyplanMapper.updateScmBSupplyplan(plan);
+                }
+                log.info("从SAP更改供应计划状态成功！");
+                return true;
+
+            }
+        } catch (Exception ex) {
+            log.error("从SAP更改供应计划状态失败！");
+            log.error(ex.getMessage());
+        }
+        return false;
+    }
+
+    public Boolean GetHrpMaterFromSap(List<HRP_MATER> materList, String Flag) {
+        log.info("从SAP获取物料开始");
+        if (StringUtils.equals("D", Flag)) {
+
+            List<ScmDHrpmater> delete_Update = new ArrayList<>();
+            if (materList.size() > 0) {
+                for (HRP_MATER item : materList) {
+                    scmDHrpmaterMapper.deleteById(item.getMATNR());
+                }
+            }
+        } else {
+            if (materList.size() > 0) {
+
+                log.info("从SAP更新订单开始");
+
+                try {
+                    for (HRP_MATER item : materList) {
+                        ScmDHrpmater ens = scmDHrpmaterMapper.selectById(item.getMATNR());
+                        if (ens != null) {
+                            ens.setMaktx(item.getMAKTX().trim());
+                            ens.setMeins(item.getMEINS() == null ? "" : item.getMEINS().trim());
+                            ens.setMseht(item.getMSEHT() == null ? "" : item.getMSEHT().trim());
+                            ens.setMtart(item.getMTART() == null ? "" : item.getMTART().trim());
+                            ens.setNormt(item.getNORMT() == null ? "" : item.getNORMT().trim());
+                            ens.setZeinr(item.getZEINR() == null ? "" : item.getZEINR().trim());
+                            ens.setBklas(item.getBKLAS() == null ? "" : item.getBKLAS().trim());
+                            scmDHrpmaterMapper.updateScmDHrpmater(ens);
+                        } else {
+                            ScmDHrpmater entity = new ScmDHrpmater();
+
+                            entity.setMatnr(item.getMATNR().trim());
+                            entity.setMaktx(item.getMAKTX().trim());
+                            entity.setMeins(item.getMEINS() == null ? "" : item.getMEINS().trim());
+                            entity.setMseht(item.getMSEHT() == null ? "" : item.getMSEHT().trim());
+                            entity.setMtart(item.getMTART() == null ? "" : item.getMTART().trim());
+                            entity.setNormt(item.getNORMT() == null ? "" : item.getNORMT().trim());
+                            entity.setZeinr(item.getZEINR() == null ? "" : item.getZEINR().trim());
+                            entity.setBklas(item.getBKLAS() == null ? "" : item.getBKLAS().trim());
+                            entity.setId(item.getMATNR().trim());
+                            scmDHrpmaterMapper.insert(entity);
+                        }
+                    }
+                    return  true;
+                }
+                catch ( Exception ex)
+                {
+                    log.error("获取物资信息失败!"+ex.getMessage());
+                }
+            }
+
+        }
+
+        return false;
+
     }
 }

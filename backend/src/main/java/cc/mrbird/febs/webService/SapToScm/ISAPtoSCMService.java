@@ -13,4 +13,10 @@ public interface  ISAPtoSCMService {
     Boolean GetPucharseFromSap(List<Sap_PurchasePlan> purcharseList, String Flag);
     @WebMethod
     String HelloWorld();
+    @WebMethod
+    Boolean GetMaterFromSap(List<SAP_MATER> materList, String Flag);
+    @WebMethod
+    Boolean ChangeStausFromSap(List<String> codeList, String status);
+@WebMethod
+    Boolean GetHrpMaterFromSap(List<HRP_MATER> materList, String Flag);
 }
