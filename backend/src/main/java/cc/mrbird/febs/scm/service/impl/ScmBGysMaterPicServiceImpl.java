@@ -54,11 +54,17 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
             if (StringUtils.isNotBlank(scmBGysMaterPic.getMaterId())) {
                 queryWrapper.eq(ScmBGysMaterPic::getMaterId, scmBGysMaterPic.getMaterId());
             }
+            if (scmBGysMaterPic.getState()!=null &&scmBGysMaterPic.getState()!=-1) {
+                queryWrapper.eq(ScmBGysMaterPic::getState, scmBGysMaterPic.getState());
+            }
+            if (StringUtils.isNotBlank(scmBGysMaterPic.getTxz01())) {
+                queryWrapper.like(ScmBGysMaterPic::getTxz01, scmBGysMaterPic.getTxz01());
+            }
             if (StringUtils.isNotBlank(scmBGysMaterPic.getGysaccount())) {
                 queryWrapper.eq(ScmBGysMaterPic::getGysaccount, scmBGysMaterPic.getGysaccount());
             }
             if (StringUtils.isNotBlank(scmBGysMaterPic.getName())) {
-                queryWrapper.eq(ScmBGysMaterPic::getName, scmBGysMaterPic.getName());
+                queryWrapper.like(ScmBGysMaterPic::getName, scmBGysMaterPic.getName());
             }
             queryWrapper.eq(ScmBGysMaterPic::getIsDeletemark, 1);
             Page<ScmBGysMaterPic> page = new Page<>();

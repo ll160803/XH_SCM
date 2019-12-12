@@ -56,6 +56,18 @@ public class ScmBGysMaterPicController extends BaseController {
         scmBGysMaterPic.setGysaccount(currentUser.getUsername());
         return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic));
     }
+    /**
+     * 分页查询数据
+     *
+     * @param bootStrapTable  分页信息
+     * @param scmBGysMaterPic 查询条件
+     * @return
+     */
+    @GetMapping("audit")
+    @RequiresPermissions("scmBGysMaterPic:view")
+    public Map<String, Object> List2(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic) {
+        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic));
+    }
 
     /**
      * 跳转添加页面

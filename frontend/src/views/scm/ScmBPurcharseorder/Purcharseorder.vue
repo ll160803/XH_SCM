@@ -5,8 +5,9 @@
   >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
+           <a-row>
         <div :class="advanced ? null: 'fold'">
-          <a-row>
+         
             <a-col
               :md="6"
               :sm="24"
@@ -61,8 +62,18 @@
                 />
               </a-form-item>
             </a-col>
-          </a-row>
+          <template v-if="advanced">
+            <a-col :md="6" :sm="24" >
+              <a-form-item
+                label="供应商名称"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}">
+                <a-input v-model="queryParams.gysname" />
+              </a-form-item>
+            </a-col>
+          </template>
         </div>
+         
         <span style="float: right; margin-top: 3px;">
           <a-button
             type="primary"
@@ -72,7 +83,12 @@
             style="margin-left: 8px"
             @click="reset"
           >重置</a-button>
+           <a @click="toggleAdvanced" style="margin-left: 8px">
+              {{advanced ? '收起' : '展开'}}
+              <a-icon :type="advanced ? 'up' : 'down'" />
+            </a>
         </span>
+        </a-row>
       </a-form>
     </div>
     <div>
@@ -96,8 +112,8 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        @expand="expandSubGrid"
         :scroll="scroll"
+        @expand="expandSubGrid"
       >
         <template
           slot="remark"
@@ -152,7 +168,6 @@
     </div>
     <!-- 新增字典 -->
     <scmBSupplyplan-add
-      ref="scmBPurcharseorderAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -174,10 +189,9 @@
   </a-card>
 </template>
 <script>
-import ScmBSupplyplanAdd from '../ScmBSupplyplan/MaterSupplyplanAdd'
-import ScmBSupplyplanEdit from '../ScmBSupplyplan/MaterSupplyplanEdit'
+import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
+import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
 import moment from 'moment'
-import {mapState} from 'vuex'
 
 export default {
   name: 'ScmBPurcharseorder',
@@ -185,8 +199,8 @@ export default {
   data () {
     return {
       scroll: {
-        x: 1500,
-        y: window.innerHeight - 200 - 100 - 20 - (this.advanced ? 40 : 0)
+        x: 1800,
+        y: window.innerHeight - 200 - 100 - 20
       },
       dateFormat: 'YYYY-MM-DD',
       advanced: false,
@@ -220,9 +234,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      user: state => state.account.user
-    }),
     start () {
       return moment(this.defultDate_pre())
     },
@@ -241,7 +252,7 @@ export default {
       }, {
         title: '项目号',
         dataIndex: 'ebelp',
-        width: 60
+        width: 80
       }, {
         title: '供应商账号',
         dataIndex: 'lifnr',
@@ -257,7 +268,7 @@ export default {
       }, {
         title: '院区名称',
         dataIndex: 'werkst',
-        width: 100
+        width: 150
       }, {
         title: '库房名称',
         dataIndex: 'lgortName',
@@ -316,17 +327,23 @@ export default {
         title: '供应计划号',
         dataIndex: 'id'
       }, {
-        title: '送货数量',
+        title: '供应数量',
         dataIndex: 'gMenge'
       }, {
-        title: '联系人',
-        dataIndex: 'linkPerson'
+        title: '批号',
+        dataIndex: 'charge'
       }, {
-        title: '送达科室',
-        dataIndex: 'sendDepart'
+        title: '有效期',
+        dataIndex: 'vfdat',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
-        title: '联系方式',
-        dataIndex: 'linkTelephone'
+        title: '生产日期',
+        dataIndex: 'hsdat',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '发票号码',
         dataIndex: 'fphm'
@@ -334,14 +351,11 @@ export default {
         title: '发票金额',
         dataIndex: 'fpjr'
       }, {
-        title: '开票日期',
+        title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         }
-      }, {
-        title: '商品条码',
-        dataIndex: 'materCode'
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -355,6 +369,15 @@ export default {
               return text
           }
         }
+      }, {
+        title: '发票编码',
+        dataIndex: 'fpbm'
+      }, {
+        title: '包装规格',
+        dataIndex: 'pkgAmount'
+      }, {
+        title: '包装数量',
+        dataIndex: 'pkgNumber'
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -379,6 +402,7 @@ export default {
       }
     },
     onChange (date, dateString) {
+      console.info(2222 + dateString);
       this.queryParams.eindt = dateString
     },
     onChange2 (date, dateString) {
@@ -405,9 +429,6 @@ export default {
         this.$message.warning('请只选择一个采购订单')
         return
       }
-
-
-
       const dataSource = [...this.dataSource]
       this.baseId = this.selectedRowKeys[0]
       let row = dataSource.find(item => item.id === this.selectedRowKeys[0]);
@@ -418,11 +439,6 @@ export default {
       this.price = row.netpr
       this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
       this.addVisiable = true
-      let that = this
-      setTimeout(function () {
-        that.$refs.scmBPurcharseorderAdd.setFormValues(row)
-      }, 200)
-
     },
     handleEditSuccess (baseId) {
       this.editVisiable = false
@@ -574,8 +590,7 @@ export default {
       if (params.bedat == null) {
         params.bedat = this.defultDate()
       }
-      params.bsart = 1//物资
-      params.lifnr=this.user.username//供应商账号
+      params.bsart = 0//药品
       this.$get('scmBPurcharseorder', {
         ...params
       }).then((r) => {

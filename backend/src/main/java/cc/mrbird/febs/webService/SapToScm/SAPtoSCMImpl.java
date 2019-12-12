@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Service
-@WebService(name = "sap", targetNamespace = "SapToScm.webService.febs.mrbird.cc",
+@WebService(name = "sap", targetNamespace = "http://SapToScm.webService.febs.mrbird.cc",
         endpointInterface = "cc.mrbird.febs.webService.SapToScm.ISAPtoSCMService"// 接口地址
 )
 public class SAPtoSCMImpl implements ISAPtoSCMService {

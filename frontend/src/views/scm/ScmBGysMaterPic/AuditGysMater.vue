@@ -130,7 +130,10 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
-      sortedInfo: null,
+      sortedInfo: {
+        field: 'state',
+        order: 'asc'
+      },
       paginationInfo: null,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
@@ -156,26 +159,26 @@ export default {
       return [{
         title: '供应商名称',
         dataIndex: 'name',
-        width:100
+        width: 100
       }, {
         title: '供应商账号',
         dataIndex: 'gysaccount',
-        width:100
+        width: 100
       }, {
         title: '药品编码',
         dataIndex: 'materId',
-        width:100
+        width: 100
       }, {
         title: '批次号',
         dataIndex: 'charge',
-        width:100
+        width: 100
       }, {
         title: '审核原因',
         dataIndex: 'auditCause'
       }, {
         title: '状态',
         dataIndex: 'state',
-        width:150,
+        width: 150,
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
@@ -330,7 +333,13 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('scmBGysMaterPic', {
+      if (this.sortedInfo) {
+        if (!params.sortField) {
+          params.sortField = this.sortedInfo.field
+          params.sortOrder = this.sortedInfo.order
+        }
+      }
+      this.$get('scmBGysMaterPic/audit', {
         ...params
       }).then((r) => {
         let data = r.data

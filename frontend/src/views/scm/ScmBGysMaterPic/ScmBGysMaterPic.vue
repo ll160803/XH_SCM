@@ -12,11 +12,11 @@
               :sm="24"
             >
               <a-form-item
-                label="供应商名称"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                label="药品名称"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.name" />
+                <a-input v-model="queryParams.txz01" />
               </a-form-item>
             </a-col>
             <a-col
@@ -25,10 +25,31 @@
             >
               <a-form-item
                 label="药品编码"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.materId" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="状态"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-select
+                  defaultValue="全部"
+                  v-model="queryParams.state"
+                  style="width: 100%"
+                >
+                  <a-select-option value="-1">全部</a-select-option>
+                  <a-select-option value="0">未审核</a-select-option>
+                  <a-select-option value="1">已审核</a-select-option>
+                  <a-select-option value="2">审核未成功</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
@@ -152,7 +173,10 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
-      sortedInfo: null,
+      sortedInfo: {
+        field: 'state',
+        order: 'asc'
+      },
       paginationInfo: null,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
@@ -175,25 +199,21 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '供应商名称',
-        dataIndex: 'name',
-        width:100
-      }, {
-        title: '供应商账号',
-        dataIndex: 'gysaccount',
-        width:100
-      }, {
         title: '药品编码',
         dataIndex: 'materId',
-        width:100
+        width: 100
+      }, {
+        title: '药品名称',
+        dataIndex: 'txz01',
+        width: 200
       }, {
         title: '批次号',
         dataIndex: 'charge',
-        width:100
+        width: 100
       }, {
         title: '审核原因',
         dataIndex: 'auditCause'
-        
+
       }, {
         title: '状态',
         dataIndex: 'state',
@@ -209,7 +229,7 @@ export default {
               return text
           }
         },
-        width:150
+        width: 150
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -362,6 +382,12 @@ export default {
         // 如果分页信息为空，则设置为默认值
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
+      }
+      if (this.sortedInfo) {
+        if (!params.sortField) {
+          params.sortField = this.sortedInfo.field
+          params.sortOrder = this.sortedInfo.order
+        }
       }
       this.$get('scmBGysMaterPic', {
         ...params

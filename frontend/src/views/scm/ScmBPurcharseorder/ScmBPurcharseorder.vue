@@ -176,6 +176,7 @@
 import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
 import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
 import moment from 'moment'
+import {mapState} from 'vuex'
 
 export default {
   name: 'ScmBPurcharseorder',
@@ -183,7 +184,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 1500,
+        x: 1800,
         y: window.innerHeight - 200 - 100 - 20
       },
       dateFormat: 'YYYY-MM-DD',
@@ -218,6 +219,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      user: state => state.account.user
+    }),
     start () {
       return moment(this.defultDate_pre())
     },
@@ -236,15 +240,15 @@ export default {
       }, {
         title: '项目号',
         dataIndex: 'ebelp',
-        width: 60
+        width: 80
       }, {
         title: '供应商账号',
         dataIndex: 'lifnr',
-        width: 80
+        width: 100
       }, {
         title: '物料号',
         dataIndex: 'matnr',
-        width: 80
+        width: 100
       }, {
         title: '物料描述',
         dataIndex: 'txz01',
@@ -252,7 +256,7 @@ export default {
       }, {
         title: '院区名称',
         dataIndex: 'werkst',
-        width: 100
+        width: 150
       }, {
         title: '库房名称',
         dataIndex: 'lgortName',
@@ -275,14 +279,14 @@ export default {
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         },
-        width: 90
+        width: 100
       }, {
         title: '订单日期',
         dataIndex: 'bedat',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         },
-        width: 90
+        width: 100
       }, {
         title: '状态',
         dataIndex: 'status',
@@ -372,7 +376,7 @@ export default {
     }
   },
   mounted () {
-
+     
     this.fetch()
   },
   methods: {
@@ -386,7 +390,6 @@ export default {
       }
     },
     onChange (date, dateString) {
-      console.info(2222 + dateString);
       this.queryParams.eindt = dateString
     },
     onChange2 (date, dateString) {
@@ -575,6 +578,7 @@ export default {
         params.bedat = this.defultDate()
       }
       params.bsart = 0//药品
+      params.lifnr=this.user.username//供应商账号
       this.$get('scmBPurcharseorder', {
         ...params
       }).then((r) => {
