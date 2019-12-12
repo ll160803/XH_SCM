@@ -80,9 +80,9 @@ public class ScmBSupplyplan implements Serializable {
     /**
      * 单价
      */
-    @TableField("PRICE")
-    @ExcelField(value = "单价")
-    private BigDecimal price;
+    @TableField("DoneMenge")
+    @ExcelField(value = "已收货数量")
+    private BigDecimal doneMenge;
     /**
      * 发票日期
      */
@@ -285,12 +285,12 @@ public class ScmBSupplyplan implements Serializable {
         this.fphm = fphm;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+    public BigDecimal getDoneMenge() {
+        return doneMenge;
     }
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
+    public void setDoneMenge(BigDecimal doneMenge) {
+        this.doneMenge = doneMenge;
     }
 
     public BigDecimal getFpjr() {

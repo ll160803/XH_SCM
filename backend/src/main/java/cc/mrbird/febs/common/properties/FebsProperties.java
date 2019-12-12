@@ -16,4 +16,6 @@ public class FebsProperties {
     private boolean openAopLog = true;
 
     private SwaggerProperties swagger = new SwaggerProperties();
+
+    private String uploadPath;
 }

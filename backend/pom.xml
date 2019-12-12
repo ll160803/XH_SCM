@@ -183,6 +183,7 @@
             <groupId>com.sap</groupId>
             <artifactId>jco3</artifactId>
             <scope>system</scope>
+            <version>3.0.9</version>
             <systemPath>${project.basedir}/src/main/resources/jar/sapjco3.jar</systemPath>
         </dependency>
         <!--webservice-->

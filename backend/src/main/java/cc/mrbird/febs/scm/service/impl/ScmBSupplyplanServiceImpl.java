@@ -52,6 +52,9 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     public IPage<ScmBSupplyplan> findScmBSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan) {
         try {
             LambdaQueryWrapper<ScmBSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
+            if(scmBSupplyplan.getId()!=null) {
+                queryWrapper.eq(ScmBSupplyplan::getId, scmBSupplyplan.getId());
+            }
             if (StringUtils.isNotBlank(scmBSupplyplan.getCode())) {
                 queryWrapper.eq(ScmBSupplyplan::getCode, scmBSupplyplan.getCode());
             }

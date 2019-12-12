@@ -48,6 +48,9 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
     public IPage<ScmBGysMaterPic> findScmBGysMaterPics(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic) {
         try {
             LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
+            if (StringUtils.isNotBlank(scmBGysMaterPic.getId())) {
+                queryWrapper.eq(ScmBGysMaterPic::getId, scmBGysMaterPic.getId());
+            }
             if (StringUtils.isNotBlank(scmBGysMaterPic.getMaterId())) {
                 queryWrapper.eq(ScmBGysMaterPic::getMaterId, scmBGysMaterPic.getMaterId());
             }

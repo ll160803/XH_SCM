@@ -7,6 +7,7 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.scm.service.IComFileService;
 import cc.mrbird.febs.scm.entity.ComFile;
 
@@ -45,7 +46,8 @@ public class ComFileController extends BaseController{
     private String message;
     @Autowired
     public IComFileService iComFileService;
-
+    @Autowired
+    private FebsProperties febsProperties;
 
     /**
      * 分页查询数据
@@ -142,10 +144,10 @@ public class ComFileController extends BaseController{
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
-        String fileName = file.getOriginalFilename();  // 文件名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));  // 后缀名
-        String filePath = "D://upload2020//"; // 上传后的路径
-        fileName = UUID.randomUUID() + suffixName; // 新文件名
+        String fileName2 = file.getOriginalFilename();  // 文件名
+        String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+        String filePath = febsProperties.getUploadPath(); // 上传后的路径
+        String fileName = UUID.randomUUID() + suffixName; // 新文件名
         File dest = new File(filePath + fileName);
         if (!dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
@@ -159,8 +161,8 @@ public class ComFileController extends BaseController{
         ComFile cf=new ComFile();
         cf.setId(Id);
         cf.setCreateTime(new Date());
-        cf.setClientName(fileName);
-        cf.setServerName(filePath+fileName);
+        cf.setClientName(fileName2);//客户端的名称
+        cf.setServerName(fileName);
         iComFileService.createComFile(cf);
         return new FebsResponse().data(Id) ;
     }

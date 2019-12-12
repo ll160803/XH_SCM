@@ -28,6 +28,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements Di
         try {
             LambdaQueryWrapper<Dict> queryWrapper = new LambdaQueryWrapper<>();
 
+            if (dict.getDictId()!=null) {
+                queryWrapper.eq(Dict::getDictId, dict.getDictId());
+            }
             if (StringUtils.isNotBlank(dict.getKeyy())) {
                 queryWrapper.eq(Dict::getKeyy, dict.getKeyy());
             }

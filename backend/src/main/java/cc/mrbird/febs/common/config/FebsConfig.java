@@ -5,6 +5,8 @@ import cc.mrbird.febs.common.properties.SwaggerProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -20,7 +22,7 @@ import java.util.Collections;
 */
 @Configuration
 @EnableSwagger2
-public class FebsConfig {
+public class FebsConfig implements WebMvcConfigurer {
     @Autowired
     private FebsProperties properties;
 
@@ -43,5 +45,10 @@ public class FebsConfig {
                 null,
                 new Contact(swagger.getAuthor(), swagger.getUrl(), swagger.getEmail()),
                 swagger.getLicense(), swagger.getLicenseUrl(), Collections.emptyList());
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/uploadFile/**").addResourceLocations("file:"+properties.getUploadPath());
     }
 }

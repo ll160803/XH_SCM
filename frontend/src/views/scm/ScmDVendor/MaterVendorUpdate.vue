@@ -160,9 +160,9 @@ export default {
           this.$message.error('请上传' + this.attachList[i - 1].title + '附件');
           return false
         }
-        if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
-          this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
-        }
+        //if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
+        this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
+        //}
       }
       this.loading = true
       this.$post('scmDVendor/Edit', {
@@ -216,7 +216,7 @@ export default {
                   uid: data[index].attachfile.id,
                   name: data[index].attachfile.clientName,
                   status: 'done',
-                  url: data[index].attachfile.serverName
+                  url: 'http://127.0.0.1:9527/uploadFile/'+data[index].attachfile.serverName
                 })
               }
             }

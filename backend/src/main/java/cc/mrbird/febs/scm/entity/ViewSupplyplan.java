@@ -106,6 +106,12 @@ private String bsart;
             @ExcelField(value ="供应数量")
 private BigDecimal gMenge;
     /**
+     * 收货数量
+     */
+    @TableField("DONE_MENGE")
+    @ExcelField(value ="已收货数量")
+    private BigDecimal doneMenge;
+    /**
      * 批号
      */
     @TableField("CHARGE")
@@ -229,6 +235,8 @@ private String sendOrderCode;
     @TableField("OUT_CAUSE")
             @ExcelField(value ="缺货原因")
 private String outCause;
+
+
     /**
      * 补货日期
      */
@@ -266,7 +274,13 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+    public BigDecimal getDoneMenge() {
+        return doneMenge;
+    }
 
+    public void setDoneMenge(BigDecimal doneMenge) {
+        this.doneMenge = doneMenge;
+    }
     public String getEbeln(){
             return ebeln;
             }

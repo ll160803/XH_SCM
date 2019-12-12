@@ -192,8 +192,8 @@ export default {
         title: '电话',
         dataIndex: 'mobile'
       }, {
-        title: '测试编码',
-        dataIndex: 'code'
+        title: '姓名',
+        dataIndex: 'realname'
       }, {
         title: '状态',
         dataIndex: 'status',

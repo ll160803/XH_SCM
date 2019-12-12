@@ -122,8 +122,8 @@
         <if test="order.bedat != null">
             AND bedat <![CDATA[ <= ]]> #{order.bedat}
         </if>
-        <if test="order.ebelp != null and order.ebelp !=''">
-            And ebelp = #{order.ebelp}
+        <if test="order.ebeln != null and order.ebeln !=''">
+            And ebelp = #{order.ebeln}
         </if>
         <if test="order.bsart != null and order.bsart !=''">
             And bsart = #{order.bsart}

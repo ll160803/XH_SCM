@@ -163,8 +163,10 @@ public class LoginController {
         String ip = IPUtil.getIpAddr(request);
 
         // 构建在线用户
+
         ActiveUser activeUser = new ActiveUser();
         activeUser.setUsername(user.getUsername());
+        activeUser.setRealname(user.getRealname());
         activeUser.setIp(ip);
         activeUser.setToken(token.getToken());
         activeUser.setLoginAddress(AddressUtil.getCityInfo(ip));

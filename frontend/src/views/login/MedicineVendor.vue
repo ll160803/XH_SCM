@@ -106,8 +106,8 @@
 import UploadFile from './UploadFile'
 
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 },
+  labelCol: { span: 6 },
+  wrapperCol: { span: 17 },
 };
 export default {
   components: { UploadFile },
@@ -161,7 +161,7 @@ export default {
       })
     },
     returnLogin () {
-      this.$emit('regist', 'Login')
+      this.$emit('regist')
     },
     handleSubmit () {
       this.form1.validateFields(err => {
@@ -187,9 +187,9 @@ export default {
           this.$message.error('请上传' + this.attachList[i - 1].title + '附件');
           return false
         }
-        if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
-          this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
-        }
+        //if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
+        this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
+        //}
       }
       this.loading = true
       this.$post('scmDVendor/regist', {
@@ -216,6 +216,10 @@ export default {
       this.form1.validateFields(err => {
         if (!err) {
           if (this.current > 0) {
+            if (this.$refs["file" + this.current][0].isRequire && this.$refs["file" + this.current][0].scmDVendorD.fileId == "") {
+              this.$message.error('请上传附件')
+              return
+            }
             this.$refs["file" + this.current][0].form.validateFields(error => {
               if (!error) {
                 this.current++

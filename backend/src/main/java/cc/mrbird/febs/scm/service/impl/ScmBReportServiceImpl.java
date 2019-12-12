@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.time.LocalDate;
+
 /**
  * <p>
  * 公告表 服务实现类
@@ -36,43 +37,46 @@ import java.time.LocalDate;
 public class ScmBReportServiceImpl extends ServiceImpl<ScmBReportMapper, ScmBReport> implements IScmBReportService {
 
 
-@Override
-public IPage<ScmBReport> findScmBReports(QueryRequest request, ScmBReport scmBReport){
-        try{
-        LambdaQueryWrapper<ScmBReport> queryWrapper=new LambdaQueryWrapper<>();
-        if (StringUtils.isNotBlank(scmBReport.getCode())) {
-        queryWrapper.eq(ScmBReport::getCode, scmBReport.getCode());
+    @Override
+    public IPage<ScmBReport> findScmBReports(QueryRequest request, ScmBReport scmBReport) {
+        try {
+            LambdaQueryWrapper<ScmBReport> queryWrapper = new LambdaQueryWrapper<>();
+            if (StringUtils.isNotBlank(scmBReport.getCode())) {
+                queryWrapper.eq(ScmBReport::getCode, scmBReport.getCode());
+            }
+            if (StringUtils.isNotBlank(scmBReport.getId())) {
+                queryWrapper.eq(ScmBReport::getId, scmBReport.getId());
+            }
+            Page<ScmBReport> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
         }
-        Page<ScmBReport> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
-        }
-        }
+    }
 
-@Override
-@Transactional
-public void createScmBReport(ScmBReport scmBReport){
+    @Override
+    @Transactional
+    public void createScmBReport(ScmBReport scmBReport) {
         scmBReport.setId(UUID.randomUUID().toString());
         scmBReport.setCreateTime(new Date());
         this.save(scmBReport);
-        }
+    }
 
-@Override
-@Transactional
-public void updateScmBReport(ScmBReport scmBReport){
+    @Override
+    @Transactional
+    public void updateScmBReport(ScmBReport scmBReport) {
         scmBReport.setModifyTime(new Date());
         this.baseMapper.updateScmBReport(scmBReport);
-        }
+    }
 
-@Override
-@Transactional
-public void deleteScmBReports(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
+    @Override
+    @Transactional
+    public void deleteScmBReports(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
-        }
+    }
 
 
-        }
+}

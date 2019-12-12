@@ -4,8 +4,8 @@
       <h2>请仔细填写相关内容</h2>
       <a-form-item
         label="供应商类别"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 18 }"
+        :label-col="{ span: 6 }"
+        :wrapper-col="{ span: 17 }"
       >
         <a-select 
           v-decorator="[
@@ -24,9 +24,9 @@
         </a-select>
       </a-form-item>
     </a-form>
-    <medicine-vendor v-show="isVisable == 0">
+    <medicine-vendor @regist="returnLogin" v-show="isVisable == 0">
     </medicine-vendor>
-    <mater-vendor v-show="isVisable == 1">
+    <mater-vendor @regist="returnLogin" v-show="isVisable == 1">
     </mater-vendor>
   </div>
 </template>
@@ -47,6 +47,10 @@ export default {
   methods: {
     handleSelectChange (value) {
       this.isVisable = value
+    },
+    returnLogin ()
+    {
+      this.$emit('regist', 'Login')
     }
   }
 };

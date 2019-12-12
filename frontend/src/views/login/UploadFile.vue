@@ -8,9 +8,9 @@
         <a-input
           v-decorator="[
           'fileName',
-          { rules: [{ required: this.isRequire, message: '请输入企业法人营业执照名称' }] },
+          { rules: [{ required: this.isRequire, message: '请输入'+this.title }] },
         ]"
-          placeholder="请输入企业法人营业执照名称"
+          placeholder='请输入文件名称'
         />
       </a-form-item>
       <a-form-item

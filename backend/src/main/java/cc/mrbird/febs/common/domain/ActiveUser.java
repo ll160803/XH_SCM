@@ -28,4 +28,6 @@ public class ActiveUser implements Serializable {
     private String loginTime = DateUtil.formatFullTime(LocalDateTime.now(),DateUtil.FULL_TIME_SPLIT_PATTERN);
     // 登录地点
     private String loginAddress;
+    //真实名称
+    private String realname;
 }
