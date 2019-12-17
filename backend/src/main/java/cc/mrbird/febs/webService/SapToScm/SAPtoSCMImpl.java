@@ -72,7 +72,6 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     gysName=listvf.get(0).getName();
                 }
 
-l
                 LambdaQueryWrapper<ScmBPurcharseorder> queryWrapperOrder = new LambdaQueryWrapper<>();
                 queryWrapperOrder.eq(ScmBPurcharseorder::getEbelp, item.getEbelp());
                 queryWrapperOrder.eq(ScmBPurcharseorder::getEbeln, item.getEbeln());
