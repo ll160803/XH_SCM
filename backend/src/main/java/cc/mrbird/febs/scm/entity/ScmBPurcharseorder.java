@@ -43,6 +43,12 @@ private String code;
             @ExcelField(value ="名字")
 private String name;
     /**
+     * 名字
+     */
+    @TableField("GYSNAME")
+    @ExcelField(value ="供应商名称")
+    private String gysname;
+    /**
      * 订单号
      */
             @ExcelField(value ="订单号")
@@ -216,13 +222,21 @@ private Long modifyUserId;
             this.code = code;
             }
 
-    public String getName(){
-            return name;
+    public String getGysname(){
+            return gysname;
             }
 
-        public void setName(String name) {
-            this.name = name;
+        public void setGysname(String gysname) {
+            this.gysname = gysname;
             }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getEbeln(){
             return ebeln;

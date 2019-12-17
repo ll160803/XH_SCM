@@ -12,11 +12,11 @@
               :sm="24"
             >
               <a-form-item
-                label="名称"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                label="药品名称"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.name" />
+                <a-input v-model="queryParams.txz01" />
               </a-form-item>
             </a-col>
             <a-col
@@ -24,28 +24,15 @@
               :sm="24"
             >
               <a-form-item
-                label="编码"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                label="药品编码"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.code" />
+                <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row v-if="advanced">
-            <a-col
-              :md="8"
-              :sm="24"
-            >
-              <a-form-item
-                label="备注"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
-              >
-                <a-input v-model="queryParams.comments" />
-              </a-form-item>
-            </a-col>
-          </a-row>
+
         </div>
         <span style="float: right; margin-top: 3px;">
           <a-button
@@ -69,27 +56,10 @@
     <div>
       <div class="operator">
         <a-button
-          v-hasPermission="['scmBSupplyplan:add']"
           type="primary"
           ghost
-          @click="add"
-        >新增</a-button>
-        <a-button
-          v-hasPermission="['scmBSupplyplan:delete']"
-          @click="batchDelete"
-        >删除</a-button>
-        <a-dropdown v-hasPermission="['scmBSupplyplan:export']">
-          <a-menu slot="overlay">
-            <a-menu-item
-              key="export-data"
-              @click="exportExcel"
-            >导出Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
+          @click="print"
+        >打印供应计划</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -102,7 +72,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :scroll="{ x: 2500 }"
       >
         <template
           slot="remark"
@@ -115,51 +85,28 @@
             <p style="width: 200px;margin-bottom: 0">{{text}}</p>
           </a-popover>
         </template>
-        <template
-          slot="operation"
-          slot-scope="text, record"
-        >
-          <a-icon
-            v-hasPermission="['scmBSupplyplan:update']"
-            type="setting"
-            theme="twoTone"
-            twoToneColor="#4a9ff5"
-            @click="edit(record)"
-            title="修改"
-          ></a-icon>
-          <a-badge
-            v-hasNoPermission="['scmBSupplyplan:update']"
-            status="warning"
-            text="无权限"
-          ></a-badge>
-        </template>
       </a-table>
     </div>
-    <!-- 新增字典 -->
-    <scmBSupplyplan-add
-      @close="handleAddClose"
-      @success="handleAddSuccess"
-      :addVisiable="addVisiable"
+    <!-- 打印供应计划 -->
+    <supplyplan-print
+      ref="sendinfoPrint"
+      @close="handlePrintClose"
+      :printVisiable="printVisiable"
+      :ids="printIds"
+      bsart="0"
     >
-    </scmBSupplyplan-add>
-    <!-- 修改字典 -->
-    <scmBSupplyplan-edit
-      ref="scmBSupplyplanEdit"
-      @close="handleEditClose"
-      @success="handleEditSuccess"
-      :editVisiable="editVisiable"
-    >
-    </scmBSupplyplan-edit>
+    </supplyplan-print>
   </a-card>
 </template>
 
 <script>
-import ScmBSupplyplanAdd from './ScmBSupplyplanAdd'
-import ScmBSupplyplanEdit from './ScmBSupplyplanEdit'
+import SupplyplanPrint from './SupplyplanPrint'
+import moment from 'moment'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ScmBSupplyplan',
-  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit },
+  components: { SupplyplanPrint },
   data () {
     return {
       advanced: false,
@@ -179,118 +126,109 @@ export default {
       addVisiable: false,
       editVisiable: false,
       loading: false,
-      bordered: true
+      bordered: true,
+      printIds: '',
+      printVisiable: false
     }
   },
   computed: {
+    ...mapState({
+      user: state => state.account.user
+    }),
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '主键',
-        dataIndex: 'id'
+        title: '订单号',
+        dataIndex: 'ebeln',
+        width: 100
       }, {
-        title: '编码',
-        dataIndex: 'code'
+        title: '项目号',
+        dataIndex: 'ebelp',
+        width: 100
       }, {
-        title: 'name',
-        dataIndex: 'name'
+        title: '物料编码',
+        dataIndex: 'matnr',
+        width: 120
+      }, {
+        title: '物料描述',
+        dataIndex: 'txz01',
+        width: 200
+      }, {
+        title: '院区名称',
+        dataIndex: 'werkst',
+        width: 150
+      }, {
+        title: '订单数量',
+        dataIndex: 'menge',
+        width: 100
+      }, {
+        title: '单位',
+        dataIndex: 'mseht',
+        width: 80
+      }, {
+        title: '单价',
+        dataIndex: 'netpr',
+        width: 80
       }, {
         title: '供应数量',
-        dataIndex: 'gMenge'
+        dataIndex: 'gMenge',
+        width: 100
       }, {
         title: '批号',
-        dataIndex: 'charge'
+        dataIndex: 'charge',
+        width: 80
       }, {
         title: '有效期',
-        dataIndex: 'vfdat'
+        dataIndex: 'vfdat',
+        width: 120,
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '生产日期',
-        dataIndex: 'hsdat'
+        dataIndex: 'hsdat',
+        width: 120,
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '发票号码',
-        dataIndex: 'fphm'
+        dataIndex: 'fphm',
+        width: 100
       }, {
         title: '发票金额',
-        dataIndex: 'fpjr'
+        dataIndex: 'fpjr',
+        width: 100
       }, {
         title: '发票日期',
-        dataIndex: 'fprq'
-      }, {
-        title: '父ID',
-        dataIndex: 'baseId'
+        dataIndex: 'fprq',
+        width: 120,
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }, {
         title: '状态',
-        dataIndex: 'status'
-      }, {
-        title: '备注',
-        dataIndex: 'comments'
-      }, {
-        title: '发票编码',
-        dataIndex: 'fpbm'
-      }, {
-        title: '供应商账号',
-        dataIndex: 'gysaccount'
-      }, {
-        title: '供应商名称',
-        dataIndex: 'gysname'
+        dataIndex: 'status',
+        width: 100
       }, {
         title: '包装规格',
-        dataIndex: 'pkgAmount'
+        dataIndex: 'pkgAmount',
+        width: 100
       }, {
         title: '包装数量',
-        dataIndex: 'pkgNumber'
-      }, {
-        title: 'uninformedState',
-        dataIndex: 'uninformedState'
-      }, {
-        title: 'informedState',
-        dataIndex: 'informedState'
-      }, {
-        title: '订单类型',
-        dataIndex: 'bsartD'
-      }, {
-        title: '联系人',
-        dataIndex: 'linkPerson'
-      }, {
-        title: '送达科室',
-        dataIndex: 'sendDepart'
-      }, {
-        title: '联系方式',
-        dataIndex: 'linkTelephone'
-      }, {
-        title: '商品条码',
-        dataIndex: 'materCode'
-      }, {
-        title: '送货清单号',
-        dataIndex: 'sendOrderCode'
+        dataIndex: 'pkgNumber',
+        width: 100
       }, {
         title: '缺货原因',
         dataIndex: 'outCause'
       }, {
         title: '补货日期',
-        dataIndex: 'outDate'
-      }, {
-        title: '是否删除',
-        dataIndex: 'isDeletemark'
-      }, {
-        title: '创建时间',
-        dataIndex: 'createTime'
-      }, {
-        title: '修改时间',
-        dataIndex: 'modifyTime'
-      }, {
-        title: '创建人',
-        dataIndex: 'createUserId'
-      }, {
-        title: '修改人',
-        dataIndex: 'modifyUserId'
-      }, {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' },
-        fixed: 'right',
-        width: 100
+        dataIndex: 'outDate',
+        width: 120,
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        }
       }]
     }
   },
@@ -307,51 +245,16 @@ export default {
         this.queryParams.comments = ''
       }
     },
-    handleAddSuccess () {
-      this.addVisiable = false
-      this.$message.success('新增字典成功')
-      this.search()
-    },
-    handleAddClose () {
-      this.addVisiable = false
-    },
-    add () {
-      this.addVisiable = true
-    },
-    handleEditSuccess () {
-      this.editVisiable = false
-      this.$message.success('修改字典成功')
-      this.search()
-    },
-    handleEditClose () {
-      this.editVisiable = false
-    },
-    edit (record) {
-      this.$refs.scmBSupplyplanEdit.setFormValues(record)
-      this.editVisiable = true
-    },
-    batchDelete () {
+    print () {
       if (!this.selectedRowKeys.length) {
-        this.$message.warning('请选择需要删除的记录')
+        this.$message.warning('请选择需要打印的记录')
         return
       }
-      let that = this
-      this.$confirm({
-        title: '确定删除所选中的记录?',
-        content: '当您点击确定按钮后，这些记录将会被彻底删除',
-        centered: true,
-        onOk () {
-          let scmBSupplyplanIds = that.selectedRowKeys.join(',')
-          that.$delete('scmBSupplyplan/' + scmBSupplyplanIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
-          })
-        },
-        onCancel () {
-          that.selectedRowKeys = []
-        }
-      })
+      this.printIds = this.selectedRowKeys.join(',')
+      this.printVisiable = true
+    },
+    handlePrintClose () {
+      this.printVisiable = false
     },
     exportExcel () {
       let { sortedInfo } = this
@@ -419,7 +322,9 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('scmBSupplyplan', {
+      params.bsartD = "0"
+      params.gysaccount = this.user.username//供应商账号
+      this.$get('viewSupplyplan', {
         ...params
       }).then((r) => {
         let data = r.data

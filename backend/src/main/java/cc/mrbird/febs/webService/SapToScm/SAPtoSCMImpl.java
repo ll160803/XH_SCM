@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @Service
-@WebService(name = "sap", targetNamespace = "http://SapToScm.webService.febs.mrbird.cc",
+@WebService(name = "sap", targetNamespace = "urn:SapToScm.webService.febs.mrbird.cc",
         endpointInterface = "cc.mrbird.febs.webService.SapToScm.ISAPtoSCMService"// 接口地址
 )
 public class SAPtoSCMImpl implements ISAPtoSCMService {
@@ -41,6 +41,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
     @Autowired
     private ScmDHrpmaterMapper scmDHrpmaterMapper;
 
+    @Autowired
+    private ScmDVendorMapper scmDVendorMapper;
+
     public String HelloWorld() {
         return "haha";
     }
@@ -49,22 +52,34 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
     public Boolean GetPucharseFromSap(List<Sap_PurchasePlan> purcharseList, String Flag) {
         log.info("从SAP获取订单开始");
 
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<ScmDSenddepart> listDepart = this.scmDSenddepartMapper.selectList(null);
+        List<GysEntity> listVendors=this.scmDVendorMapper.getGysNameAndCode();
         if (purcharseList.size() > 0) {
             log.info("从SAP更新订单开始");
+
 
             List<ScmBPurcharseorder> list_Update = new ArrayList<>();
             List<ScmBPurcharseorder> list_Delete = new ArrayList<>();
             List<ScmBPurcharseorder> list_purchase_C = new ArrayList<>();
             for (Sap_PurchasePlan item : purcharseList) {
+
+                String gysName="";
+                List<GysEntity> listvf=listVendors.stream().filter((GysEntity e0)->e0.getCode().equals(item.getLifnr())).collect(Collectors.toList());
+                if(listvf.size()>0)
+                {
+                    gysName=listvf.get(0).getName();
+                }
+
+l
                 LambdaQueryWrapper<ScmBPurcharseorder> queryWrapperOrder = new LambdaQueryWrapper<>();
                 queryWrapperOrder.eq(ScmBPurcharseorder::getEbelp, item.getEbelp());
                 queryWrapperOrder.eq(ScmBPurcharseorder::getEbeln, item.getEbeln());
                 ScmBPurcharseorder order = scmBPurcharseorderMapper.selectOne(queryWrapperOrder);
                 Flag = (order == null ? "C" : "U");
 
-                log.info("KOSTL:" + item.getKostl());
+
                 if (Flag == "U") {
 
                     if (StringUtils.equals(item.getKostl(), "L")) {
@@ -89,19 +104,20 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                             order.setMenge(item.getMenge());
                             order.setMseht(item.getMseht());
                             order.setName(item.getName());
+                            order.setGysname(gysName);
                             order.setStatus(1);
                             order.setNetpr(new BigDecimal(item.getNetpr().replace(",", "")));
                             order.setWerks(item.getWerks());
                             order.setWerkst(item.getWerkst());
                             order.setTxz01(item.getTxz01());
                             order.setMeins(item.getMeins());
-                            order.setBsart(item.getBsart() == "Z004" ? "0" : "1");
+                            order.setBsart(StringUtils.equals(item.getBsart().trim(), "Z004") ? "0" : "1");
 
                             order.setSendDeaprtContact(item.getContact());
                             order.setSendDeaprtPhone(item.getPhone());
                             order.setComments(item.getComments());
 
-                            if (StringUtils.equals(item.getBsart(), "Z004")) {
+                            if (StringUtils.equals(item.getBsart().trim(), "Z004")) {
                                 order.setSendDeaprtName(item.getRemark());//西院的药品订单 接收科室放在订单备注里
                             } else {
                                 if (StringUtils.isNotBlank(item.getKostl()))//采购订单含有送货科室编码
@@ -130,38 +146,40 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                         entity.setEindt(sdf.parse(item.getEindt()));
                     } catch (Exception ex) {
                     }
-                    order.setLgort(item.getLgort());
-                    order.setLifnr(item.getLifnr());
-                    order.setMatnr(item.getMatnr());
-                    order.setMenge(item.getMenge());
-                    order.setMseht(item.getMseht());
-                    order.setName(item.getName());
-                    order.setStatus(1);
-                    order.setNetpr(new BigDecimal(item.getNetpr().replace(",", "")));
-                    order.setWerks(item.getWerks());
-                    order.setWerkst(item.getWerkst());
-                    order.setTxz01(item.getTxz01());
-                    order.setMeins(item.getMeins());
-                    order.setBsart(item.getBsart() == "Z004" ? "0" : "1");
 
-                    order.setSendDeaprtContact(item.getContact());
-                    order.setSendDeaprtPhone(item.getPhone());
-                    order.setComments(item.getComments());
+                    entity.setLgort(item.getLgort());
+                    entity.setLifnr(item.getLifnr());
+                    entity.setMatnr(item.getMatnr());
+                    entity.setMenge(item.getMenge());
+                    entity.setMseht(item.getMseht());
+                    entity.setName(item.getName());
+                    entity.setStatus(1);
+                    entity.setNetpr(new BigDecimal(item.getNetpr().replace(",", "")));
+
+                    entity.setWerks(item.getWerks());
+                    entity.setWerkst(item.getWerkst());
+                    entity.setTxz01(item.getTxz01());
+                    entity.setMeins(item.getMeins());
+                    entity.setGysname(gysName);
+                    entity.setBsart(StringUtils.equals(item.getBsart().trim(), "Z004") ? "0" : "1");
+
+                    entity.setSendDeaprtContact(item.getContact());
+                    entity.setSendDeaprtPhone(item.getPhone());
+                    entity.setComments(item.getComments());
                     entity.setId(UUID.randomUUID().toString());
 
-                    if (StringUtils.equals(item.getBsart(), "Z004")) {
+                    if (StringUtils.equals(item.getBsart().trim(), "Z004")) {
                         entity.setSendDeaprtName(item.getRemark());//西院的药品订单 接收科室放在订单备注里
                     } else {
                         if (StringUtils.isNotBlank(item.getKostl()))//采购订单含有送货科室编码
                         {
                             List<ScmDSenddepart> departs = listDepart.stream().filter(p -> p.CODE == item.getKostl()).collect(Collectors.toList());
                             if (departs != null) {
-                                order.setSendDeaprtId(departs.get(0).getCode());
-                                order.setSendDeaprtName(departs.get(0).getName());
+                                entity.setSendDeaprtId(departs.get(0).getCode());
+                                entity.setSendDeaprtName(departs.get(0).getName());
                             }
                         }
                     }
-
 
                     list_purchase_C.add(entity);
                 }

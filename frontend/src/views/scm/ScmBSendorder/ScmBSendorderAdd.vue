@@ -65,6 +65,7 @@
   </a-drawer>
 </template>
 <script>
+import moment from 'moment'
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 }

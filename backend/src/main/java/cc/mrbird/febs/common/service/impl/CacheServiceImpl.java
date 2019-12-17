@@ -3,6 +3,7 @@ package cc.mrbird.febs.common.service.impl;
 import cc.mrbird.febs.common.domain.FebsConstant;
 import cc.mrbird.febs.common.service.CacheService;
 import cc.mrbird.febs.common.service.RedisService;
+import cc.mrbird.febs.scm.entity.GysEntity;
 import cc.mrbird.febs.system.dao.UserMapper;
 import cc.mrbird.febs.system.domain.Menu;
 import cc.mrbird.febs.system.domain.Role;

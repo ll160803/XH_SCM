@@ -225,7 +225,7 @@ export default {
                   uid: data[index].attachfile.id,
                   name: data[index].attachfile.clientName,
                   status: 'done',
-                  url: 'http://127.0.0.1:9527/uploadFile/'+data[index].attachfile.serverName
+                  url: this.$baseUrl+'uploadFile/'+data[index].attachfile.serverName
                 })
               }
             }

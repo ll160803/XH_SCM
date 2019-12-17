@@ -19,6 +19,7 @@
             <a-input-number
               :min="0"
               :max="amount"
+              :precision="2"
               @blur="mengeBlur"
               style="width: 100%"
               placeholder="请输入供应数量"
@@ -113,6 +114,8 @@
             label="包装规格"
           >
             <a-input-number
+              :precision="2"
+              style="width: 100%"
               @blur="pkgNumberBlur"
               placeholder="请输入包装规格"
               v-decorator="['pkgAmount', { rules: [{ required: true, message: '包装规格不能为空' }] }]"
@@ -124,7 +127,8 @@
             v-bind="formItemLayout"
             label="包装数量"
           >
-            <a-input
+            <a-input-number
+              :precision="2"
               placeholder="请输入包装数量"
               style="width: 100%"
               v-decorator="['pkgNumber',{ rules: [{ required: true, message: '包装数量不能为空' }] }]"

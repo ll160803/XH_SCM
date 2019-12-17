@@ -1,12 +1,15 @@
 package cc.mrbird.febs.scm.controller;
 
 import cc.mrbird.febs.common.annotation.Log;
+import cc.mrbird.febs.common.config.FebsConfig;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.common.utils.BarCodeUtil;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBSendorderService;
 import cc.mrbird.febs.scm.entity.ScmBSendorder;
@@ -61,7 +64,8 @@ public class ScmBSendorderController extends BaseController {
     public IScmBSendorderService iScmBSendorderService;
     @Autowired
     public IViewSupplyplanService iViewSupplyplanService;
-
+    @Autowired
+    private FebsProperties febsProperties;
     /**
      * 分页查询数据
      *
@@ -395,7 +399,7 @@ public class ScmBSendorderController extends BaseController {
     private  String GenerateMark(String id)
     {
         String filename = UUID.randomUUID().toString() + ".png";
-        final String projectPath = "D:/Project_SCM/XH_SCM/frontend/static/uploadFile";
+        final String projectPath = febsProperties.getUploadPath();
         SimpleDateFormat sdf = new SimpleDateFormat("MM");
 
         Calendar cal = Calendar.getInstance();
@@ -403,8 +407,8 @@ public class ScmBSendorderController extends BaseController {
 
         String preMonth = sdf.format(cal.getTime());
 
-        String fileMonthPath = projectPath+"/" + sdf.format(new Date());
-        String filePreMonthPath = projectPath +"/"+ preMonth;
+        String fileMonthPath = projectPath + sdf.format(new Date());
+        String filePreMonthPath = projectPath + preMonth;
         File file = new File(fileMonthPath);
         File file_p = new File(filePreMonthPath);
         if (!file.exists())
@@ -418,23 +422,15 @@ public class ScmBSendorderController extends BaseController {
 
         String filepath = fileMonthPath + "\\" + filename;
         try {
-            generateQRCodeImage(id,64,64,filepath);
+            BarCodeUtil.generateQRCodeImage(id,64,64,filepath);
         } catch (WriterException e) {
             System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
         }
 
-        return "static/uploadFile/"+sdf.format(new Date())+"/"+filename;
+        return febsProperties.getBaseUrl()+"/uploadFile/"+sdf.format(new Date())+"/"+filename;
 
     }
-    private  void generateQRCodeImage(String text, int width, int height, String filePath) throws WriterException, IOException {
-        QRCodeWriter qrCodeWriter = new QRCodeWriter();
 
-        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
-
-        Path path = FileSystems.getDefault().getPath(filePath);
-
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-    }
 }

@@ -7,6 +7,7 @@
                     <id column="ID" property="id"/>
                     <result column="CODE" property="code"/>
                     <result column="NAME" property="name"/>
+            <result column="GYSNAME" property="gysname"/>
                     <result column="ebeln" property="ebeln"/>
                     <result column="ebelp" property="ebelp"/>
                     <result column="lifnr" property="lifnr"/>
@@ -47,6 +48,7 @@
         <trim prefix="set" suffixOverrides=",">
 <if test="code != null">CODE=#{code},</if>
 <if test="name != null">NAME=#{name},</if>
+            <if test="gysname != null">GYSNAME=#{gysname},</if>
 <if test="ebeln != null">ebeln=#{ebeln},</if>
 <if test="ebelp != null">ebelp=#{ebelp},</if>
 <if test="lifnr != null">lifnr=#{lifnr},</if>
@@ -112,7 +114,8 @@
         CREATE_TIME,
         meins,
         werkst,
-        mseht
+        mseht,
+        GysName
         FROM
         scm_b_purcharseorder
         WHERE 1 = 1

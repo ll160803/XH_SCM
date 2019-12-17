@@ -2,8 +2,10 @@ package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
+import cc.mrbird.febs.scm.entity.ScmDVendor;
 import cc.mrbird.febs.scm.service.IScmBPurcharseorderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -13,6 +15,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +39,8 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorderMapper, ScmBPurcharseorder> implements IScmBPurcharseorderService {
 
+    @Autowired
+    ScmDVendorMapper scmDVendorMapper;
 
     @Override
     public IPage<ScmBPurcharseorder> findScmBPurcharseorders(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
@@ -59,6 +64,7 @@ public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorde
     public void createScmBPurcharseorder(ScmBPurcharseorder scmBPurcharseorder) {
         scmBPurcharseorder.setId(UUID.randomUUID().toString());
         scmBPurcharseorder.setCreateTime(new Date());
+
         this.save(scmBPurcharseorder);
     }
 

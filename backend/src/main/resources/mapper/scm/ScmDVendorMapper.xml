@@ -2,48 +2,48 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.scm.dao.ScmDVendorMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmDVendor">
-                    <id column="ID" property="id"/>
-                    <result column="CODE" property="code"/>
-                    <result column="NAME" property="name"/>
-                    <result column="ADDRESS" property="address"/>
-                    <result column="LAW_PERSON" property="lawPerson"/>
-                    <result column="LINK_PERSON" property="linkPerson"/>
-                    <result column="PHONE" property="phone"/>
-                    <result column="EMAIL" property="email"/>
-                    <result column="STATE" property="state"/>
-                    <result column="LB" property="lb"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmDVendor">
+        <id column="ID" property="id"/>
+        <result column="CODE" property="code"/>
+        <result column="NAME" property="name"/>
+        <result column="ADDRESS" property="address"/>
+        <result column="LAW_PERSON" property="lawPerson"/>
+        <result column="LINK_PERSON" property="linkPerson"/>
+        <result column="PHONE" property="phone"/>
+        <result column="EMAIL" property="email"/>
+        <result column="STATE" property="state"/>
+        <result column="LB" property="lb"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         ID, CODE, NAME, ADDRESS, LAW_PERSON, LINK_PERSON, PHONE, EMAIL, STATE, LB, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmDVendor" parameterType="cc.mrbird.febs.scm.entity.ScmDVendor">
         update scm_d_vendor
         <trim prefix="set" suffixOverrides=",">
-<if test="code != null">CODE=#{code},</if>
-<if test="name != null">NAME=#{name},</if>
-<if test="address != null">ADDRESS=#{address},</if>
-<if test="lawPerson != null">LAW_PERSON=#{lawPerson},</if>
-<if test="linkPerson != null">LINK_PERSON=#{linkPerson},</if>
-<if test="phone != null">PHONE=#{phone},</if>
-<if test="email != null">EMAIL=#{email},</if>
-<if test="state != null">STATE=#{state},</if>
+            <if test="code != null">CODE=#{code},</if>
+            <if test="name != null">NAME=#{name},</if>
+            <if test="address != null">ADDRESS=#{address},</if>
+            <if test="lawPerson != null">LAW_PERSON=#{lawPerson},</if>
+            <if test="linkPerson != null">LINK_PERSON=#{linkPerson},</if>
+            <if test="phone != null">PHONE=#{phone},</if>
+            <if test="email != null">EMAIL=#{email},</if>
+            <if test="state != null">STATE=#{state},</if>
             <if test="jieKouState != null">JIEKOUSTATE=#{jieKouState},</if>
             <if test="fileState != null">FILESTATE=#{fileState},</if>
-<if test="lb != null">LB=#{lb},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="lb != null">LB=#{lb},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
         where id=#{id}
     </update>

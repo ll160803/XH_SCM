@@ -108,7 +108,7 @@ private BigDecimal gMenge;
     /**
      * 收货数量
      */
-    @TableField("DONE_MENGE")
+    @TableField("DONEMENGE")
     @ExcelField(value ="已收货数量")
     private BigDecimal doneMenge;
     /**
@@ -117,6 +117,13 @@ private BigDecimal gMenge;
     @TableField("CHARGE")
             @ExcelField(value ="批号")
 private String charge;
+
+    /**
+     *  所送库房
+     */
+    @TableField("NAME")
+    @ExcelField(value ="未知")
+    private String name;
     /**
      * 有效期
      */
@@ -189,6 +196,7 @@ private String gysname;
     @TableField("PKG_AMOUNT")
             @ExcelField(value ="包装规格")
 private BigDecimal pkgAmount;
+
     /**
      * 包装数量
      */
@@ -274,6 +282,7 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+
     public BigDecimal getDoneMenge() {
         return doneMenge;
     }
@@ -281,13 +290,22 @@ private Long modifyUserId;
     public void setDoneMenge(BigDecimal doneMenge) {
         this.doneMenge = doneMenge;
     }
-    public String getEbeln(){
-            return ebeln;
+
+    public String getName(){
+            return name;
             }
 
-        public void setEbeln(String ebeln) {
-            this.ebeln = ebeln;
+        public void setName(String name) {
+            this.name = name;
             }
+
+    public String getEbeln(){
+        return ebeln;
+    }
+
+    public void setEbeln(String ebeln) {
+        this.ebeln = ebeln;
+    }
 
     public String getEbelp(){
             return ebelp;

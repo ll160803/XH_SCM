@@ -1,5 +1,6 @@
 package cc.mrbird.febs.common.service;
 
+import cc.mrbird.febs.scm.entity.GysEntity;
 import cc.mrbird.febs.scm.entity.ScmDArea;
 import cc.mrbird.febs.system.domain.Menu;
 import cc.mrbird.febs.system.domain.Role;
@@ -110,5 +111,6 @@ public interface CacheService {
      * @param userId 用户 ID
      */
     void deleteUserConfigs(String userId) throws Exception;
+
 
 }

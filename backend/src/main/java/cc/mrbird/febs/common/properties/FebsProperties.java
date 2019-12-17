@@ -18,4 +18,6 @@ public class FebsProperties {
     private SwaggerProperties swagger = new SwaggerProperties();
 
     private String uploadPath;
+
+    private String baseUrl;
 }

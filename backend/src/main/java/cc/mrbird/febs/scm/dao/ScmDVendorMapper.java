@@ -1,7 +1,11 @@
 package cc.mrbird.febs.scm.dao;
 
+import cc.mrbird.febs.scm.entity.GysEntity;
 import cc.mrbird.febs.scm.entity.ScmDVendor;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +16,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2019-11-14
  */
 public interface ScmDVendorMapper extends BaseMapper<ScmDVendor> {
-        void updateScmDVendor(ScmDVendor scmDVendor);
-        }
+    void updateScmDVendor(ScmDVendor scmDVendor);
+
+
+    @Select("select name,code from scm_d_vendor where IS_DELETEMARK=1 AND LENGTH(code)>0")
+    List<GysEntity> getGysNameAndCode();
+}

@@ -144,6 +144,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
         if (isMenge != null && isMenge > 0) {
             throw new FebsException("供应计划数量超出订单数量");
         }
+
         scmBSupplyplan.setCreateTime(new Date());
         this.save(scmBSupplyplan);
         log.error("sadasdasd:" + scmBSupplyplan.getBsartD());
@@ -179,7 +180,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     @Override
     @Transactional
     public void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
-        if (scmBSupplyplan.getIsDeletemark() == 0) {//s删除不需要做验证
+        if (scmBSupplyplan.getIsDeletemark()==null||scmBSupplyplan.getIsDeletemark() >0) {//s删除不需要做验证
             Long isMenge = this.baseMapper.IsOutMenge(scmBSupplyplan);
             if (isMenge != null && isMenge > 0) {
                 throw new FebsException("供应计划数量超出订单数量");

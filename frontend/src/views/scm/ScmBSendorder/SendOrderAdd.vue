@@ -64,6 +64,7 @@
   </a-drawer>
 </template>
 <script>
+import moment from 'moment'
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 }
@@ -270,7 +271,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
-          this.$post('scmBSendorder', {
+          this.$post('scmBSendorder/OrderAdd', {
             ...this.scmBSendorder
           }).then(() => {
             this.reset()
