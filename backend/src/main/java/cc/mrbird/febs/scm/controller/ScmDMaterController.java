@@ -55,6 +55,8 @@ public IScmDMaterService iScmDMaterService;
 public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater,String keyWord){
         log.error("关键字"+keyWord);
         scmDMater.keyword=keyWord;
+    User currentUser= FebsUtil.getCurrentUser();
+    scmDMater.setGysaccount(currentUser.getUsername());
         return getDataTable(this.iScmDMaterService.findScmDMaters(request, scmDMater));
         }
 

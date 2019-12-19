@@ -60,8 +60,8 @@ public class ScmDVendorController extends BaseController {
      */
     @GetMapping
     @RequiresPermissions("scmDVendor:view")
-    public Map<String, Object> List(QueryRequest request, ScmDVendor scmDVendor) {
-        return getDataTable(this.iScmDVendorService.findScmDVendors(request, scmDVendor));
+    public Map<String, Object> List(QueryRequest request, ScmDVendor scmDVendor, String keyword) {
+        return getDataTable(this.iScmDVendorService.findScmDVendors(request, scmDVendor,keyword));
     }
 
     /**
@@ -128,7 +128,7 @@ public class ScmDVendorController extends BaseController {
     @RequiresPermissions("scmDVendor:export")
     public void export(QueryRequest request, ScmDVendor scmDVendor, HttpServletResponse response) throws FebsException {
         try {
-            List<ScmDVendor> scmDVendors = this.iScmDVendorService.findScmDVendors(request, scmDVendor).getRecords();
+            List<ScmDVendor> scmDVendors = this.iScmDVendorService.findScmDVendors(request, scmDVendor,"").getRecords();
             ExcelKit.$Export(ScmDVendor.class, response).downXlsx(scmDVendors, false);
         } catch (Exception e) {
             message = "导出Excel失败";

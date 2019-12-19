@@ -156,6 +156,31 @@ public class ScmBSupplyplanController extends BaseController {
      * @param id      实体ID
      * @return
      */
+    @Log("修改预收数量")
+    @PutMapping("done")
+    public void updateDoneScmBSupplyplan(@Valid String id,String doneMenge) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            this.iScmBSupplyplanService.updateDoneMenge(id,doneMenge);
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+    @Log("取消预收数量")
+    @PutMapping("cancel")
+    public void updateCancelDoneScmBSupplyplan(@Valid String id) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            this.iScmBSupplyplanService.updateCancelDoneMenge(id);
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
     @Log("修改")
     @PutMapping
     @RequiresPermissions("scmBSupplyplan:update")
@@ -176,6 +201,21 @@ public class ScmBSupplyplanController extends BaseController {
                 log.error(scmBSupplyplan.getId().toString() + "SAP端处理失败");
                 throw new FebsException("SAP端处理失败");
             }
+
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @Log("收货")
+    @PutMapping("over")
+    public void updateOverScmBSupplyplan(@Valid ScmBSupplyplan scmBSupplyplan) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBSupplyplan.setModifyUserId(currentUser.getUserId());
+
 
         } catch (Exception e) {
             message = e.getMessage();

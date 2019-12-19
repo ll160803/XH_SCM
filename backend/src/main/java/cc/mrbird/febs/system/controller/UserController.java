@@ -202,4 +202,16 @@ public class UserController extends BaseController {
             throw new FebsException(message);
         }
     }
+    @PutMapping("bindweixin")
+    public void updateOpenid(
+            @NotBlank(message = "{required}") String username,
+            @NotBlank(message = "{required}") String openid) throws FebsException {
+        try {
+            userService.updateOpenid(username, openid);
+        } catch (Exception e) {
+            message = "修改用户微信ID失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
 }

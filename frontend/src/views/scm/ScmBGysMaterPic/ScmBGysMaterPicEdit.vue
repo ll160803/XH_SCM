@@ -156,7 +156,7 @@ export default {
               uid: data.id,
               name: data.clientName,
               status: 'done',
-              url: data.serverName
+              url: this.$baseUrl +'comFile/checkFile/'+data.serverName
             })
           })
         }
@@ -183,7 +183,7 @@ export default {
       this.uploading = true
 
       // You can use any AJAX library you like
-      this.$upload('comFile/upload', formData).then((r) => {
+      this.$upload('comFile/uploadCheck', formData).then((r) => {
         this.scmBGysMaterPic.fileId = r.data.data
         //this.fileList = []
         this.isShow = 0

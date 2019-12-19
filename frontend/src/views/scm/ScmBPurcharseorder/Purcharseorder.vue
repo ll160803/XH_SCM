@@ -200,7 +200,7 @@ export default {
     return {
       scroll: {
         x: 1800,
-        y: window.innerHeight - 200 - 100 - 20
+        y: window.innerHeight - 200 - 100 - 20-15
       },
       dateFormat: 'YYYY-MM-DD',
       advanced: false,

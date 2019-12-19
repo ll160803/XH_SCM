@@ -97,4 +97,11 @@ public interface UserService extends IService<User> {
      */
     void resetPassword(String[] usernames) throws Exception;
 
+    /**
+     * 设置微信账户ID
+     * @param username
+     * @param openid
+     */
+    void updateOpenid(String username, String openid) throws Exception ;
+
 }

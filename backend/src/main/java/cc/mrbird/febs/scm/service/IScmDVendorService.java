@@ -19,7 +19,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IScmDVendorService extends IService<ScmDVendor> {
 
-        IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor);
+        IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor, String keyword);
 
         void createScmDVendor(ScmDVendor scmDVendor);
 

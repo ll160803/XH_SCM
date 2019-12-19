@@ -82,12 +82,12 @@ export default {
   name: 'ScmDVendorUpdate',
   data () {
     return {
-      saveF:false,
+      saveF: false,
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
       scmDVendor: {},
-      scmDVendorD:[],
+      scmDVendorD: [],
       attachList: [
         { title: "企业法人营业执照", isRequire: true, index: 1, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国组织结构代码证", isRequire: true, index: 2, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
@@ -144,7 +144,7 @@ export default {
       }
     },
     handleSubmit () {
-        this.scmDVendorD=[]
+      this.scmDVendorD = []
       this.form.validateFields(err => {
         if (!err) {
           for (let i = 1; i < 19; i++) {
@@ -168,9 +168,11 @@ export default {
           this.$message.error('请上传' + this.attachList[i - 1].title + '附件');
           return false
         }
-        //if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
-        this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
-        //}
+        else {
+          //if (this.$refs["file" + i][0].scmDVendorD.fileName != "") {
+          this.scmDVendorD.push(this.$refs["file" + i][0].scmDVendorD)
+          //}
+        }
       }
       this.loading = true
       this.$post('scmDVendor/Edit', {
@@ -195,7 +197,7 @@ export default {
         let data = data2.scmDVendorDS
         if (data) {
           if (data.length > 0) {
-            console.info('数据长度'+data.length);
+            console.info('数据长度' + data.length);
             for (var index = 0; index < data.length; index++) {
               let entity = {
                 fileName: '',
@@ -225,7 +227,7 @@ export default {
                   uid: data[index].attachfile.id,
                   name: data[index].attachfile.clientName,
                   status: 'done',
-                  url: this.$baseUrl+'uploadFile/'+data[index].attachfile.serverName
+                  url: this.$baseUrl + 'uploadFile/' + data[index].attachfile.serverName
                 })
               }
             }

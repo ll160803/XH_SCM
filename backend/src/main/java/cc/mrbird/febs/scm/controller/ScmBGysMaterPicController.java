@@ -6,6 +6,9 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.scm.RFC.RfcNOC;
+import cc.mrbird.febs.scm.entity.ComFile;
+import cc.mrbird.febs.scm.service.IComFileService;
 import cc.mrbird.febs.scm.service.IScmBGysMaterPicService;
 import cc.mrbird.febs.scm.entity.ScmBGysMaterPic;
 
@@ -40,7 +43,8 @@ public class ScmBGysMaterPicController extends BaseController {
     private String message;
     @Autowired
     public IScmBGysMaterPicService iScmBGysMaterPicService;
-
+    @Autowired
+    public IComFileService iComFileService;
 
     /**
      * 分页查询数据
@@ -88,7 +92,18 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setName(currentUser.getRealname());
             scmBGysMaterPic.setState(0);
             scmBGysMaterPic.setIsDeletemark(1);
-            this.iScmBGysMaterPicService.createScmBGysMaterPic(scmBGysMaterPic);
+            ComFile comFile= this.iComFileService.getById(scmBGysMaterPic.getFileId());
+            if(comFile!=null) {
+                Boolean flag=  RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+                if(flag)
+                {
+                    this.iScmBGysMaterPicService.createScmBGysMaterPic(scmBGysMaterPic);
+                }
+                else
+                {
+                    throw new FebsException("操作失败，SAP端接收验收报告失败");
+                }
+            }
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);
@@ -112,7 +127,19 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setModifyUserId(currentUser.getUserId());
             scmBGysMaterPic.setGysaccount(currentUser.getUsername());
             scmBGysMaterPic.setName(currentUser.getRealname());
-            this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
+
+            ComFile comFile= this.iComFileService.getById(scmBGysMaterPic.getFileId());
+            if(comFile!=null) {
+              Boolean flag=  RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+              if(flag)
+              {
+                  this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
+              }
+              else
+              {
+                  throw new FebsException("操作失败，SAP端接收验收报告失败");
+              }
+            }
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);

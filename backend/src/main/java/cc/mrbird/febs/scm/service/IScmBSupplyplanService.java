@@ -31,4 +31,17 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
         void deleteScmBSupplyplans(String[]Ids);
 
         Boolean IsExistFphm(String id, String fphm,String gysAccount);
-        }
+
+        /**
+         * 修改预收货数量
+         * @param id
+         * @param doneMenge
+         */
+        void updateDoneMenge(String id,String doneMenge);
+
+        /**
+         * 取消预收数量
+         * @param id
+         */
+        void updateCancelDoneMenge(String id);
+}

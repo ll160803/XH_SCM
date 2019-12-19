@@ -72,6 +72,7 @@ public class RfcNOC {
             destination = JCoDestinationManager.getDestination(ABAP_AS_POOLED);
         } catch (JCoException e) {
             log.error("Connect SAP fault, error msg: " + e.toString());
+
         }
         return destination;
     }
@@ -155,6 +156,11 @@ public class RfcNOC {
             destination = this.GetDestination();
             if (destination == null) {
                 log.error("配置信息出错");
+                BackFromSAP_SubPlan pur2 = new BackFromSAP_SubPlan();
+                pur2.setMESS("无法连接SAP，或者配置出错");
+                pur2.setMSTYPE("H");
+                pur2.setZGYJH("");
+                list.add(pur2);
                 return list;
             }
             JCoRepository rfcrep = destination.getRepository();
@@ -236,5 +242,54 @@ public class RfcNOC {
         }
 
         return list;
+    }
+
+    public static Boolean SendUploadInfo_RFC(String GysName, String matnr, String charge, String serverName, String I_Type)
+    {
+        log.info("SendUploadInfo_RFC(发送附件信息) begin");
+        List<BackFromSAP_SubPlan> list = new ArrayList<>();
+        JCoDestination destination;
+         String fuName = "ZMM00_FM_SCM003";
+        try
+        {
+            destination =RfcNOC.GetDestination();
+            if(destination==null)
+            {
+                log.error("SAP 链接失败");
+                return  false;
+            }
+
+            JCoRepository rfcrep = destination.getRepository();
+            JCoFunction myfun = null;
+            myfun = rfcrep.getFunction(fuName);
+            //  myfun.SetValue("IS_SELCOND", "0");//SAP里面的传入参数
+            if (myfun == null)
+            {
+                log.info("ZMM00_FM_SCM003 is NULL");
+            }
+
+
+            myfun.getImportParameterList().setValue("I_OBJECT", GysName.trim() + matnr.trim() + charge.trim());
+            myfun.getImportParameterList().setValue("I_FILENAME", serverName);
+            myfun.getImportParameterList().setValue("I_MODE", I_Type);
+            //提前实例化一个空的表结构出来
+            myfun.execute(destination);//执行
+
+
+            log.info("上传文件，调用成功。");
+
+            log.info("SendUploadInfo_RFC(发送附件信息) END SUCCESS!", 1);
+            return  true;
+        }
+        catch (Exception ex)
+        {
+            log.error("SendUploadInfo_RFC(发送附件信息)出现问题：" + ex.getMessage());
+            return  false;
+        }
+        finally
+        {
+            destination = null;
+        }
+
     }
 }

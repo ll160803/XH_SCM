@@ -45,7 +45,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
     private ScmDVendorDMapper scmDVendorDMapper;
 
     @Override
-    public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor) {
+    public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor,String keyword) {
         try {
             LambdaQueryWrapper<ScmDVendor> queryWrapper = new LambdaQueryWrapper<>();
             if (StringUtils.isNotBlank(scmDVendor.getName())) {
@@ -56,6 +56,13 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             }
             if (scmDVendor.getLb() != null) {
                 queryWrapper.eq(ScmDVendor::getLb, scmDVendor.getLb());
+            }
+            if (scmDVendor.getState() != null && scmDVendor.getState()!=-1) {
+                queryWrapper.eq(ScmDVendor::getState, scmDVendor.getState());
+            }
+            if(StringUtils.isNotBlank(keyword))
+            {
+                queryWrapper.and(wrapper->wrapper.like(ScmDVendor::getName,keyword).or().eq(ScmDVendor::getCode,keyword));
             }
             Page<ScmDVendor> page = new Page<>();
             SortUtil.handlePageSort(request, page, true);

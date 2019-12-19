@@ -224,6 +224,17 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
+    @Override
+    @Transactional
+    public void updateDoneMenge(String id,String doneMenge){
+       this.baseMapper.UpdateDoneMenge(id,doneMenge);
+    }
 
+    @Override
+    @Transactional
+    public void updateCancelDoneMenge(String id)
+    {
+        this.baseMapper.UpdateCancelDoneMenge(id);
+    }
 
 }

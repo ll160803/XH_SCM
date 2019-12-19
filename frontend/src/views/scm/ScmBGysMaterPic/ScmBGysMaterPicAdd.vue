@@ -174,7 +174,8 @@ export default {
       this.uploading = true
 
       // You can use any AJAX library you like
-      this.$upload('comFile/upload', formData).then((r) => {
+      this.$upload('comFile/uploadCheck', formData).then((r) => {
+        console.info("上传IF:"+r.data.data);
         this.scmBGysMaterPic.fileId = r.data.data
       
         //this.fileList = []

@@ -8,6 +8,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.common.utils.FtpUtil;
 import cc.mrbird.febs.scm.service.IComFileService;
 import cc.mrbird.febs.scm.entity.ComFile;
 
@@ -18,6 +19,7 @@ import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -165,5 +167,62 @@ public class ComFileController extends BaseController{
         cf.setServerName(fileName);
         iComFileService.createComFile(cf);
         return new FebsResponse().data(Id) ;
+    }
+
+    @PostMapping("uploadCheck")
+    public FebsResponse UploadCheck(@RequestParam("file") MultipartFile file) throws FebsException {
+        if (file.isEmpty()) {
+            throw new FebsException("空文件");
+        }
+        String fileName2 = file.getOriginalFilename();  // 文件名
+        String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+        String filePath = febsProperties.getUploadPath(); // 上传后的路径Check
+        String fileName = UUID.randomUUID() + suffixName; // 新文件名
+
+        try {
+            log.info("开始上传ftp");
+            FtpUtil ftpUtil=new FtpUtil();
+            ftpUtil.uploadFile("SPL/PRD/",fileName,file.getInputStream());
+            log.info("上传ftp陈宫了");
+        } catch (IOException e) {
+            throw new FebsException(e.getMessage());
+        }
+        String Id=UUID.randomUUID().toString();
+        ComFile cf=new ComFile();
+        cf.setId(Id);
+        cf.setCreateTime(new Date());
+        cf.setClientName(fileName2);//客户端的名称
+        cf.setServerName(fileName);
+        iComFileService.createComFile(cf);
+        return new FebsResponse().data(Id) ;
+    }
+
+    @GetMapping("checkFile/{fileName}")
+    public  void downloadFtpFile(@PathVariable String fileName,HttpServletResponse response) {
+        try {
+            InputStream inputStream ;
+            FtpUtil ftpUtil=new FtpUtil();
+            inputStream= ftpUtil.getInputStreamByName("SPL/PRD/",fileName);
+            BufferedInputStream br = new BufferedInputStream(inputStream);
+            System.out.println(br.available());
+            byte[] buf = new byte[1024];
+            int len = 0;
+            response.reset();
+            response.setCharacterEncoding("utf-8");
+            response.setContentType("multipart/form-data");
+           // response.setContentType("application/x-msdownload");
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+            OutputStream out = response.getOutputStream();
+
+            while ((len = br.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            log.error("made");
+            br.close();
+            out.close();
+            inputStream.close();
+        } catch (IOException e) {
+            System.out.println("文件读取错误。"+e.getMessage());
+        }
     }
 }
