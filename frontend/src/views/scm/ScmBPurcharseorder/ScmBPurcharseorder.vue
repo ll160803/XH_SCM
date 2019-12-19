@@ -152,6 +152,7 @@
     </div>
     <!-- 新增字典 -->
     <scmBSupplyplan-add
+      ref="scmBPurcharseorderAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -425,6 +426,7 @@ export default {
       }
       this.price = row.netpr
       this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
+      this.$refs.scmBPurcharseorderAdd.setOrderFormValues(row)
       this.addVisiable = true
     },
     handleEditSuccess (baseId) {
@@ -439,6 +441,7 @@ export default {
     },
     edit (record, pRecord) {
       this.$refs.scmBPurcharseorderEdit.setFormValues(record)
+      this.$refs.scmBPurcharseorderEdit.setOrderFormValues(pRecord)
       this.editVisiable = true
       this.ePrice = pRecord.netpr
       this.eAmount = pRecord.menge - (pRecord.allmenge == null ? 0 : pRecord.allmenge) + record.gMenge

@@ -436,6 +436,7 @@ export default {
     },
     edit (record, pRecord) {
       this.$refs.scmBPurcharseorderEdit.setFormValues(record)
+      this.$refs.scmBPurcharseorderEdit.setOrderFormValues(pRecord)
       this.editVisiable = true
       this.ePrice = pRecord.netpr
       this.eAmount = pRecord.menge - (pRecord.allmenge == null ? 0 : pRecord.allmenge) + record.gMenge

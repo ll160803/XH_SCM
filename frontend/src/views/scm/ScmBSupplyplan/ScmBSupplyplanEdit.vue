@@ -14,6 +14,72 @@
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
+            label="采购订单"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['ebeln', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="项目号"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['ebelp', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="药品编码"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['matnr', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="药品名称"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['txz01', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购数量"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['menge', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购单价"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['netpr', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
             label="供应数量"
           >
             <a-input-number
@@ -237,6 +303,18 @@ export default {
       this.scmBSupplyplan.id = scmBSupplyplan.id
       this.scmBSupplyplan.baseId = scmBSupplyplan.baseId
     },
+    setOrderFormValues ({ ...order }) {
+      let fields = ['menge', 'ebeln', 'ebelp', 'netpr', 'matnr', 'txz01']
+      Object.keys(order).forEach((key) => {
+        if (fields.indexOf(key) !== -1) {
+          this.form.getFieldDecorator(key)
+          let obj = {}
+
+          obj[key] = order[key]
+          this.form.setFieldsValue(obj)
+        }
+      })
+    },
     mengeBlur (e) {
       if (e.target.value) {
         let money = this.price * e.target.value
@@ -262,8 +340,8 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           let scmBSupplyplan = this.form.getFieldsValue()
-          if(scmBSupplyplan.outDate==''){
-            scmBSupplyplan.outDate=null
+          if (scmBSupplyplan.outDate == '') {
+            scmBSupplyplan.outDate = null
           }
           scmBSupplyplan.id = this.scmBSupplyplan.id
           scmBSupplyplan.baseId = this.scmBSupplyplan.baseId
@@ -290,8 +368,7 @@ export default {
       }
     }
   },
-  mounted ()
-  {
+  mounted () {
     // amount
   }
 }

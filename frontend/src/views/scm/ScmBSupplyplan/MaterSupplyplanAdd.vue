@@ -22,6 +22,72 @@
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
+            label="采购订单"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['ebeln', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="项目号"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['ebelp', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="药品编码"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['matnr', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="药品名称"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['txz01', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购数量"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['menge', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购单价"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['netpr', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
             label="供应数量"
           >
             <a-input-number
@@ -193,7 +259,7 @@ export default {
       this.sendVisiable = false
       this.form.setFieldsValue({ gMenge: sendInfo.amount })
       this.form.setFieldsValue({ linkTelephone: sendInfo.linkTelephone })
-      this.form.setFieldsValue({fpjr:sendInfo.amount * this.price})
+      this.form.setFieldsValue({ fpjr: sendInfo.amount * this.price })
       this.form.setFieldsValue({ materCode: sendInfo.materCode })
     },
     handleSendInfoClose () {
@@ -211,8 +277,18 @@ export default {
       this.form.setFieldsValue({ linkPerson: scmBSupplyplan.sendDeaprtContact })
       this.form.setFieldsValue({ sendDepart: scmBSupplyplan.sendDeaprtName })
       this.form.setFieldsValue({ linkTelephone: scmBSupplyplan.sendDeaprtPhone })
+      let fields = ['menge', 'ebeln', 'ebelp', 'netpr', 'matnr', 'txz01']
+      Object.keys(scmBSupplyplan).forEach((key) => {
+        if (fields.indexOf(key) !== -1) {
+          this.form.getFieldDecorator(key)
+          let obj = {}
 
+          obj[key] = scmBSupplyplan[key]
+          this.form.setFieldsValue(obj)
+        }
+      })
     },
+
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {

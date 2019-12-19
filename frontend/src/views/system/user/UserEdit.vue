@@ -53,6 +53,15 @@
           ]}]" />
       </a-form-item>
       <a-form-item
+      label="姓名"
+      v-bind="formItemLayout"
+    >
+      <a-input v-decorator="[
+          'realname',
+          { rules: [{ max: 50, message: '长度不能超过50个字符' }] }
+        ]" />
+    </a-form-item>
+      <a-form-item
         label='角色'
         v-bind="formItemLayout"
       >
@@ -251,7 +260,7 @@ export default {
     },
     setFormValues ({ ...user }) {
       this.userId = user.userId
-      let fields = ['username', 'email', 'status', 'ssex', 'mobile']
+      let fields = ['username', 'email', 'realname','status', 'ssex', 'mobile']
       Object.keys(user).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)

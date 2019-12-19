@@ -5,9 +5,9 @@
   >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
-           <a-row>
-        <div :class="advanced ? null: 'fold'">
-         
+        <a-row>
+          <div :class="advanced ? null: 'fold'">
+
             <a-col
               :md="6"
               :sm="24"
@@ -62,32 +62,39 @@
                 />
               </a-form-item>
             </a-col>
-          <template v-if="advanced">
-            <a-col :md="6" :sm="24" >
-              <a-form-item
-                label="供应商名称"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}">
-                <a-input v-model="queryParams.gysname" />
-              </a-form-item>
-            </a-col>
-          </template>
-        </div>
-         
-        <span style="float: right; margin-top: 3px;">
-          <a-button
-            type="primary"
-            @click="search"
-          >查询</a-button>
-          <a-button
-            style="margin-left: 8px"
-            @click="reset"
-          >重置</a-button>
-           <a @click="toggleAdvanced" style="margin-left: 8px">
+            <template v-if="advanced">
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="供应商名称"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-input v-model="queryParams.gysname" />
+                </a-form-item>
+              </a-col>
+            </template>
+          </div>
+
+          <span style="float: right; margin-top: 3px;">
+            <a-button
+              type="primary"
+              @click="search"
+            >查询</a-button>
+            <a-button
+              style="margin-left: 8px"
+              @click="reset"
+            >重置</a-button>
+            <a
+              @click="toggleAdvanced"
+              style="margin-left: 8px"
+            >
               {{advanced ? '收起' : '展开'}}
               <a-icon :type="advanced ? 'up' : 'down'" />
             </a>
-        </span>
+          </span>
         </a-row>
       </a-form>
     </div>
@@ -168,6 +175,7 @@
     </div>
     <!-- 新增字典 -->
     <scmBSupplyplan-add
+      ref="scmBPurcharseorderAdd"
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
@@ -200,7 +208,7 @@ export default {
     return {
       scroll: {
         x: 1800,
-        y: window.innerHeight - 200 - 100 - 20-15
+        y: window.innerHeight - 200 - 100 - 20 - 15
       },
       dateFormat: 'YYYY-MM-DD',
       advanced: false,
@@ -438,6 +446,7 @@ export default {
       }
       this.price = row.netpr
       this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
+      
       this.addVisiable = true
     },
     handleEditSuccess (baseId) {

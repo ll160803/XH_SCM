@@ -9,8 +9,74 @@
     :visible="editVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
-     <a-form :form="form">
+    <a-form :form="form">
       <a-row>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购订单"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['ebeln', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="项目号"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['ebelp', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="药品编码"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['matnr', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="药品名称"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['txz01', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购数量"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['menge', {}]"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="采购单价"
+          >
+            <a-input
+              :disabled="true"
+              v-decorator="['netpr', {}]"
+            />
+          </a-form-item>
+        </a-col>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
@@ -173,7 +239,7 @@ export default {
     },
     setFormValues ({ ...scmBSupplyplan }) {
       let fields = ['gMenge', 'linkPerson', 'fphm', 'fpjr', 'fprq', 'sendDepart', 'linkTelephone', 'materCode']
-      let fieldDates = ['fprq','createTime', 'modifyTime']
+      let fieldDates = ['fprq', 'createTime', 'modifyTime']
       Object.keys(scmBSupplyplan).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -193,6 +259,18 @@ export default {
       })
       this.scmBSupplyplan.id = scmBSupplyplan.id
       this.scmBSupplyplan.baseId = scmBSupplyplan.baseId
+    },
+    setOrderFormValues ({ ...order }) {
+      let fields = ['menge', 'ebeln', 'ebelp', 'netpr', 'matnr', 'txz01']
+      Object.keys(order).forEach((key) => {
+        if (fields.indexOf(key) !== -1) {
+          this.form.getFieldDecorator(key)
+          let obj = {}
+
+          obj[key] = order[key]
+          this.form.setFieldsValue(obj)
+        }
+      })
     },
     mengeBlur (e) {
       if (e.target.value) {
@@ -230,9 +308,8 @@ export default {
       }
     }
   },
-  mounted ()
-  {
-    
+  mounted () {
+
   }
 }
 </script>

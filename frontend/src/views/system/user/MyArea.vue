@@ -58,11 +58,11 @@
         ]" />
     </a-form-item>
     <a-form-item
-      label="测试编码"
+      label="姓名"
       v-bind="formItemLayout"
     >
       <a-input v-decorator="[
-          'code',
+          'realname',
           { rules: [{ max: 50, message: '长度不能超过50个字符' }] }
         ]" />
     </a-form-item>
@@ -173,7 +173,7 @@ export default {
       })
     },
     setUserFields () {
-      let values = this.form.getFieldsValue(['username', 'password', 'email', 'mobile', 'roleId', 'deptId', 'status', 'ssex'])
+      let values = this.form.getFieldsValue(['username', 'password','realname', 'email', 'mobile', 'roleId', 'deptId', 'status', 'ssex'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.user[_key] = values[_key] })
       }
