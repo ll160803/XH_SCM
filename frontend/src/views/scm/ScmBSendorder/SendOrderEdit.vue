@@ -75,12 +75,14 @@ export default {
   props: {
     editVisiable: {
       default: false
-    }
+    },
+    orderId: ''
   },
   watch: {
     editVisiable () {
       if (this.editVisiable) {
         this.fetch({})
+        this.getPlanIds()
       }
     }
   },
@@ -240,6 +242,19 @@ export default {
         ...this.queryParams
       })
     },
+    getPlanIds () {
+      this.$get('scmBSendorder/planIds/' + this.orderId, {
+
+      }).then((r) => {
+        let data = r.data.data
+        console.info(data);
+        for (let element of data) {
+          console.info(element);
+          this.selectedRowKeys.push(element);
+        }
+        //this.selectedRowKeys = data;
+      })
+    },
     fetch (params = {}) {
       this.loading = true
       if (this.paginationInfo) {
@@ -254,6 +269,7 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       params.bsartD = "0"
+      params.sendOrderCode = this.orderId
       this.$get('scmBSupplyplan/sendOrder', {
         ...params
       }).then((r) => {
@@ -271,7 +287,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
-          this.$post('scmBSendorder', {
+          this.$put('scmBSendorder/orderEdit', {
             ...this.scmBSendorder
           }).then(() => {
             this.reset()
@@ -289,7 +305,9 @@ export default {
       }
     },
     setFormValues (sendDate, id) {
-      this.form.setFieldsValue({ sendDate: sendDate })
+      if (sendDate && sendDate != "") {
+        this.form.setFieldsValue({ sendDate: moment(sendDate) })
+      }
       this.scmBSendorder.id = id
     }
   }

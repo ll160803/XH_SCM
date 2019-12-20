@@ -10,6 +10,9 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.BarCodeUtil;
+import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
+import cc.mrbird.febs.scm.RFC.RfcNOC;
+import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBSendorderService;
 import cc.mrbird.febs.scm.entity.ScmBSendorder;
@@ -26,6 +29,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -83,15 +87,20 @@ public class ScmBSendorderController extends BaseController {
         return getDataTable(this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder));
     }
 
+    @GetMapping("planIds/{sendCode}")
+    public  FebsResponse GetPlanIds(@PathVariable(value = "sendCode") String sendCode)
+    {
+        FebsResponse febsResponse=new FebsResponse();
+        febsResponse.data(this.iScmBSendorderService.findPlanIds(sendCode));
+        return  febsResponse;
+    }
     /**
-     * 跳转添加页面
      *
-     * @param request
-     * @param response
-     * @param model
-     * @return
+     * @param scmBSendorder
+     * @param supplyPlanIds
+     * @throws FebsException
      */
-    @Log("物资新增/按钮")
+    @Log("送货清单新增/按钮")
     @PostMapping
     @RequiresPermissions("scmBSendorder:add")
     public void addScmBSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
@@ -102,6 +111,20 @@ public class ScmBSendorderController extends BaseController {
             scmBSendorder.setGysname(currentUser.getRealname());
             scmBSendorder.supplyPlanIds = supplyPlanIds;
             this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
+
+            if(StringUtils.isNotBlank(supplyPlanIds)) {
+
+
+
+                List<ViewSupplyplan> list = new ArrayList<>();
+                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("修改送货订单,SAP端接收失败");
+                    throw new FebsException("修改送货订单,SAP端接收失败");
+                }
+            }
         } catch (Exception e) {
             message = "新增/按钮失败";
             log.error(message, e);
@@ -119,6 +142,20 @@ public class ScmBSendorderController extends BaseController {
             scmBSendorder.setGysname(currentUser.getRealname());
             scmBSendorder.supplyPlanIds = supplyPlanIds;
             this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
+
+            if(StringUtils.isNotBlank(supplyPlanIds)) {
+                String ids="'"+supplyPlanIds.replace(",","','")+"'";
+
+                List<ViewSupplyplan> list = new ArrayList<>();
+                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("修改送货订单,SAP端接收失败");
+                    throw new FebsException("修改送货订单,SAP端接收失败");
+                }
+            }
+
         } catch (Exception e) {
             message = "新增/按钮失败";
             log.error(message, e);
@@ -132,14 +169,28 @@ public class ScmBSendorderController extends BaseController {
      * @param id      实体ID
      * @return
      */
-    @Log("修改")
+    @Log("物资修改")
     @PutMapping
     @RequiresPermissions("scmBSendorder:update")
-    public void updateScmBSendorder(@Valid ScmBSendorder scmBSendorder) throws FebsException {
+    public void updateScmBSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             scmBSendorder.setModifyUserId(currentUser.getUserId());
+            scmBSendorder.supplyPlanIds = supplyPlanIds;
             this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
+
+            if(StringUtils.isNotBlank(supplyPlanIds)) {
+                String ids="'"+supplyPlanIds.replace(",","','")+"'";
+
+                List<ViewSupplyplan> list = new ArrayList<>();
+                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("修改送货订单,SAP端接收失败");
+                    throw new FebsException("修改送货订单,SAP端接收失败");
+                }
+            }
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);
@@ -147,7 +198,34 @@ public class ScmBSendorderController extends BaseController {
         }
     }
 
+    @Log("药品修改")
+    @PutMapping("orderEdit")
+    @RequiresPermissions("sendorder:update")
+    public void updateSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBSendorder.setModifyUserId(currentUser.getUserId());
+            scmBSendorder.supplyPlanIds = supplyPlanIds;
+            this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
 
+            if(StringUtils.isNotBlank(supplyPlanIds)) {
+                String ids="'"+supplyPlanIds.replace(",","','")+"'";
+
+                List<ViewSupplyplan> list = new ArrayList<>();
+                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("修改送货订单,SAP端接收失败");
+                    throw new FebsException("修改送货订单,SAP端接收失败");
+                }
+            }
+        } catch (Exception e) {
+            message = "修改失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
     @Log("删除")
     @DeleteMapping("/{ids}")
     @RequiresPermissions("scmBSendorder:delete")

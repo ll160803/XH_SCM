@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
 
@@ -81,7 +82,12 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
             }
             if (scmBSendorder.getBsart() == "1") {//物资
                 String fphm = scmBSendorder.getFphm();
-                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm);
+                SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+                String fprq="";
+                if(scmBSendorder.getFprq()!=null) {
+                     fprq = sdf.format(scmBSendorder.getFprq());
+                }
+                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm,fprq);
             }
             else//药品
             {
@@ -95,6 +101,36 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
     public void updateScmBSendorder(ScmBSendorder scmBSendorder) {
         scmBSendorder.setModifyTime(new Date());
         this.baseMapper.updateScmBSendorder(scmBSendorder);
+
+        String supplyPlanIds = scmBSendorder.supplyPlanIds;
+
+        if (StringUtils.isNotBlank(supplyPlanIds)) {
+            String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
+
+            List<Long> ids = new ArrayList<>();
+            for (String idStr : arr_ids
+            ) {
+                ids.add(Long.parseLong(idStr));
+            }
+            if (scmBSendorder.getBsart() == "1") {//物资
+                String str_ids="'"+supplyPlanIds.replace(",","','")+"'";
+                this.baseMapper.removeMaterOrderCode(str_ids);//先清空之前的
+
+                String fphm = scmBSendorder.getFphm();
+                SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+                String fprq="";
+                if(scmBSendorder.getFprq()!=null) {
+                    fprq = sdf.format(scmBSendorder.getFprq());
+                }
+                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm,fprq);
+            }
+            else//药品
+            {
+                String str_ids="'"+supplyPlanIds.replace(",","','")+"'";
+                this.baseMapper.removeOrderCode(str_ids);//先清空之前的
+                this.baseMapper.updateSupplyPlan2(ids, scmBSendorder.getId().toString());
+            }
+        }
     }
 
     /*
@@ -108,6 +144,12 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
             this.baseMapper.updateDeleteOrder(id, Long.parseLong(id));
         }
 
+    }
+    @Override
+    @Transactional
+   public List<Long> findPlanIds(String sendCode)
+    {
+       return this.baseMapper.findPlanIds(sendCode);
     }
 
 

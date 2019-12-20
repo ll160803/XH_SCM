@@ -121,7 +121,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
 
             } else {
                 queryWrapper.and(wrapper -> wrapper.isNull(ScmBSupplyplan::getSendOrderCode).or().eq(ScmBSupplyplan::getSendOrderCode, ""
-                ));
+                ).or().eq(ScmBSupplyplan::getSendOrderCode, scmBSupplyplan.getSendOrderCode()));
             }
             queryWrapper.eq(ScmBSupplyplan::getBsartD, scmBSupplyplan.getBsartD());//订单类型
             if (scmBSupplyplan.getIsDeletemark() != null) {

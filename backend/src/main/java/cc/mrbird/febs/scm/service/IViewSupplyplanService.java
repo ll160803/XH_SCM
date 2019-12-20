@@ -27,4 +27,6 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
         void updateViewSupplyplan(ViewSupplyplan viewSupplyplan);
 
         void deleteViewSupplyplans(String[]Ids);
+
+        List<ViewSupplyplan> getViewSupplyPlanByIds(String ids);
         }

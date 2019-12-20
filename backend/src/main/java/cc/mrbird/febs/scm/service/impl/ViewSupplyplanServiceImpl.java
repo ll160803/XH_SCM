@@ -102,7 +102,12 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
-
+     @Override
+     @Transactional
+    public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids)
+     {
+         return  this.baseMapper.GetViewSupplyPlanByIds(ids);
+     }
 
     @Override
     public IPage<ViewSupplyplan> findDoneViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan, String statusType) {

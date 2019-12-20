@@ -83,11 +83,15 @@
         UPDATE scm_b_supplyplan
        SET SEND_ORDER_CODE = #{id},
        FPHM = #{fphm}
+        <if test="fprq != null and fprq != ''">
+            AND fprq = str_to_date(#{fprq}, '%Y-%m-%d %H')
+        </if>
        WHERE
 	   ID in
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        AND STATUS=0
     </update>
     <!-- 药品 -->
     <update id="updateSupplyPlan2" >
@@ -98,5 +102,6 @@
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
+        AND STATUS=0
     </update>
 </mapper>

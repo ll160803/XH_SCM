@@ -92,6 +92,22 @@ private Integer Status;
     @ExcelField(value ="送货单类型")
     private String bsart;
 
+
+    public Date getFprq() {
+        return fprq;
+    }
+
+    public void setFprq(Date fprq) {
+        this.fprq = fprq;
+    }
+
+    /**
+     * 送货时间
+     */
+    @TableField("FPRQ")
+    @ExcelField(value ="发票日期")
+    private Date fprq;
+
     /**
      * 送货时间
      */

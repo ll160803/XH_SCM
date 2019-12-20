@@ -134,7 +134,7 @@
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
-      :fp="fph"
+      :orderId="orderId"
     >
     </scmBSendorder-edit>
     <!-- 打印送货清单 -->
@@ -185,7 +185,8 @@ export default {
       bordered: true,
       fph: '',
       printIds: '',
-      printVisiable: false
+      printVisiable: false,
+      orderId: ''
     }
   },
   computed: {
@@ -322,8 +323,8 @@ export default {
     },
     edit (record) {
       let that = this
+      this.orderId = record.id
       this.editVisiable = true
-      this.fph = record.fphm
       setTimeout(function () {
         that.$refs.scmBSendorderEdit.setFormValues(record.sendDate, record.id)
       }, 100);

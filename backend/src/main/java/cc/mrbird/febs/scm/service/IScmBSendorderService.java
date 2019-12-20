@@ -25,4 +25,6 @@ public interface IScmBSendorderService extends IService<ScmBSendorder> {
         void updateScmBSendorder(ScmBSendorder scmBSendorder);
 
         void deleteScmBSendorders(String[]Ids);
+
+        List<Long> findPlanIds(String sendCode);
         }
