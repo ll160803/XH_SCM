@@ -158,16 +158,17 @@ public class ScmBSupplyplanController extends BaseController {
      */
     @Log("修改预收数量")
     @PutMapping("done")
-    public void updateDoneScmBSupplyplan(@Valid String id,String doneMenge) throws FebsException {
+    public void updateDoneScmBSupplyplan(@Valid String id, String doneMenge) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            this.iScmBSupplyplanService.updateDoneMenge(id,doneMenge);
+            this.iScmBSupplyplanService.updateDoneMenge(id, doneMenge);
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);
             throw new FebsException(message);
         }
     }
+
     @Log("取消预收数量")
     @PutMapping("cancel")
     public void updateCancelDoneScmBSupplyplan(@Valid String id) throws FebsException {
@@ -214,22 +215,17 @@ public class ScmBSupplyplanController extends BaseController {
     public void updateOverScmBSupplyplan(@Valid String ids) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            String str_ids="'"+ids.replace(",","','")+"'";
-          List<ViewSupplyplan> list= this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
-          List<ViewSupplyplan> doneList=new ArrayList<>();
-          List<Long> arrids=new ArrayList<>();
-            for (ViewSupplyplan en:list
-                 ) {
-                if(en.getStatus()==1)
-                {
-                    message+= en.getId().toString()+":已收货";
-                }
-                else if(en.getgMenge()!=en.getDoneMenge())
-                {
-                    message+= en.getId().toString()+":预收数量不等于供应计划数量";
-                }
-                else
-                {
+            String str_ids = "'" + ids.replace(",", "','") + "'";
+            List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
+            List<ViewSupplyplan> doneList = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
+            for (ViewSupplyplan en : list
+            ) {
+                if (en.getStatus() == 1) {
+                    message += en.getId().toString() + ":已收货";
+                } else if (en.getgMenge() != en.getDoneMenge()) {
+                    message += en.getId().toString() + ":预收数量不等于供应计划数量";
+                } else {
                     en.setStatus(1);
                     doneList.add(en);
                     arrids.add(en.getId());
@@ -240,11 +236,9 @@ public class ScmBSupplyplanController extends BaseController {
             RfcNOC rfc = new RfcNOC();
             List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
             if (!backMsg.get(0).getMSTYPE().equals("S")) {
-                log.error( "SAP端处理失败");
+                log.error("SAP端处理失败");
                 throw new FebsException("SAP端处理失败");
-            }
-            else
-            {
+            } else {
                 this.iScmBSupplyplanService.doneSupplyPlan(arrids);//修改scm状态
             }
 
@@ -281,6 +275,7 @@ public class ScmBSupplyplanController extends BaseController {
     @DeleteMapping("deleteSendOrder2/{ids}")
     public void deleteSendOrders2(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
+            User currentUser = FebsUtil.getCurrentUser();
             String[] arr_ids = ids.split(StringPool.COMMA);
             for (String id :
                     arr_ids) {
@@ -288,6 +283,13 @@ public class ScmBSupplyplanController extends BaseController {
                 scmBSupplyplan.setId(Long.parseLong(id));
                 scmBSupplyplan.setSendOrderCode("");
                 this.iScmBSupplyplanService.updateSupplyplanOnly(scmBSupplyplan);
+            }
+            List<ViewSupplyplan> doneList = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
+            RfcNOC rfc = new RfcNOC();
+            List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+            if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                log.error("SAP端处理失败");
+                throw new FebsException("SAP端处理失败");
             }
             //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
         } catch (Exception e) {
@@ -309,15 +311,14 @@ public class ScmBSupplyplanController extends BaseController {
                 scmBSupplyplan.setId(Long.parseLong(id));
                 scmBSupplyplan.setIsDeletemark(0);
 
-                List<ViewSupplyplan> list=new ArrayList<>();
+                List<ViewSupplyplan> list = new ArrayList<>();
                 list.add(this.iViewSupplyplanService.getById(Long.parseLong(id)));
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "D");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
-                    log.error("删除"+scmBSupplyplan.getId().toString() + "SAP端处理失败");
+                    log.error("删除" + scmBSupplyplan.getId().toString() + "SAP端处理失败");
                     throw new FebsException("删除失败,原因：SAP端处理失败");
-                }
-                else {
+                } else {
                     this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
                 }
             }
@@ -491,7 +492,7 @@ public class ScmBSupplyplanController extends BaseController {
 
     @PostMapping("printPlan")
     public FebsResponse PrintPlan(@NotBlank(message = "{required}") String ids) {
-        log.info("ids:"+ids);
+        log.info("ids:" + ids);
         FebsResponse feb = new FebsResponse();
         LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
         String[] arr = ids.split(",");
@@ -507,15 +508,15 @@ public class ScmBSupplyplanController extends BaseController {
         for (int i = 0; i < arrids.size(); i++) {
             Long idl = arrids.get(i);
 
-            List<ViewSupplyplan> entitys = e1.stream().filter((ViewSupplyplan s)->s.getId().equals(idl)).collect(Collectors.toList());
+            List<ViewSupplyplan> entitys = e1.stream().filter((ViewSupplyplan s) -> s.getId().equals(idl)).collect(Collectors.toList());
 
-            ViewSupplyplan entity=entitys.get(0);
+            ViewSupplyplan entity = entitys.get(0);
 
             String data = GenerateMark(entity.getId().toString());
             if (i == 0) {
-                GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.2f",entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), entity.getId().toString(), "", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.2f",entity.getPkgAmount()), entity.getPkgNumber() == null ? "" :String.format("%.0f",entity.getPkgNumber()), String.format("%.2f",entity.getgMenge()), entity.getWerkst(), entity.getName());
+                GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.2f", entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), entity.getId().toString(), "", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.2f", entity.getPkgAmount()), entity.getPkgNumber() == null ? "" : String.format("%.0f", entity.getPkgNumber()), String.format("%.2f", entity.getgMenge()), entity.getWerkst(), entity.getName());
             } else {
-                GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(),  String.format("%.2f",entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), entity.getId().toString(), "page-break-before: always;", entity.getMseht(), entity.getPkgAmount() == null ? "" :  String.format("%.2f",entity.getPkgAmount()), entity.getPkgNumber() == null ? "" : String.format("%.0f",entity.getPkgNumber()), String.format("%.2f",entity.getgMenge()), entity.getWerkst(), entity.getName());
+                GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.2f", entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), entity.getId().toString(), "page-break-before: always;", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.2f", entity.getPkgAmount()), entity.getPkgNumber() == null ? "" : String.format("%.0f", entity.getPkgNumber()), String.format("%.2f", entity.getgMenge()), entity.getWerkst(), entity.getName());
             }
         }
 
