@@ -108,6 +108,11 @@ public class ScmDAreaServiceImpl extends ServiceImpl<ScmDAreaMapper, ScmDArea> i
                 List<String> list=Arrays.asList(Ids);
                 this.baseMapper.deleteBatchIds(list);
         }
-
+        @Override
+        @Transactional
+       public List<ScmDArea> getAreasByUserId(Long id)
+        {
+                return  this.getAreasByUserId(id);
+        }
 
 }

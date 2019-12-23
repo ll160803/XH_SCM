@@ -100,7 +100,7 @@ public class ScmBSendorderController extends BaseController {
      * @param supplyPlanIds
      * @throws FebsException
      */
-    @Log("送货清单新增/按钮")
+    @Log("物资送货清单新增/按钮")
     @PostMapping
     @RequiresPermissions("scmBSendorder:add")
     public void addScmBSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
@@ -258,6 +258,7 @@ public class ScmBSendorderController extends BaseController {
         ScmBSendorder scmBSendorder = this.iScmBSendorderService.getById(id);
         return scmBSendorder;
     }
+    //region 打印 清单和供应计划
     @PostMapping("print")
     public FebsResponse Generate(@NotBlank(message = "{required}") String id ,String bsart) {
         FebsResponse feb=new FebsResponse();
@@ -510,5 +511,23 @@ public class ScmBSendorderController extends BaseController {
         return febsProperties.getBaseUrl()+"/uploadFile/"+sdf.format(new Date())+"/"+filename;
 
     }
+  //endregion
 
+    @GetMapping("phoneSendOrder")
+    @RequiresPermissions("phoneSendOrder:view")
+    public Map<String, Object> phoneSendOrderList(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        viewSupplyplan.setIsDeletemark(1);
+        viewSupplyplan.setBsart("0");
+        return getDataTable(this.iScmBSendorderService.findPhoneSendorders(request, viewSupplyplan));
+    }
+
+    @GetMapping("phoneGysSendOrder")
+    @RequiresPermissions("phoneGysSendOrder:view")
+    public Map<String, Object> phoneGysSendOrderList(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        viewSupplyplan.setIsDeletemark(1);
+        User currentUser = FebsUtil.getCurrentUser();
+        viewSupplyplan.setGysaccount(currentUser.getUsername());
+        viewSupplyplan.setBsart("0");
+        return getDataTable(this.iScmBSendorderService.findPhoneSendorders(request, viewSupplyplan));
+    }
 }

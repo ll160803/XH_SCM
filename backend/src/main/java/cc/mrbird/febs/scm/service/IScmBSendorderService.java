@@ -1,6 +1,7 @@
 package cc.mrbird.febs.scm.service;
 
 import cc.mrbird.febs.scm.entity.ScmBSendorder;
+import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface IScmBSendorderService extends IService<ScmBSendorder> {
         void deleteScmBSendorders(String[]Ids);
 
         List<Long> findPlanIds(String sendCode);
+
+        IPage<ViewSupplyplan>  findPhoneSendorders(QueryRequest request, ViewSupplyplan viewSupplyplan);
         }

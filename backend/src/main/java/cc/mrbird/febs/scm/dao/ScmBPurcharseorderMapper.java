@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * <p>
  * SCM_B_PURCHARSEORDER Mapper 接口
@@ -19,5 +21,5 @@ public interface ScmBPurcharseorderMapper extends BaseMapper<ScmBPurcharseorder>
         void updateScmBPurcharseorder(ScmBPurcharseorder scmBPurcharseorder);
         IPage<ScmBPurcharseorder> findPurcharseorder(Page page, @Param("order") ScmBPurcharseorder order);
 
-
+       List<ScmBPurcharseorder> getAllByIds(@Param("ids") List<String> ids);
         }

@@ -58,7 +58,7 @@ spring:
 
 #mybatis plus 设置
 mybatis-plus:
-  type-aliases-package: cc.mrbird.febs.system.domain,cc.mrbird.febs.job.domain,cc.mrbird.febs.scm.entity,cc.mrbird.febs.webService.SapToScm
+  type-aliases-package: cc.mrbird.febs.system.domain,cc.mrbird.febs.job.domain,cc.mrbird.febs.scm.entity,cc.mrbird.febs.webService.SapToScm,cc.mrbird.febs.webService.ScmToGys
   mapper-locations: classpath:mapper/*/*.xml
   configuration:
     jdbc-type-for-null: null

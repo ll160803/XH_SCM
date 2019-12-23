@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * <p>
@@ -28,4 +29,9 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
         @Update("update ScmBSupplyplan set doneMenge=0 where id=${id} and status=0")
         int UpdateCancelDoneMenge(@Param(value="id") String id);
+
+        void doneSupplyPlan(@Param("ids") List<Long> ids);
+
+
+        List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);
         }

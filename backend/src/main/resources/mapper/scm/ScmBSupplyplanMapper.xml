@@ -109,4 +109,22 @@
             AND scm_b_supplyplan.id !=${id}
         </if>
     </select>
+    <update id="doneSupplyPlan" >
+        UPDATE scm_b_supplyplan
+        SET STATUS = 1
+        WHERE
+        ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND STATUS=0
+    </update>
+    <select id="getAllPlansByIds"  resultType="cc.mrbird.febs.scm.entity.ScmBSupplyplan">
+        SELECT  *  from scm_b_supplyplan where
+        ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND  STATUS=0
+    </select>
 </mapper>

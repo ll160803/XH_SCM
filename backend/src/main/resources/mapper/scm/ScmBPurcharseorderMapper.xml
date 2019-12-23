@@ -141,4 +141,13 @@
             AND txz01 like concat('%',#{order.txz01},'%')
         </if>
     </select>
+
+    <select id="getAllByIds" resultType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" >
+        SELECT  *  from scm_b_purcharseorder
+        WHERE
+        ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

@@ -2,6 +2,10 @@ package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ScmDArea;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +17,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ScmDAreaMapper extends BaseMapper<ScmDArea> {
         void updateScmDArea(ScmDArea scmDArea);
+
+        @Select("SELECT *  from scm_d_area where ID in (SELECT AreaID from scm_b_userandarea where UserID=${userid}")
+        List<ScmDArea>  GetAreaByUserId(@Param(value="userid") Long userid);
         }

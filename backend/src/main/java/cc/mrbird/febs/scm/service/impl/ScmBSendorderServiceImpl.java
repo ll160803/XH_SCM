@@ -3,9 +3,11 @@ package cc.mrbird.febs.scm.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
+import cc.mrbird.febs.scm.dao.ViewSupplyplanMapper;
 import cc.mrbird.febs.scm.entity.ScmBSendorder;
 import cc.mrbird.febs.scm.dao.ScmBSendorderMapper;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
+import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBSendorderService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -40,6 +42,9 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
 
     @Autowired
     private ScmBSupplyplanMapper scmBSupplyplanMapper;
+
+    @Autowired
+    private ViewSupplyplanMapper viewSupplyplanMapper;
 
     @Override
     public IPage<ScmBSendorder> findScmBSendorders(QueryRequest request, ScmBSendorder scmBSendorder) {
@@ -82,14 +87,13 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
             }
             if (scmBSendorder.getBsart() == "1") {//物资
                 String fphm = scmBSendorder.getFphm();
-                SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
-                String fprq="";
-                if(scmBSendorder.getFprq()!=null) {
-                     fprq = sdf.format(scmBSendorder.getFprq());
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String fprq = "";
+                if (scmBSendorder.getFprq() != null) {
+                    fprq = sdf.format(scmBSendorder.getFprq());
                 }
-                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm,fprq);
-            }
-            else//药品
+                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm, fprq);
+            } else//药品
             {
                 this.baseMapper.updateSupplyPlan2(ids, scmBSendorder.getId().toString());
             }
@@ -113,20 +117,19 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
                 ids.add(Long.parseLong(idStr));
             }
             if (scmBSendorder.getBsart() == "1") {//物资
-                String str_ids="'"+supplyPlanIds.replace(",","','")+"'";
+                String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
                 this.baseMapper.removeMaterOrderCode(str_ids);//先清空之前的
 
                 String fphm = scmBSendorder.getFphm();
-                SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
-                String fprq="";
-                if(scmBSendorder.getFprq()!=null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                String fprq = "";
+                if (scmBSendorder.getFprq() != null) {
                     fprq = sdf.format(scmBSendorder.getFprq());
                 }
-                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm,fprq);
-            }
-            else//药品
+                this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm, fprq);
+            } else//药品
             {
-                String str_ids="'"+supplyPlanIds.replace(",","','")+"'";
+                String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
                 this.baseMapper.removeOrderCode(str_ids);//先清空之前的
                 this.baseMapper.updateSupplyPlan2(ids, scmBSendorder.getId().toString());
             }
@@ -145,11 +148,69 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
         }
 
     }
+
     @Override
     @Transactional
-   public List<Long> findPlanIds(String sendCode)
-    {
-       return this.baseMapper.findPlanIds(sendCode);
+    public List<Long> findPlanIds(String sendCode) {
+        return this.baseMapper.findPlanIds(sendCode);
+    }
+
+    @Override
+    @Transactional
+    public IPage<ViewSupplyplan> findPhoneSendorders(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        try {
+            LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
+
+            queryWrapper.isNotNull(ViewSupplyplan::getSendOrderCode); //不为null
+            queryWrapper.ne(ViewSupplyplan::getSendOrderCode,"");//不等于""
+
+            if (StringUtils.isNotBlank(viewSupplyplan.getGysaccount())) {
+                queryWrapper.eq(ViewSupplyplan::getGysaccount, viewSupplyplan.getGysaccount());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
+                queryWrapper.eq(ViewSupplyplan::getEbeln, viewSupplyplan.getEbeln());
+            }
+            queryWrapper.apply(" scm_b_supplyplan.gMenge=scm_b_supplyplan.DoneMenge");
+            if (StringUtils.isNotBlank(viewSupplyplan.getEbelp())) {
+                queryWrapper.eq(ViewSupplyplan::getEbelp, viewSupplyplan.getEbelp());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
+                queryWrapper.like(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                queryWrapper.eq(ViewSupplyplan::getMatnr, viewSupplyplan.getMatnr());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getSendOrderCode())) {
+                queryWrapper.eq(ViewSupplyplan::getSendOrderCode, viewSupplyplan.getSendOrderCode());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerkst())) {
+                queryWrapper.eq(ViewSupplyplan::getWerkst, viewSupplyplan.getWerkst());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+                queryWrapper.eq(ViewSupplyplan::getWerks, viewSupplyplan.getWerks());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                queryWrapper.eq(ViewSupplyplan::getLgort, viewSupplyplan.getLgort());
+            }
+            if (viewSupplyplan.getId() != null) {
+                queryWrapper.eq(ViewSupplyplan::getId, viewSupplyplan.getId());
+            }
+            if (viewSupplyplan.getStatus() != null) {
+                queryWrapper.eq(ViewSupplyplan::getStatus, viewSupplyplan.getStatus());
+            }
+
+            queryWrapper.eq(ViewSupplyplan::getIsDeletemark, 1);
+
+
+            Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);
+            // return this.page(page, queryWrapper);
+            return this.viewSupplyplanMapper.selectPage(page, queryWrapper);
+
+        } catch (Exception e) {
+            log.error("获取送货清单对应供应计划失败", e);
+            return null;
+        }
     }
 
 
