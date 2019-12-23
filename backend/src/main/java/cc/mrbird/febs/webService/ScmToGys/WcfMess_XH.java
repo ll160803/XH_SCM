@@ -1,31 +1,11 @@
 package cc.mrbird.febs.webService.ScmToGys;
 
+import lombok.Data;
+
 import java.util.List;
-
+@Data
 public class WcfMess_XH {
-    public String getMess() {
-        return mess;
-    }
 
-    public void setMess(String mess) {
-        this.mess = mess;
-    }
-
-    public Boolean getSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(Boolean success) {
-        isSuccess = success;
-    }
-
-    public List<Purchase> getPurchasePlans() {
-        return purchasePlans;
-    }
-
-    public void setPurchasePlans(List<Purchase> purchasePlans) {
-        this.purchasePlans = purchasePlans;
-    }
 
     /// <summary>
     /// 返回信息

@@ -2,6 +2,7 @@ package cc.mrbird.febs.webService.ScmToGys;
 
 import lombok.Data;
 
+@Data
 public class WcfPlan_XH {
     /**
      * 唯一标识
@@ -21,35 +22,4 @@ public class WcfPlan_XH {
      */
     private String code ;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Boolean getSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(Boolean success) {
-        isSuccess = success;
-    }
-
-    public String getMess() {
-        return mess;
-    }
-
-    public void setMess(String mess) {
-        this.mess = mess;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
 }

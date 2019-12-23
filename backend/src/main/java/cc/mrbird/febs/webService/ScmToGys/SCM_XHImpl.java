@@ -61,7 +61,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         WcfMess_XH Msg = new WcfMess_XH();
         log.info("用户：" + userName + "开始获取采购计划");
         if (StringUtils.isNotBlank(userName) || StringUtils.isNotBlank(password)) {
-            Msg.setSuccess(false);
+            Msg.setIsSuccess(false);
             Msg.setMess("参数有误");
             Msg.setPurchasePlans(null);
             return Msg;
@@ -81,20 +81,20 @@ public class SCM_XHImpl implements ISCM_XHService {
                     final String errorMessage = "用户名或密码错误";
                     User user = this.userManager.getUser(username);
                     if (user == null) {
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("您的用户名或密码有误");
                         Msg.setPurchasePlans(null);
                         return Msg;
                     }
 
                     if (!StringUtils.equals(user.getPassword(), password)) {
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("您的用户名或密码有误");
                         Msg.setPurchasePlans(null);
                         return Msg;
                     }
                     if (User.STATUS_LOCK.equals(user.getStatus())) {
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("账号已被锁定,请联系管理员！");
                         Msg.setPurchasePlans(null);
                         return Msg;
@@ -155,22 +155,22 @@ public class SCM_XHImpl implements ISCM_XHService {
 
                     }
                     Msg.setPurchasePlans(reList);
-                    Msg.setSuccess(true);
+                    Msg.setIsSuccess(true);
                     Msg.setMess("");
                     return Msg;
                 } else {
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("您的接口尚未开通");
                     Msg.setPurchasePlans(null);
                     return Msg;
                 }
             }
-            Msg.setSuccess(false);
+            Msg.setIsSuccess(false);
             Msg.setMess("供应商不存在注册");
             Msg.setPurchasePlans(null);
             return Msg;
         } catch (Exception ex) {
-            Msg.setSuccess(false);
+            Msg.setIsSuccess(false);
             Msg.setMess("SCM接口出错");
             Msg.setPurchasePlans(null);
             return Msg;
@@ -235,7 +235,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         WcfPlan_XH wcfPlan_xh = new WcfPlan_XH();
         wcfPlan_xh.setId(ID);
         wcfPlan_xh.setMess(Mess);
-        wcfPlan_xh.setSuccess(IsSuccess);
+        wcfPlan_xh.setIsSuccess(IsSuccess);
         return wcfPlan_xh;
     }
 
@@ -264,7 +264,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         User user = new User();
         if (StringUtils.isNotBlank(userName) || StringUtils.isNotBlank(password)) {
             WcfPlan_XH Msg = new WcfPlan_XH();
-            Msg.setSuccess(false);
+            Msg.setIsSuccess(false);
             Msg.setMess("参数有误");
             Msg.setId("");
             ListMess.add(Msg);
@@ -284,7 +284,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 user = this.userManager.getUser(username);
                 if (user == null) {
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("您的用户名或密码有误");
                     Msg.setId("");
                     ListMess.add(Msg);
@@ -293,7 +293,7 @@ public class SCM_XHImpl implements ISCM_XHService {
 
                 if (!StringUtils.equals(user.getPassword(), password)) {
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("您的用户名或密码有误");
                     Msg.setId("");
                     ListMess.add(Msg);
@@ -301,7 +301,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 }
                 if (User.STATUS_LOCK.equals(user.getStatus())) {
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("账号已被锁定,请联系管理员！");
                     Msg.setId("");
                     ListMess.add(Msg);
@@ -309,7 +309,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 }
             } else {
                 WcfPlan_XH Msg = new WcfPlan_XH();
-                Msg.setSuccess(false);
+                Msg.setIsSuccess(false);
                 Msg.setMess("请通知管理员开通接口！");
                 Msg.setId("");
                 ListMess.add(Msg);
@@ -325,7 +325,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         List<String> orderIds = PlanDetails.stream().map(PlanDetail::getEBELN).collect(Collectors.toList());
         if (orderIds.size() <= 0) {
             WcfPlan_XH Msg = new WcfPlan_XH();
-            Msg.setSuccess(false);
+            Msg.setIsSuccess(false);
             Msg.setMess("无效的回填数据，EBELN必填，且不能替换");
             Msg.setId("");
             ListMess.add(Msg);
@@ -334,7 +334,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         List<ScmBPurcharseorder> listOrder = this.scmBPurcharseorderMapper.getAllByIds(orderIds);//获取对应的采购订单
         if (listOrder.size() <= 0) {
             WcfPlan_XH Msg = new WcfPlan_XH();
-            Msg.setSuccess(false);
+            Msg.setIsSuccess(false);
             Msg.setMess("无效的回填数据，EBELN必填，且不能替换");
             Msg.setId("");
             ListMess.add(Msg);
@@ -456,7 +456,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     Long isMenge = this.scmBSupplyplanMapper.IsOutMenge(entity);
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("供应总数量超出订单数量！");
                         Msg.setId(item.getID());
                         Msg.setCode("");
@@ -471,7 +471,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         int fileCount = this.scmBGysMaterPicMapper.selectCount(queryGysPic);
                         if (fileCount < 0) {
                             WcfPlan_XH Msg = new WcfPlan_XH();
-                            Msg.setSuccess(false);
+                            Msg.setIsSuccess(false);
                             Msg.setMess("没有对应的药品验收报告！");
                             Msg.setId(item.getID());
                             Msg.setCode("");
@@ -487,7 +487,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         list_supp_C.add(addOrderEnrity);//上传SAP
                     } else {
                         WcfPlan_XH Msg = new WcfPlan_XH();
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("获取供应计划号失败");
                         Msg.setId(item.getID());
                         Msg.setCode("");
@@ -496,7 +496,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     }
                 } catch (Exception ex) {
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess(ex.getMessage());
                     Msg.setId(item.getID());
                     Msg.setCode("");
@@ -507,7 +507,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     Long isMenge = this.scmBSupplyplanMapper.IsOutMenge(entity);
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("供应总数量超出订单数量！");
                         Msg.setId(item.getID());
                         Msg.setCode("");
@@ -522,7 +522,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         int fileCount = this.scmBGysMaterPicMapper.selectCount(queryGysPic);
                         if (fileCount < 0) {
                             WcfPlan_XH Msg = new WcfPlan_XH();
-                            Msg.setSuccess(false);
+                            Msg.setIsSuccess(false);
                             Msg.setMess("没有对应的药品验收报告！");
                             Msg.setId(item.getID());
                             Msg.setCode("");
@@ -535,7 +535,7 @@ public class SCM_XHImpl implements ISCM_XHService {
 
                     this.scmBSupplyplanMapper.updateScmBSupplyplan(entity);
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("更新数据成功！");
                     Msg.setId(item.getID());
                     Msg.setCode("");
@@ -544,7 +544,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     list_supp_U.add(orderEnrity);
                 } catch (Exception ex) {
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("更新数据有误,错误信息！" + ex.getMessage());
                     Msg.setId(item.getID());
                     Msg.setCode("");
@@ -570,7 +570,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 if (back.MSTYPE == "S") {
 
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("发送SAP数据失败,删除失败");
                     Msg.setId(deleteID);
                     Msg.setCode("");
@@ -581,7 +581,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     deletesupplan.setIsDeletemark(0);
                     this.scmBSupplyplanMapper.updateScmBSupplyplan(deletesupplan);
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(true);
+                    Msg.setIsSuccess(true);
                     Msg.setMess("删除成功");
                     Msg.setId(deleteID);
                     Msg.setCode(back.ZGYJH);
@@ -610,13 +610,13 @@ public class SCM_XHImpl implements ISCM_XHService {
                         deletesupplan.setId(gyjh);
                         deletesupplan.setIsDeletemark(0);
                         this.scmBSupplyplanMapper.updateScmBSupplyplan(deletesupplan);
-                        Msg.setSuccess(false);
+                        Msg.setIsSuccess(false);
                         Msg.setMess("发送SAP数据失败,新增失败");
                         Msg.setId(deleteID);
                         Msg.setCode("");
                         ListMess.add(Msg);
                     } else {
-                        Msg.setSuccess(true);
+                        Msg.setIsSuccess(true);
                         Msg.setMess("新增成功");
                         Msg.setId(deleteID);
                         Msg.setCode(back.ZGYJH);
@@ -632,7 +632,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     this.scmBSupplyplanMapper.updateScmBSupplyplan(deletesupplan);
 
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    Msg.setSuccess(false);
+                    Msg.setIsSuccess(false);
                     Msg.setMess("发送SAP数据失败,新增失败");
                     Msg.setId(en.getBaseId());
                     Msg.setCode("");
