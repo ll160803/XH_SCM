@@ -82,11 +82,7 @@
             @click="edit(record)"
             title="修改"
           ></a-icon>
-          <a-badge
-            v-hasNoPermission="['scmBReport:update']"
-            status="warning"
-            text="无权限"
-          ></a-badge>
+           <a-icon  type="eye" theme="twoTone" twoToneColor="#42b983" @click="view(record)" title="查看"></a-icon>
         </template>
       </a-table>
     </div>
@@ -105,17 +101,25 @@
       :editVisiable="editVisiable"
     >
     </scmBReport-edit>
+    <!--查看公告-->
+    <scmBReport-info
+      ref="scmBReportInfo"
+      @close="handleInfoClose"
+      :infoVisiable="infoVisiable"
+    >
+    </scmBReport-info>
   </a-card>
 </template>
 
 <script>
 import ScmBReportAdd from './ScmBReportAdd'
 import ScmBReportEdit from './ScmBReportEdit'
+import ScmBReportInfo from './ScmBReportInfo'
 import moment from 'moment'
 
 export default {
   name: 'ScmBReport',
-  components: { ScmBReportAdd, ScmBReportEdit },
+  components: { ScmBReportAdd, ScmBReportEdit, ScmBReportInfo },
   data () {
     return {
       advanced: false,
@@ -134,6 +138,7 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      infoVisiable: false,
       loading: false,
       bordered: true
     }
@@ -193,9 +198,16 @@ export default {
     handleEditClose () {
       this.editVisiable = false
     },
+    handleInfoClose () {
+      this.infoVisiable = false
+    },
     edit (record) {
       this.$refs.scmBReportEdit.setFormValues(record)
       this.editVisiable = true
+    },
+    view (record) {
+      this.$refs.scmBReportInfo.setFormValues(record)
+      this.infoVisiable = true
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {

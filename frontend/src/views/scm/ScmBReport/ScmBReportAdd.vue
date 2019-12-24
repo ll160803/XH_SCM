@@ -17,7 +17,7 @@
       >
         <a-input
           placeholder="请输入公告标题"
-          v-decorator="['name', {}]"
+          v-decorator="['name', {rules: [{ required: true, message: '公告标题不能为空' }]}]"
         />
       </a-form-item>
       <a-form-item
@@ -27,7 +27,7 @@
         <a-textarea
           :rows="4"
           placeholder="请输入公告内容"
-          v-decorator="['comments', {}]"
+          v-decorator="['comments', {rules: [{ required: true, message: '公告内容不能为空' }]}]"
         />
       </a-form-item>
       <a-form-item
