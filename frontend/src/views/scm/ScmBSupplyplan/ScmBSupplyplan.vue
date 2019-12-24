@@ -72,7 +72,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 2500 }"
+        :scroll="scroll"
       >
         <template
           slot="remark"
@@ -109,6 +109,10 @@ export default {
   components: { SupplyplanPrint },
   data () {
     return {
+      scroll: {
+        x: 2500,
+        y: window.innerHeight - 200 - 100 - 20
+      },
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
@@ -139,6 +143,10 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
+        title: '供应计划号',
+        dataIndex: 'id',
+        width: 100
+      }, {
         title: '订单号',
         dataIndex: 'ebeln',
         width: 100
@@ -227,7 +235,12 @@ export default {
         dataIndex: 'outDate',
         width: 120,
         customRender: (text, row, index) => {
+          if(text){
           return moment(text).format('YYYY-MM-DD')
+          }
+          else{
+            return ''
+          }
         }
       }]
     }
@@ -321,6 +334,10 @@ export default {
         // 如果分页信息为空，则设置为默认值
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
+      }
+      if (params.sortField == null) {
+        params.sortField = "id"
+        params.sortOrder = "descend"
       }
       params.bsartD = "0"
       params.gysaccount = this.user.username//供应商账号

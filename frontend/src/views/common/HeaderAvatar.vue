@@ -2,6 +2,7 @@
   <div>
     <a-dropdown style="display: inline-block; height: 100%; vertical-align: initial">
       <span style="cursor: pointer">
+        <span class="curr-user">{{user.realname}}</span>
         <a-avatar class="avatar" size="small" shape="circle"
                   :src="avatar"/>
         <span class="curr-user">{{user.username}}</span>

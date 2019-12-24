@@ -50,7 +50,7 @@ public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorde
 //                queryWrapper.eq(ScmBPurcharseorder::getCode, scmBPurcharseorder.getCode());
 //            }
             Page<ScmBPurcharseorder> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);
+            SortUtil.handlePageSort(request, page, false);
            // return this.page(page, queryWrapper);
             return  this.baseMapper.findPurcharseorder(page,scmBPurcharseorder);
         } catch (Exception e) {

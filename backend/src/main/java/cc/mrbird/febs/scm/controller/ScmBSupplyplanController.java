@@ -350,16 +350,11 @@ public class ScmBSupplyplanController extends BaseController {
     }
 
     @PostMapping("print")
-    public FebsResponse Generate(@NotBlank(message = "{required}") String ids, String bsart) {
+    public FebsResponse Generate(@NotBlank(message = "{required}") String id, String bsart) {
         FebsResponse feb = new FebsResponse();
         LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
-        String[] arr = ids.split(",");
-        List<Long> arrids = new ArrayList<>();
-        for (String id : arr) {
-            arrids.add(Long.parseLong(id));
-        }
-        queryWrapper.eq(ViewSupplyplan::getIsDeletemark, 1);
-        queryWrapper.in(ViewSupplyplan::getId, arrids);
+        queryWrapper.eq(ViewSupplyplan::getSendOrderCode,id);
+        queryWrapper.eq(ViewSupplyplan::getBsart,"0");
         List<ViewSupplyplan> e1 = iViewSupplyplanService.list(queryWrapper);
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(GenerateHeadStr(), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst()));
@@ -367,7 +362,7 @@ public class ScmBSupplyplanController extends BaseController {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (ViewSupplyplan f2 : e1) {
-            sb.append(String.format(GenerateRowStr(), f2.getBedat(), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), f2.getMenge().toString(), f2.getgMenge().toString(), f2.getMseht(), f2.getNetpr().toString(), (f2.getNetpr().multiply(f2.getgMenge())).toString(), f2.getCharge(), f2.getFphm(), f2.getFpjr().toString(), f2.getOutCause(), sdf.format(f2.getOutDate())));
+            sb.append(String.format(GenerateRowStr(),sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(),String.format("%.2f", f2.getMenge()), String.format("%.2f",f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f",(f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(), f2.getFphm(), String.format("%.2f",f2.getFpjr()), f2.getOutCause()==null?"":f2.getOutCause(),f2.getOutDate()==null?"": sdf.format(f2.getOutDate())));
         }
         sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)： %1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", e1.get(0).getGysname()));
         sb.append("</table>");

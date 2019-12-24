@@ -48,7 +48,7 @@ public class ScmBReportServiceImpl extends ServiceImpl<ScmBReportMapper, ScmBRep
                 queryWrapper.eq(ScmBReport::getId, scmBReport.getId());
             }
             Page<ScmBReport> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);
+            SortUtil.handlePageSort(request, page, false);
             return this.page(page, queryWrapper);
         } catch (Exception e) {
             log.error("获取字典信息失败", e);

@@ -19,6 +19,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -166,6 +167,11 @@ public class ScmDVendorController extends BaseController {
             });
 
             this.iScmDVendorService.updateScmDVendor(scmDVendor, list);
+            //region 编辑用户的姓名
+           if(StringUtils.isNotBlank(scmDVendor.getCode())&&StringUtils.isNotBlank(scmDVendor.getName())) {
+               this.userService.updateRealname(scmDVendor.getCode(), scmDVendor.getName());
+           }
+            //endregion
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);

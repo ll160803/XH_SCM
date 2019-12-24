@@ -109,8 +109,8 @@ export default {
   data () {
     return {
       scroll:{
-        x:1500,
-        y:window.innerHeight-400+100-50-10+12+10+10
+        x:1800,
+        y:window.innerHeight-400+100-50-10+12+10+10+30+10
       },
       advanced: false,
       key: +new Date(),
@@ -142,7 +142,8 @@ export default {
       }, {
         title: '图标',
         dataIndex: 'icon',
-        scopedSlots: { customRender: 'icon' }
+        scopedSlots: { customRender: 'icon' },
+        width:60
       }, {
         title: '类型',
         dataIndex: 'type',
@@ -156,6 +157,7 @@ export default {
               return text
           }
         },
+        width:80,
         filters: [
           {text: '按钮', value: '1'},
           {text: '菜单', value: '0'}
@@ -165,22 +167,19 @@ export default {
         onFilter: (value, record) => record.type.includes(value)
       }, {
         title: '地址',
-        dataIndex: 'path'
+        dataIndex: 'path',
+         width:400
       }, {
         title: 'Vue组件',
-        dataIndex: 'component'
+        dataIndex: 'component',
+        width:400
       }, {
         title: '权限',
-        dataIndex: 'permission'
+        dataIndex: 'permission',
+        width:150
       }, {
         title: '排序',
         dataIndex: 'order'
-      }, {
-        title: '创建时间',
-        dataIndex: 'createTime'
-      }, {
-        title: '修改时间',
-        dataIndex: 'modifyTime'
       }, {
         title: '操作',
         dataIndex: 'operation',

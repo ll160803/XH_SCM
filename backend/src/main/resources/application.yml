@@ -1,5 +1,5 @@
 server:
-  port: 9527
+  port: 1077
 
 cxf:
   path: /webservice
@@ -76,7 +76,7 @@ management:
 febs:
   # 上传文件所在的路径
   uploadPath: D:/Scm/UploadFile/
-  baseUrl: http://127.0.0.1:9527
+  baseUrl: http://127.0.0.1:1077
   # 是否异步记录用户操作日志
   openAopLog: true
   # 单次最大批量入库数量
@@ -88,14 +88,14 @@ febs:
     # 后端免认证接口 url
     anonUrl: /webservice/*,/comFile/checkFile/*,/uploadFile/**,/login,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
     # token有效期，单位秒
-    jwtTimeOut: 3600
+    jwtTimeOut: 10800
   # Swagger相关配置
   swagger:
     basePackage: cc.mrbird.febs
     title: FEBS VUE API
     description: FEBS VUE API Document.
     version: 2.0
-    author: MrBird
+    author: viki
     url: https://mrbird.cc
     email: 852252810@qq.com
     license: Apache 2.0

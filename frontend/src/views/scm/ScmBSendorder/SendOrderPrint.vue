@@ -84,7 +84,7 @@ export default {
     },
     printContent () {
       console.info("bsart:" + this.bsart)
-      this.$post(`scmBSendorder/print`, { id: this.ids, bsart: this.bsart }).then((r) => {
+      this.$post(`scmBSupplyplan/print`, { id: this.ids, bsart: this.bsart }).then((r) => {
         let data = r.data.data
         this.printHtml = data
       })

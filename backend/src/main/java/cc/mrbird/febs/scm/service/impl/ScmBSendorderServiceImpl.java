@@ -58,7 +58,7 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
 //        SortUtil.handlePageSort(request,page,true);
 // return this.page(page,queryWrapper);
             Page<ScmBSendorder> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);
+            SortUtil.handlePageSort(request, page, false);
             // return this.page(page, queryWrapper);
             return this.baseMapper.findSendInfos(page, scmBSendorder);
 

@@ -247,4 +247,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             this.userRoleMapper.insert(ur);
         });
     }
+    public void updateRealname(String username, String realname) throws Exception {
+        User user = new User();
+        user.setRealname(realname);
+
+        this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        // 重新缓存用户信息
+        cacheService.saveUser(username);
+    }
 }

@@ -119,7 +119,7 @@ export default {
       this.form.resetFields()
     },
     setFormValues ({ ...scmDVendor }) {
-      let fields = ['code', 'name', 'address', 'linkPerson', 'phone', 'email']
+      let fields = [ 'name', 'address', 'linkPerson', 'phone', 'email']
       let fieldDates = ['createTime', 'modifyTime']
       Object.keys(scmDVendor).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
@@ -136,6 +136,7 @@ export default {
         }
       })
       this.scmDVendor.id = scmDVendor.id
+      this.scmDVendor.code = scmDVendor.code
     },
     setscmDVendorFields () {
       let values = this.form.getFieldsValue(['name', 'linkPerson', 'phone', 'email', 'address'])

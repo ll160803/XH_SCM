@@ -177,7 +177,7 @@
 import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
 import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
 import moment from 'moment'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ScmBPurcharseorder',
@@ -377,7 +377,7 @@ export default {
     }
   },
   mounted () {
-     
+
     this.fetch()
   },
   methods: {
@@ -580,8 +580,14 @@ export default {
       if (params.bedat == null) {
         params.bedat = this.defultDate()
       }
+
+      if (params.sortField == null) {
+        params.sortField = "ebeln desc,ebelp"
+        params.sortOrder = "asc"
+      }
+
       params.bsart = 0//药品
-      params.lifnr=this.user.username//供应商账号
+      params.lifnr = this.user.username//供应商账号
       this.$get('scmBPurcharseorder', {
         ...params
       }).then((r) => {

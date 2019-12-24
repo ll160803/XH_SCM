@@ -245,6 +245,6 @@ tr.ant-table-expanded-row td > .ant-table-wrapper {
   margin: 4px 0 0 0 !important;
 }
 .ant-table{
-  font-size: 16px !important;
+  font-size: 14px !important;
 }
 </style>

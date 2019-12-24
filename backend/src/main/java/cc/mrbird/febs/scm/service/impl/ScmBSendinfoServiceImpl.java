@@ -55,7 +55,7 @@ public class ScmBSendinfoServiceImpl extends ServiceImpl<ScmBSendinfoMapper, Scm
             }
             queryWrapper.eq(ScmBSendinfo::getIsDeletemark, 1);
             Page<ScmBSendinfo> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);
+            SortUtil.handlePageSort(request, page, false);
             return this.page(page, queryWrapper);
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
