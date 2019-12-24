@@ -82,7 +82,7 @@ export default {
       this.$emit('close')
     },
     printContent () {
-      this.$post(`scmBSupplyplan/printPlan`, { id: this.ids }).then((r) => {
+      this.$post(`scmBSupplyplan/printPlan`, { ids: this.ids }).then((r) => {
         let data = r.data.data
         this.printHtml = data
       })

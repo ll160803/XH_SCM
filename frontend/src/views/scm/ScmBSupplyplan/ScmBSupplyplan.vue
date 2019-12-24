@@ -111,7 +111,7 @@ export default {
     return {
       scroll: {
         x: 2500,
-        y: window.innerHeight - 200 - 100 - 20
+        y: window.innerHeight - 200 - 100 - 20 - 5
       },
       advanced: false,
       dataSource: [],
