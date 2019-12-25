@@ -40,6 +40,7 @@
         />
       </a-form-item>
       <a-upload
+        accept=".png,.jpg,.pdf,.bmp,.gif,.jpeg"
         :fileList="fileList"
         :remove="handleRemove"
         :beforeUpload="beforeUpload"

@@ -44,6 +44,7 @@
         label="文件上传"
       >
         <a-upload
+          accept=".png,.jpg,.pdf,.bmp,.gif,.jpeg"
           :fileList="fileList"
           :remove="handleRemove"
           :beforeUpload="beforeUpload"

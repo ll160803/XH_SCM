@@ -43,6 +43,7 @@
         label="文件上传"
       >
         <a-upload
+          accept=".pdf"
           :fileList="fileList"
           :remove="handleRemove"
           :beforeUpload="beforeUpload"

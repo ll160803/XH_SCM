@@ -95,7 +95,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 1200 }"
+        :scroll="scroll"
       >
 
         <template
@@ -155,6 +155,10 @@ export default {
   components: { ScmDVendorAdd, ScmDVendorEdit, EditableCell },
   data () {
     return {
+      scroll: {
+        x: 1500,
+        y: window.innerHeight - 200 - 100 -20 
+      },
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
@@ -191,19 +195,22 @@ export default {
         title: '名字',
         dataIndex: 'name',
         fixed: 'left',
-         width: 120
+        width: 180
+      }, {
+        title: '联系人',
+        dataIndex: 'linkPerson',
+        width: 120
+      }, {
+        title: '联系电话',
+        dataIndex: 'phone',
+        width: 120
+      }, {
+        title: '邮件',
+        dataIndex: 'email',
+        width: 180
       }, {
         title: '地址',
         dataIndex: 'address'
-      }, {
-        title: '联系人',
-        dataIndex: 'linkPerson'
-      }, {
-        title: '联系电话',
-        dataIndex: 'phone'
-      }, {
-        title: '邮件',
-        dataIndex: 'email'
       }, {
         title: '状态',
         dataIndex: 'state',
