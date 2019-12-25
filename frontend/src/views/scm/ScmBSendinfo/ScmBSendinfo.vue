@@ -95,7 +95,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 1500 }"
+        :scroll="scroll"
       >
         <template
           slot="remark"
@@ -165,6 +165,10 @@ export default {
   components: { ScmBSendinfoAdd, ScmBSendinfoEdit, SendInfoPrint },
   data () {
     return {
+      scroll: {
+        x: 1600,
+        y: window.innerHeight - 200 - 100 - 20 - 15
+      },
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
@@ -193,37 +197,48 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '送货单号',
-        dataIndex: 'id'
+        dataIndex: 'id',
+        width:100
       }, {
         title: '物料编码',
-        dataIndex: 'matnr'
+        dataIndex: 'matnr',
+        width:100
       }, {
         title: '物料描述',
-        dataIndex: 'txz01'
+        dataIndex: 'txz01',
+        width:200
       }, {
         title: '送货数量',
-        dataIndex: 'amount'
+        dataIndex: 'amount',
+        width:80
       }, {
         title: '单价',
-        dataIndex: 'price'
+        dataIndex: 'price',
+        width:80
       }, {
         title: '送货金额',
-        dataIndex: 'money'
+        dataIndex: 'money',
+        width:80
       }, {
         title: '计量单位',
-        dataIndex: 'mseht'
+        dataIndex: 'mseht',
+        width:80
       }, {
         title: '联系人',
-        dataIndex: 'linkPerson'
+        dataIndex: 'linkPerson',
+        width:120
       }, {
         title: '院区',
-        dataIndex: 'werkst'
+        dataIndex: 'werkst',
+        width:150
       }, {
         title: '送达科室',
-        dataIndex: 'sendDepart'
+        dataIndex: 'sendDepart',
+        width:120
       }, {
         title: '联系方式',
-        dataIndex: 'linkTelephone'
+        dataIndex: 'linkTelephone',
+        width:120
       }, {
         title: '商品条码',
         dataIndex: 'materCode'

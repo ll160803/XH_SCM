@@ -145,11 +145,13 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id',
-        width: 100
+        width: 100,
+        fixed: 'left'
       }, {
         title: '订单号',
         dataIndex: 'ebeln',
-        width: 100
+        width: 100,
+        fixed: 'left'
       }, {
         title: '项目号',
         dataIndex: 'ebelp',
@@ -185,7 +187,7 @@ export default {
       }, {
         title: '批号',
         dataIndex: 'charge',
-        width: 80
+        width: 120
       }, {
         title: '有效期',
         dataIndex: 'vfdat',

@@ -159,7 +159,7 @@ export default {
       return [{
         title: '供应商名称',
         dataIndex: 'name',
-        width: 100
+        width: 200
       }, {
         title: '供应商账号',
         dataIndex: 'gysaccount',
@@ -171,14 +171,14 @@ export default {
       }, {
         title: '批次号',
         dataIndex: 'charge',
-        width: 100
+        width: 120
       }, {
         title: '审核原因',
         dataIndex: 'auditCause'
       }, {
         title: '状态',
         dataIndex: 'state',
-        width: 150,
+        width: 120,
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
