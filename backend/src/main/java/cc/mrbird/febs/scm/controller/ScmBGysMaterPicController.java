@@ -58,8 +58,9 @@ public class ScmBGysMaterPicController extends BaseController {
     public Map<String, Object> List(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic) {
         User currentUser = FebsUtil.getCurrentUser();
         scmBGysMaterPic.setGysaccount(currentUser.getUsername());
-        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic));
+        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, "", ""));
     }
+
     /**
      * 分页查询数据
      *
@@ -69,8 +70,8 @@ public class ScmBGysMaterPicController extends BaseController {
      */
     @GetMapping("audit")
     @RequiresPermissions("scmBGysMaterPic:view")
-    public Map<String, Object> List2(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic) {
-        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic));
+    public Map<String, Object> List2(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, String keyword_mater, String keyword_gys) {
+        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, keyword_mater, keyword_gys));
     }
 
     /**
@@ -92,15 +93,12 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setName(currentUser.getRealname());
             scmBGysMaterPic.setState(0);
             scmBGysMaterPic.setIsDeletemark(1);
-            ComFile comFile= this.iComFileService.getById(scmBGysMaterPic.getFileId());
-            if(comFile!=null) {
-                Boolean flag=  RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
-                if(flag)
-                {
+            ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
+            if (comFile != null) {
+                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+                if (flag) {
                     this.iScmBGysMaterPicService.createScmBGysMaterPic(scmBGysMaterPic);
-                }
-                else
-                {
+                } else {
                     throw new FebsException("操作失败，SAP端接收验收报告失败");
                 }
             }
@@ -128,17 +126,14 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setGysaccount(currentUser.getUsername());
             scmBGysMaterPic.setName(currentUser.getRealname());
 
-            ComFile comFile= this.iComFileService.getById(scmBGysMaterPic.getFileId());
-            if(comFile!=null) {
-              Boolean flag=  RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
-              if(flag)
-              {
-                  this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
-              }
-              else
-              {
-                  throw new FebsException("操作失败，SAP端接收验收报告失败");
-              }
+            ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
+            if (comFile != null) {
+                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+                if (flag) {
+                    this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
+                } else {
+                    throw new FebsException("操作失败，SAP端接收验收报告失败");
+                }
             }
         } catch (Exception e) {
             message = e.getMessage();
@@ -146,6 +141,7 @@ public class ScmBGysMaterPicController extends BaseController {
             throw new FebsException(message);
         }
     }
+
     /**
      * 审核数据
      *
@@ -173,31 +169,33 @@ public class ScmBGysMaterPicController extends BaseController {
     public void deleteScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
             String[] arr_ids = ids.split(StringPool.COMMA);
-            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids,0);
+            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids, 0);
         } catch (Exception e) {
             message = "删除成功";
             log.error(message, e);
             throw new FebsException(message);
         }
     }
+
     @Log("删除")
     @DeleteMapping("/audit/{ids}")
     @RequiresPermissions("scmBGysMaterPic:delete")
     public void deleteAuditScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
             String[] arr_ids = ids.split(StringPool.COMMA);
-            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids,1);
+            this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids, 1);
         } catch (Exception e) {
             message = "删除成功";
             log.error(message, e);
             throw new FebsException(message);
         }
     }
+
     @PostMapping("excel")
     @RequiresPermissions("scmBGysMaterPic:export")
-    public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response) throws FebsException {
+    public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response, String keyword_mater, String keyword_gys) throws FebsException {
         try {
-            List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic).getRecords();
+            List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, keyword_mater, keyword_gys).getRecords();
             ExcelKit.$Export(ScmBGysMaterPic.class, response).downXlsx(scmBGysMaterPics, false);
         } catch (Exception e) {
             message = "导出Excel失败";
@@ -213,9 +211,9 @@ public class ScmBGysMaterPicController extends BaseController {
     }
 
     @GetMapping("/charge/{id}")
-    public List<String>GetChargeByBaseId(@NotBlank(message = "{required}") @PathVariable String id) {
+    public List<String> GetChargeByBaseId(@NotBlank(message = "{required}") @PathVariable String id) {
         User currentUser = FebsUtil.getCurrentUser();
-        String account=currentUser.getUsername();
-        return this.iScmBGysMaterPicService.findChargeByBaseId(id,account);
+        String account = currentUser.getUsername();
+        return this.iScmBGysMaterPicService.findChargeByBaseId(id, account);
     }
 }

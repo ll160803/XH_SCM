@@ -19,7 +19,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  */
 public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
 
-        IPage<ScmBGysMaterPic> findScmBGysMaterPics(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic);
+        IPage<ScmBGysMaterPic> findScmBGysMaterPics(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, String keyword_mater, String keyword_gys);
 
         void createScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException ;
 

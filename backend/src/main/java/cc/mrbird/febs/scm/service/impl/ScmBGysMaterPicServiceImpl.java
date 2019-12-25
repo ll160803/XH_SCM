@@ -45,7 +45,7 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
     private ScmDMaterMapper scmDMaterMapper;
 
     @Override
-    public IPage<ScmBGysMaterPic> findScmBGysMaterPics(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic) {
+    public IPage<ScmBGysMaterPic> findScmBGysMaterPics(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic,String keyword_mater,String keyword_gys) {
         try {
             LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
             if (StringUtils.isNotBlank(scmBGysMaterPic.getId())) {
@@ -65,6 +65,17 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
             }
             if (StringUtils.isNotBlank(scmBGysMaterPic.getName())) {
                 queryWrapper.like(ScmBGysMaterPic::getName, scmBGysMaterPic.getName());
+            }
+            if (StringUtils.isNotBlank(scmBGysMaterPic.getCharge())) {
+                queryWrapper.like(ScmBGysMaterPic::getCharge, scmBGysMaterPic.getCharge());
+            }
+            if(StringUtils.isNotBlank(keyword_mater))
+            {
+                queryWrapper.and(qw->qw.eq(ScmBGysMaterPic::getMaterId,keyword_mater).or().like(ScmBGysMaterPic::getTxz01,keyword_mater));
+            }
+            if(StringUtils.isNotBlank(keyword_gys))
+            {
+                queryWrapper.and(qw->qw.eq(ScmBGysMaterPic::getGysaccount,keyword_gys).or().like(ScmBGysMaterPic::getName,keyword_gys));
             }
             queryWrapper.eq(ScmBGysMaterPic::getIsDeletemark, 1);
             Page<ScmBGysMaterPic> page = new Page<>();

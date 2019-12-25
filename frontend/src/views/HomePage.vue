@@ -36,7 +36,7 @@
         </a-col>
       </a-card>
     </a-row>
-    <a-row :gutter="8" class="count-info">
+    <!-- <a-row :gutter="8" class="count-info">
       <a-col :span="12" class="visit-count-wrapper">
         <a-card class="visit-count">
           <apexchart ref="count" type=bar height=300 :options="chartOptions" :series="series" />
@@ -121,7 +121,7 @@
           </table>
         </a-card>
       </a-col>
-    </a-row>
+    </a-row> -->
   </div>
 </template>
 <script>
@@ -165,31 +165,7 @@ export default {
         }
       },
       projects: [
-        {
-          name: 'FEBS-Shiro',
-          des: 'Spring Boot 2.0.4 & Shiro1.4.0 权限管理系统。',
-          avatar: 'F'
-        },
-        {
-          name: 'FEBS-Security',
-          des: 'Spring Boot 2.0.4 & Spring Security 5.0.7 权限管理系统。',
-          avatar: 'F'
-        },
-        {
-          name: 'SpringAll',
-          des: '循序渐进学习Spring Boot、Spring Cloud与Spring Security。',
-          avatar: 'S'
-        },
-        {
-          name: 'FEBS-Shiro-Vue',
-          des: 'FEBS-Shiro前后端分离版本，前端架构采用Vue全家桶。',
-          avatar: 'F'
-        },
-        {
-          name: 'FEBS-Actuator',
-          des: '使用Spring Boot Admin 2.0.2构建，用于监控FEBS。',
-          avatar: 'F'
-        }
+        
       ],
       todayIp: '',
       todayVisitCount: '',
@@ -227,8 +203,8 @@ export default {
         '准备吃些什么呢',
         '周末要不要去看电影？'
       ]
-      let index = Math.floor((Math.random() * welcomeArr.length))
-      return `${time}，${this.user.username}，${welcomeArr[index]}`
+     // let index = Math.floor((Math.random() * welcomeArr.length))
+      return `${time}，${this.user.username}`
     }
   },
   mounted () {
@@ -268,25 +244,25 @@ export default {
           sevenUserVistCount.push(0)
         }
       }
-      this.$refs.count.updateSeries([
-        {
-          name: '您',
-          data: sevenUserVistCount
-        },
-        {
-          name: '总数',
-          data: sevenVisitCount
-        }
-      ], true)
-      this.$refs.count.updateOptions({
-        xaxis: {
-          categories: dateArr
-        },
-        title: {
-          text: '近七日系统访问记录',
-          align: 'left'
-        }
-      }, true, true)
+      // this.$refs.count.updateSeries([
+      //   {
+      //     name: '您',
+      //     data: sevenUserVistCount
+      //   },
+      //   {
+      //     name: '总数',
+      //     data: sevenVisitCount
+      //   }
+      // ], true)
+      // this.$refs.count.updateOptions({
+      //   xaxis: {
+      //     categories: dateArr
+      //   },
+      //   title: {
+      //     text: '近七日系统访问记录',
+      //     align: 'left'
+      //   }
+      // }, true, true)
     }).catch((r) => {
       console.error(r)
       this.$message.error('获取首页信息失败')

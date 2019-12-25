@@ -213,11 +213,11 @@ public class ScmDVendorController extends BaseController {
                         }
                     }
                     if (item.getState() == 0) {//取消审核
-                        User user = this.userService.findByName(item.getCode());
+                        User user = new User();
 
                         user.setStatus("0");//无效
 
-                        this.userService.updateUser(user);
+                        this.userService.UpdateUserOnly(user,item.getCode());
                     }
                 }
                 this.iScmDVendorService.updateScmDVendor(item);

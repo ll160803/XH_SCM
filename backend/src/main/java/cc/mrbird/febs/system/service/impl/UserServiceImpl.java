@@ -255,4 +255,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 重新缓存用户信息
         cacheService.saveUser(username);
     }
+
+    public  void  UpdateUserOnly(User user,String username) throws Exception
+    {
+        this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        // 重新缓存用户信息
+        cacheService.saveUser(username);
+    }
 }

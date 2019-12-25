@@ -111,4 +111,12 @@ public interface UserService extends IService<User> {
      * @throws Exception
      */
     void updateRealname(String username, String realname) throws Exception ;
+
+    /**
+     * 修改用户信息
+     * @param user
+     * @param username
+     * @throws Exception
+     */
+    void UpdateUserOnly(User user,String username) throws Exception;
 }
