@@ -192,6 +192,7 @@ export default {
     fetch (params = {}) {
       this.loading = true
       this.$get('scmDVendor/GetByVendorCode').then((r) => {
+        this.loading = false
         let data2 = r.data.data
         let scmDVendor2 = data2.scmDVendor
         this.setFormValues(scmDVendor2)

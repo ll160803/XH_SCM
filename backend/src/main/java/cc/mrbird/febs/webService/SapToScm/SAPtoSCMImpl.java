@@ -282,8 +282,8 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                 List<Long> arr = new ArrayList<>();
                 for (String code : codeList) {
                     ScmBSupplyplan plan = new ScmBSupplyplan();
-                    plan.setStatus(Integer.parseInt(status));
-                    plan.setId(Long.parseLong(code));
+                    plan.setStatus(Integer.parseInt(status.trim()));
+                    plan.setId(Long.parseLong(code.trim()));
                     scmBSupplyplanMapper.updateScmBSupplyplan(plan);
                 }
                 log.info("从SAP更改供应计划状态成功！");
