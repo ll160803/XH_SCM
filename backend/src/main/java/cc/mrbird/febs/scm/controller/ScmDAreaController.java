@@ -44,10 +44,9 @@ public class ScmDAreaController extends BaseController {
 
 
     /**
-     * 分页查询数据
      *
-     * @param bootStrapTable 分页信息
-     * @param scmDArea       查询条件
+     * @param request
+     * @param scmDArea
      * @return
      */
     @GetMapping

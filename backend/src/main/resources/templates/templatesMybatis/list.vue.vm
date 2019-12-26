@@ -162,7 +162,7 @@
             },
             handleAddSuccess () {
                 this.addVisiable = false
-                this.$message.success('新增字典成功')
+                this.$message.success('新增成功')
                 this.search()
             },
             handleAddClose () {
@@ -173,7 +173,7 @@
             },
             handleEditSuccess () {
                 this.editVisiable = false
-                this.$message.success('修改字典成功')
+                this.$message.success('修改成功')
                 this.search()
             },
             handleEditClose () {

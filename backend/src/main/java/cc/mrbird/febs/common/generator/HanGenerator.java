@@ -27,7 +27,6 @@ public class HanGenerator {
     public static void main(String[] args) {
 
 
-
         AutoGenerator mpg = new AutoGenerator();
         // 选择 freemarker 引擎，默认 Veloctiy
 
@@ -67,7 +66,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"v_scm_b_salereturn","scm_b_salereturn"}); // 需要生成的表
+        strategy.setInclude(new String[]{"scm_b_queryprice","scm_b_queryprice_d"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -81,6 +80,7 @@ public class HanGenerator {
         // strategy.setSuperServiceImplClass("com.baomidou.demo.TestServiceImpl");
         // 自定义 controller 父类
          strategy.setSuperControllerClass("cc.mrbird.febs.common.controller.BaseController");
+        strategy.setEntityLombokModel(true);
 
          strategy.setRestControllerStyle(true);//设置restful风格
         //strategy.setTableFillList()
