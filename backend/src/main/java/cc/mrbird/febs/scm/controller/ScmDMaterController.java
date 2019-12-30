@@ -59,6 +59,12 @@ public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater,String
     scmDMater.setGysaccount(currentUser.getUsername());
         return getDataTable(this.iScmDMaterService.findScmDMaters(request, scmDMater));
         }
+    @GetMapping("list")
+    public Map<String, Object> ListMater(QueryRequest request, ScmDMater scmDMater,String keyWord){
+        log.error("关键字"+keyWord);
+        scmDMater.keyword=keyWord;
+        return getDataTable(this.iScmDMaterService.findScmDMaters(request, scmDMater));
+    }
 
 /**
  * 跳转添加页面

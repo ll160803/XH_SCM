@@ -112,7 +112,7 @@ public class ScmDAreaServiceImpl extends ServiceImpl<ScmDAreaMapper, ScmDArea> i
         @Transactional
        public List<ScmDArea> getAreasByUserId(Long id)
         {
-                return  this.getAreasByUserId(id);
+                return  this.baseMapper.GetAreaByUserId(id);
         }
 
 }

@@ -18,6 +18,6 @@ import java.util.List;
 public interface ScmDAreaMapper extends BaseMapper<ScmDArea> {
         void updateScmDArea(ScmDArea scmDArea);
 
-        @Select("SELECT *  from scm_d_area where ID in (SELECT AreaID from scm_b_userandarea where UserID=${userid}")
+        @Select("SELECT *  from scm_d_area where ID in (SELECT AreaID from scm_b_userandarea where UserID=${userid})")
         List<ScmDArea>  GetAreaByUserId(@Param(value="userid") Long userid);
         }

@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 
-import java.time.LocalDate;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 
@@ -85,12 +84,24 @@ public class ScmBQueryprice implements Serializable {
      * 询价日期
      */
     @ExcelField(value = "询价日期")
-    private LocalDate queryDate;
+    private Date queryDate;
+
+    /**
+     * 查询询价开始和结束时间使用
+     */
+    private transient String queryDateFrom;
+    private transient String queryDateTo;
     /**
      * 结束日期
      */
     @ExcelField(value = "结束日期")
-    private LocalDate endDate;
+    private Date endDate;
+
+    /**
+     * 查询截止时间使用
+     */
+    private transient String endDateFrom;
+    private transient String endDateTo;
     /**
      * 询价状态
      */

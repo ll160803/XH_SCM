@@ -6,11 +6,14 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.scm.entity.ScmBQuerypriceD;
 import cc.mrbird.febs.scm.service.IScmBQuerypriceService;
 import cc.mrbird.febs.scm.entity.ScmBQueryprice;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -55,9 +58,31 @@ public class ScmBQuerypriceController extends BaseController {
     }
 
     /**
-     * @param scmBQueryprice
+     *
+     * @param maters
+     * @param gys
      * @throws FebsException
      */
+    @Log("新增询价/按钮")
+    @PostMapping("xjAdd")
+    @RequiresPermissions("scmBQuerypriceNew:add")
+    public void addScmBQuerypriceNew(String maters,String gys,int state) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long userId=currentUser.getUserId();
+            Long deptId=currentUser.getDeptId();
+            List<ScmBQueryprice> list_ScmBQueryprice = JSON.parseObject(maters, new TypeReference<List<ScmBQueryprice>>() {
+            });
+            List<ScmBQuerypriceD> list_ScmBQuerypriceD = JSON.parseObject(gys, new TypeReference<List<ScmBQuerypriceD>>() {
+            });
+            this.iScmBQuerypriceService.createScmBQuerypriceNew(list_ScmBQueryprice,list_ScmBQuerypriceD,userId,deptId,state);
+        } catch (Exception e) {
+            message = "新增询价/按钮失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
     @Log("新增/按钮")
     @PostMapping
     @RequiresPermissions("scmBQueryprice:add")
@@ -72,7 +97,6 @@ public class ScmBQuerypriceController extends BaseController {
             throw new FebsException(message);
         }
     }
-
     /**
      * @param scmBQueryprice
      * @throws FebsException

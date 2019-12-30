@@ -50,6 +50,18 @@ public class ScmDMaterServiceImpl extends ServiceImpl<ScmDMaterMapper, ScmDMater
             {
                 queryWrapper.eq(ScmDMater::getGysaccount, scmDMater.getGysaccount());
             }
+            if(StringUtils.isNotBlank(scmDMater.getTxz01()))
+            {
+                queryWrapper.like(ScmDMater::getTxz01, scmDMater.getTxz01().trim());
+            }
+            if(StringUtils.isNotBlank(scmDMater.getSpellCode()))
+            {
+                queryWrapper.likeLeft(ScmDMater::getSpellCode, scmDMater.getSpellCode());
+            }
+            if(StringUtils.isNotBlank(scmDMater.getMatnr()))
+            {
+                queryWrapper.eq(ScmDMater::getMatnr, scmDMater.getMatnr());
+            }
             Page<ScmDMater> page = new Page<>();
             SortUtil.handlePageSort(request, page, true);
             return this.page(page, queryWrapper);

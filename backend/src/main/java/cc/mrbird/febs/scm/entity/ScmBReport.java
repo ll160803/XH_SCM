@@ -90,6 +90,25 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+    public String getCreateTimeFrom() {
+        return createTimeFrom;
+    }
+
+    public void setCreateTimeFrom(String createTimeFrom) {
+        this.createTimeFrom = createTimeFrom;
+    }
+
+    public String getCreateTimeTo() {
+        return createTimeTo;
+    }
+
+    public void setCreateTimeTo(String createTimeTo) {
+        this.createTimeTo = createTimeTo;
+    }
+
+    private transient String createTimeFrom;
+    private transient String createTimeTo;
+
     @TableField(exist = false)
     public  ComFile attachfile=new ComFile();
     public String getId(){

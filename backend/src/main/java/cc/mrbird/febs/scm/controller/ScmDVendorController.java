@@ -62,7 +62,20 @@ public class ScmDVendorController extends BaseController {
     @GetMapping
     @RequiresPermissions("scmDVendor:view")
     public Map<String, Object> List(QueryRequest request, ScmDVendor scmDVendor, String keyword) {
-        return getDataTable(this.iScmDVendorService.findScmDVendors(request, scmDVendor,keyword));
+        return getDataTable(this.iScmDVendorService.findScmDVendors(request, scmDVendor, keyword));
+    }
+
+    /**
+     * 询价获取供应商
+     * @param request
+     * @param scmDVendor
+     * @return
+     */
+    @GetMapping("list")
+    public Map<String, Object> XJList(QueryRequest request, ScmDVendor scmDVendor) {
+        scmDVendor.setLb(0);
+        String keyword = "-1";
+        return getDataTable(this.iScmDVendorService.findScmDVendors(request, scmDVendor, keyword));
     }
 
     /**
@@ -129,7 +142,7 @@ public class ScmDVendorController extends BaseController {
     @RequiresPermissions("scmDVendor:export")
     public void export(QueryRequest request, ScmDVendor scmDVendor, HttpServletResponse response) throws FebsException {
         try {
-            List<ScmDVendor> scmDVendors = this.iScmDVendorService.findScmDVendors(request, scmDVendor,"").getRecords();
+            List<ScmDVendor> scmDVendors = this.iScmDVendorService.findScmDVendors(request, scmDVendor, "").getRecords();
             ExcelKit.$Export(ScmDVendor.class, response).downXlsx(scmDVendors, false);
         } catch (Exception e) {
             message = "导出Excel失败";
@@ -168,9 +181,9 @@ public class ScmDVendorController extends BaseController {
 
             this.iScmDVendorService.updateScmDVendor(scmDVendor, list);
             //region 编辑用户的姓名
-           if(StringUtils.isNotBlank(scmDVendor.getCode())&&StringUtils.isNotBlank(scmDVendor.getName())) {
-               this.userService.updateRealname(scmDVendor.getCode(), scmDVendor.getName());
-           }
+            if (StringUtils.isNotBlank(scmDVendor.getCode()) && StringUtils.isNotBlank(scmDVendor.getName())) {
+                this.userService.updateRealname(scmDVendor.getCode(), scmDVendor.getName());
+            }
             //endregion
         } catch (Exception e) {
             message = "修改失败";
@@ -217,7 +230,7 @@ public class ScmDVendorController extends BaseController {
 
                         user.setStatus("0");//无效
 
-                        this.userService.UpdateUserOnly(user,item.getCode());
+                        this.userService.UpdateUserOnly(user, item.getCode());
                     }
                 }
                 this.iScmDVendorService.updateScmDVendor(item);

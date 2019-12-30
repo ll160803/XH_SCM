@@ -51,6 +51,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             if (StringUtils.isNotBlank(scmDVendor.getName())) {
                 queryWrapper.like(ScmDVendor::getName, scmDVendor.getName());
             }
+
             if (StringUtils.isNotBlank(scmDVendor.getCode())) {
                 queryWrapper.eq(ScmDVendor::getCode, scmDVendor.getCode());
             }
@@ -60,9 +61,12 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             if (scmDVendor.getState() != null && scmDVendor.getState()!=-1) {
                 queryWrapper.eq(ScmDVendor::getState, scmDVendor.getState());
             }
-            if(StringUtils.isNotBlank(keyword))
-            {
-                queryWrapper.and(wrapper->wrapper.like(ScmDVendor::getName,keyword).or().eq(ScmDVendor::getCode,keyword));
+            if(StringUtils.isNotBlank(keyword)) {
+                if (keyword.equals("-1")) {
+                    queryWrapper.isNotNull(ScmDVendor::getCode);
+                } else {
+                    queryWrapper.and(wrapper -> wrapper.like(ScmDVendor::getName, keyword).or().eq(ScmDVendor::getCode, keyword));
+                }
             }
             Page<ScmDVendor> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);

@@ -170,7 +170,7 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
             if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
                 queryWrapper.eq(ViewSupplyplan::getEbeln, viewSupplyplan.getEbeln());
             }
-            queryWrapper.apply(" scm_b_supplyplan.gMenge=scm_b_supplyplan.DoneMenge");
+            queryWrapper.apply("g_Menge=DoneMenge");
             if (StringUtils.isNotBlank(viewSupplyplan.getEbelp())) {
                 queryWrapper.eq(ViewSupplyplan::getEbelp, viewSupplyplan.getEbelp());
             }

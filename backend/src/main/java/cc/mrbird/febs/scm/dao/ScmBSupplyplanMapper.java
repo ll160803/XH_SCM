@@ -24,10 +24,10 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
         int IsExistFphm(@Param(value="id") String id,@Param(value="fphm") String fphm,@Param(value="gys") String gys);
 
-        @Update("update ScmBSupplyplan set doneMenge=ifnull(doneMenge,0) + ${doneMenge} where id=${id} and status=0")
+        @Update("update Scm_B_Supplyplan set doneMenge=ifnull(doneMenge,0) + ${doneMenge} where id=${id} and status=0")
         int UpdateDoneMenge(@Param(value="id") String id, @Param(value="doneMenge")String doneMenge);
 
-        @Update("update ScmBSupplyplan set doneMenge=0 where id=${id} and status=0")
+        @Update("update Scm_B_Supplyplan set doneMenge=0 where id=${id} and status=0")
         int UpdateCancelDoneMenge(@Param(value="id") String id);
 
         void doneSupplyPlan(@Param("ids") List<Long> ids);

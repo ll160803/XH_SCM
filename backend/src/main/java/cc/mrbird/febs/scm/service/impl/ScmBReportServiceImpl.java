@@ -13,10 +13,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
@@ -44,8 +46,22 @@ public class ScmBReportServiceImpl extends ServiceImpl<ScmBReportMapper, ScmBRep
             if (StringUtils.isNotBlank(scmBReport.getCode())) {
                 queryWrapper.eq(ScmBReport::getCode, scmBReport.getCode());
             }
+            if (StringUtils.isNotBlank(scmBReport.getName())) {
+                queryWrapper.like(ScmBReport::getName, scmBReport.getName());
+            }
             if (StringUtils.isNotBlank(scmBReport.getId())) {
                 queryWrapper.eq(ScmBReport::getId, scmBReport.getId());
+            }
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            if(StringUtils.isNotBlank(scmBReport.getCreateTimeFrom()))
+            {
+                Date from= sdf.parse(scmBReport.getCreateTimeFrom());
+                queryWrapper.ge(ScmBReport::getCreateTime, from);
+            }
+            if(StringUtils.isNotBlank(scmBReport.getCreateTimeTo()))
+            {
+                Date to= sdf.parse(scmBReport.getCreateTimeTo());
+                queryWrapper.le(ScmBReport::getCreateTime, to);
             }
             Page<ScmBReport> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);

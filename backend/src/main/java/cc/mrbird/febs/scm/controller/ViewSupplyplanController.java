@@ -132,7 +132,7 @@ public ViewSupplyplan detail(@NotBlank(message = "{required}") @PathVariable Str
         return viewSupplyplan;
         }
     @GetMapping("doneStatus/{statusType}")
-    public Map<String, Object> List(QueryRequest request, String statusType,ViewSupplyplan viewSupplyplan){
+    public Map<String, Object> List(QueryRequest request,@PathVariable String statusType,ViewSupplyplan viewSupplyplan){
         return getDataTable(this.iViewSupplyplanService.findDoneViewSupplyplans(request, viewSupplyplan,statusType));
     }
         }
