@@ -242,4 +242,10 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     {
         this.baseMapper.doneSupplyPlan(ids);
     }
+    @Override
+    @Transactional
+    public void cancleSupplyPlan(List<Long> ids)
+    {
+        this.baseMapper.cancelSupplyPlan(ids);
+    }
 }

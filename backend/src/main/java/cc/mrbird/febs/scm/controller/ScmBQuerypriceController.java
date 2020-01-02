@@ -7,6 +7,7 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.scm.entity.ScmBQuerypriceD;
+import cc.mrbird.febs.scm.service.IScmBQuerypriceDService;
 import cc.mrbird.febs.scm.service.IScmBQuerypriceService;
 import cc.mrbird.febs.scm.entity.ScmBQueryprice;
 
@@ -43,7 +44,8 @@ public class ScmBQuerypriceController extends BaseController {
     private String message;
     @Autowired
     public IScmBQuerypriceService iScmBQuerypriceService;
-
+    @Autowired
+    public IScmBQuerypriceDService iScmBQuerypriceDService;
 
     /**
      * @param request
@@ -64,6 +66,25 @@ public class ScmBQuerypriceController extends BaseController {
      * @throws FebsException
      */
     @Log("新增询价/按钮")
+    @PutMapping("xjEdit")
+    @RequiresPermissions("scmBQuerypriceNew:edit")
+    public void editScmBQuerypriceNew(ScmBQueryprice scmBQueryprice,String gys) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            Long userId=currentUser.getUserId();
+            Long deptId=currentUser.getDeptId();
+            this.iScmBQuerypriceService.updateScmBQueryprice(scmBQueryprice);
+            List<ScmBQuerypriceD> list_ScmBQuerypriceD = JSON.parseObject(gys, new TypeReference<List<ScmBQuerypriceD>>() {
+            });
+            this.iScmBQuerypriceService.updateScmBQuerypriceNew(scmBQueryprice.getId(),list_ScmBQuerypriceD);
+        } catch (Exception e) {
+            message = "修改询价/按钮失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @Log("新增询价/按钮")
     @PostMapping("xjAdd")
     @RequiresPermissions("scmBQuerypriceNew:add")
     public void addScmBQuerypriceNew(String maters,String gys,int state) throws FebsException {
@@ -82,7 +103,6 @@ public class ScmBQuerypriceController extends BaseController {
             throw new FebsException(message);
         }
     }
-
     @Log("新增/按钮")
     @PostMapping
     @RequiresPermissions("scmBQueryprice:add")
@@ -122,8 +142,8 @@ public class ScmBQuerypriceController extends BaseController {
     @RequiresPermissions("scmBQueryprice:delete")
     public void deleteScmBQueryprices(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
-            String[] arr_ids = ids.split(StringPool.COMMA);
-            this.iScmBQuerypriceService.deleteScmBQueryprices(arr_ids);
+          //  String[] arr_ids = ids.split(StringPool.COMMA);
+            this.iScmBQuerypriceService.deleteScmBQueryprices(ids);
         } catch (Exception e) {
             message = "删除失败";
             log.error(message, e);
@@ -148,5 +168,32 @@ public class ScmBQuerypriceController extends BaseController {
     public ScmBQueryprice detail(@NotBlank(message = "{required}") @PathVariable String id) {
         ScmBQueryprice scmBQueryprice = this.iScmBQuerypriceService.getById(id);
         return scmBQueryprice;
+    }
+
+    @Log("结束询价")
+    @PutMapping("stop")
+    @RequiresPermissions("scmBQueryprice:stop")
+    public void stopScmBQueryprice(@Valid String ids) throws FebsException {
+        try {
+            //  String[] arr_ids = ids.split(StringPool.COMMA);
+            this.iScmBQuerypriceService.updateQueryState(ids,"stop");
+        } catch (Exception e) {
+            message = "操作失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+    @Log("撤销结束询价")
+    @PutMapping("cancle")
+    @RequiresPermissions("scmBQueryprice:cancle")
+    public void cancelScmBQueryprice(@Valid String ids) throws FebsException {
+        try {
+            //  String[] arr_ids = ids.split(StringPool.COMMA);
+            this.iScmBQuerypriceService.updateQueryState(ids,"cancle");
+        } catch (Exception e) {
+            message = "操作失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
     }
 }

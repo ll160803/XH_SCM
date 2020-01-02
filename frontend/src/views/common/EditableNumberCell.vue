@@ -4,7 +4,7 @@
       v-if="editable"
       class="editable-cell-input-wrapper"
     >
-      <a-input-number  :min="0"  :value="value" @blur="check"  @change="handleChange" @pressEnter="check"/>
+      <a-input-number  :min="0"  :value="value" @blur="check" style="width:80%;"  @change="handleChange" @pressEnter="check"/>
       <a-icon
         type="check"
         class="editable-cell-icon-check"

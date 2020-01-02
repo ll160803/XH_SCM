@@ -1,7 +1,7 @@
 <template>
   <div class="editable-cell">
     <div v-if="editable" class="editable-cell-input-wrapper">
-      <a-input :value="value" @change="handleChange" @pressEnter="check" @blur="check" /><a-icon
+      <a-input :value="value" @change="handleChange" style="width:80%" @pressEnter="check" @blur="check" /><a-icon
         type="check"
         class="editable-cell-icon-check"
         @click="check"

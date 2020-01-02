@@ -21,6 +21,7 @@ import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.scm.service.IViewSupplyplanService;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
@@ -513,21 +514,97 @@ public class ScmBSendorderController extends BaseController {
     }
   //endregion
 
-    @GetMapping("phoneSendOrder")
-    @RequiresPermissions("phoneSendOrder:view")
-    public Map<String, Object> phoneSendOrderList(QueryRequest request, ViewSupplyplan viewSupplyplan) {
-        viewSupplyplan.setIsDeletemark(1);
-        viewSupplyplan.setBsart("0");
-        return getDataTable(this.iScmBSendorderService.findPhoneSendorders(request, viewSupplyplan));
-    }
+//    @GetMapping("phoneSendOrder")
+//    @RequiresPermissions("phoneSendOrder:view")
+//    public Map<String, Object> phoneSendOrderList(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+//        viewSupplyplan.setIsDeletemark(1);
+//        viewSupplyplan.setBsart("0");
+//        return getDataTable(this.iScmBSendorderService.findPhoneSendorders(request, viewSupplyplan));
+//    }
+//
+//    @GetMapping("phoneGysSendOrder")
+//    @RequiresPermissions("phoneGysSendOrder:view")
+//    public Map<String, Object> phoneGysSendOrderList(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+//        viewSupplyplan.setIsDeletemark(1);
+//        User currentUser = FebsUtil.getCurrentUser();
+//        viewSupplyplan.setGysaccount(currentUser.getUsername());
+//        viewSupplyplan.setBsart("0");
+//        return getDataTable(this.iScmBSendorderService.findPhoneSendorders(request, viewSupplyplan));
+//    }
 
     @GetMapping("phoneGysSendOrder")
     @RequiresPermissions("phoneGysSendOrder:view")
-    public Map<String, Object> phoneGysSendOrderList(QueryRequest request, ViewSupplyplan viewSupplyplan) {
-        viewSupplyplan.setIsDeletemark(1);
+    public Map<String, Object> phoneSendOrderList2(QueryRequest request, ScmBSendorder scmBSendorder, ViewSupplyplan viewSupplyplan) {
+        scmBSendorder.setIsDeletemark(1);
+
         User currentUser = FebsUtil.getCurrentUser();
-        viewSupplyplan.setGysaccount(currentUser.getUsername());
-        viewSupplyplan.setBsart("0");
-        return getDataTable(this.iScmBSendorderService.findPhoneSendorders(request, viewSupplyplan));
+        scmBSendorder.setGysaccount(currentUser.getUsername());
+        log.error("art:"+scmBSendorder.getBsart());
+        IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder);
+        List<ScmBSendorder> records=list.getRecords();
+        //此代码 可以优化
+        for (ScmBSendorder order:records
+             ) {
+            LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
+            queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
+            if(viewSupplyplan.getStatus()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getStatus,viewSupplyplan.getStatus());
+            }
+            if(viewSupplyplan.getWerks()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getWerks,viewSupplyplan.getWerks());
+            }
+            if(viewSupplyplan.getEbeln()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getEbeln,viewSupplyplan.getEbeln());
+            }
+            if(viewSupplyplan.getTxz01()!=null) {
+                queryWrapper.like(ViewSupplyplan::getTxz01,viewSupplyplan.getTxz01());
+            }
+            if(viewSupplyplan.getMatnr()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getMatnr,viewSupplyplan.getMatnr());
+            }
+            if(viewSupplyplan.getLgortName()!=null) {
+                queryWrapper.like(ViewSupplyplan::getLgortName,viewSupplyplan.getLgortName());
+            }
+           List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
+           order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
+        }
+        return getDataTable(list);
+    }
+    @GetMapping("phoneSendOrder")
+    @RequiresPermissions("phoneSendOrder:view")
+    public Map<String, Object> phoneSendOrderList3(QueryRequest request, ScmBSendorder scmBSendorder, ViewSupplyplan viewSupplyplan) {
+        scmBSendorder.setIsDeletemark(1);
+        scmBSendorder.setBsart("0");
+        IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder);
+        List<ScmBSendorder> records=list.getRecords();
+        //此代码 可以优化
+        for (ScmBSendorder order:records
+        ) {
+            LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
+            queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
+            if(viewSupplyplan.getStatus()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getStatus,viewSupplyplan.getStatus());
+            }
+            if(viewSupplyplan.getWerks()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getWerks,viewSupplyplan.getWerks());
+            }
+            if(viewSupplyplan.getEbeln()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getEbeln,viewSupplyplan.getEbeln());
+            }
+            if(viewSupplyplan.getTxz01()!=null) {
+                queryWrapper.like(ViewSupplyplan::getTxz01,viewSupplyplan.getTxz01());
+            }
+            if(viewSupplyplan.getLgortName()!=null) {
+                queryWrapper.like(ViewSupplyplan::getLgortName,viewSupplyplan.getLgortName());
+            }
+            if(viewSupplyplan.getMatnr()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getMatnr,viewSupplyplan.getMatnr());
+            }
+            List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
+            order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
+        }
+        return getDataTable(list);
     }
 }

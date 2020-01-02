@@ -32,6 +32,8 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
         void doneSupplyPlan(@Param("ids") List<Long> ids);
 
+        void cancelSupplyPlan(@Param("ids") List<Long> ids);
+
 
         List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);
         }

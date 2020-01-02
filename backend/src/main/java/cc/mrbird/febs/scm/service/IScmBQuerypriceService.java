@@ -28,11 +28,24 @@ public interface IScmBQuerypriceService extends IService<ScmBQueryprice> {
         void deleteScmBQueryprices(String[]Ids);
 
         /**
+         * 删除询价  设置为is_deletemark=0
+         * @param ids
+         */
+        void deleteScmBQueryprices(String ids);
+
+        /**
+         * 更改状态
+         * @param ids
+         * @param type stop 结束询价  cancle 取消结束
+         */
+        void updateQueryState(String ids,String type);
+
+        /**
          * 新增询价信息
          * @param maters  询价主表
          * @param gys     询价子表
          * @param userName
          */
         void createScmBQuerypriceNew(List<ScmBQueryprice> maters, List<ScmBQuerypriceD> gys, Long userid,Long deptId,int state);
-
+        void updateScmBQuerypriceNew(Long baseId, List<ScmBQuerypriceD> gys);
 }

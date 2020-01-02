@@ -48,7 +48,6 @@ public class ScmBQuerypriceDController extends BaseController {
      * @return
      */
     @GetMapping
-    @RequiresPermissions("scmBQuerypriceD:view")
     public Map<String, Object> List(QueryRequest request, ScmBQuerypriceD scmBQuerypriceD) {
         return getDataTable(this.iScmBQuerypriceDService.findScmBQuerypriceDs(request, scmBQuerypriceD));
     }

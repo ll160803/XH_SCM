@@ -582,8 +582,8 @@ export default {
       }
 
       if (params.sortField == null) {
-        params.sortField = "ebeln desc,ebelp"
-        params.sortOrder = "asc"
+        params.sortField = "ebeln descend,ebelp"
+        params.sortOrder = "ascend"
       }
 
       params.bsart = 0//药品

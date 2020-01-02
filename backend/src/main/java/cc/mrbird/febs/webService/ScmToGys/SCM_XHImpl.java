@@ -59,8 +59,8 @@ public class SCM_XHImpl implements ISCM_XHService {
 
     public WcfMess_XH ExportPurchasePlan(String userName, String password, Date startTime, Date endTime) {
         WcfMess_XH Msg = new WcfMess_XH();
-        log.info("用户：" + userName + "开始获取采购计划");
-        if (StringUtils.isNotBlank(userName) || StringUtils.isNotBlank(password)) {
+        log.info("用户：" + userName+",password:"+password + "开始获取采购计划");
+        if (!StringUtils.isNotBlank(userName) || !StringUtils.isNotBlank(password)) {
             Msg.setIsSuccess(false);
             Msg.setMess("参数有误");
             Msg.setPurchasePlans(null);
@@ -103,7 +103,7 @@ public class SCM_XHImpl implements ISCM_XHService {
 
                     LambdaQueryWrapper<ScmBPurcharseorder> queryOrderWrapper = new LambdaQueryWrapper<>();
                     queryOrderWrapper.eq(ScmBPurcharseorder::getLifnr, accountCode);
-                    queryOrderWrapper.eq(ScmBPurcharseorder::getStatus, "0");
+                    queryOrderWrapper.eq(ScmBPurcharseorder::getStatus, "1");
                     queryOrderWrapper.between(ScmBPurcharseorder::getBedat, startTime, endTime);
 
 
@@ -262,7 +262,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         int IsLimit = 1;//0是不限制是否上传 1限制
         //region 校验密码
         User user = new User();
-        if (StringUtils.isNotBlank(userName) || StringUtils.isNotBlank(password)) {
+        if (!StringUtils.isNotBlank(userName) || !StringUtils.isNotBlank(password)) {
             WcfPlan_XH Msg = new WcfPlan_XH();
             Msg.setIsSuccess(false);
             Msg.setMess("参数有误");

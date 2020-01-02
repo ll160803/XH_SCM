@@ -158,6 +158,11 @@ public class ScmBQueryprice implements Serializable {
     @ExcelField(value = "修改人")
     private Long modifyUserId;
 
+    /**
+     * 药品编码、名称查询
+     */
+    private  transient  String keyword;
+
 
     public static final String ID = "id";
 

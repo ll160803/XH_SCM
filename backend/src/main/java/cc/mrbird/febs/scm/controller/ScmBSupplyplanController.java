@@ -210,6 +210,44 @@ public class ScmBSupplyplanController extends BaseController {
         }
     }
 
+    @Log("取消")
+    @PutMapping("cancelplan")
+    public void updateCancelScmBSupplyplan(@Valid String ids) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            String str_ids = "'" + ids.replace(",", "','") + "'";
+            List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
+            List<ViewSupplyplan> doneList = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
+            for (ViewSupplyplan en : list
+            ) {
+                if (en.getStatus() != 1) {
+                    message += en.getId().toString() + ":未收货";
+                } else {
+                    en.setStatus(0);
+                    doneList.add(en);
+                    arrids.add(en.getId());
+                }
+
+            }
+
+            RfcNOC rfc = new RfcNOC();
+            List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+            if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                log.error("SAP端处理失败");
+                throw new FebsException("SAP端处理失败");
+            } else {
+                this.iScmBSupplyplanService.cancleSupplyPlan(arrids);//修改scm状态
+            }
+
+
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
     @Log("收货")
     @PutMapping("over")
     public void updateOverScmBSupplyplan(@Valid String ids) throws FebsException {

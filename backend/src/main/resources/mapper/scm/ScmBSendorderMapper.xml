@@ -2,48 +2,49 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cc.mrbird.febs.scm.dao.ScmBSendorderMapper">
 
-        <!-- 通用查询映射结果 -->
-        <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmBSendorder">
-                    <id column="ID" property="id"/>
-                    <result column="CODE" property="code"/>
-                    <result column="NAME" property="name"/>
-                    <result column="FPHM" property="fphm"/>
-                    <result column="FPJR" property="fpjr"/>
-                    <result column="GYSACCOUNT" property="gysaccount"/>
-                    <result column="GYSNAME" property="gysname"/>
-                    <result column="COMMENTS" property="comments"/>
-                    <result column="Status" property="Status"/>
-                    <result column="IS_DELETEMARK" property="isDeletemark"/>
-                    <result column="CREATE_TIME" property="createTime"/>
-                    <result column="MODIFY_TIME" property="modifyTime"/>
-                    <result column="CREATE_USER_ID" property="createUserId"/>
-                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
-        </resultMap>
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmBSendorder">
+        <id column="ID" property="id"/>
+        <result column="CODE" property="code"/>
+        <result column="NAME" property="name"/>
+        <result column="FPHM" property="fphm"/>
+        <result column="FPJR" property="fpjr"/>
+        <result column="GYSACCOUNT" property="gysaccount"/>
+        <result column="GYSNAME" property="gysname"/>
+        <result column="COMMENTS" property="comments"/>
+        <result column="Status" property="Status"/>
+        <result column="IS_DELETEMARK" property="isDeletemark"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="MODIFY_TIME" property="modifyTime"/>
+        <result column="CREATE_USER_ID" property="createUserId"/>
+        <result column="MODIFY_USER_ID" property="modifyUserId"/>
+    </resultMap>
 
-        <!-- 通用查询结果列 -->
-        <sql id="Base_Column_List">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
         ID, CODE, NAME, FPHM, FPJR, GYSACCOUNT, GYSNAME, COMMENTS, Status, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmBSendorder" parameterType="cc.mrbird.febs.scm.entity.ScmBSendorder">
         update scm_b_sendorder
         <trim prefix="set" suffixOverrides=",">
-<if test="code != null">CODE=#{code},</if>
-<if test="name != null">NAME=#{name},</if>
-<if test="fphm != null">FPHM=#{fphm},</if>
-<if test="fpjr != null">FPJR=#{fpjr},</if>
-<if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>
-<if test="gysname != null">GYSNAME=#{gysname},</if>
-<if test="comments != null">COMMENTS=#{comments},</if>
-<if test="Status != null">Status=#{Status},</if>
-<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
-<if test="createTime != null">CREATE_TIME=#{createTime},</if>
-<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
-<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
-<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+            <if test="code != null">CODE=#{code},</if>
+            <if test="name != null">NAME=#{name},</if>
+            <if test="fphm != null">FPHM=#{fphm},</if>
+            <if test="fpjr != null">FPJR=#{fpjr},</if>
+            <if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>
+            <if test="gysname != null">GYSNAME=#{gysname},</if>
+            <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="Status != null">Status=#{Status},</if>
+            <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+            <if test="createTime != null">CREATE_TIME=#{createTime},</if>
+            <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+            <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>
         where id=#{id}
     </update>
-    <select id="findSendInfos" resultType="cc.mrbird.febs.scm.entity.ScmBSendorder" parameterType="cc.mrbird.febs.scm.entity.ScmBSendorder">
+    <select id="findSendInfos" resultType="cc.mrbird.febs.scm.entity.ScmBSendorder"
+            parameterType="cc.mrbird.febs.scm.entity.ScmBSendorder">
         SELECT
         ID,
         CODE,
@@ -71,30 +72,36 @@
         <if test="order.gysaccount!= null and order.gysaccount !=''">
             And GYSACCOUNT = #{order.gysaccount}
         </if>
+        <if test="order.gysname!= null and order.gysname !=''">
+            And GYSNAME like concat('%',#{order.gysname},'%')
+        </if>
         <if test="order.fphm != null and order.fphm != ''">
             AND FPHM = #{order.fphm}
         </if>
         <if test="order.bsart != null and order.bsart != ''">
             AND BSART = #{order.bsart}
         </if>
+        <if test="order.id != null ">
+            AND id = #{order.id}
+        </if>
     </select>
     <!-- 物资 -->
-    <update id="updateSupplyPlan" >
+    <update id="updateSupplyPlan">
         UPDATE scm_b_supplyplan
-       SET SEND_ORDER_CODE = #{id},
-       FPHM = #{fphm}
+        SET SEND_ORDER_CODE = #{id},
+        FPHM = #{fphm}
         <if test="fprq != null and fprq != ''">
             AND fprq = str_to_date(#{fprq}, '%Y-%m-%d %H')
         </if>
-       WHERE
-	   ID in
+        WHERE
+        ID in
         <foreach collection="ids" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>
         AND STATUS=0
     </update>
     <!-- 药品 -->
-    <update id="updateSupplyPlan2" >
+    <update id="updateSupplyPlan2">
         UPDATE scm_b_supplyplan
         SET SEND_ORDER_CODE = #{id}
         WHERE

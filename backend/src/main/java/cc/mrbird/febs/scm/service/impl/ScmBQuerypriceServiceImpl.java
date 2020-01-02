@@ -42,12 +42,20 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
     @Autowired
     private ScmBQuerypriceDMapper scmBQuerypriceDMapper;
 
+
     @Override
     public IPage<ScmBQueryprice> findScmBQueryprices(QueryRequest request, ScmBQueryprice scmBQueryprice) {
         try {
             LambdaQueryWrapper<ScmBQueryprice> queryWrapper = new LambdaQueryWrapper<>();
             if (StringUtils.isNotBlank(scmBQueryprice.getCode())) {
                 queryWrapper.eq(ScmBQueryprice::getCode, scmBQueryprice.getCode());
+            }
+            if (scmBQueryprice.getQueryState() != null&&scmBQueryprice.getQueryState()!=-1) {
+                queryWrapper.eq(ScmBQueryprice::getQueryState, scmBQueryprice.getQueryState());
+            }
+            if (StringUtils.isNotBlank(scmBQueryprice.getKeyword())) {
+                String keyWord = scmBQueryprice.getKeyword().trim();
+                queryWrapper.and(qw -> qw.eq(ScmBQueryprice::getMatnr, keyWord).or().like(ScmBQueryprice::getTxz01, keyWord));
             }
             queryWrapper.eq(ScmBQueryprice::getIsDeletemark, 1);//1是未删 0是已删
             Page<ScmBQueryprice> page = new Page<>();
@@ -69,7 +77,7 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
 
     @Override
     @Transactional
-    public void createScmBQuerypriceNew(List<ScmBQueryprice> maters, List<ScmBQuerypriceD> gys, Long userid,Long deptid,int state) {
+    public void createScmBQuerypriceNew(List<ScmBQueryprice> maters, List<ScmBQuerypriceD> gys, Long userid, Long deptid, int state) {
         for (ScmBQueryprice scmBQueryprice : maters
         ) {
             scmBQueryprice.setCreateTime(new Date());
@@ -79,7 +87,7 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
             scmBQueryprice.setState(state);
             scmBQueryprice.setQueryState(state);
             this.save(scmBQueryprice);
-            if(gys!=null) {
+            if (gys != null) {
                 for (ScmBQuerypriceD scmBQuerypriceD : gys) {
                     scmBQuerypriceD.setId(UUID.randomUUID().toString());
                     scmBQuerypriceD.setCreateTime(new Date());
@@ -89,6 +97,21 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
                 }
             }
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateScmBQuerypriceNew(Long baseId, List<ScmBQuerypriceD> gys) {
+        this.baseMapper.deleteScmBQuerypriceByBaseId(baseId);
+
+        for (ScmBQuerypriceD scmBQuerypriceD : gys) {
+            scmBQuerypriceD.setId(UUID.randomUUID().toString());
+            scmBQuerypriceD.setCreateTime(new Date());
+            scmBQuerypriceD.setIsDeletemark(1);
+            scmBQuerypriceD.setBaseId(baseId);
+            this.scmBQuerypriceDMapper.insert(scmBQuerypriceD);
+        }
+
     }
 
     @Override
@@ -105,5 +128,20 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
         this.baseMapper.deleteBatchIds(list);
     }
 
+    @Override
+    @Transactional
+    public void deleteScmBQueryprices(String ids) {
+        this.baseMapper.updateByIds(ids);
+    }
 
+    @Override
+    @Transactional
+    public void updateQueryState(String ids, String type) {
+        if (type.equals("stop")) {
+            this.baseMapper.stopByIds(ids);
+        }
+        if (type.equals("cancle")) {
+            this.baseMapper.cancleByIds(ids);
+        }
+    }
 }

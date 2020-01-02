@@ -119,25 +119,38 @@ export default {
   methods: {
     onSelectChange (selectedRowKeys, selectedRows) {
       this.selectedRowKeys = selectedRowKeys
+      const dataSource = [...this.dataSource];
+      for (let item of dataSource) {
+        const rows2=[...this.rows]
+        if (this.selectedRowKeys.indexOf(item.id)>=0) {
+          this.rows.push(item)
+        }
+        else {
+          this.rows = rows2.filter(item2 => item2.code !== item.code);
+        }
+      }
     },
     onSelect (record, selected) {
-      if (selected) {
-        this.rows.push(record)
-      }
-      else {
-        this.rows = this.rows.filter(item => item.code !== record.code);
-      }
+      // if (selected) {
+      //   this.rows.push(record)
+      // }
+      // else {
+      //   this.rows = this.rows.filter(item => item.code !== record.code);
+      // }
     },
     onClose () {
       this.$emit('close')
+      this.reset()
     },
     handleOk () {
       if (!this.selectedRowKeys.length) {
         this.$message.warning('请选择供应商')
         return
       }
-
-      this.$emit('ok', this.rows)
+      const _rows=[...this.rows]
+      console.info(_rows)
+      this.$emit('ok', _rows)
+      this.reset()
     },
     search () {
       let { sortedInfo } = this
@@ -154,6 +167,7 @@ export default {
       })
     },
     reset () {
+      this.rows=[]
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页

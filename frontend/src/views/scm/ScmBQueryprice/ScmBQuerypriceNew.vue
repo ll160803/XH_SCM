@@ -46,7 +46,7 @@
         >
           <editableNumber-cell
             :text="text"
-            @change="onCellChange(record.id, 'amount', $event)"
+            @change="onCellChange(record.matnr, 'amount', $event)"
           />
         </template>
         <template
@@ -55,7 +55,7 @@
         >
           <editable-cell
             :text="text"
-            @change="onCellChange(record.id, 'productName', $event)"
+            @change="onCellChange(record.matnr, 'productName', $event)"
           />
         </template>
         <template
@@ -64,7 +64,7 @@
         >
           <editableDate-cell
             :text="text"
-            @change="onCellChange(record.id, 'endDate', $event)"
+            @change="onCellChange(record.matnr, 'endDate', $event)"
           />
         </template>
       </a-table>
@@ -243,10 +243,11 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          const dataSource = [...that.dataSource];
+          var dataSource = [...that.dataSource];
           for (let d of that.selectedRowKeys) {
-            that.dataSource = dataSource.filter(item => item.matnr !== d)
+            dataSource = dataSource.filter(item => item.matnr !== d)
           }
+          that.dataSource = dataSource
           that.selectedRowKeys = []
         },
         onCancel () {
@@ -267,10 +268,11 @@ export default {
         content: '当您点击确定按钮后，这些记录将会被彻底删除',
         centered: true,
         onOk () {
-          const dataSourceVendor = [...that.dataSourceVendor];
-          for (let d of that.selectedRowKeys) {
-            that.dataSourceVendor = dataSourceVendor.filter(item => item.id !== d)
+          var dataSourceVendor = [...that.dataSourceVendor];
+          for (let d of that.selectedRowKeysVendor) {
+            dataSourceVendor = dataSourceVendor.filter(item => item.id !== d)
           }
+          that.dataSourceVendor=dataSourceVendor
           that.selectedRowKeysVendor = []
         },
         onCancel () {
@@ -280,17 +282,22 @@ export default {
     },
     handleVendorAddSuccess (rows) {
       const dataSourceVendor = [...this.dataSourceVendor];
+      var arrData=[];
       for (let element of rows) {
         const target = dataSourceVendor.find(item => item.id === element.code);
-        if (!target) {
-          dataSourceVendor.push({
+        const IsRepeat=arrData.find(item => item.id === element.code);
+        if (!target && !IsRepeat) {
+          const newData = {
             gysname: element.name,
             gysaccount: element.code,
             id: element.code
-          })
+          }
+         arrData.push(newData)
         }
       }
-      this.dataSourceVendor = dataSourceVendor;
+     // 
+      this.dataSourceVendor = [...dataSourceVendor, ...arrData];
+      arrData=[]
       this.addVendorVisiable = false
     },
     handleVendorAddClose () {

@@ -145,8 +145,10 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+
+
     @TableField(exist = false)
-    public ScmBSupplyplan[] innerData;
+    public ViewSupplyplan[] innerData;
 
 
     public Long getId(){

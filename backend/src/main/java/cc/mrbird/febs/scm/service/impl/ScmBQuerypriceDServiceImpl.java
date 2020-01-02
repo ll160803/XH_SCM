@@ -42,6 +42,10 @@ public IPage<ScmBQuerypriceD> findScmBQuerypriceDs(QueryRequest request, ScmBQue
         if (StringUtils.isNotBlank(scmBQuerypriceD.getGysaccount())) {
         queryWrapper.eq(ScmBQuerypriceD::getGysaccount, scmBQuerypriceD.getGysaccount());
         }
+        if(scmBQuerypriceD.getBaseId()!=null)
+        {
+                queryWrapper.eq(ScmBQuerypriceD::getBaseId,scmBQuerypriceD.getBaseId());
+        }
         queryWrapper.eq(ScmBQuerypriceD::getIsDeletemark, 1);//1是未删 0是已删
         Page<ScmBQuerypriceD> page=new Page<>();
         SortUtil.handlePageSort(request,page,true);

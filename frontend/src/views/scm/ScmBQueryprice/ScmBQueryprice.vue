@@ -18,7 +18,7 @@
               >
                 <a-input
                   v-model="queryParams.keyword"
-                  placeholder="请输入药品名称、编码、拼音码"
+                  placeholder="请输入药品名称、编码"
                 />
               </a-form-item>
             </a-col>
@@ -35,6 +35,7 @@
                   defaultValue="全部"
                   v-model="queryParams.queryState"
                   style="width: 100%"
+                  placeholder="请输入询价状态"
                 >
                   <a-select-option value="-1">全部</a-select-option>
                   <a-select-option value="0">未询价</a-select-option>
@@ -105,11 +106,11 @@
         >删除</a-button>
         <a-button
           v-hasPermission="['scmBQueryprice:stop']"
-          @click="batchDelete"
+          @click="batchStop"
         >结束询价</a-button>
         <a-button
-          v-hasPermission="['scmBQueryprice:redo']"
-          @click="batchDelete"
+          v-hasPermission="['scmBQueryprice:cancle']"
+          @click="batchRedo"
         >撤销结束</a-button>
       </div>
       <!-- 表格区域 -->
@@ -155,7 +156,7 @@
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="edit(record)"
-            title="修改"
+            title="修改询价"
             v-show="record.queryState==0"
           ></a-icon>
           <a-icon
@@ -165,7 +166,7 @@
             twoToneColor="#4a9ff5"
             @click="dele(record)"
             v-show="record.queryState==0"
-            title="删除"
+            title="删除询价"
           ></a-icon>
           <a-icon
             v-hasPermission="['scmBQueryprice:stop']"
@@ -174,11 +175,11 @@
             twoToneColor="#4a9ff5"
             @click="stop(record)"
             v-show="record.queryState==1"
-            title="结束"
+            title="结束询价"
           ></a-icon>
           <a-icon
-            v-hasPermission="['scmBQueryprice:delete']"
-            type="redo"
+            v-hasPermission="['scmBQueryprice:cancle']"
+            type="highlight"
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="redo(record)"
@@ -201,6 +202,7 @@
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
+      :baseId="baseId"
     >
     </scmBQueryprice-edit>
   </a-card>
@@ -233,7 +235,8 @@ export default {
       addVisiable: false,
       editVisiable: false,
       loading: false,
-      bordered: true
+      bordered: true,
+      baseId: ''
     }
   },
   computed: {
@@ -360,7 +363,7 @@ export default {
       this.addVisiable = false
     },
     add () {
-      this.addVisiable = true
+      this.$router.push('/scm/ScmBQueryprice/ScmBQuerypriceNew')
     },
     handleEditSuccess () {
       this.editVisiable = false
@@ -371,40 +374,173 @@ export default {
       this.editVisiable = false
     },
     edit (record) {
+      this.baseId = record.id
       this.$refs.scmBQuerypriceEdit.setFormValues(record)
       this.editVisiable = true
     },
     dele (record) {//删除
+      let that = this
+      this.$confirm({
+        title: '确定删除所选中的记录?',
+        content: '当您点击确定按钮后，此记录将会被彻底删除',
+        centered: true,
+        onOk () {
+          that.$delete('scmBQueryprice/' + record.id).then(() => {
+            that.$message.success('删除成功')
+            that.search()
+          })
+        },
+        onCancel () {
 
+        }
+      })
     },
     stop (record) {//结束
+      let that = this
+      this.$confirm({
+        title: '确定结束询价所选中的记录?',
+        content: '当您点击确定按钮后，此记录将会被结束询价',
+        centered: true,
+        onOk () {
+          that.$put('scmBQueryprice/stop', {
+            ids: record.id
+          }).then(() => {
+            that.$message.success('操作成功')
+            that.search()
+          })
+        },
+        onCancel () {
 
+        }
+      })
     },
     redo (record) {//撤销
+      let that = this
+      this.$confirm({
+        title: '确定撤销所选中的记录?',
+        content: '当您点击确定按钮后，此记录将会被处理',
+        centered: true,
+        onOk () {
+          that.$put('scmBQueryprice/cancle', {
+            ids: record.id
+          }).then(() => {
+            that.$message.success('操作成功')
+            that.search()
+          })
+        },
+        onCancel () {
 
+        }
+      })
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {
         this.$message.warning('请选择需要删除的记录')
         return
       }
-      let that = this
-      this.$confirm({
-        title: '确定删除所选中的记录?',
-        content: '当您点击确定按钮后，这些记录将会被彻底删除',
-        centered: true,
-        onOk () {
-          let scmBQuerypriceIds = that.selectedRowKeys.join(',')
-          that.$delete('scmBQueryprice/' + scmBQuerypriceIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
-          })
-        },
-        onCancel () {
-          that.selectedRowKeys = []
+      const dataSource = [...this.dataSource]
+      let flag = 0
+      this.selectedRowKeys.forEach(el => {
+        let row = dataSource.find(item => item.id === el)
+        if (row.queryState > 0) {
+          this.$message.warning('询价记录' + el + ':已经提交，不能删除！！！')
+          flag = 1
+          return
         }
-      })
+      });
+      if (flag === 0) {
+        let that = this
+        this.$confirm({
+          title: '确定删除所选中的记录?',
+          content: '当您点击确定按钮后，这些记录将会被彻底删除',
+          centered: true,
+          onOk () {
+            let scmBQuerypriceIds = that.selectedRowKeys.join(',')
+            that.$delete('scmBQueryprice/' + scmBQuerypriceIds).then(() => {
+              that.$message.success('删除成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          },
+          onCancel () {
+            that.selectedRowKeys = []
+          }
+        })
+      }
+    },
+    batchStop () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要操作的记录')
+        return
+      }
+      const dataSource = [...this.dataSource]
+      let flag = 0
+      this.selectedRowKeys.forEach(el => {
+        let row = dataSource.find(item => item.id === el)
+        if (row.queryState != 1) {
+          this.$message.warning('询价记录' + el + ':只有询价中数据可以结束询价！！！')
+          flag = 1
+          return
+        }
+      });
+      if (flag === 0) {
+        let that = this
+        this.$confirm({
+          title: '确定操作所选中的记录?',
+          content: '当您点击确定按钮后，这些记录将会被彻底处理',
+          centered: true,
+          onOk () {
+            let scmBQuerypriceIds = that.selectedRowKeys.join(',')
+            that.$put('scmBQueryprice/stop', {
+              ids: scmBQuerypriceIds
+            }).then(() => {
+              that.$message.success('操作成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          },
+          onCancel () {
+            that.selectedRowKeys = []
+          }
+        })
+      }
+    },
+    batchRedo () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要操作的记录')
+        return
+      }
+      const dataSource = [...this.dataSource]
+      let flag = 0
+      this.selectedRowKeys.forEach(el => {
+        let row = dataSource.find(item => item.id === el)
+        if (row.queryState != 2) {
+          this.$message.warning('询价记录' + el + ':只有询价结束数据可以撤销询价！！！')
+          flag = 1
+          return
+        }
+      });
+      if (flag === 0) {
+        let that = this
+        this.$confirm({
+          title: '确定操作所选中的记录?',
+          content: '当您点击确定按钮后，这些记录将会被彻底处理',
+          centered: true,
+          onOk () {
+            let scmBQuerypriceIds = that.selectedRowKeys.join(',')
+            that.$put('scmBQueryprice/cancle', {
+              ids: scmBQuerypriceIds
+            }).then(() => {
+              that.$message.success('操作成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          },
+          onCancel () {
+            that.selectedRowKeys = []
+          }
+        })
+      }
     },
     exportExcel () {
       let { sortedInfo } = this
@@ -471,6 +607,10 @@ export default {
         // 如果分页信息为空，则设置为默认值
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
+      }
+      if (params.sortField == null) {
+        params.sortField = "id"
+        params.sortOrder = "descend"
       }
       this.$get('scmBQueryprice', {
         ...params
