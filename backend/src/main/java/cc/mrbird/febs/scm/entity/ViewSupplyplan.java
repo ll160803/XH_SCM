@@ -282,6 +282,15 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+    public String getNoOrder() {
+        return noOrder;
+    }
+
+    public void setNoOrder(String noOrder) {
+        this.noOrder = noOrder;
+    }
+
+    private  transient String  noOrder;
 
     public BigDecimal getDoneMenge() {
         return doneMenge;

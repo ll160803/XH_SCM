@@ -103,6 +103,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                             order.setMenge(item.getMenge());
                             order.setMseht(item.getMseht());
                             order.setName(item.getName());
+                            order.setLgortName(item.getName());
                             order.setGysname(gysName);
                             order.setStatus(1);
                             order.setNetpr(new BigDecimal(item.getNetpr().replace(",", "")));
@@ -152,6 +153,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     entity.setMenge(item.getMenge());
                     entity.setMseht(item.getMseht());
                     entity.setName(item.getName());
+                    entity.setLgortName(item.getName());
                     entity.setStatus(1);
                     entity.setNetpr(new BigDecimal(item.getNetpr().replace(",", "")));
 

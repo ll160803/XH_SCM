@@ -2,7 +2,7 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width=650
+    width=900
     placement="right"
     :closable="false"
     @close="onClose"
@@ -120,6 +120,14 @@ export default {
         dataIndex: 'fpjr',
         width: 80
       }, {
+        title: '院区',
+        dataIndex: 'werkst',
+        width: 120
+      }, {
+        title: '库房',
+        dataIndex: 'lgortName',
+        width: 80
+      }, {
         title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
@@ -174,7 +182,10 @@ export default {
       },
       queryParams: {},
       loading: false,
-      bordered: true
+      bordered: true,
+      werks: '',
+      lgort: '',
+      rows: []
     }
   },
   methods: {
@@ -189,13 +200,17 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-      //   const dataSource = [...this.dataSource]
-      //   let row = dataSource.find(item => item.id === selectedRowKeys[0])
-      //   this.issue_content = `${row.matnr}`
-      //   this.matnr = row.matnr
-      //   this.isSelect = 1
-      //   this.serch_result_issue = false
-      //   this.$emit("sucess", { maktx: row.maktx, meins: row.meins, mseht: row.mseht })
+      const dataSource = [...this.dataSource];
+      for (let item of dataSource) {
+        const rows2 = [...this.rows]
+        if (this.selectedRowKeys.indexOf(item.id) >= 0) {
+          this.rows = rows2.filter(item2 => item2.id !== item.id);
+          this.rows.push(item)
+        }
+        else {
+          this.rows = rows2.filter(item2 => item2.id !== item.id);
+        }
+      }
     },
     search () {
       let { sortedInfo } = this
@@ -253,7 +268,7 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       params.bsartD = "0"//物资单类型
-      this.$get('scmBSupplyplan/sendOrder', {
+      this.$get('viewSupplyplan/sendOrder', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -268,6 +283,33 @@ export default {
       let supplyPlanIds = this.selectedRowKeys.join(",")
       this.scmBSendorder["supplyPlanIds"] = supplyPlanIds
       this.scmBSendorder["bsart"] = "0"
+      var werks = ''
+      var lgort = ''
+      var msg = ''
+      for (let item of this.rows) {
+        if (werks == '') {
+          werks = item.werks;
+        }
+        else {
+          if (werks != item.werks) {
+            msg += item.id + ":" + item.werks + "院区不一致"
+          }
+        }
+        if (lgort == '') {
+          lgort = item.lgort;
+        }
+        else {
+          if (lgort != item.lgort) {
+            msg += item.id + ":" + item.lgortName + "库房不一致"
+          }
+        }
+      }
+      if (msg != "") {
+        this.$message.warning(msg);
+        return
+      }
+
+
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()

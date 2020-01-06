@@ -21,7 +21,7 @@ public interface ISCM_XHService {
     @WebMethod
     String HelloWorld();
     @WebMethod
-    WcfMess_XH ExportPurchasePlan(String userName, String password, Date startTime, Date endTime);
+    WcfMess_XH ExportPurchasePlan(String userName, String password, String startTime, String endTime);
 
     /**
      * 上传采购计划

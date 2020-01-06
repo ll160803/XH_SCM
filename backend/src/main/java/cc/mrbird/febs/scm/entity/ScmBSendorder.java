@@ -48,6 +48,43 @@ private String code;
     @TableField("NAME")
             @ExcelField(value ="名字")
 private String name;
+
+    public String getWerks() {
+        return werks;
+    }
+
+    public void setWerks(String werks) {
+        this.werks = werks;
+    }
+
+    public String getWerkst() {
+        return werkst;
+    }
+
+    public void setWerkst(String werkst) {
+        this.werkst = werkst;
+    }
+
+    public String getLgort() {
+        return lgort;
+    }
+
+    public void setLgort(String lgort) {
+        this.lgort = lgort;
+    }
+
+    public String getLgortname() {
+        return lgortname;
+    }
+
+    public void setLgortname(String lgortname) {
+        this.lgortname = lgortname;
+    }
+
+    private String werks;
+    private String werkst;
+    private String lgort;
+    private String lgortname;
     /**
      * 发票号码
      */

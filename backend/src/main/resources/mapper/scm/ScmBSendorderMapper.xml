@@ -13,6 +13,10 @@
         <result column="GYSNAME" property="gysname"/>
         <result column="COMMENTS" property="comments"/>
         <result column="Status" property="Status"/>
+        <result column="werk" property="Status"/>
+        <result column="Status" property="Status"/>
+        <result column="Status" property="Status"/>
+        <result column="Status" property="Status"/>
         <result column="IS_DELETEMARK" property="isDeletemark"/>
         <result column="CREATE_TIME" property="createTime"/>
         <result column="MODIFY_TIME" property="modifyTime"/>
@@ -34,6 +38,10 @@
             <if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>
             <if test="gysname != null">GYSNAME=#{gysname},</if>
             <if test="comments != null">COMMENTS=#{comments},</if>
+            <if test="lgort != null">LGORT=#{lgort},</if>
+            <if test="lgortname != null">LGORTNAME=#{lgortname},</if>
+            <if test="werks != null">werks=#{werks},</if>
+            <if test="werkst != null">werkst=#{werkst},</if>
             <if test="Status != null">Status=#{Status},</if>
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="createTime != null">CREATE_TIME=#{createTime},</if>
@@ -61,7 +69,11 @@
         CREATE_USER_ID,
         MODIFY_USER_ID,
         BSART,
-        SEND_DATE
+        SEND_DATE,
+        werks,
+        werkst,
+        lgort,
+        lgortname
         FROM
         scm_b_sendorder
         WHERE 1 = 1
@@ -71,6 +83,18 @@
         </if>
         <if test="order.gysaccount!= null and order.gysaccount !=''">
             And GYSACCOUNT = #{order.gysaccount}
+        </if>
+        <if test="order.werks!= null and order.werks !=''">
+            And werks = #{order.werks}
+        </if>
+        <if test="order.werkst!= null and order.werkst !=''">
+            And werkst = #{order.werkst}
+        </if>
+        <if test="order.lgort!= null and order.lgort !=''">
+            And lgort = #{order.lgort}
+        </if>
+        <if test="order.lgortname!= null and order.lgortname !=''">
+            And lgortname = #{order.lgortname}
         </if>
         <if test="order.gysname!= null and order.gysname !=''">
             And GYSNAME like concat('%',#{order.gysname},'%')

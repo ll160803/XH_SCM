@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
 
 
 import lombok.Data;
@@ -112,6 +113,8 @@ private Long createUserId;
     @TableField("MODIFY_USER_ID")
             @ExcelField(value ="修改人")
 private Long modifyUserId;
+
+    private  transient List<ScmBQuotedpriceD> hospital;
 
 
     public static final String ID ="id" ;

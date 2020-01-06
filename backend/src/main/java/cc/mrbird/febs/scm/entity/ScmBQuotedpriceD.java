@@ -36,7 +36,7 @@ private String id;
      * 父ID
      */
             @ExcelField(value ="父ID")
-private Long baseId;
+private String baseId;
     /**
      * 医院
      */

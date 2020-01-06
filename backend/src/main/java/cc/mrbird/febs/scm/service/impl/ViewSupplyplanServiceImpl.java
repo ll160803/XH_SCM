@@ -70,7 +70,10 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                 queryWrapper.eq(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());
             }
-
+            if(StringUtils.isNotBlank(viewSupplyplan.getNoOrder())&&viewSupplyplan.getNoOrder()=="1")
+            {
+               queryWrapper.and(p-> p.isNull(ViewSupplyplan::getSendOrderCode).or().eq(ViewSupplyplan::getSendOrderCode,""));
+            }
             Page<ViewSupplyplan> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);
             return this.page(page, queryWrapper);
@@ -80,6 +83,47 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
         }
     }
 
+    @Override
+    public IPage<ViewSupplyplan> findViewSupplyplans2(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        try {
+            LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
+
+            if (viewSupplyplan.getId() != null) {
+                queryWrapper.eq(ViewSupplyplan::getId, viewSupplyplan.getId());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getBaseId())) {
+                queryWrapper.eq(ViewSupplyplan::getBaseId, viewSupplyplan.getBaseId());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getGysaccount())) {
+                queryWrapper.eq(ViewSupplyplan::getGysaccount, viewSupplyplan.getGysaccount());
+            }
+            if (viewSupplyplan.getBsartD() == "1") {
+                if (StringUtils.isNotBlank(viewSupplyplan.getFphm())) {
+                    queryWrapper.and(wrapper -> wrapper.eq(ViewSupplyplan::getFphm, viewSupplyplan.getFphm()).or().eq(ViewSupplyplan::getFphm, null
+                    ).or().eq(ViewSupplyplan::getFphm, ""
+                    ));
+                } else {
+                    queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getFphm)
+                            .or().eq(ViewSupplyplan::getFphm, ""
+                            ));
+                }
+
+            } else {
+                queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getSendOrderCode).or().eq(ViewSupplyplan::getSendOrderCode, ""
+                ).or().eq(ViewSupplyplan::getSendOrderCode, viewSupplyplan.getSendOrderCode()));
+            }
+            queryWrapper.eq(ViewSupplyplan::getBsartD, viewSupplyplan.getBsartD());//订单类型
+            if (viewSupplyplan.getIsDeletemark() != null) {
+                queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
+            }
+            Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
     @Override
     @Transactional
     public void createViewSupplyplan(ViewSupplyplan viewSupplyplan) {

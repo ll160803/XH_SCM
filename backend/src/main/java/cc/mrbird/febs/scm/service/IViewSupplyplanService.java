@@ -20,6 +20,14 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
 
         IPage<ViewSupplyplan> findViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan);
 
+        /**
+         * 获取送货清单 的供应计划
+         * @param request
+         * @param viewSupplyplan
+         * @return
+         */
+        IPage<ViewSupplyplan> findViewSupplyplans2(QueryRequest request, ViewSupplyplan viewSupplyplan);
+
         IPage<ViewSupplyplan> findDoneViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan, String statusType);
 
         void createViewSupplyplan(ViewSupplyplan viewSupplyplan);

@@ -58,6 +58,11 @@ public class ScmBQuerypriceController extends BaseController {
     public Map<String, Object> List(QueryRequest request, ScmBQueryprice scmBQueryprice) {
         return getDataTable(this.iScmBQuerypriceService.findScmBQueryprices(request, scmBQueryprice));
     }
+    @GetMapping("gysList")
+    @RequiresPermissions("scmBQueryprice:gysView")
+    public Map<String, Object> gysList(QueryRequest request, ScmBQueryprice scmBQueryprice) {
+        return getDataTable(this.iScmBQuerypriceService.findScmBQueryprices(request, scmBQueryprice));
+    }
 
     /**
      *

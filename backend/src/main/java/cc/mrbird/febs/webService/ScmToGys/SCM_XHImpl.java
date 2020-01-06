@@ -57,12 +57,35 @@ public class SCM_XHImpl implements ISCM_XHService {
      */
 
 
-    public WcfMess_XH ExportPurchasePlan(String userName, String password, Date startTime, Date endTime) {
+    public WcfMess_XH ExportPurchasePlan(String userName, String password, String startTime, String endTime) {
         WcfMess_XH Msg = new WcfMess_XH();
         log.info("用户：" + userName+",password:"+password + "开始获取采购计划");
         if (!StringUtils.isNotBlank(userName) || !StringUtils.isNotBlank(password)) {
             Msg.setIsSuccess(false);
             Msg.setMess("参数有误");
+            Msg.setPurchasePlans(null);
+            return Msg;
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate;
+        try {
+            startDate = sdf.parse(startTime);
+        }
+        catch (Exception ex)
+        {
+            Msg.setIsSuccess(false);
+            Msg.setMess("开始时间参数有误");
+            Msg.setPurchasePlans(null);
+            return Msg;
+        }
+        Date endDate;
+        try {
+            endDate = sdf.parse(endTime);
+        }
+        catch (Exception ex)
+        {
+            Msg.setIsSuccess(false);
+            Msg.setMess("结束时间参数有误");
             Msg.setPurchasePlans(null);
             return Msg;
         }
@@ -104,7 +127,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     LambdaQueryWrapper<ScmBPurcharseorder> queryOrderWrapper = new LambdaQueryWrapper<>();
                     queryOrderWrapper.eq(ScmBPurcharseorder::getLifnr, accountCode);
                     queryOrderWrapper.eq(ScmBPurcharseorder::getStatus, "1");
-                    queryOrderWrapper.between(ScmBPurcharseorder::getBedat, startTime, endTime);
+                    queryOrderWrapper.between(ScmBPurcharseorder::getBedat, startDate, endDate);
 
 
                     List<ScmBPurcharseorder> list = this.scmBPurcharseorderMapper.selectList(queryOrderWrapper);
@@ -120,7 +143,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                                 }
                             }
                     );
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
                     //   var list = rnc.GetPurcharseList("", userName.Trim().Replace("'", ""), "", startTime.ToString("yyyy-MM-dd"), endTime.ToString("yyyy-MM-dd"));
                     List<Purchase> reList = new ArrayList<>();
                     for (ScmBPurcharseorder item : list
@@ -356,17 +379,17 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(GenerateMsg(item.getID(), "不存在的订单号", false));
                 continue;
             }
-            if (StringUtils.isNotBlank(item.getID())) {
+            if (!StringUtils.isNotBlank(item.getID())) {
                 ListMess.add(GenerateMsg(item.getID(), "ID字段不能为空", false));
                 // ListMess.Add(new WcfPlan_XH { ID = item.ID, MESS = "ID字段不能为空", IsSuccess = false });
                 continue;
             }
-            if (StringUtils.isNotBlank(item.getEBELN())) {
+            if (!StringUtils.isNotBlank(item.getEBELN())) {
                 ListMess.add(GenerateMsg(item.getID(), "EBELN字段不能为空", false));
                 continue;
             }
 
-            if (StringUtils.isNotBlank(item.getGYJH())) {
+            if (!StringUtils.isNotBlank(item.getGYJH())) {
                 ListMess.add(GenerateMsg(item.getID(), "GYJH字段不能为空", false));
                 continue;
             }
@@ -378,7 +401,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(GenerateMsg(item.getID(), "MENGE字段不能为空", false));
                 continue;
             }
-            if (StringUtils.isNotBlank(item.getFLAG()) || !"C U D".contains(item.getFLAG())) {
+            if (!StringUtils.isNotBlank(item.getFLAG()) || !"C U D".contains(item.getFLAG())) {
                 ListMess.add(GenerateMsg(item.getID(), "FALG字段不能为空", false));
                 continue;
             }
@@ -429,12 +452,14 @@ public class SCM_XHImpl implements ISCM_XHService {
             entity.setFpjr(item.getFPJR());
             entity.setFprq(item.getFPRQ());
 
+            entity.setgMenge(item.getMENGE());
 
             entity.setGysaccount(user.getUsername());
             entity.setGysname(user.getRealname());
             entity.setHsdat(item.getHSDAT());
             // entity.ID = item.ID;
 
+            entity.setBaseId(order.getId());
 
             entity.setPkgAmount(item.getPKG_AMOUNT());
             entity.setPkgNumber(item.getPKG_NUMBER());
@@ -567,7 +592,7 @@ public class SCM_XHImpl implements ISCM_XHService {
             ) {
                 Long gyjh = Long.parseLong(back.getZGYJH());
                 String deleteID = list_supp_D.stream().filter(p -> p.getId() == gyjh).findFirst().get().getBaseId();
-                if (back.MSTYPE == "S") {
+                if (!back.getMSTYPE().equals("S")) {
 
                     WcfPlan_XH Msg = new WcfPlan_XH();
                     Msg.setIsSuccess(false);
@@ -584,7 +609,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     Msg.setIsSuccess(true);
                     Msg.setMess("删除成功");
                     Msg.setId(deleteID);
-                    Msg.setCode(back.ZGYJH);
+                    Msg.setCode(back.getZGYJH());
                     ListMess.add(Msg);
                 }
             }
@@ -602,10 +627,22 @@ public class SCM_XHImpl implements ISCM_XHService {
 
                 for (BackFromSAP_SubPlan back : List_Back
                 ) {
-                    Long gyjh = Long.parseLong(back.getZGYJH());
-                    String deleteID = list_supp_D.stream().filter(p -> p.getId() == gyjh).findFirst().get().getBaseId();
+
+                    Long gyjh = Long.parseLong(back.getZGYJH().trim());
+                    if(list_supp_C.size()>2) {
+                        log.info(list_supp_C.get(1).getId().toString() + ":" + list_supp_C.get(1).getBaseId());
+                        log.info(list_supp_C.get(2).getId().toString() + ":" + list_supp_C.get(2).getBaseId());
+                    }
+                    List<ViewSupplyplan> deList = list_supp_C.stream().filter(p -> p.getId().equals(gyjh)).collect(Collectors.toList());
+                   String deleteID="";
+                   if(deList.size()>0)
+                   {
+                       log.info("sssssss");
+                       deleteID=deList.get(0).getBaseId();
+                   }
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    if (back.MSTYPE == "S") {
+                    log.info("getMSTYPE:"+back.getMSTYPE());
+                    if (!back.getMSTYPE().equals("S")) {
                         ScmBSupplyplan deletesupplan = new ScmBSupplyplan();
                         deletesupplan.setId(gyjh);
                         deletesupplan.setIsDeletemark(0);
@@ -619,7 +656,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         Msg.setIsSuccess(true);
                         Msg.setMess("新增成功");
                         Msg.setId(deleteID);
-                        Msg.setCode(back.ZGYJH);
+                        Msg.setCode(back.getZGYJH());
                         ListMess.add(Msg);
                     }
                 }
@@ -631,6 +668,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     deletesupplan.setIsDeletemark(0);
                     this.scmBSupplyplanMapper.updateScmBSupplyplan(deletesupplan);
 
+                    log.error(ex.getMessage());
                     WcfPlan_XH Msg = new WcfPlan_XH();
                     Msg.setIsSuccess(false);
                     Msg.setMess("发送SAP数据失败,新增失败");

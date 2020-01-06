@@ -6,14 +6,21 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.scm.entity.ScmBQuerypriceD;
+import cc.mrbird.febs.scm.entity.ScmBQuotedpriceD;
+import cc.mrbird.febs.scm.service.IScmBQuerypriceDService;
+import cc.mrbird.febs.scm.service.IScmBQuotedpriceDService;
 import cc.mrbird.febs.scm.service.IScmBQuotedpriceService;
 import cc.mrbird.febs.scm.entity.ScmBQuotedprice;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -25,6 +32,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  *
@@ -41,7 +49,8 @@ public class ScmBQuotedpriceController extends BaseController{
 private String message;
 @Autowired
 public IScmBQuotedpriceService iScmBQuotedpriceService;
-
+    @Autowired
+    public IScmBQuotedpriceDService iScmBQuotedpriceDService;
 
 /**
  * 分页查询数据
@@ -77,6 +86,44 @@ public void addScmBQuotedprice(@Valid ScmBQuotedprice scmBQuotedprice)throws Feb
         throw new FebsException(message);
         }
         }
+@Log("新增报价")
+@PostMapping("add")
+@RequiresPermissions("scmBQuotedprice:add")
+public void insetScmBQuoteprice(String jsonString,String baseid) throws FebsException
+{
+    try{
+        User currentUser= FebsUtil.getCurrentUser();
+        log.info("baseid:"+baseid);
+        log.info(jsonString);
+        List<ScmBQuotedprice> list = JSON.parseObject(jsonString, new TypeReference<List<ScmBQuotedprice>>() {
+        });
+
+        for (ScmBQuotedprice scmBQuotedprice:list
+             ) {
+            if(StringUtils.isNotBlank(scmBQuotedprice.getProductName())) {
+                scmBQuotedprice.setGysaccount(currentUser.getUsername());
+                scmBQuotedprice.setGysname(currentUser.getRealname());
+                Long baseidL=Long.parseLong(baseid);
+                scmBQuotedprice.setBaseId(baseidL);
+                this.iScmBQuotedpriceService.createScmBQuotedprice(scmBQuotedprice);
+
+                List<ScmBQuotedpriceD> listD = scmBQuotedprice.getHospital();
+                for (ScmBQuotedpriceD scmBQuotedpriceD : listD
+                ) {
+                    if (StringUtils.isNotBlank(scmBQuotedpriceD.getHospitalName())) {
+                        scmBQuotedpriceD.setBaseId(scmBQuotedprice.getId());
+                        this.iScmBQuotedpriceDService.createScmBQuotedpriceD(scmBQuotedpriceD);
+                    }
+                }
+            }
+        }
+
+    }catch(Exception e){
+        message="新增/按钮失败" ;
+        log.error(message,e);
+        throw new FebsException(message);
+    }
+}
 
 /**
  * 跳转修改页面

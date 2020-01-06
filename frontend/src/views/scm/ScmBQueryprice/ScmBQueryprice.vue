@@ -211,11 +211,12 @@
 <script>
 import ScmBQuerypriceAdd from './ScmBQuerypriceAdd'
 import ScmBQuerypriceEdit from './ScmBQuerypriceEdit'
+import RangeDate from '@/components/datetime/RangeDate'
 import moment from 'moment'
 
 export default {
   name: 'ScmBQueryprice',
-  components: { ScmBQuerypriceAdd, ScmBQuerypriceEdit },
+  components: { ScmBQuerypriceAdd, ScmBQuerypriceEdit, RangeDate },
   data () {
     return {
       advanced: false,

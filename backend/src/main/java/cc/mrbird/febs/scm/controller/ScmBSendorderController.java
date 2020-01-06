@@ -548,22 +548,22 @@ public class ScmBSendorderController extends BaseController {
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
-            if(viewSupplyplan.getStatus()!=null) {
+            if ( viewSupplyplan.getStatus()!=null) {
                 queryWrapper.eq(ViewSupplyplan::getStatus,viewSupplyplan.getStatus());
             }
-            if(viewSupplyplan.getWerks()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
                 queryWrapper.eq(ViewSupplyplan::getWerks,viewSupplyplan.getWerks());
             }
-            if(viewSupplyplan.getEbeln()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
                 queryWrapper.eq(ViewSupplyplan::getEbeln,viewSupplyplan.getEbeln());
             }
-            if(viewSupplyplan.getTxz01()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                 queryWrapper.like(ViewSupplyplan::getTxz01,viewSupplyplan.getTxz01());
             }
-            if(viewSupplyplan.getMatnr()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
                 queryWrapper.eq(ViewSupplyplan::getMatnr,viewSupplyplan.getMatnr());
             }
-            if(viewSupplyplan.getLgortName()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
                 queryWrapper.like(ViewSupplyplan::getLgortName,viewSupplyplan.getLgortName());
             }
            List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
@@ -587,19 +587,19 @@ public class ScmBSendorderController extends BaseController {
             if(viewSupplyplan.getStatus()!=null) {
                 queryWrapper.eq(ViewSupplyplan::getStatus,viewSupplyplan.getStatus());
             }
-            if(viewSupplyplan.getWerks()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
                 queryWrapper.eq(ViewSupplyplan::getWerks,viewSupplyplan.getWerks());
             }
-            if(viewSupplyplan.getEbeln()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
                 queryWrapper.eq(ViewSupplyplan::getEbeln,viewSupplyplan.getEbeln());
             }
-            if(viewSupplyplan.getTxz01()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                 queryWrapper.like(ViewSupplyplan::getTxz01,viewSupplyplan.getTxz01());
             }
-            if(viewSupplyplan.getLgortName()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
                 queryWrapper.like(ViewSupplyplan::getLgortName,viewSupplyplan.getLgortName());
             }
-            if(viewSupplyplan.getMatnr()!=null) {
+            if(StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
                 queryWrapper.eq(ViewSupplyplan::getMatnr,viewSupplyplan.getMatnr());
             }
             List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
