@@ -25,4 +25,5 @@ public interface IScmBQuotedpriceService extends IService<ScmBQuotedprice> {
         void updateScmBQuotedprice(ScmBQuotedprice scmBQuotedprice);
 
         void deleteScmBQuotedprices(String[]Ids);
+        void deleteScmBQuotedprices(String Id);
         }

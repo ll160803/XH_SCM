@@ -10,6 +10,7 @@
                     <result column="gysname" property="gysname"/>
                     <result column="gyspym" property="gyspym"/>
                     <result column="gyslabel" property="gyslabel"/>
+            <result column="gysstate" property="gysstate"/>
                     <result column="comments_d" property="commentsD"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
                     <result column="CREATE_TIME" property="createTime"/>
@@ -26,6 +27,7 @@
         update scm_b_queryprice_d
         <trim prefix="set" suffixOverrides=",">
 <if test="baseId != null">base_id=#{baseId},</if>
+            <if test="gysstate != null">gysstate=#{gysstate},</if>
 <if test="gysaccount != null">gysaccount=#{gysaccount},</if>
 <if test="gysname != null">gysname=#{gysname},</if>
 <if test="gyspym != null">gyspym=#{gyspym},</if>

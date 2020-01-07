@@ -61,7 +61,9 @@ public class ScmBQuerypriceController extends BaseController {
     @GetMapping("gysList")
     @RequiresPermissions("scmBQueryprice:gysView")
     public Map<String, Object> gysList(QueryRequest request, ScmBQueryprice scmBQueryprice) {
-        return getDataTable(this.iScmBQuerypriceService.findScmBQueryprices(request, scmBQueryprice));
+        User currentUser = FebsUtil.getCurrentUser();
+        scmBQueryprice.setGysaccount(currentUser.getUsername());
+        return getDataTable(this.iScmBQuerypriceService.getQueryPriceByGys(request, scmBQueryprice));
     }
 
     /**

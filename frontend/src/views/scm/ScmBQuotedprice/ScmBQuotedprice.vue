@@ -32,7 +32,6 @@
                 :wrapperCol="{span: 18, offset: 1}"
               >
                 <a-select
-                  defaultValue="全部"
                   v-model="queryParams.queryState"
                   style="width: 100%"
                   placeholder="请输入询价状态"
@@ -54,7 +53,6 @@
                 :wrapperCol="{span: 18, offset: 1}"
               >
                 <a-select
-                  defaultValue="全部"
                   v-model="queryParams.quoteState"
                   style="width: 100%"
                   placeholder="请输入报价状态"
@@ -138,7 +136,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 1500 }"
+        :scroll="{ x: 1200 }"
       >
         <template
           slot="remark"
@@ -156,18 +154,13 @@
           slot-scope="text, record"
         >
           <a-icon
-            v-hasPermission="['scmBQuotedprice:update']"
-            type="setting"
+            v-show="record.queryState<2"
+            type="eye"
             theme="twoTone"
-            twoToneColor="#4a9ff5"
+            twoToneColor="#42b983"
             @click="edit(record)"
-            title="修改"
+            title="查看"
           ></a-icon>
-          <a-badge
-            v-hasNoPermission="['scmBQuotedprice:update']"
-            status="warning"
-            text="无权限"
-          ></a-badge>
         </template>
       </a-table>
     </div>
@@ -178,28 +171,21 @@
       @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable"
+      :showType="showType"
     >
     </scmBQuotedprice-add>
-    <!-- 修改字典 -->
-    <scmBQuotedprice-edit
-      ref="scmBQuotedpriceEdit"
-      @close="handleEditClose"
-      @success="handleEditSuccess"
-      :editVisiable="editVisiable"
-    >
-    </scmBQuotedprice-edit>
+
   </a-card>
 </template>
 
 <script>
 import ScmBQuotedpriceAdd from './ScmBQuotedpriceAdd'
-import ScmBQuotedpriceEdit from './ScmBQuotedpriceEdit'
 import RangeDate from '@/components/datetime/RangeDate'
 import moment from 'moment'
 
 export default {
   name: 'ScmBQuotedprice',
-  components: { ScmBQuotedpriceAdd, ScmBQuotedpriceEdit, RangeDate },
+  components: { ScmBQuotedpriceAdd, RangeDate },
   data () {
     return {
       advanced: false,
@@ -220,7 +206,8 @@ export default {
       editVisiable: false,
       loading: false,
       bordered: true,
-      scmBQueryprice:{}
+      scmBQueryprice: {},
+      showType: 0
     }
   },
   computed: {
@@ -254,14 +241,6 @@ export default {
         dataIndex: 'amount',
         width: 80
       }, {
-        title: '询价供应商数量',
-        dataIndex: 'amount2',
-        width: 120
-      }, {
-        title: '已报数量',
-        dataIndex: 'amount3',
-        width: 80
-      }, {
         title: '询价日期',
         dataIndex: 'queryDate',
         customRender: (text, row, index) => {
@@ -285,6 +264,19 @@ export default {
           }
         }
       }, {
+        title: '报价状态',
+        dataIndex: 'quoteState',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未报价</a-tag>
+            default:
+              return <a-tag color="green">已报价</a-tag>
+          }
+        },
+        width: 80,
+        fixed: 'right'
+      }, {
         title: '询价状态',
         dataIndex: 'queryState',
         customRender: (text, row, index) => {
@@ -294,7 +286,7 @@ export default {
             case 1:
               return <a-tag color="green">询价中</a-tag>
             case 2:
-              return <a-tag color="blue">已结束</a-tag>
+              return <a-tag color="#f50">已结束</a-tag>
           }
         },
         width: 80,
@@ -304,7 +296,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 120
+        width: 100
       }]
     }
   },
@@ -346,7 +338,8 @@ export default {
         this.$message.warning('询价已经结束，不能操作')
         return
       }
-      this.scmBQueryprice=row
+      this.scmBQueryprice = row
+      this.showType = 0
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -354,12 +347,25 @@ export default {
       this.$message.success('修改成功')
       this.search()
     },
+    handleQueryDateChange (value) {
+      if (value) {
+        this.queryParams.queryDateFrom = value[0]
+        this.queryParams.queryDateTo = value[1]
+      }
+    },
+    handleEndDateChange (value) {
+      if (value) {
+        this.queryParams.endDateFrom = value[0]
+        this.queryParams.endDateTo = value[1]
+      }
+    },
     handleEditClose () {
       this.editVisiable = false
     },
-    edit (record) {
-      this.$refs.scmBQuotedpriceEdit.setFormValues(record)
-      this.editVisiable = true
+    edit (record) {//查看报价
+      this.scmBQueryprice = record
+      this.showType = 1
+      this.addVisiable = true
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {
@@ -406,6 +412,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+     
       this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
@@ -453,6 +460,10 @@ export default {
       if (params.sortField == null) {
         params.sortField = "id"
         params.sortOrder = "descend"
+      }
+      if(params.quoteState==null||params.quoteState==undefined)
+      {
+        params.quoteState=-1
       }
       this.$get('scmBQueryprice/gysList', {
         ...params

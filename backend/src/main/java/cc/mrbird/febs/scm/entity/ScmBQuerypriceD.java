@@ -94,6 +94,11 @@ public class ScmBQuerypriceD implements Serializable {
     @ExcelField(value = "修改人")
     private Long modifyUserId;
 
+    /**
+     * 报价状态
+     */
+    private int gysstate;
+
 
     public static final String ID = "id";
 

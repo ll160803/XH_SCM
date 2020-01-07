@@ -60,11 +60,13 @@ public class ScmBQuotedpriceServiceImpl extends ServiceImpl<ScmBQuotedpriceMappe
     @Override
     @Transactional
     public void createScmBQuotedprice(ScmBQuotedprice scmBQuotedprice) {
+
         scmBQuotedprice.setId(UUID.randomUUID().toString());
         scmBQuotedprice.setCreateTime(new Date());
         scmBQuotedprice.setIsDeletemark(1);
         this.save(scmBQuotedprice);
     }
+
 
     @Override
     @Transactional
@@ -78,7 +80,13 @@ public class ScmBQuotedpriceServiceImpl extends ServiceImpl<ScmBQuotedpriceMappe
     public void deleteScmBQuotedprices(String[] Ids) {
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
-    }
 
+    }
+    @Override
+    @Transactional
+    public void deleteScmBQuotedprices(String Id) {
+        this.baseMapper.deleteScmBQuotedprice(Id);
+
+    }
 
 }

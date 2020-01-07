@@ -46,21 +46,24 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
     @Override
     public IPage<ScmBQueryprice> findScmBQueryprices(QueryRequest request, ScmBQueryprice scmBQueryprice) {
         try {
-            LambdaQueryWrapper<ScmBQueryprice> queryWrapper = new LambdaQueryWrapper<>();
-            if (StringUtils.isNotBlank(scmBQueryprice.getCode())) {
-                queryWrapper.eq(ScmBQueryprice::getCode, scmBQueryprice.getCode());
-            }
-            if (scmBQueryprice.getQueryState() != null&&scmBQueryprice.getQueryState()!=-1) {
-                queryWrapper.eq(ScmBQueryprice::getQueryState, scmBQueryprice.getQueryState());
-            }
-            if (StringUtils.isNotBlank(scmBQueryprice.getKeyword())) {
-                String keyWord = scmBQueryprice.getKeyword().trim();
-                queryWrapper.and(qw -> qw.eq(ScmBQueryprice::getMatnr, keyWord).or().like(ScmBQueryprice::getTxz01, keyWord));
-            }
-            queryWrapper.eq(ScmBQueryprice::getIsDeletemark, 1);//1是未删 0是已删
             Page<ScmBQueryprice> page = new Page<>();
-            SortUtil.handlePageSort(request, page, true);
-            return this.page(page, queryWrapper);
+            SortUtil.handlePageSort(request, page, false);
+            // return this.page(page, queryWrapper);
+            return  this.baseMapper.getQueryPrice(page,scmBQueryprice);
+        } catch (Exception e) {
+            log.error("获取信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<ScmBQueryprice> getQueryPriceByGys(QueryRequest request, ScmBQueryprice scmBQueryprice) {
+        try {
+
+            Page<ScmBQueryprice> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            // return this.page(page, queryWrapper);
+            return  this.baseMapper.getQueryPriceByGys(page,scmBQueryprice);
         } catch (Exception e) {
             log.error("获取信息失败", e);
             return null;
@@ -92,6 +95,7 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
                     scmBQuerypriceD.setId(UUID.randomUUID().toString());
                     scmBQuerypriceD.setCreateTime(new Date());
                     scmBQuerypriceD.setIsDeletemark(1);
+                    scmBQuerypriceD.setGysstate(0);
                     scmBQuerypriceD.setBaseId(scmBQueryprice.getId());
                     this.scmBQuerypriceDMapper.insert(scmBQuerypriceD);
                 }

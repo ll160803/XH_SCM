@@ -60,6 +60,11 @@
                   ref="queryDate"
                 ></range-date>
               </a-form-item>
+            </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
               <a-form-item
                 label="截止时间"
                 :labelCol="{span: 5}"
@@ -272,11 +277,11 @@ export default {
         width: 80
       }, {
         title: '询价供应商数量',
-        dataIndex: 'amount2',
+        dataIndex: 'gyscount',
         width: 120
       }, {
         title: '已报数量',
-        dataIndex: 'amount3',
+        dataIndex: 'gysdonecount',
         width: 80
       }, {
         title: '询价日期',

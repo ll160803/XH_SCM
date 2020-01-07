@@ -25,4 +25,6 @@ public interface IScmBQuerypriceDService extends IService<ScmBQuerypriceD> {
         void updateScmBQuerypriceD(ScmBQuerypriceD scmBQuerypriceD);
 
         void deleteScmBQuerypriceDs(String[]Ids);
+
+        void updateScmBQuotedpriceDState(String gysaccount,Long baseid);
         }

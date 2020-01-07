@@ -86,22 +86,14 @@ public class ScmBQueryprice implements Serializable {
     @ExcelField(value = "询价日期")
     private Date queryDate;
 
-    /**
-     * 查询询价开始和结束时间使用
-     */
-    private transient String queryDateFrom;
-    private transient String queryDateTo;
+
     /**
      * 结束日期
      */
     @ExcelField(value = "结束日期")
     private Date endDate;
 
-    /**
-     * 查询截止时间使用
-     */
-    private transient String endDateFrom;
-    private transient String endDateTo;
+
     /**
      * 询价状态
      */
@@ -157,6 +149,31 @@ public class ScmBQueryprice implements Serializable {
     @TableField("MODIFY_USER_ID")
     @ExcelField(value = "修改人")
     private Long modifyUserId;
+
+    /**
+     * 查询询价开始和结束时间使用
+     */
+    private transient String queryDateFrom;
+    private transient String queryDateTo;
+    /**
+     * 报价状态
+     */
+    private transient int quoteState;
+
+    /**
+     * 查询截止时间使用
+     */
+    private transient String endDateFrom;
+    private transient String endDateTo;
+
+    /**
+     * 供应商查询使用
+     */
+    private  transient  String gysaccount;
+
+    private  transient  int gyscount;
+
+    private transient  int gysdonecount;
 
     /**
      * 药品编码、名称查询

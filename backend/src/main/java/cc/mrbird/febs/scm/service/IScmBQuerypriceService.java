@@ -21,6 +21,8 @@ public interface IScmBQuerypriceService extends IService<ScmBQueryprice> {
 
         IPage<ScmBQueryprice> findScmBQueryprices(QueryRequest request, ScmBQueryprice scmBQueryprice);
 
+        IPage<ScmBQueryprice> getQueryPriceByGys(QueryRequest request, ScmBQueryprice scmBQueryprice);
+
         void createScmBQueryprice(ScmBQueryprice scmBQueryprice);
 
         void updateScmBQueryprice(ScmBQueryprice scmBQueryprice);

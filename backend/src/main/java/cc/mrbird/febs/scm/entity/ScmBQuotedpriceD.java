@@ -93,6 +93,9 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+    private transient  String clientName;
+
+    private  transient  String serverName;
 
     public static final String ID ="id" ;
 

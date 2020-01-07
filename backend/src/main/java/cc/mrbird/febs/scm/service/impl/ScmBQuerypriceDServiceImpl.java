@@ -79,5 +79,10 @@ public void deleteScmBQuerypriceDs(String[]Ids){
         this.baseMapper.deleteBatchIds(list);
         }
 
+        @Override
+        @Transactional
+        public void updateScmBQuotedpriceDState(String gysaccount,Long baseid){
+                this.baseMapper.updateScmBQuertpriceSate(gysaccount,baseid);
+        }
 
         }
