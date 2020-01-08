@@ -190,6 +190,8 @@ private Long baseId;
             @ExcelField(value ="供应商名称")
 private String gysname;
 
+            private transient String keyword;
+
 
     public static final String TXZ01 ="txz01" ;
 

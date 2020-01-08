@@ -147,12 +147,12 @@
           slot-scope="text, record"
         >
           <a-icon
-            v-hasPermission="['scmBQueryprice:view']"
             type="eye"
             theme="twoTone"
             twoToneColor="#42b983"
             @click="view(record)"
             title="查看"
+            v-show="record.queryState<2"
           >
           </a-icon>
           <a-icon
@@ -210,6 +210,14 @@
       :baseId="baseId"
     >
     </scmBQueryprice-edit>
+    <quoted-price
+      ref="viewQuotedprice"
+      @close="handleViewClose"
+      :oneVisiable="viewVisiable"
+      :scmBQueryprice="scmBQueryprice"
+      :baseId="viewBaseId"
+    >
+    </quoted-price>
   </a-card>
 </template>
 
@@ -217,11 +225,12 @@
 import ScmBQuerypriceAdd from './ScmBQuerypriceAdd'
 import ScmBQuerypriceEdit from './ScmBQuerypriceEdit'
 import RangeDate from '@/components/datetime/RangeDate'
+import QuotedPrice from '../VQuotedprice/Quotedprice' 
 import moment from 'moment'
 
 export default {
   name: 'ScmBQueryprice',
-  components: { ScmBQuerypriceAdd, ScmBQuerypriceEdit, RangeDate },
+  components: { ScmBQuerypriceAdd, ScmBQuerypriceEdit, RangeDate ,QuotedPrice},
   data () {
     return {
       advanced: false,
@@ -240,9 +249,12 @@ export default {
       queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      viewVisiable: false,
       loading: false,
       bordered: true,
-      baseId: ''
+      baseId: '',
+      viewBaseId:'',
+      scmBQueryprice: {}
     }
   },
   computed: {
@@ -378,6 +390,14 @@ export default {
     },
     handleEditClose () {
       this.editVisiable = false
+    },
+    view (record) {
+      this.viewBaseId = record.id
+      this.scmBQueryprice = record
+      this.viewVisiable =true 
+    },
+    handleViewClose () {
+      this.viewVisiable = false
     },
     edit (record) {
       this.baseId = record.id

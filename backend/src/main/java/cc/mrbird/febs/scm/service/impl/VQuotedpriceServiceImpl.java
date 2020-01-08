@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.time.LocalDate;
+
 /**
  * <p>
  * VIEW 服务实现类
@@ -36,45 +37,54 @@ import java.time.LocalDate;
 public class VQuotedpriceServiceImpl extends ServiceImpl<VQuotedpriceMapper, VQuotedprice> implements IVQuotedpriceService {
 
 
-@Override
-public IPage<VQuotedprice> findVQuotedprices(QueryRequest request, VQuotedprice vQuotedprice){
-        try{
-        LambdaQueryWrapper<VQuotedprice> queryWrapper=new LambdaQueryWrapper<>();
-        if (StringUtils.isNotBlank(vQuotedprice.getCode())) {
-        queryWrapper.eq(VQuotedprice::getCode, vQuotedprice.getCode());
+    @Override
+    public IPage<VQuotedprice> findVQuotedprices(QueryRequest request, VQuotedprice vQuotedprice) {
+        try {
+            LambdaQueryWrapper<VQuotedprice> queryWrapper = new LambdaQueryWrapper<>();
+            if (vQuotedprice.getBaseId() != null) {
+                queryWrapper.eq(VQuotedprice::getBaseId, vQuotedprice.getBaseId());
+            }
+            if (StringUtils.isNotBlank(vQuotedprice.getKeyword())) {
+                queryWrapper.and(p -> p.eq(VQuotedprice::getGysaccount, vQuotedprice.getKeyword()).or().like(VQuotedprice::getGysname, vQuotedprice.getKeyword()));
+            }
+            if (StringUtils.isNotBlank(vQuotedprice.getProductName())) {
+                queryWrapper.like(VQuotedprice::getProductName, vQuotedprice.getProductName());
+            }
+            if (StringUtils.isNotBlank(vQuotedprice.getHospitalName())) {
+                queryWrapper.like(VQuotedprice::getHospitalName, vQuotedprice.getHospitalName());
+            }
+            queryWrapper.eq(VQuotedprice::getIsDeletemark, 1);//1是未删 0是已删
+            Page<VQuotedprice> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
         }
-        queryWrapper.eq(VQuotedprice::getIsDeletemark, 1);//1是未删 0是已删
-        Page<VQuotedprice> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
-        }
-        }
+    }
 
-@Override
-@Transactional
-public void createVQuotedprice(VQuotedprice vQuotedprice){
+    @Override
+    @Transactional
+    public void createVQuotedprice(VQuotedprice vQuotedprice) {
         vQuotedprice.setId(UUID.randomUUID().toString());
         vQuotedprice.setCreateTime(new Date());
         vQuotedprice.setIsDeletemark(1);
         this.save(vQuotedprice);
-        }
+    }
 
-@Override
-@Transactional
-public void updateVQuotedprice(VQuotedprice vQuotedprice){
+    @Override
+    @Transactional
+    public void updateVQuotedprice(VQuotedprice vQuotedprice) {
         vQuotedprice.setModifyTime(new Date());
         this.baseMapper.updateVQuotedprice(vQuotedprice);
-        }
+    }
 
-@Override
-@Transactional
-public void deleteVQuotedprices(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
+    @Override
+    @Transactional
+    public void deleteVQuotedprices(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
-        }
+    }
 
 
-        }
+}

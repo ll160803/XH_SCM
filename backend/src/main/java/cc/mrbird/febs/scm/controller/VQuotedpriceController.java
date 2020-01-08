@@ -51,7 +51,6 @@ public IVQuotedpriceService iVQuotedpriceService;
  * @return
  */
 @GetMapping
-@RequiresPermissions("vQuotedprice:view")
 public Map<String, Object> List(QueryRequest request, VQuotedprice vQuotedprice){
         return getDataTable(this.iVQuotedpriceService.findVQuotedprices(request, vQuotedprice));
         }
