@@ -8,7 +8,7 @@
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row>
-             <a-col
+            <a-col
               :md="6"
               :sm="24"
             >
@@ -17,10 +17,13 @@
                 :labelCol="{span: 6}"
                 :wrapperCol="{span: 17, offset: 1}"
               >
-                <a-input v-model="queryParams.lifnr" placeholder="请输入供应商账号、供应商名称" />
+                <a-input
+                  v-model="queryParams.lifnr"
+                  placeholder="请输入供应商账号、供应商名称"
+                />
               </a-form-item>
             </a-col>
-             <a-col
+            <a-col
               :md="6"
               :sm="24"
             >
@@ -29,19 +32,22 @@
                 :labelCol="{span: 6}"
                 :wrapperCol="{span: 17, offset: 1}"
               >
-                <a-input v-model="queryParams.txz01" placeholder="请输入物料编码、名称" />
+                <a-input
+                  v-model="queryParams.txz01"
+                  placeholder="请输入物料编码、名称"
+                />
               </a-form-item>
             </a-col>
-             <a-col
+            <a-col
               :md="5"
               :sm="24"
             >
-            <a-form-item
+              <a-form-item
                 label="院区"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 19}"
               >
-             <a-select
+                <a-select
                   defaultValue="全部"
                   v-model="queryParams.werks"
                   style="width: 100%"
@@ -51,7 +57,7 @@
                   <a-select-option value="2200">武汉协和医院-西院</a-select-option>
                   <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
                 </a-select>
-                 </a-form-item>
+              </a-form-item>
             </a-col>
             <a-col
               :md="7"
@@ -94,17 +100,32 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
       >
+      <template slot="operation" slot-scope="text, record">
+        <a-icon
+          type="eye"
+          theme="twoTone"
+          twoToneColor="#42b983"
+          @click="view(record)"
+          title="查看"
+        ></a-icon>
+      </template>
       </a-table>
     </div>
+    <mater-detail
+      :matnr="matnr"
+      :sendVisiable="materInfoVisiable"
+      @close="handleMaterInfoClose">
+    </mater-detail>
   </a-card>
 </template>
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
+import MaterDetail from './MaterDetail'
 
 export default {
   name: 'rank',
-  components: { RangeDate },
+  components: { RangeDate,MaterDetail },
   data () {
     return {
       advanced: false,
@@ -122,6 +143,8 @@ export default {
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       loading: false,
+      materInfoVisiable:false,
+      matnr:''
     }
   },
   computed: {
@@ -131,27 +154,33 @@ export default {
       return [{
         title: '物料号',
         dataIndex: 'matnr'
-      },{
+      }, {
         title: '物料名称',
         dataIndex: 'txz01'
-      },{
+      }, {
         title: '供应商账号',
         dataIndex: 'code'
       }, {
         title: '供应商名称',
         dataIndex: 'name'
-      },{
+      }, {
         title: '采购数量',
         dataIndex: 'menge'
-      },{
+      }, {
         title: '供应数量',
         dataIndex: 'doneMenge'
       }, {
         title: '供货率',
         dataIndex: 'percent',
-         customRender: (text, row, index) => {
-           return text+'%'
-         }
+        customRender: (text, row, index) => {
+          return text + '%'
+        }
+      }, {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 100
       }]
     }
   },
@@ -167,6 +196,13 @@ export default {
         this.queryParams.eindt = value[0]
         this.queryParams.bedat = value[1]
       }
+    },
+    view (record) {
+      this.matnr = record.matnr
+      this.materInfoVisiable = true
+    },
+    handleMaterInfoClose () {
+      this.materInfoVisiable = false
     },
     exportExcel () {
       let { sortedInfo } = this
