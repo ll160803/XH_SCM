@@ -3,9 +3,8 @@ package cc.mrbird.febs.scm.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmDVendorDMapper;
-import cc.mrbird.febs.scm.entity.ScmDVendor;
+import cc.mrbird.febs.scm.entity.*;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
-import cc.mrbird.febs.scm.entity.ScmDVendorD;
 import cc.mrbird.febs.scm.service.IScmDVendorService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -45,7 +45,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
     private ScmDVendorDMapper scmDVendorDMapper;
 
     @Override
-    public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor,String keyword) {
+    public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor, String keyword) {
         try {
             LambdaQueryWrapper<ScmDVendor> queryWrapper = new LambdaQueryWrapper<>();
             if (StringUtils.isNotBlank(scmDVendor.getName())) {
@@ -58,10 +58,10 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             if (scmDVendor.getLb() != null) {
                 queryWrapper.eq(ScmDVendor::getLb, scmDVendor.getLb());
             }
-            if (scmDVendor.getState() != null && scmDVendor.getState()!=-1) {
+            if (scmDVendor.getState() != null && scmDVendor.getState() != -1) {
                 queryWrapper.eq(ScmDVendor::getState, scmDVendor.getState());
             }
-            if(StringUtils.isNotBlank(keyword)) {
+            if (StringUtils.isNotBlank(keyword)) {
                 if (keyword.equals("-1")) {
                     queryWrapper.isNotNull(ScmDVendor::getCode);
                 } else {
@@ -75,6 +75,29 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             log.error("获取字典信息失败", e);
             return null;
         }
+    }
+
+    @Override
+    public IPage<VendorRank> findScmDVendorsRank(QueryRequest request, ScmBPurcharseorder order) {
+        Page<VendorRank> page = new Page<>();
+
+        List<VendorRank> records = this.baseMapper.getRank(order);
+        List<VendorRank> backRerords = records.stream().skip((request.getPageNum() - 1) * request.getPageSize()).limit(request.getPageSize()).collect(Collectors.toList());
+        page.setRecords(backRerords);
+        page.setTotal(records.size());
+
+        //  page.setCurrent(request.getPageNum());
+        return page;
+    }
+    @Override
+    public IPage<MaterPercentage> findScmDVendorsMater(QueryRequest request, ScmBPurcharseorder order) {
+
+        Page<MaterPercentage> page = new Page<>();
+        SortUtil.handlePageSort(request, page, false);
+
+       this.baseMapper.getMatnrPercentage(page,order);
+        //  page.setCurrent(request.getPageNum());
+        return page;
     }
 
     @Override
@@ -117,14 +140,15 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             scmDVendorDMapper.insert(scmDVendorD);
         }
     }
+
     @Override
     @Transactional
     public void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS) {
         scmDVendor.setModifyTime(new Date());
         this.updateScmDVendor(scmDVendor);
         QueryWrapper<ScmDVendorD> queryWrapper = new QueryWrapper<>();
-        String F_id= scmDVendor.getId();
-        queryWrapper.lambda().eq(ScmDVendorD::getBaseId,F_id);
+        String F_id = scmDVendor.getId();
+        queryWrapper.lambda().eq(ScmDVendorD::getBaseId, F_id);
         scmDVendorDMapper.delete(queryWrapper);
         for (ScmDVendorD scmDVendorD :
                 scmDVendorDS) {

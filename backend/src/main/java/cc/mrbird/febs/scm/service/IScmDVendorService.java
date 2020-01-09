@@ -1,7 +1,6 @@
 package cc.mrbird.febs.scm.service;
 
-import cc.mrbird.febs.scm.entity.ScmDVendor;
-import cc.mrbird.febs.scm.entity.ScmDVendorD;
+import cc.mrbird.febs.scm.entity.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
@@ -29,4 +28,7 @@ public interface IScmDVendorService extends IService<ScmDVendor> {
 
         void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS);
         void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS);
+
+        IPage<VendorRank> findScmDVendorsRank(QueryRequest request, ScmBPurcharseorder order);
+        IPage<MaterPercentage> findScmDVendorsMater(QueryRequest request, ScmBPurcharseorder order);
         }

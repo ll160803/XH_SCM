@@ -7,6 +7,7 @@ import cc.mrbird.febs.common.domain.router.VueRouter;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.domain.QueryRequest;
 
+import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ScmDVendorD;
 import cc.mrbird.febs.scm.service.IScmDVendorDService;
 import cc.mrbird.febs.scm.service.IScmDVendorService;
@@ -268,5 +269,16 @@ public class ScmDVendorController extends BaseController {
     public class CustomerVendor {
         public ScmDVendor scmDVendor;
         public List<ScmDVendorD> scmDVendorDS;
+    }
+
+    @GetMapping("rank")
+    @RequiresPermissions("scmDVendor:rankview")
+    public Map<String, Object> ListRank(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
+        return getDataTable(this.iScmDVendorService.findScmDVendorsRank(request, scmBPurcharseorder));
+    }
+    @GetMapping("matnr")
+    @RequiresPermissions("scmDVendor:materview")
+    public Map<String, Object> ListMater(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
+        return getDataTable(this.iScmDVendorService.findScmDVendorsMater(request, scmBPurcharseorder));
     }
 }
