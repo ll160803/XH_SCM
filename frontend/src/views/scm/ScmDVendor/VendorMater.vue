@@ -53,7 +53,7 @@
                   style="width: 100%"
                 >
                   <a-select-option value="0">全部</a-select-option>
-                  <a-select-option value="1000">武汉协和医院-本部</a-select-option>
+                  <a-select-option value="2000">武汉协和医院-本部</a-select-option>
                   <a-select-option value="2200">武汉协和医院-西院</a-select-option>
                   <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
                 </a-select>
@@ -91,6 +91,8 @@
     <div>
       <!-- 表格区域 -->
       <a-table
+        ref="TableInfo"
+        :rowKey="record => record.matnr"
         :bordered="true"
         :columns="columns"
         :dataSource="dataSource"
@@ -153,22 +155,28 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '物料号',
-        dataIndex: 'matnr'
+        dataIndex: 'matnr',
+        width:100
       }, {
         title: '物料名称',
-        dataIndex: 'txz01'
+        dataIndex: 'txz01',
+        width:200
       }, {
         title: '供应商账号',
-        dataIndex: 'code'
+        dataIndex: 'code',
+        width:120
       }, {
         title: '供应商名称',
-        dataIndex: 'name'
+        dataIndex: 'name',
+        width:120
       }, {
         title: '采购数量',
-        dataIndex: 'menge'
+        dataIndex: 'menge',
+        width:100
       }, {
         title: '供应数量',
-        dataIndex: 'doneMenge'
+        dataIndex: 'doneMenge',
+        width:100
       }, {
         title: '供货率',
         dataIndex: 'percent',
@@ -226,6 +234,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+      
       this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
@@ -250,11 +259,11 @@ export default {
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
+      this.paginationInfo = pagination
       this.fetch({
         sortField: sorter.field,
         sortOrder: sorter.order,
-        ...this.queryParams,
-        ...filters
+        ...this.queryParams
       })
     },
     fetch (params = {}) {

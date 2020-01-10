@@ -129,7 +129,7 @@ WHERE
         pur1.WERKST
         FROM
         scm_b_purcharseorder pur1
-        WHERE 1=1
+        WHERE  pur1.bsart=0 AND pur1.`status`=1
         <if test="order.eindt != null">
             AND pur1.bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>
@@ -160,7 +160,7 @@ WHERE
         scm_b_supplyplan plan
         INNER JOIN scm_b_purcharseorder pur1 ON plan.BASE_ID=pur1.ID
         WHERE
-        1=1
+        plan.IS_DELETEMARK=1 and pur1.bsart=0 AND pur1.`status`=1
         <if test="order.eindt != null">
             AND pur1.bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>

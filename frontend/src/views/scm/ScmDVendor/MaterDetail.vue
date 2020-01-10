@@ -166,6 +166,10 @@ export default {
         dataIndex: 'menge',
         width: 80
       }, {
+        title: '供应数量',
+        dataIndex: 'allmenge',
+        width: 80
+      }, {
         title: '收货数量',
         dataIndex: 'suremenge'
       }]
