@@ -274,11 +274,37 @@ public class ScmDVendorController extends BaseController {
     @GetMapping("rank")
     @RequiresPermissions("scmDVendor:rankview")
     public Map<String, Object> ListRank(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
+        if(scmBPurcharseorder.getWerks()!=null&&scmBPurcharseorder.getWerks().equals("0"))
+       {
+           scmBPurcharseorder.setWerks("");
+       }
         return getDataTable(this.iScmDVendorService.findScmDVendorsRank(request, scmBPurcharseorder));
     }
     @GetMapping("matnr")
     @RequiresPermissions("scmDVendor:materview")
     public Map<String, Object> ListMater(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
+        if(scmBPurcharseorder.getWerks()!=null&&scmBPurcharseorder.getWerks().equals("0"))
+        {
+            scmBPurcharseorder.setWerks("");
+        }
         return getDataTable(this.iScmDVendorService.findScmDVendorsMater(request, scmBPurcharseorder));
+    }
+    @GetMapping("matnr2")
+    @RequiresPermissions("scmDVendor:mview")
+    public Map<String, Object> ListMater3(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
+        if(scmBPurcharseorder.getWerks()!=null&&scmBPurcharseorder.getWerks().equals("0"))
+        {
+            scmBPurcharseorder.setWerks("");
+        }
+        return getDataTable(this.iScmDVendorService.findMaterVendor(request, scmBPurcharseorder));
+    }
+    @GetMapping("gys2")
+    @RequiresPermissions("scmDVendor:gysview")
+    public Map<String, Object> ListMater4(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
+        if(scmBPurcharseorder.getWerks()!=null&&scmBPurcharseorder.getWerks().equals("0"))
+        {
+            scmBPurcharseorder.setWerks("");
+        }
+        return getDataTable(this.iScmDVendorService.findVendorM(request, scmBPurcharseorder));
     }
 }

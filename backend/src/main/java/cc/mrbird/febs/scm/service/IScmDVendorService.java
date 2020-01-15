@@ -31,4 +31,6 @@ public interface IScmDVendorService extends IService<ScmDVendor> {
 
         IPage<VendorRank> findScmDVendorsRank(QueryRequest request, ScmBPurcharseorder order);
         IPage<MaterPercentage> findScmDVendorsMater(QueryRequest request, ScmBPurcharseorder order);
+        IPage<TotalStatistic> findVendorM(QueryRequest request, ScmBPurcharseorder order);
+        IPage<TotalStatistic> findMaterVendor(QueryRequest request, ScmBPurcharseorder order);
         }

@@ -27,4 +27,7 @@ public interface ScmDVendorMapper extends BaseMapper<ScmDVendor> {
     List<VendorRank> getRank(@Param("order") ScmBPurcharseorder order);
 
     IPage<MaterPercentage> getMatnrPercentage(Page page, @Param("order") ScmBPurcharseorder order);
+
+    IPage<TotalStatistic> getGysAmount(Page page, @Param("order") ScmBPurcharseorder order);
+    IPage<TotalStatistic> getMatnrAmount(Page page, @Param("order") ScmBPurcharseorder order);
 }

@@ -99,6 +99,24 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
         //  page.setCurrent(request.getPageNum());
         return page;
     }
+    @Override
+    public IPage<TotalStatistic> findVendorM(QueryRequest request, ScmBPurcharseorder order){
+        Page<TotalStatistic> page = new Page<>();
+        SortUtil.handlePageSort(request, page, false);
+
+        this.baseMapper.getGysAmount(page,order);
+        //  page.setCurrent(request.getPageNum());
+        return page;
+    }
+    @Override
+    public IPage<TotalStatistic> findMaterVendor(QueryRequest request, ScmBPurcharseorder order){
+        Page<TotalStatistic> page = new Page<>();
+        SortUtil.handlePageSort(request, page, false);
+        log.info(order.getLgortName());
+        this.baseMapper.getMatnrAmount(page,order);
+        //  page.setCurrent(request.getPageNum());
+        return page;
+    }
 
     @Override
     @Transactional

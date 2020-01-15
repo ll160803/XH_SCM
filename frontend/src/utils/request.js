@@ -7,7 +7,7 @@ moment.locale('zh-cn')
 
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: 'http://127.0.0.1:1077/',
+  baseURL: 'http://scm.whuh.com:1022/',
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
@@ -80,7 +80,7 @@ FEBS_REQUEST.interceptors.response.use((config) => {
 })
 
 const request = {
-  baseURL: 'http://127.0.0.1:1077/',
+  baseURL: 'http://scm.whuh.com:1022/',
   post (url, params) {
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {

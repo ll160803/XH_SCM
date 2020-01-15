@@ -1,6 +1,14 @@
+http:
+  port: 1044
 server:
-  port: 1077
-
+  port: 1022
+  ssl:
+    # 证书名字
+    key-store: classpath:scm.jks
+    #key-store: classpath:keystore.keystore
+    key-store-password: fNYpxd7q
+    keyStoreType: JKS
+    key-alias: alias
 cxf:
   path: /webservice
 
@@ -54,6 +62,7 @@ spring:
         max-active: 2000
         max-wait: 10000
     timeout: 0
+
 
 
 #mybatis plus 设置

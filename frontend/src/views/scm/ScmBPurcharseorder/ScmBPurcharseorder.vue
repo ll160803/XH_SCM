@@ -582,7 +582,7 @@ export default {
       }
 
       if (params.sortField == null) {
-        params.sortField = "ebeln descend,ebelp"
+        params.sortField = "ebeln desc,ebelp"
         params.sortOrder = "ascend"
       }
 

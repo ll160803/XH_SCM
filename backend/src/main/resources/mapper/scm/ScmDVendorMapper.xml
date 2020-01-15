@@ -145,7 +145,12 @@ WHERE
         <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
             And pur1.werks = #{order.werks}
         </if>
-
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+            And pur1.lgort = #{order.lgort}
+        </if>
+        <if test="order.lgortName!= null and order.lgortName !='' and order.lgortName !='0'">
+            And pur1.lgortName like concat('%',#{order.lgortName},'%')
+        </if>
         GROUP BY
         pur1.lifnr,
         pur1.matnr,
@@ -176,6 +181,12 @@ WHERE
         <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
             And pur1.werks = #{order.werks}
         </if>
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+            And pur1.lgort = #{order.lgort}
+        </if>
+        <if test="order.lgortName!= null and order.lgortName !=''">
+            And pur1.name like concat('%',#{order.lgortName},'%')
+        </if>
         GROUP BY
         plan.gysaccount,
         pur1.matnr
@@ -186,5 +197,85 @@ WHERE
         AND mater.gysaccount = pur.lifnr
         WHERE
         m.LB=0
+    </select>
+
+    <select id="getGysAmount" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" resultType="cc.mrbird.febs.scm.entity.TotalStatistic">
+        SELECT
+        ord.lifnr gysAccount,
+        ord.GysName,
+        SUM( plan.FPJR ) FPJR
+        FROM
+        scm_b_purcharseorder ord
+        INNER JOIN scm_b_supplyplan plan ON ord.ID = plan.BASE_ID
+        WHERE
+        plan.IS_DELETEMARK = 1
+        AND ord.`status` = 1
+        AND plan.`STATUS` = 1
+        AND ord.bsart=0
+        <if test="order.eindt != null">
+            AND ord.bedat <![CDATA[ >= ]]> #{order.eindt}
+        </if>
+        <if test="order.bedat != null">
+            AND ord.bedat <![CDATA[ <= ]]> #{order.bedat}
+        </if>
+        <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
+            And ord.werks = #{order.werks}
+        </if>
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+            And ord.lgort = #{order.lgort}
+        </if>
+        <if test="order.lgortName!= null and order.lgortName !=''">
+            And ord.Name like concat('%',#{order.lgortName},'%')
+        </if>
+        <if test="order.txz01!= null and order.txz01 !=''">
+            And (ord.matnr = #{order.txz01} or ord.txz01 like concat('%',#{order.txz01},'%'))
+        </if>
+        <if test="order.lifnr!= null and order.lifnr !=''">
+            And (ord.lifnr = #{order.lifnr} or ord.gysname like concat('%',#{order.lifnr},'%'))
+        </if>
+        GROUP BY
+        ord.GysName,
+        ord.lifnr
+
+    </select>
+    <select id="getMatnrAmount" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" resultType="cc.mrbird.febs.scm.entity.TotalStatistic">
+        SELECT
+        ord.txz01,
+        ord.matnr,
+        SUM( plan.G_MENGE ) G_MENGE,
+        SUM(plan.FPJR)	FPJR
+        FROM
+        scm_b_purcharseorder ord
+        INNER JOIN scm_b_supplyplan plan ON ord.ID = plan.BASE_ID
+        WHERE
+        plan.IS_DELETEMARK = 1
+        AND ord.`status` = 1
+        AND plan.`STATUS` = 1
+        And ord.bsart=0
+        <if test="order.eindt != null">
+            AND ord.bedat <![CDATA[ >= ]]> #{order.eindt}
+        </if>
+        <if test="order.bedat != null">
+            AND ord.bedat <![CDATA[ <= ]]> #{order.bedat}
+        </if>
+        <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
+            And ord.werks = #{order.werks}
+        </if>
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+            And ord.lgort = #{order.lgort}
+        </if>
+        <if test="order.lgortName!= null and order.lgortName !=''">
+            And ord.Name like concat('%',#{order.lgortName},'%')
+        </if>
+        <if test="order.txz01!= null and order.txz01 !=''">
+            And (ord.matnr = #{order.txz01} or ord.txz01 like concat('%',#{order.txz01},'%'))
+        </if>
+        <if test="order.lifnr!= null and order.lifnr !=''">
+            And (ord.lifnr = #{order.lifnr} or ord.gysname like concat('%',#{order.lifnr},'%'))
+        </if>
+        GROUP BY
+        ord.txz01,
+        ord.matnr
+
     </select>
 </mapper>
