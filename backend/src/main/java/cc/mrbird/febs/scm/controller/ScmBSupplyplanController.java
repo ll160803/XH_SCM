@@ -395,7 +395,7 @@ public class ScmBSupplyplanController extends BaseController {
         queryWrapper.eq(ViewSupplyplan::getBsart,"0");
         List<ViewSupplyplan> e1 = iViewSupplyplanService.list(queryWrapper);
         StringBuilder sb = new StringBuilder();
-        sb.append(String.format(GenerateHeadStr(), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst()));
+        sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst()));
         sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "基本单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "预计补送日期"));
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -408,13 +408,14 @@ public class ScmBSupplyplanController extends BaseController {
         return feb;
     }
 
-    public String GenerateHeadStr() {
+    public String GenerateHeadStr(String orderCode) {
         StringBuilder sb = new StringBuilder();
+        String mark= GenerateMark(orderCode);
         sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
-        sb.append(String.format("<tr><td colspan=\"14\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td></tr>", "武汉协和医院药品送货清单"));
+        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" rowspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\" width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单",mark));
         sb.append("<tr><td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商编码：%1$s</td>");
-        sb.append("<td colspan=\"5\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商名称：%2$s</td>");
-        sb.append("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：%3$s</td><tr>");
+        sb.append("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商名称：%2$s</td>");
+        sb.append("<td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：%3$s</td><tr>");
 
         return sb.toString();
 

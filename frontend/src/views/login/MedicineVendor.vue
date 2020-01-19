@@ -72,11 +72,10 @@
       :ref="'file'+item.index"
       :title="item.title"
       :displayIndex="item.index"
-      v-show="current == item.index"
       :isRequire="item.isRequire"
     >
     </upload-file>
-    <a-button
+   <!-- <a-button
       v-if="current < 18"
       type="primary"
       @click="next"
@@ -89,16 +88,16 @@
       @click="prev"
     >
       上一步
-    </a-button>
+    </a-button>-->
     <a-button
       type="primary"
       :loading="loading"
       @click.stop.prevent="handleSubmit"
-      v-show="current == 18"
       :disabled="saveF"
     >
-      保存
+      立即注册
     </a-button>
+     <a class="login" @click="returnLogin">使用已有账户登录</a>
   </div>
 </template>
 

@@ -47,7 +47,7 @@
             </a-input>
           </a-form-item>
         </a-tab-pane>
-        
+
       </a-tabs>
       <a-form-item>
         <a-button
@@ -110,6 +110,7 @@ export default {
               username: name,
               password: password
             }).then((r) => {
+              console.info(r)
               let data = r.data.data
               this.saveLoginData(data)
               setTimeout(() => {

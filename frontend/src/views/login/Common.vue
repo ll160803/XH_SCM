@@ -8,7 +8,7 @@
         </div>
         <div class="desc"></div>
       </div>
-      <component :is="componentName" @regist="handleRegist" class="main-content"></component>
+      <component :is="componentName" @regist="handleRegist" :class="mainContent"></component>
     </div>
     <global-footer :copyright="copyright" />
   </div>
@@ -24,7 +24,8 @@ export default {
   components: {GlobalFooter, Login, Regist},
   data () {
     return {
-      componentName: 'Login'
+      componentName: 'Login',
+      mainContent:'main-content'
     }
   },
   computed: {
@@ -37,6 +38,12 @@ export default {
   },
   methods: {
     handleRegist (val) {
+      if(val=="Login"){
+        this.mainContent="main-content"
+      }
+      else{
+        this.mainContent="main-content2"
+      }
       this.componentName = val
     }
   }
@@ -89,6 +96,18 @@ export default {
       }
       .main-content {
         width: 368px;
+        margin: 0 auto;
+        @media screen and (max-width: 576px) {
+          width: 95%;
+        }
+        @media screen and (max-width: 320px) {
+          .captcha-button{
+            font-size: 14px;
+          }
+        }
+      }
+      .main-content2 {
+        width: 736px;
         margin: 0 auto;
         @media screen and (max-width: 576px) {
           width: 95%;

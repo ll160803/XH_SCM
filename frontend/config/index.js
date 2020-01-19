@@ -10,11 +10,19 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      // '/api': {
+      //   target:'http://scmapi.whuh.com', // 你请求的第三方接口
+      //   changeOrigin:true, // 在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
+      //   pathRewrite:{  // 路径重写，
+      //     '^/api': '/'  // 替换target中的请求地址，也就是说以后你在请求http://api.douban.com/v2/XXXXX这个地址的时候直接写成/api即可。
+      //   }
+      // }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 6633, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 1055, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -55,6 +63,7 @@ module.exports = {
     /**
      * Source Maps
      */
+
 
     productionSourceMap: true,
     // https://webpack.js.org/configuration/devtool/#production

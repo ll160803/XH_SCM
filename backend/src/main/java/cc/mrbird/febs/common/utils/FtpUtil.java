@@ -70,6 +70,8 @@ public class FtpUtil {
             ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
             CreateDirecroty(pathname);
             ftpClient.makeDirectory(pathname);
+            //调用此方法解决假死状态（设置为被动模式：客户端通知服务端开通一个端口用来数据传输）
+            ftpClient.enterLocalPassiveMode();
             ftpClient.changeWorkingDirectory(pathname);
             ftpClient.storeFile(fileName, inputStream);
             inputStream.close();
@@ -112,6 +114,8 @@ public class FtpUtil {
             ftpClient.setFileType(ftpClient.BINARY_FILE_TYPE);
             //CreateDirecroty(pathname);
             //ftpClient.makeDirectory(pathname);
+            //调用此方法解决假死状态（设置为被动模式：客户端通知服务端开通一个端口用来数据传输）
+            ftpClient.enterLocalPassiveMode();
             ftpClient.changeWorkingDirectory(pathname);
             ftpClient.storeFile(fileName, inputStream);
             inputStream.close();
