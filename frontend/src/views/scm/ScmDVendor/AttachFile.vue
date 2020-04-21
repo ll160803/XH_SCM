@@ -1,5 +1,5 @@
 <template>
-  <a-card :title="title">
+  <a-card :title="title" :headStyle="tstyle">
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
@@ -76,6 +76,7 @@ export default {
   name: "file",
   data () {
     return {
+      tstyle:{"color": "#0785fd","font-weight": "bold","background-color": "#ececec"},
       isShow: 1,
       fileList: [],
       uploading: false,

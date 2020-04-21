@@ -127,8 +127,13 @@ public class ScmDAreaController extends BaseController {
         User currentUser = FebsUtil.getCurrentUser();
         Long userid = currentUser.getUserId();
         FebsResponse febs = new FebsResponse();
-        febs.data(this.iScmDAreaService.getAreasByUserId(userid));
+        if(currentUser.getRoleId().equals("3") ||currentUser.getRoleId().equals("4")) {
+            febs.data(this.iScmDAreaService.getAreasAll());
+        }
+        else
+        {
+            febs.data(this.iScmDAreaService.getAreasByUserId(userid));
+        }
         return febs;
     }
-
 }

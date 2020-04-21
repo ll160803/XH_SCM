@@ -20,4 +20,6 @@ public interface ScmDAreaMapper extends BaseMapper<ScmDArea> {
 
         @Select("SELECT *  from scm_d_area where ID in (SELECT AreaID from scm_b_userandarea where UserID=${userid})")
         List<ScmDArea>  GetAreaByUserId(@Param(value="userid") Long userid);
+        @Select("SELECT *  from scm_d_area")
+        List<ScmDArea>  GetAreaAll();
         }

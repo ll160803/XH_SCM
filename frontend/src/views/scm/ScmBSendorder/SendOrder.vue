@@ -3,6 +3,7 @@
     :bordered="false"
     class="card-area"
   >
+   <div ref="lodopDiv"></div>
     <div>
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
@@ -144,6 +145,7 @@
       :printVisiable="printVisiable"
       :ids="printIds"
       bsart="0"
+      :lodop="lodop"
     >
     </sendOrder-print>
   </a-card>
@@ -154,6 +156,7 @@ import ScmBSendorderAdd from './SendOrderAdd'
 import ScmBSendorderEdit from './SendOrderEdit'
 import SendOrderPrint from './SendOrderPrint'
 import moment from 'moment'
+import { getLodop ,getLodopDiv } from '../../../tools/lodop'
 
 export default {
   name: 'Sendorder',
@@ -186,7 +189,8 @@ export default {
       fph: '',
       printIds: '',
       printVisiable: false,
-      orderId: ''
+      orderId: '',
+      lodop: {}
     }
   },
   computed: {
@@ -308,7 +312,14 @@ export default {
       }
 
       this.printIds = this.selectedRowKeys.join(',')
-      this.printVisiable = true
+       getLodopDiv(this.$refs.lodopDiv)
+      if(getLodop() == undefined || getLodop() == null){
+
+      }
+      else {
+        this.lodop= getLodop();
+        this.printVisiable = true
+      }
     },
     handlePrintClose () {
       this.printVisiable = false

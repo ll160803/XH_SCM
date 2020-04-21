@@ -20,10 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -83,12 +80,21 @@ public class ScmBQuerypriceServiceImpl extends ServiceImpl<ScmBQuerypriceMapper,
     public void createScmBQuerypriceNew(List<ScmBQueryprice> maters, List<ScmBQuerypriceD> gys, Long userid, Long deptid, int state) {
         for (ScmBQueryprice scmBQueryprice : maters
         ) {
+            scmBQueryprice.setQueryDate(new Date());
             scmBQueryprice.setCreateTime(new Date());
             scmBQueryprice.setIsDeletemark(1);
             scmBQueryprice.setCreateUserId(userid);
             scmBQueryprice.setDeptId(deptid);
             scmBQueryprice.setState(state);
             scmBQueryprice.setQueryState(state);
+
+            //截止时间增加一天
+
+            Calendar calendar = new GregorianCalendar();
+            calendar.setTime(scmBQueryprice.getEndDate());
+            calendar.add(calendar.DATE,1); //把日期往后增加一天,整数  往后推,负数往前移动
+            scmBQueryprice.setEndDate(calendar.getTime());
+
             this.save(scmBQueryprice);
             if (gys != null) {
                 for (ScmBQuerypriceD scmBQuerypriceD : gys) {

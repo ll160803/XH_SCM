@@ -221,7 +221,7 @@ public class ScmBSupplyplanController extends BaseController {
             List<Long> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
-                if (en.getStatus() != 1) {
+                if (!en.getStatus().equals(1)) {
                     message += en.getId().toString() + ":未收货";
                 } else {
                     en.setStatus(0);
@@ -252,6 +252,7 @@ public class ScmBSupplyplanController extends BaseController {
     @PutMapping("over")
     public void updateOverScmBSupplyplan(@Valid String ids) throws FebsException {
         try {
+            log.error("收货id"+ids);
             User currentUser = FebsUtil.getCurrentUser();
             String str_ids = "'" + ids.replace(",", "','") + "'";
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
@@ -259,9 +260,9 @@ public class ScmBSupplyplanController extends BaseController {
             List<Long> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
-                if (en.getStatus() == 1) {
+                if (en.getStatus().equals(1)) {
                     message += en.getId().toString() + ":已收货";
-                } else if (en.getgMenge() != en.getDoneMenge()) {
+                } else if (!en.getgMenge().equals(en.getDoneMenge())) {
                     message += en.getId().toString() + ":预收数量不等于供应计划数量";
                 } else {
                     en.setStatus(1);
@@ -270,14 +271,20 @@ public class ScmBSupplyplanController extends BaseController {
                 }
 
             }
-
-            RfcNOC rfc = new RfcNOC();
-            List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
-            if (!backMsg.get(0).getMSTYPE().equals("S")) {
-                log.error("SAP端处理失败");
-                throw new FebsException("SAP端处理失败");
-            } else {
-                this.iScmBSupplyplanService.doneSupplyPlan(arrids);//修改scm状态
+            if(doneList.size()>0) {
+                log.error("发送SAP收货");
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("SAP端处理失败");
+                    throw new FebsException("SAP端处理失败");
+                } else {
+                    this.iScmBSupplyplanService.doneSupplyPlan(arrids);//修改scm状态
+                }
+            }
+            else
+            {
+                throw new FebsException(message);
             }
 
 
@@ -412,7 +419,7 @@ public class ScmBSupplyplanController extends BaseController {
         StringBuilder sb = new StringBuilder();
         String mark= GenerateMark(orderCode);
         sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
-        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" rowspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\" width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单",mark));
+        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" rowspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\" width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单"+orderCode,mark));
         sb.append("<tr><td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商编码：%1$s</td>");
         sb.append("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商名称：%2$s</td>");
         sb.append("<td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：%3$s</td><tr>");

@@ -3,6 +3,7 @@
     :bordered="false"
     class="card-area"
   >
+     <div ref="lodopDiv"></div>
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
@@ -94,6 +95,7 @@
       :printVisiable="printVisiable"
       :ids="printIds"
       bsart="0"
+      :lodop="lodop"
     >
     </supplyplan-print>
   </a-card>
@@ -103,6 +105,7 @@
 import SupplyplanPrint from './SupplyplanPrint'
 import moment from 'moment'
 import { mapState } from 'vuex'
+import { getLodop ,getLodopDiv } from '../../../tools/lodop'
 
 export default {
   name: 'ScmBSupplyplan',
@@ -132,7 +135,8 @@ export default {
       loading: false,
       bordered: true,
       printIds: '',
-      printVisiable: false
+      printVisiable: false,
+      lodop: {}
     }
   },
   computed: {
@@ -266,9 +270,17 @@ export default {
         return
       }
       this.printIds = this.selectedRowKeys.join(',')
-      this.printVisiable = true
+      getLodopDiv(this.$refs.lodopDiv)
+      if(getLodop() == undefined || getLodop() == null){
+
+      }
+      else {
+        this.lodop= getLodop();
+        this.printVisiable = true
+      }
     },
     handlePrintClose () {
+      this.lodop =null
       this.printVisiable = false
     },
     exportExcel () {

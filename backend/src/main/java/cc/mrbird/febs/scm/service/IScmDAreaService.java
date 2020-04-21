@@ -33,4 +33,5 @@ public interface IScmDAreaService extends IService<ScmDArea> {
         void deleteScmDAreas(String[]Ids);
 
         List<ScmDArea> getAreasByUserId(Long id);
+        List<ScmDArea> getAreasAll();
         }

@@ -7,7 +7,7 @@ moment.locale('zh-cn')
 
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: 'http://testscmapi.whuh.com/',
+  baseURL: 'http://scmapi.whuh.com/',
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
@@ -78,9 +78,8 @@ FEBS_REQUEST.interceptors.response.use((config) => {
   }
   return Promise.reject(error)
 })
-
 const request = {
-  baseURL: 'http://testscmapi.whuh.com/',
+  baseURL: 'http://scmapi.whuh.com/',
   post (url, params) {
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {

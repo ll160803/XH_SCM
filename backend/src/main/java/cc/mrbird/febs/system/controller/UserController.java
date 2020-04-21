@@ -5,6 +5,7 @@ import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.MD5Util;
+import cc.mrbird.febs.common.utils.WxMessage;
 import cc.mrbird.febs.scm.entity.ScmBUserandarea;
 import cc.mrbird.febs.scm.entity.ScmDArea;
 import cc.mrbird.febs.scm.service.IScmBUserandareaService;
@@ -207,7 +208,11 @@ public class UserController extends BaseController {
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String openid) throws FebsException {
         try {
-            userService.updateOpenid(username, openid);
+            log.info("openid:"+openid);
+            WxMessage wm=new WxMessage();
+            String openidS=wm.gentWxId(openid);
+            log.info("openid:"+openidS);
+            userService.updateOpenid(username,openidS );
         } catch (Exception e) {
             message = "修改用户微信ID失败";
             log.error(message, e);

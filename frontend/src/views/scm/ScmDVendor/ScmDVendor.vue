@@ -564,6 +564,10 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      if (params.sortField == null) {
+        params.sortField = "Create_TIME"
+        params.sortOrder = "descend"
+      }
       this.$get('scmDVendor', {
         ...params
       }).then((r) => {

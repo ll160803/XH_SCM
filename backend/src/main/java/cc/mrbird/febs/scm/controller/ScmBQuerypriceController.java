@@ -96,6 +96,7 @@ public class ScmBQuerypriceController extends BaseController {
     @RequiresPermissions("scmBQuerypriceNew:add")
     public void addScmBQuerypriceNew(String maters,String gys,int state) throws FebsException {
         try {
+            log.info(maters);
             User currentUser = FebsUtil.getCurrentUser();
             Long userId=currentUser.getUserId();
             Long deptId=currentUser.getDeptId();

@@ -43,6 +43,9 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
 
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark, 1);//1是未删 0是已删
+            if (viewSupplyplan.getId() != null) {
+                queryWrapper.eq(ViewSupplyplan::getId, viewSupplyplan.getId());
+            }
             if (viewSupplyplan.getStatus()!=null) {
                 queryWrapper.eq(ViewSupplyplan::getStatus, viewSupplyplan.getStatus());
             }
@@ -67,8 +70,8 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                 queryWrapper.like(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());
             }
-            if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
-                queryWrapper.eq(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());
+            if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                queryWrapper.eq(ViewSupplyplan::getMatnr, viewSupplyplan.getMatnr());
             }
             if(StringUtils.isNotBlank(viewSupplyplan.getNoOrder())&&viewSupplyplan.getNoOrder()=="1")
             {
@@ -192,8 +195,8 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                 queryWrapper.like(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());
             }
-            if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
-                queryWrapper.eq(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());
+            if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                queryWrapper.eq(ViewSupplyplan::getMatnr, viewSupplyplan.getMatnr());
             }
 
 

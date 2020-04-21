@@ -130,11 +130,12 @@ export default {
       form1: this.$form.createForm(this, { name: 'dynamic_rule2' }),
       attachList: [
         { title: "企业法人营业执照", isRequire: true, index: 1 },
+        { title: "开发票资料及银行账户信息", isRequire: true, index: 6 },
         { title: "中华人民共和国组织结构代码证", isRequire: false, index: 2 },
         { title: "税务登记证", isRequire: false, index: 3 },
         { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 4 },
         { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 5 },
-        { title: "开发票资料及银行账户信息", isRequire: true, index: 6 },
+        
         { title: "企业税票模板", isRequire: false, index: 7 },
         { title: "企业样章备案", isRequire: false, index: 8 },
         { title: "廉洁协议", isRequire: false, index: 9 },

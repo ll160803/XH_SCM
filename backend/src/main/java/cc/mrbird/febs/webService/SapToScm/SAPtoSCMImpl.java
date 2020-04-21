@@ -15,6 +15,7 @@ import javax.jws.WebService;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -190,6 +191,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             if (list_purchase_C.size() > 0) {
                 try {
                     for (ScmBPurcharseorder itemOrder : list_purchase_C) {
+                        itemOrder.setCreateTime(new Date());
                         this.scmBPurcharseorderMapper.insert(itemOrder);
                     }
                     //return msg.Succeed;
@@ -199,6 +201,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             }
             if (list_Update.size() > 0) {
                 for (ScmBPurcharseorder itemOrder : list_Update) {
+                    itemOrder.setModifyTime(new Date());
                     this.scmBPurcharseorderMapper.updateScmBPurcharseorder(itemOrder);
                 }
             }

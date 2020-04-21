@@ -35,7 +35,6 @@
   </a-modal>
 </template>
 <script>
-import { getLodop } from '../../../tools/lodop'
 
 export default {
   name: 'print',
@@ -45,7 +44,8 @@ export default {
       default: false
     },
     ids: '',
-    bsart: ''
+    bsart: '',
+    lodop: {}
   },
   data () {
     return {
@@ -59,7 +59,7 @@ export default {
       this.loading = false
     },
     PrintPrintPage () {
-      let LODOP = getLodop();
+      let LODOP= this.lodop
       LODOP.PRINT_INIT("送货清单打印");
       LODOP.ADD_PRINT_HTM(10, 10, this.$refs.printDiv.clientWidth, this.$refs.printDiv.clientHeight, this.printHtml);
       LODOP.SET_PRINT_PAGESIZE(2, 2100, 2970, "");//横向
@@ -67,7 +67,7 @@ export default {
       LODOP.PRINTA(); //直接打印在默认打印机
     },
     PrintPreviewPage () {
-      let LODOP = getLodop();
+      let LODOP= this.lodop
       LODOP.PRINT_INIT("送货清单打印");
       LODOP.ADD_PRINT_HTM(10, 10, this.$refs.printDiv.clientWidth, this.$refs.printDiv.clientHeight, this.printHtml);
       LODOP.SET_PRINT_PAGESIZE(2, 2100, 2970, "");
