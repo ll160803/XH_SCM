@@ -27,7 +27,12 @@ public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
 
         void auditScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic);
 
-        void deleteScmBGysMaterPics(String[]Ids,int state);
+        void deleteScmBGysMaterPics(String[]Ids,int state) throws FebsException;
 
         List<String> findChargeByBaseId(String base_Id,String account);
+
+        /*
+        是否可以删除验收资质
+         */
+        Boolean IsDelete(String id);
         }

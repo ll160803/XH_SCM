@@ -9,7 +9,7 @@
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -21,7 +21,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -32,6 +32,39 @@
                 <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
+             <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="院区"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-select
+                    defaultValue="全部"
+                    v-model="queryParams.werks"
+                    style="width: 100%"
+                  >
+                    <a-select-option value="0">全部</a-select-option>
+                    <a-select-option value="2000">武汉协和医院-本部</a-select-option>
+                    <a-select-option value="2200">武汉协和医院-西院</a-select-option>
+                    <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="库房"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-input v-model="queryParams.logrtName" />
+                </a-form-item>
+              </a-col>
           </a-row>
 
         </div>
@@ -172,6 +205,10 @@ export default {
         title: '院区名称',
         dataIndex: 'werkst',
         width: 150
+      }, {
+        title: '库房',
+        dataIndex: 'lgortName',
+        width: 100
       }, {
         title: '订单数量',
         dataIndex: 'menge',

@@ -5,8 +5,9 @@
   >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
-        <div :class="advanced ? null: 'fold'">
-          <a-row>
+        <a-row>
+          <div :class="advanced ? null: 'fold'">
+
             <a-col
               :md="6"
               :sm="24"
@@ -61,18 +62,61 @@
                 />
               </a-form-item>
             </a-col>
-          </a-row>
-        </div>
-        <span style="float: right; margin-top: 3px;">
-          <a-button
-            type="primary"
-            @click="search"
-          >查询</a-button>
-          <a-button
-            style="margin-left: 8px"
-            @click="reset"
-          >重置</a-button>
-        </span>
+
+            <template v-if="advanced">
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="院区"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-select
+                    defaultValue="全部"
+                    v-model="queryParams.werks"
+                    style="width: 100%"
+                  >
+                    <a-select-option value="0">全部</a-select-option>
+                    <a-select-option value="2000">武汉协和医院-本部</a-select-option>
+                    <a-select-option value="2200">武汉协和医院-西院</a-select-option>
+                    <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="库房"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-input v-model="queryParams.logrtName" />
+                </a-form-item>
+              </a-col>
+            </template>
+          </div>
+          <span style="float: right; margin-top: 3px;">
+            <a-button
+              type="primary"
+              @click="search"
+            >查询</a-button>
+            <a-button
+              style="margin-left: 8px"
+              @click="reset"
+            >重置</a-button>
+            <a
+              @click="toggleAdvanced"
+              style="margin-left: 8px"
+            >
+              {{advanced ? '收起' : '展开'}}
+              <a-icon :type="advanced ? 'up' : 'down'" />
+            </a>
+          </span>
+        </a-row>
       </a-form>
     </div>
     <div>
@@ -82,7 +126,7 @@
           type="primary"
           ghost
           @click="add"
-        >新增</a-button>
+        >创建供应计划</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -128,7 +172,7 @@
               type="setting"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              v-show="record2.status==0 && record.status==1"
+              v-show="record2.status==0 && record.status==1 "
               @click="edit(record2,record)"
               title="修改"
             ></a-icon>
@@ -137,7 +181,7 @@
               type="delete"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              v-show="record2.status==0 && record.status==1"
+              v-show="record2.status==0 && record.status==1 "
               @click="subDelete(record2)"
               title="删除"
             ></a-icon>
@@ -440,6 +484,10 @@ export default {
       this.editVisiable = false
     },
     edit (record, pRecord) {
+      if (record.doneMenge > 0) {
+        this.$message.warning('此供应计划已经预收入库，不能修改！！！')
+        return
+      }
       this.$refs.scmBPurcharseorderEdit.setFormValues(record)
       this.$refs.scmBPurcharseorderEdit.setOrderFormValues(pRecord)
       this.editVisiable = true
@@ -448,6 +496,10 @@ export default {
       this.editRecord = pRecord
     },
     subDelete (record, pRecord) {
+      if (record.doneMenge > 0) {
+        this.$message.warning('此供应计划已经预收入库，不能删除！！！')
+        return
+      }
       let that = this
       this.$confirm({
         title: '确定删除所选中的记录?',

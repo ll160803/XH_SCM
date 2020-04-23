@@ -226,7 +226,7 @@ public class ScmDVendorController extends BaseController {
                             this.userService.createUser(user);
                         }
                     }
-                    if (item.getState() == 0) {//取消审核
+                    if (item.getState() == 2) {//取消审核
                         User user = new User();
 
                         user.setStatus("0");//无效

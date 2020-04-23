@@ -468,6 +468,10 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       params.bsart = "0"
+      if (params.sortField == null) {
+        params.sortField = "ID"
+        params.sortOrder = "descend"
+      }
       this.$get('scmBSendorder', {
         ...params
       }).then((r) => {

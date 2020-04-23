@@ -55,11 +55,14 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getBaseId())) {
                 queryWrapper.eq(ViewSupplyplan::getBaseId, viewSupplyplan.getBaseId());
             }
-            if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerks()) && !viewSupplyplan.getWerks().equals("0")) {
                 queryWrapper.eq(ViewSupplyplan::getWerks, viewSupplyplan.getWerks());
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getWerkst())) {
                 queryWrapper.like(ViewSupplyplan::getWerkst, viewSupplyplan.getWerkst());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
+                queryWrapper.like(ViewSupplyplan::getLgortName, viewSupplyplan.getLgortName());
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getGysname())) {
                 queryWrapper.like(ViewSupplyplan::getGysname, viewSupplyplan.getGysname());

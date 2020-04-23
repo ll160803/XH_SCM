@@ -15,8 +15,8 @@
         label="药品"
       >
         <up-fc
-        ref="upfc"
-        v-decorator="['matnr2', {rules: [{ required: true, message: '药品不能为空' }]}]"
+          ref="upfc"
+          v-decorator="['matnr2', {rules: [{ required: true, message: '药品不能为空' }]}]"
         >
         </up-fc>
       </a-form-item>
@@ -103,7 +103,7 @@ export default {
       form: this.$form.createForm(this),
       scmBGysMaterPic: {
         fileId: '',
-        materId:''
+        materId: ''
       }
     }
   },
@@ -112,9 +112,9 @@ export default {
       this.loading = false
       this.scmBGysMaterPic = {}
       this.$refs.upfc.reset()
-      this.$refs.upfc.matnr=''
-      this.scmBGysMaterPic.matnr=''
-      this.scmBGysMaterPic.fileId=''
+      this.$refs.upfc.matnr = ''
+      this.scmBGysMaterPic.matnr = ''
+      this.scmBGysMaterPic.fileId = ''
       this.form.resetFields()
     },
     onClose () {
@@ -122,18 +122,16 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      this.scmBGysMaterPic.materId=this.$refs.upfc.matnr
-      if(this.scmBGysMaterPic.materId=='')
-      {
+      this.scmBGysMaterPic.materId = this.$refs.upfc.matnr
+      if (this.scmBGysMaterPic.materId == '') {
         this.$message.warning('请在下列列表里选择药品.')
         return false
       }
-       if(this.scmBGysMaterPic.fileId=='')
-      {
+      if (this.scmBGysMaterPic.fileId == '') {
         this.$message.warning('请上传资质附件.')
         return false
       }
-      this.form.setFieldsValue({matnr2:'2'})
+      this.form.setFieldsValue({ matnr2: '2' })
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
@@ -165,8 +163,19 @@ export default {
       console.log(date, dateString);
     },
     beforeUpload (file) {
-      this.fileList = [...this.fileList, file]
-      return false
+      const isJPG = file.type === 'pdf'
+      if (!isJPG) {
+       this.$message.error('请只上传pdf文件!')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isLt2M) {
+        this.$message.error('附件必须小于 2MB!')
+      }
+      if( isJPG && isLt2M)
+      {
+        this.fileList = [...this.fileList, file]
+      }
+      return isJPG && isLt2M;
     },
     handleUpload () {
       const { fileList } = this
@@ -176,9 +185,9 @@ export default {
 
       // You can use any AJAX library you like
       this.$upload('comFile/uploadCheck', formData).then((r) => {
-        console.info("上传IF:"+r.data.data);
+        console.info("上传IF:" + r.data.data);
         this.scmBGysMaterPic.fileId = r.data.data
-      
+
         //this.fileList = []
         this.isShow = 0
         this.uploading = false

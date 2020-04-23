@@ -75,6 +75,39 @@
                   <a-input v-model="queryParams.gysname" />
                 </a-form-item>
               </a-col>
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="院区"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-select
+                    defaultValue="全部"
+                    v-model="queryParams.werks"
+                    style="width: 100%"
+                  >
+                    <a-select-option value="0">全部</a-select-option>
+                    <a-select-option value="2000">武汉协和医院-本部</a-select-option>
+                    <a-select-option value="2200">武汉协和医院-西院</a-select-option>
+                    <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="库房"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-input v-model="queryParams.logrtName" />
+                </a-form-item>
+              </a-col>
             </template>
           </div>
 
@@ -446,7 +479,7 @@ export default {
       }
       this.price = row.netpr
       this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
-      
+
       this.addVisiable = true
     },
     handleEditSuccess (baseId) {
@@ -598,6 +631,10 @@ export default {
       }
       if (params.bedat == null) {
         params.bedat = this.defultDate()
+      }
+      if (params.sortField == null) {
+        params.sortField = "Create_TIME"
+        params.sortOrder = "descend"
       }
       params.bsart = 0//药品
       this.$get('scmBPurcharseorder', {

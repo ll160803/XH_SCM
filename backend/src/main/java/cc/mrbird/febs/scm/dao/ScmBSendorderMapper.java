@@ -33,7 +33,10 @@ public interface ScmBSendorderMapper extends BaseMapper<ScmBSendorder> {
         @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '',FPHM = '' WHERE SEND_ORDER_CODE in (#{ids}) and bsart_d='1' and status=0 ")
         int removeMaterOrderCode(@Param("ids") String ids);
 
-        @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '' WHERE SEND_ORDER_CODE in (#{ids}) and bsart_d='0' and status=0")
+        /*
+        已经收获和已经预收入库的都不可以更改
+         */
+        @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '' WHERE SEND_ORDER_CODE in (#{ids}) and bsart_d='0' and status=0 and !(doneMenge>0)")
         int removeOrderCode(@Param("ids") String ids);
 
         @Select("Select id from scm_b_supplyplan where SEND_ORDER_CODE=#{sendCode}")

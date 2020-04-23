@@ -10,13 +10,11 @@
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
-    <a-form-item
+      <a-form-item
         v-bind="formItemLayout"
         label="药品"
       >
-        <up-fc
-        ref="upfc"
-        >
+        <up-fc ref="upfc">
         </up-fc>
       </a-form-item>
       <a-form-item
@@ -37,7 +35,7 @@
           v-decorator="['comments', {}]"
         />
       </a-form-item>
-       <a-form-item
+      <a-form-item
         v-bind="formItemLayout"
         label="文件上传"
       >
@@ -100,13 +98,13 @@ export default {
     return {
       isShow: 1,
       fileList: [],
-      uploading:false,
+      uploading: false,
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
       scmBGysMaterPic: {
         fileId: '',
-        materId:''
+        materId: ''
       }
     }
   },
@@ -114,10 +112,10 @@ export default {
     reset () {
       this.loading = false
       this.$refs.upfc.reset()
-      this.$refs.upfc.matnr=''
-      this.fileList=[]
-      this.scmBGysMaterPic.materId=''
-      this.scmBGysMaterPic.fileId=''
+      this.$refs.upfc.matnr = ''
+      this.fileList = []
+      this.scmBGysMaterPic.materId = ''
+      this.scmBGysMaterPic.fileId = ''
       this.form.resetFields()
     },
     onClose () {
@@ -148,21 +146,21 @@ export default {
         if (scmBGysMaterPic.fileId != '') {
           this.scmBGysMaterPic.fileId = scmBGysMaterPic.fileId
           this.isShow = 0
-          this.fileList=[]
+          this.fileList = []
           this.$get('comFile/' + scmBGysMaterPic.fileId).then((r) => {
-            this.$refs.upfc.setFormValue(scmBGysMaterPic.materId+'_'+scmBGysMaterPic.txz01,scmBGysMaterPic.materId)
+            this.$refs.upfc.setFormValue(scmBGysMaterPic.materId + '_' + scmBGysMaterPic.txz01, scmBGysMaterPic.materId)
             let data = r.data
             this.fileList.push({
               uid: data.id,
               name: data.clientName,
               status: 'done',
-              url: this.$baseUrl +'comFile/checkFile/'+data.serverName
+              url: this.$baseUrl + 'comFile/checkFile/' + data.serverName
             })
           })
         }
       }
     },
-     handleRemove (file) {
+    handleRemove (file) {
       const index = this.fileList.indexOf(file)
       const newFileList = this.fileList.slice()
       newFileList.splice(index, 1)
@@ -173,8 +171,18 @@ export default {
       console.log(date, dateString);
     },
     beforeUpload (file) {
-      this.fileList = [...this.fileList, file]
-      return false
+      const isJPG = file.type === 'pdf'
+      if (!isJPG) {
+        this.$message.error('请只上传pdf文件!')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isLt2M) {
+        this.$message.error('附件必须小于 2MB!')
+      }
+      if (isJPG && isLt2M) {
+        this.fileList = [...this.fileList, file]
+      }
+      return isJPG && isLt2M
     },
     handleUpload () {
       const { fileList } = this
@@ -195,13 +203,11 @@ export default {
       })
     },
     handleSubmit () {
-      if(this.scmBGysMaterPic.materId=='')
-      {
+      if (this.scmBGysMaterPic.materId == '') {
         this.$message.warning('请在下拉列表里选择药品.')
         return false
       }
-       if(this.scmBGysMaterPic.fileId=='')
-      {
+      if (this.scmBGysMaterPic.fileId == '') {
         this.$message.warning('请上传资质附件.')
         return false
       }
@@ -209,8 +215,8 @@ export default {
         if (!err) {
           let scmBGysMaterPic = this.form.getFieldsValue()
           scmBGysMaterPic.id = this.scmBGysMaterPic.id
-          scmBGysMaterPic.materId=this.$refs.upfc.matnr
-          scmBGysMaterPic.fileId=this.scmBGysMaterPic.fileId
+          scmBGysMaterPic.materId = this.$refs.upfc.matnr
+          scmBGysMaterPic.fileId = this.scmBGysMaterPic.fileId
           this.$put('scmBGysMaterPic', {
             ...scmBGysMaterPic
           }).then(() => {

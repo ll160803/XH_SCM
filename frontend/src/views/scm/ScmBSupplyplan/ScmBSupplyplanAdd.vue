@@ -207,10 +207,22 @@
             v-bind="formItemLayout"
             label="缺货原因"
           >
-            <a-input
-              placeholder="请输入缺货原因"
-              v-decorator="['outCause', {}]"
-            />
+            <a-select
+              mode="single"
+              :allowClear="true"
+              style="width: 100%"
+              v-decorator="[
+          'outCause',
+          { rules: [{ message: '请输入缺货原因' },{
+            validator: this.handleValidator
+          }] }
+        ]"
+            >
+              <a-select-option value="库存不足">库存不足</a-select-option>
+              <a-select-option value="厂家停产">厂家停产</a-select-option>
+              <a-select-option value="补足上批交货">补足上批交货</a-select-option>
+              <a-select-option value="批次拆分">批次拆分</a-select-option>
+            </a-select>
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -218,7 +230,9 @@
             v-bind="formItemLayout"
             label="补货日期"
           >
-            <a-date-picker v-decorator="[ 'outDate', {}]" />
+            <a-date-picker v-decorator="[ 'outDate',  { rules: [{ required: false, message: '请输入补货日期' },{
+            validator: this.handleValidator2
+          }]}]" />
           </a-form-item>
         </a-col>
       </a-row>
@@ -336,6 +350,31 @@ export default {
           })
         }
       })
+    },
+    handleValidator (rule, val, callback) {
+      let validateResult = false;  // 自定义规则
+      let gMenge = this.form.getFieldValue('gMenge')
+      let menge = this.form.getFieldValue('menge')
+      let outCause =this.form.getFieldValue('outCause')
+      if (gMenge < menge && outCause==null) {
+        callback('请输入填写缺货原因！');
+      }
+      callback();
+    },
+    handleValidator2 (rule, val, callback) {
+      let validateResult = false;  // 自定义规则
+      let gMenge = this.form.getFieldValue('gMenge')
+      let menge = this.form.getFieldValue('menge')
+      let outDate =this.form.getFieldValue('outDate')
+      
+    if(!typeof(outDate)==='undefined'){
+        this.form.setFields({ outDate : { value: moment(outDate) } })
+      }
+      
+      if (gMenge < menge && typeof(outDate)==='undefined') {
+        callback('请输入补货日期！');
+      }
+      callback();
     },
     setFields () {
       let values = this.form.getFieldsValue(['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate'])

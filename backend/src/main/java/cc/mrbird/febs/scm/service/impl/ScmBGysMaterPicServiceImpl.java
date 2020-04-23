@@ -151,10 +151,14 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
 
     @Override
     @Transactional
-    public void deleteScmBGysMaterPics(String[] Ids,int state) {
+    public void deleteScmBGysMaterPics(String[] Ids,int state) throws FebsException  {
         List<String> list = Arrays.asList(Ids);
         for (String item :list
         ) {
+            if(this.baseMapper.getCount(item)>0)
+            {
+                throw new FebsException("此药品检验报告存在供应计划，不能删除！！！");
+            }
             ScmBGysMaterPic scmBGysMaterPic = new ScmBGysMaterPic();
             scmBGysMaterPic.setId(item);
             scmBGysMaterPic.setState(state);
@@ -169,6 +173,13 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
    public List<String> findChargeByBaseId(String base_Id,String account){
        return this.baseMapper.findChargeByBaseId(base_Id,account);
     }
-
+    @Override
+    @Transactional
+    public Boolean IsDelete(String id)
+    {
+        Integer count=  this.baseMapper.getCount(id);
+        if(count>0) return  true;
+        return  false;
+    }
 
 }
