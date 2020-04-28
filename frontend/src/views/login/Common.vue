@@ -8,7 +8,7 @@
         </div>
         <div class="desc"></div>
       </div>
-      <component :is="componentName" @regist="handleRegist" :class="mainContent"></component>
+      <component :is="componentName" @regist="handleRegist" :vendorId="vendorId" :class="mainContent"></component>
     </div>
     <global-footer :copyright="copyright" />
   </div>
@@ -18,14 +18,16 @@
 import GlobalFooter from '../common/GlobalFooter'
 import Login from './Login'
 import Regist from './Regist'
+import Modify from './UpdateVendorInfo'
 
 export default {
   name: 'Common',
-  components: {GlobalFooter, Login, Regist},
+  components: {GlobalFooter, Login, Regist, Modify},
   data () {
     return {
       componentName: 'Login',
-      mainContent:'main-content'
+      mainContent:'main-content',
+      vendorId: ''
     }
   },
   computed: {
@@ -37,7 +39,8 @@ export default {
     }
   },
   methods: {
-    handleRegist (val) {
+    handleRegist (val,val2) {
+      console.log("val2:"+val2)
       if(val=="Login"){
         this.mainContent="main-content"
       }
@@ -45,6 +48,10 @@ export default {
         this.mainContent="main-content2"
       }
       this.componentName = val
+      if(val2!=null){
+       this.vendorId = val2
+       console.log(val2)
+      }
     }
   }
 }

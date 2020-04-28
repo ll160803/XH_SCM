@@ -451,6 +451,7 @@ export default {
     },
     handleAddClose () {
       this.addVisiable = false
+      this.selectedRowKeys= [] //增加后清空选择项
     },
     add () {
       if (!this.selectedRowKeys.length) {
@@ -637,7 +638,7 @@ export default {
         params.sortField = "ebeln desc,ebelp"
         params.sortOrder = "ascend"
       }
-
+      params.status = 1 //只显示有效的
       params.bsart = 0//药品
       params.lifnr = this.user.username//供应商账号
       this.$get('scmBPurcharseorder', {

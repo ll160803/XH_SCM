@@ -98,6 +98,7 @@
       立即注册
     </a-button>
      <a class="login" @click="returnLogin">使用已有账户登录</a>
+     <div ref="divID"></div>
   </div>
 </template>
 
@@ -133,7 +134,7 @@ export default {
         { title: "税务登记证", isRequire: true, index: 3 },
         { title: "中华人民共和国药品经营许可证", isRequire: true, index: 4 },
         { title: "中华人民共和国药品经营质量管理规范认证证书(GSP)", isRequire: true, index: 6 },
-        { title: "中华人民共和国药品经营许可证副本及变更记录", isRequire: false, index: 5 },
+       
          { title: "开发票资料及银行账户信息", isRequire: true, index: 10 },
         { title: "企业税票模板", isRequire: true, index: 11 },
         { title: "企业出库单模板", isRequire: true, index: 12 },
@@ -142,6 +143,7 @@ export default {
         { title: "下游客户法人授权委托书模板", isRequire: true, index: 16 },
         { title: "药品供需双方质量保证协议(正本)", isRequire: true, index: 17 },
         { title: "药品供需双方质量保证协议(副本)", isRequire: true, index: 18 },
+         { title: "中华人民共和国药品经营许可证副本及变更记录", isRequire: false, index: 5 },
         { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 7 },
         { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 8 },
         { title: "食品流通许可证", isRequire: false, index: 9 },
@@ -196,11 +198,13 @@ export default {
       this.$post('scmDVendor/regist', {
         ...this.scmDVendor,
         scmDVendorD: JSON.stringify(this.scmDVendorD)
-      }).then(() => {
+      }).then((data) => {
         this.saveF = true
         this.loading = false
         this.$message.success('注册成功')
-        this.returnLogin()
+        console.log(data)
+        this.$refs.divID.innerHTML="请记住此注册码:"+data.data.message+" ,以便查询审核进度。"
+        //this.returnLogin()
       }).catch(() => {
         this.saveF = false
         this.loading = false

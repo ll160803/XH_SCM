@@ -1,5 +1,6 @@
 <template>
   <div style="width:80%">
+    <p style="font-size:26px;color:red;text-align:center;">{{scmDVendor.state=="2"?"您已经审核成功,您的登录账号为"+scmDVendor.code:(scmDVendor.state=="0"?"尚未审核，请等待":"你提交的信息审核未通过")}}</p>
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
@@ -7,7 +8,6 @@
       >
         <a-input
           placeholder="请输入名字"
-          :disabled="true"
           v-decorator="['name', {}]"
         />
       </a-form-item>
@@ -65,14 +65,16 @@
       type="primary"
       @click.stop.prevent="handleSubmit"
       :disabled="saveF"
+      v-show="scmDVendor.state==2?false:true"
     >
       保存
     </a-button>
+     <a class="login" @click="returnLogin">使用已有账户登录</a>
   </div>
 </template>
 <script>
 import moment from 'moment'
-import AttachFile from './AttachFile'
+import AttachFile from '../scm/ScmDVendor/AttachFile'
 
 const formItemLayout = {
   labelCol: { span: 3 },
@@ -81,6 +83,9 @@ const formItemLayout = {
 export default {
   components: { AttachFile },
   name: 'ScmDVendorUpdate',
+  props: {
+    vendorId: ''
+  },
   data () {
     return {
       saveF: false,
@@ -107,11 +112,7 @@ export default {
         { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 7, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 8, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "食品流通许可证", isRequire: false, index: 9, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-        
-       
-      
-        
-          { title: "药品销售单位首次开户应收集资料", isRequire: false, index: 14, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "药品销售单位首次开户应收集资料", isRequire: false, index: 14, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
       ]
     }
   },
@@ -142,12 +143,16 @@ export default {
       })
       this.scmDVendor.id = scmDVendor.id
       this.scmDVendor.code = scmDVendor.code
+      this.scmDVendor.state = scmDVendor.state
     },
     setscmDVendorFields () {
       let values = this.form.getFieldsValue(['name', 'linkPerson', 'phone', 'email', 'address'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmDVendor[_key] = values[_key] })
       }
+    },
+    returnLogin () {
+      this.$emit('regist',"Login")
     },
     handleSubmit () {
       this.scmDVendorD = []
@@ -196,7 +201,7 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
-      this.$get('scmDVendor/GetByVendorCode').then((r) => {
+      this.$get('scmDVendor/GetByVendorId/'+this.vendorId).then((r) => {
         this.loading = false
         let data2 = r.data.data
         let scmDVendor2 = data2.scmDVendor
@@ -245,3 +250,4 @@ export default {
   }
 }
 </script>
+

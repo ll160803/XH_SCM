@@ -85,7 +85,7 @@ management:
 febs:
   # 上传文件所在的路径
   uploadPath: D:/Scm/UploadFile/
-  baseUrl: http://127.0.0.1:1077
+  baseUrl: http://127.0.0.1:1044
   # 是否异步记录用户操作日志
   openAopLog: true
   # 单次最大批量入库数量
@@ -95,7 +95,7 @@ febs:
         num: 1000
   shiro:
     # 后端免认证接口 url
-    anonUrl: /webservice/*,/comFile/checkFile/*,/uploadFile/**,/login,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
+    anonUrl: /webservice/*,/comFile/checkFile/*,/uploadFile/**,/login,/scmDVendor/Edit,/scmDVendor/GetByVendorId/*,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
     # token有效期，单位秒
     jwtTimeOut: 10800
   # Swagger相关配置

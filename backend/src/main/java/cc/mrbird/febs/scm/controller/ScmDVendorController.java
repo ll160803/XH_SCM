@@ -159,18 +159,23 @@ public class ScmDVendorController extends BaseController {
     }
 
     @PostMapping("regist")
-    public void regist(ScmDVendor scmDVendor, String scmDVendorD) throws FebsException {
+    public FebsResponse regist(ScmDVendor scmDVendor, String scmDVendorD)  {
+        FebsResponse response=new FebsResponse();
+        String F_id = UUID.randomUUID().toString();
         try {
 
+            scmDVendor.setId(F_id);
             List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {
             });
 
             this.iScmDVendorService.createScmVendor(scmDVendor, list);
+            response.message(F_id);
         } catch (Exception e) {
             message = "注册失败";
             log.error(message, e);
-            throw new FebsException(message);
+            response.message(message);
         }
+        return response;
     }
 
     @PostMapping("Edit")
@@ -265,7 +270,22 @@ public class ScmDVendorController extends BaseController {
         }
         return new FebsResponse().data(cv);
     }
+    /*
+       获取当前供应商的信息
+        */
+    @GetMapping("/GetByVendorId/{id}")
+    public FebsResponse GetByVendorId(@PathVariable String id) {
+        ScmDVendor scmDVendor = this.iScmDVendorService.getById(id);
+        CustomerVendor cv = new CustomerVendor();
+        if (scmDVendor != null) {
+            List<ScmDVendorD> scmDVendorDs = this.iScmDVendorDService.findScmDVendorDByBaseId(scmDVendor.getId());
+            Collections.sort(scmDVendorDs, Comparator.comparing(ScmDVendorD::getFileIndex));
 
+            cv.scmDVendor = scmDVendor;
+            cv.scmDVendorDS = scmDVendorDs;
+        }
+        return new FebsResponse().data(cv);
+    }
     public class CustomerVendor {
         public ScmDVendor scmDVendor;
         public List<ScmDVendorD> scmDVendorDS;

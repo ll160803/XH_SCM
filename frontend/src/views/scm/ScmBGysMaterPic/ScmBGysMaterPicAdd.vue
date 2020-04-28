@@ -163,7 +163,7 @@ export default {
       console.log(date, dateString);
     },
     beforeUpload (file) {
-      const isJPG = file.type === 'pdf'
+      const isJPG = file.type === 'application/pdf'
       if (!isJPG) {
        this.$message.error('请只上传pdf文件!')
       }

@@ -143,8 +143,10 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
     @Override
     @Transactional
     public void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS) {
-        String F_id = UUID.randomUUID().toString();
-        scmDVendor.setId(F_id);
+        if(!StringUtils.isNotBlank(scmDVendor.getId()))
+        {
+            scmDVendor.setId(UUID.randomUUID().toString());
+        }
         scmDVendor.setCreateTime(new Date());
         scmDVendor.setState(0);//不可用
         scmDVendor.setIsDeletemark(1);
@@ -154,7 +156,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
         for (ScmDVendorD scmDVendorD :
                 scmDVendorDS) {
             scmDVendorD.setId(UUID.randomUUID().toString());
-            scmDVendorD.setBaseId(F_id);
+            scmDVendorD.setBaseId(scmDVendor.getId());
             scmDVendorDMapper.insert(scmDVendorD);
         }
     }

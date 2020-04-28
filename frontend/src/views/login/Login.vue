@@ -62,27 +62,42 @@
       </a-form-item>
       <div>
         <a
-          style="float: right"
+          style="float: right;margin-left:10px;"
           @click="regist"
         >注册账户</a>
       </div>
+      <div>
+        <a
+          style="float: right;"
+          @click="open"
+        >账户查询</a>
+      </div>
+      <selecte-type
+        @close="close"
+        @confirm="observe"
+        :visible="selectVisiable"
+      >
+      </selecte-type>
     </a-form>
   </div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
+import SelecteType from './SelectType'
 
 export default {
   beforeCreate () {
     this.form = this.$form.createForm(this)
   },
+  components: { SelecteType },
   name: 'Login',
   data () {
     return {
       loading: false,
       error: '',
-      activeKey: '1'
+      activeKey: '1',
+      selectVisiable: false
     }
   },
   computed: {
@@ -130,6 +145,17 @@ export default {
         // 手机验证码登录
         this.$message.warning('暂未开发')
       }
+    },
+    open () {
+      this.selectVisiable = true
+    },
+    close () {
+      this.selectVisiable = false
+    },
+    observe (type,vendorId) {
+      this.selectVisiable = false
+      console.info("type:"+this.type+" vendorId:"+vendorId)
+      this.$emit('regist', 'Modify',vendorId)
     },
     regist () {
       this.$emit('regist', 'Regist')

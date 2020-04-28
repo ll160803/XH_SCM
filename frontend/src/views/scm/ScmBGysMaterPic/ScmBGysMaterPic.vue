@@ -389,6 +389,10 @@ export default {
           params.sortOrder = this.sortedInfo.order
         }
       }
+       if (params.sortField == null) {
+        params.sortField = "Create_TIME"
+        params.sortOrder = "descend"
+      }
       this.$get('scmBGysMaterPic', {
         ...params
       }).then((r) => {
