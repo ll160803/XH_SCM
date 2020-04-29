@@ -171,9 +171,8 @@ public class ScmBGysMaterPicController extends BaseController {
             String[] arr_ids = ids.split(StringPool.COMMA);
             this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids, 0);
         } catch (Exception e) {
-            message = "删除成功";
             log.error(message, e);
-            throw new FebsException(message);
+            throw new FebsException(e.getMessage());
         }
     }
 

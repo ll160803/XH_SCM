@@ -305,8 +305,8 @@ export default {
           }
           if (IsValid == 0) {
             let scmBGysMaterPicIds = that.selectedRowKeys.join(',')
-            that.$delete('scmBGysMaterPic/' + scmBGysMaterPicIds).then(() => {
-              that.$message.success('删除成功')
+            that.$delete('scmBGysMaterPic/' + scmBGysMaterPicIds).then((data) => {
+              that.$message.success(data)
               that.selectedRowKeys = []
               that.search()
             })

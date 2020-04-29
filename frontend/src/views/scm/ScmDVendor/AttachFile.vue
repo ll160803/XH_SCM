@@ -1,67 +1,78 @@
 <template>
-  <a-card :title="title" :headStyle="tstyle">
+  <a-card
+    :title="title"
+    :headStyle="tstyle"
+  >
     <a-form :form="form">
-      <a-form-item
-        v-bind="formItemLayout"
-        label="名称"
-      >
-        <a-input
-          v-decorator="[
-          'fileName',
-          { rules: [{ required: this.isRequire, message: '请输入'+this.title }] },
-        ]"
-          placeholder="请输入文件名称"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="有效期起始"
-      >
-        <a-date-picker
-          v-decorator="[
+      <a-row>
+        <a-col
+          :md="8"
+          :sm="24"
+        >
+          <a-form-item
+            v-bind="formItemLayout"
+            label="有效期起始"
+          >
+            <a-date-picker
+              v-decorator="[
           'validdatestart',
           { rules: [{ required:false , message: '请输入有效期截至时间'}] },
         ]"
-          placeholder="请输入有效期起始"
-          @change="onChange"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="有效期"
-      >
-        <a-date-picker
-          v-decorator="[
+              placeholder="请输入有效期起始"
+              @change="onChange"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col
+          :md="8"
+          :sm="24"
+        >
+          <a-form-item
+            v-bind="formItemLayout"
+            label="有效期"
+          >
+            <a-date-picker
+              v-decorator="[
           'validdate',
           { rules: [{ required:this.isRequire , message: '请输入有效期截至时间' }] },
         ]"
-          placeholder="请输入有效期截止时间"
-          @change="onChange"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="文件上传"
-      >
-        <a-upload
-          accept=".png,.jpg,.pdf,.bmp,.gif,.jpeg"
-          :fileList="fileList"
-          :remove="handleRemove"
-          :beforeUpload="beforeUpload"
+              placeholder="请输入有效期截止时间"
+              @change="onChange"
+            />
+          </a-form-item>
+        </a-col>
+        <a-col
+          :md="8"
+          :sm="24"
         >
-          <a-button>
-            <a-icon type="upload" /> 选择文件 </a-button>
-        </a-upload>
-        <a-button
-          type="primary"
-          @click="handleUpload"
-          :disabled="fileList.length === 0 ||isShow===0"
-          :loading="uploading"
-          style="margin-top: 16px"
-        >
-          {{uploading ? '上传中' : '开始上传' }}
-        </a-button>
-      </a-form-item>
+          <a-form-item
+            v-bind="formItemLayout"
+            label="文件上传"
+          >
+            <a-upload
+              accept=".png,.jpg,.pdf,.bmp,.gif,.jpeg"
+              :fileList="fileList"
+              :remove="handleRemove"
+              :beforeUpload="beforeUpload"
+              @change="handleUpload"
+              :disabled="!(fileList.length === 0)"
+            >
+              <a-button>
+                <a-icon type="upload" /> 选择文件 </a-button>
+            </a-upload>
+            <!-- <a-button
+              type="primary"
+              @click="handleUpload"
+              :disabled="fileList.length === 0 ||isShow===0"
+              :loading="uploading"
+              style="margin-top: 16px"
+            >
+              {{uploading ? '上传中' : '开始上传' }}
+            </a-button> -->
+          </a-form-item>
+        </a-col>
+      </a-row>
+
     </a-form>
   </a-card>
 </template>
@@ -70,13 +81,13 @@ import moment from 'moment'
 
 const formItemLayout = {
   labelCol: { span: 6 },
-  wrapperCol: { span: 15 },
+  wrapperCol: { span: 17 },
 };
 export default {
   name: "file",
   data () {
     return {
-      tstyle:{"color": "#0785fd","font-weight": "bold","background-color": "#ececec"},
+      tstyle: { "color": "#0785fd", "font-weight": "bold", "background-color": "#ececec" },
       isShow: 1,
       fileList: [],
       uploading: false,
@@ -116,6 +127,11 @@ export default {
     beforeUpload (file) {
       this.fileList = [...this.fileList, file]
       return false
+    },
+    handleChange(info) {
+      if (info.file.status === 'done') {
+        this.handleUpload()
+      } 
     },
     handleUpload () {
       const { fileList } = this
