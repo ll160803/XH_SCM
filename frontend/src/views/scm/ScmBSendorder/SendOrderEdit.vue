@@ -12,7 +12,7 @@
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="10">
+        <a-col :span="8">
           <a-form-item
             v-bind="formItemLayout"
             label="送货时间"
@@ -20,8 +20,16 @@
             <a-date-picker v-decorator="[ 'sendDate', { rules: [{ required: true, message: '送货时间不能为空' }] }]" />
           </a-form-item>
         </a-col>
+        <a-col :span="8">
+          <werks-lgort
+            ref="werklgort"
+            @werks="setWerks"
+            @lgort="setLgort"
+          >
+          </werks-lgort>
+        </a-col>
         <a-col
-          :span="13"
+          :span="7"
           :offset="1"
         >
           <a-input-search
@@ -66,6 +74,7 @@
 </template>
 <script>
 import moment from 'moment'
+import WerksLgort from '../../common/WerksLgort'
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 18 }
@@ -78,6 +87,7 @@ export default {
     },
     orderId: ''
   },
+  components: { WerksLgort },
   watch: {
     editVisiable () {
       if (this.editVisiable) {
@@ -255,6 +265,12 @@ export default {
         //this.selectedRowKeys = data;
       })
     },
+    setWerks (werks) {
+      this.queryParams.werks = werks
+    },
+    setLgort (lgort) {
+      this.queryParams.lgort = lgort
+    },
     fetch (params = {}) {
       this.loading = true
       if (this.paginationInfo) {
@@ -269,6 +285,10 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       params.bsartD = "0"
+      if (params.sortField == null) {
+        params.sortField = "id"
+        params.sortOrder = "descend"
+      }
       params.sendOrderCode = this.orderId
       this.$get('scmBSupplyplan/sendOrder', {
         ...params

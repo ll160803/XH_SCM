@@ -3,7 +3,7 @@
     :bordered="false"
     class="card-area"
   >
-     <div ref="lodopDiv"></div>
+    <div ref="lodopDiv"></div>
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
@@ -32,39 +32,17 @@
                 <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
-             <a-col
-                :md="6"
-                :sm="24"
+            <a-col
+              :md="12"
+              :sm="24"
+            >
+              <werks-lgort
+                ref="werklgort"
+                @werks="setWerks"
+                @lgort="setLgort"
               >
-                <a-form-item
-                  label="院区"
-                  :labelCol="{span: 8}"
-                  :wrapperCol="{span: 15, offset: 1}"
-                >
-                  <a-select
-                    defaultValue="全部"
-                    v-model="queryParams.werks"
-                    style="width: 100%"
-                  >
-                    <a-select-option value="0">全部</a-select-option>
-                    <a-select-option value="2000">武汉协和医院-本部</a-select-option>
-                    <a-select-option value="2200">武汉协和医院-西院</a-select-option>
-                    <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col
-                :md="6"
-                :sm="24"
-              >
-                <a-form-item
-                  label="库房"
-                  :labelCol="{span: 8}"
-                  :wrapperCol="{span: 15, offset: 1}"
-                >
-                  <a-input v-model="queryParams.logrtName" />
-                </a-form-item>
-              </a-col>
+              </werks-lgort>
+            </a-col>
           </a-row>
 
         </div>
@@ -138,11 +116,12 @@
 import SupplyplanPrint from './SupplyplanPrint'
 import moment from 'moment'
 import { mapState } from 'vuex'
-import { getLodop ,getLodopDiv } from '../../../tools/lodop'
+import { getLodop, getLodopDiv } from '../../../tools/lodop'
+import WerksLgort from '../../common/WerksLgort'
 
 export default {
   name: 'ScmBSupplyplan',
-  components: { SupplyplanPrint },
+  components: { SupplyplanPrint, WerksLgort },
   data () {
     return {
       scroll: {
@@ -278,10 +257,10 @@ export default {
         dataIndex: 'outDate',
         width: 120,
         customRender: (text, row, index) => {
-          if(text){
-          return moment(text).format('YYYY-MM-DD')
+          if (text) {
+            return moment(text).format('YYYY-MM-DD')
           }
-          else{
+          else {
             return ''
           }
         }
@@ -301,6 +280,12 @@ export default {
         this.queryParams.comments = ''
       }
     },
+    setWerks (werks) {
+      this.queryParams.werks = werks
+    },
+    setLgort (lgort) {
+      this.queryParams.lgort = lgort
+    },
     print () {
       if (!this.selectedRowKeys.length) {
         this.$message.warning('请选择需要打印的记录')
@@ -308,16 +293,16 @@ export default {
       }
       this.printIds = this.selectedRowKeys.join(',')
       getLodopDiv(this.$refs.lodopDiv)
-      if(getLodop() == undefined || getLodop() == null){
+      if (getLodop() == undefined || getLodop() == null) {
 
       }
       else {
-        this.lodop= getLodop();
+        this.lodop = getLodop();
         this.printVisiable = true
       }
     },
     handlePrintClose () {
-      this.lodop =null
+      this.lodop = null
       this.printVisiable = false
     },
     exportExcel () {

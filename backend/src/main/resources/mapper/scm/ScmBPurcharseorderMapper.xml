@@ -143,8 +143,8 @@
         <if test="order.werks != null and order.werks != '' and order.werks != '0'.toString() ">
             AND werks = #{order.werks}
         </if>
-        <if test="order.lgortName != null and order.lgortName != ''">
-            AND lgortName like concat('%',#{order.lgortName},'%')
+        <if test="order.lgort != null and order.lgort != ''">
+            AND lgort = #{order.lgort}
         </if>
         <if test="order.txz01 != null and order.txz01 != ''">
             AND txz01 like concat('%',#{order.txz01},'%')

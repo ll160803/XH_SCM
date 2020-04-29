@@ -136,4 +136,10 @@ public class ScmDAreaController extends BaseController {
         }
         return febs;
     }
+    @GetMapping("getAreas")
+    public FebsResponse getAreas() {
+        FebsResponse febs = new FebsResponse();
+        febs.data(this.iScmDAreaService.getAreasAll());
+        return febs;
+    }
 }

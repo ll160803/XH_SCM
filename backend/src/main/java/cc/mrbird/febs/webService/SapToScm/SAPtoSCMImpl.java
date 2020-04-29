@@ -45,6 +45,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
     @Autowired
     private ScmDVendorMapper scmDVendorMapper;
 
+    @Autowired
+    private ScmDAreaMapper scmDAreaMapper;
+
     public String HelloWorld() {
         return "haha";
     }
@@ -57,6 +60,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<ScmDSenddepart> listDepart = this.scmDSenddepartMapper.selectList(null);
         List<GysEntity> listVendors=this.scmDVendorMapper.getGysNameAndCode();
+       // List<ScmDArea> listArea=this.scmDAreaMapper.selectList(null);//在传递订单的时候，检测库房是否存在
         if (purcharseList.size() > 0) {
             log.info("从SAP更新订单开始");
 

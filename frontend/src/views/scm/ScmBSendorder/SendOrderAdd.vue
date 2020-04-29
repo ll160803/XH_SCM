@@ -11,7 +11,7 @@
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="10">
+        <a-col :span="8">
           <a-form-item
             v-bind="formItemLayout"
             label="送货时间"
@@ -19,8 +19,16 @@
             <a-date-picker v-decorator="[ 'sendDate', { rules: [{ required: true, message: '送货时间不能为空' }] }]" />
           </a-form-item>
         </a-col>
+        <a-col :span="8">
+          <werks-lgort
+            ref="werklgort"
+            @werks="setWerks"
+            @lgort="setLgort"
+          >
+          </werks-lgort>
+        </a-col>
         <a-col
-          :span="13"
+          :span="7"
           :offset="1"
         >
           <a-input-search
@@ -65,12 +73,15 @@
 </template>
 <script>
 import moment from 'moment'
+import WerksLgort from '../../common/WerksLgort'
+
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 15 }
 }
 export default {
   name: 'SendorderAdd',
+  components: {WerksLgort},
   props: {
     addVisiable: {
       default: false
@@ -212,6 +223,12 @@ export default {
         }
       }
     },
+    setWerks (werks) {
+      this.queryParams.werks = werks
+    },
+    setLgort (lgort) {
+      this.queryParams.lgort = lgort
+    },
     search () {
       let { sortedInfo } = this
       let sortField, sortOrder
@@ -266,6 +283,10 @@ export default {
         // 如果分页信息为空，则设置为默认值
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
+      }
+       if (params.sortField == null) {
+        params.sortField = "id"
+        params.sortOrder = "descend"
       }
       params.bsartD = "0"//物资单类型
       this.$get('viewSupplyplan/sendOrder', {

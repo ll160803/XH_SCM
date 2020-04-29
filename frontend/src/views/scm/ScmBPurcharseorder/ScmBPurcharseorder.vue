@@ -65,37 +65,15 @@
 
             <template v-if="advanced">
               <a-col
-                :md="6"
+                :md="12"
                 :sm="24"
               >
-                <a-form-item
-                  label="院区"
-                  :labelCol="{span: 8}"
-                  :wrapperCol="{span: 15, offset: 1}"
+                 <werks-lgort
+                ref="werklgort"
+                @werks="setWerks"
+                @lgort="setLgort"
                 >
-                  <a-select
-                    defaultValue="全部"
-                    v-model="queryParams.werks"
-                    style="width: 100%"
-                  >
-                    <a-select-option value="0">全部</a-select-option>
-                    <a-select-option value="2000">武汉协和医院-本部</a-select-option>
-                    <a-select-option value="2200">武汉协和医院-西院</a-select-option>
-                    <a-select-option value="2100">武汉协和医院-肿瘤中心</a-select-option>
-                  </a-select>
-                </a-form-item>
-              </a-col>
-              <a-col
-                :md="6"
-                :sm="24"
-              >
-                <a-form-item
-                  label="库房"
-                  :labelCol="{span: 8}"
-                  :wrapperCol="{span: 15, offset: 1}"
-                >
-                  <a-input v-model="queryParams.logrtName" />
-                </a-form-item>
+                </werks-lgort>
               </a-col>
             </template>
           </div>
@@ -220,12 +198,13 @@
 <script>
 import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
 import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
+import WerksLgort from '../../common/WerksLgort'
 import moment from 'moment'
 import { mapState } from 'vuex'
 
 export default {
   name: 'ScmBPurcharseorder',
-  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit },
+  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit, WerksLgort },
   data () {
     return {
       scroll: {
@@ -452,6 +431,12 @@ export default {
     handleAddClose () {
       this.addVisiable = false
       this.selectedRowKeys= [] //增加后清空选择项
+    },
+    setWerks (werks) {
+      this.queryParams.werks = werks
+    },
+    setLgort (lgort) {
+      this.queryParams.lgort = lgort
     },
     add () {
       if (!this.selectedRowKeys.length) {
