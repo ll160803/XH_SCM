@@ -95,7 +95,7 @@ public class WxMessage {
         if (!getAccessCode()){
             return false;
         }
-
+        System.out.println("11111111111111111111111111111");
         Map<String, Object> data = new HashMap<>();
         Map<String, String> thing1 = new HashMap<>();
         Map<String, String> date2 = new HashMap<>();
@@ -112,9 +112,10 @@ public class WxMessage {
         data.put("thing3", thing3);
 
         Map<String, Object> parms = new HashMap<>();
-        parms.put("touser", openid);
+        // String openidS=wm.gentWxId(openid);
+        parms.put("touser",openid);
         parms.put("template_id", "FhcLfNNK95dnXR_jqdNyR3MK2ctS_FYtxJGlxZQ8vWI");
-        parms.put("page", "pages/longin/login?" + querystr);
+        parms.put("page", "pages/login/login?" + querystr);
         parms.put("miniprogram_state", "trial");
         parms.put("lang", "zh_CN");
         parms.put("data", data);
@@ -129,11 +130,11 @@ public class WxMessage {
                 .url(SEND_MESSAGE_URL + "access_token=" + accessCode)
                 .post(body)
                 .build();
-
+        System.out.println("222222222222222222222222222222");
         try {
             Response result = client.newCall(request).execute();
             String responseContent = result.body().string();
-            System.out.println("responseContent");
+            System.out.println(responseContent);
         } catch (IOException e) {
             System.out.println("send message failed, error:" + e.getMessage());
             return false;

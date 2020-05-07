@@ -1,13 +1,8 @@
 package cc.mrbird.febs.job.task;
 
 import cc.mrbird.febs.common.utils.WxMessage;
-import cc.mrbird.febs.scm.entity.VMsgOrderinfo;
-import cc.mrbird.febs.scm.entity.VMsgFilevalidinfo;
-import cc.mrbird.febs.scm.entity.VMsgMaterinfovalid;
-import cc.mrbird.febs.scm.entity.VMsgOrderinfomodify;
-import cc.mrbird.febs.scm.entity.VMsgQuerypriceinfo;
-import cc.mrbird.febs.scm.entity.VMsgReportinfo;
-import cc.mrbird.febs.scm.service.*;
+import cc.mrbird.febs.webService.OwnToOwn.*;
+
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -19,20 +14,13 @@ import java.util.List;
 @Slf4j
 @Component
 public class MsgValidTask {
-    @Autowired
-    public IVMsgFilevalidinfoService iVMsgFilevalidinfoService;
-    @Autowired
-    public IVMsgMaterinfovalidService iVMsgMaterinfovalidService;
-    @Autowired
-    public IVMsgOrderinfoService iVMsgOrderinfoService;
-    @Autowired
-    public IVMsgOrderinfomodifyService iVMsgOrderinfomodifyService;
-    @Autowired
-    public IVMsgQuerypriceinfoService iVMsgQuerypriceinfoService;
-    @Autowired
-    public IVMsgReportinfoService iVMsgReportinfoService;
+    /**
+    cc.mrbird.febs.webService.OwnToOwn.IScmJobService iScmJobService;
+    ScmJobImplService  scmJobImplService=new ScmJobImplService();
+
     public void runFileValid(String openids){
-        List<VMsgFilevalidinfo> listMsg=this.iVMsgFilevalidinfoService.GetMsgFileValid();
+        iScmJobService=scmJobImplService.getSapPort();
+        List<VMsgFilevalidinfo> listMsg=iScmJobService.getFileValidMsg();
         WxMessage wm=new WxMessage();
         String[] open_ids = openids.split(StringPool.COMMA);
         for (VMsgFilevalidinfo msg:listMsg
@@ -49,31 +37,37 @@ public class MsgValidTask {
         }
     }
     public  void runOrderInfo(){
-        List<VMsgOrderinfo> listMsg=this.iVMsgOrderinfoService.GetMsgFileValid();
+        iScmJobService=scmJobImplService.getSapPort();
+        List<VMsgOrderinfo> listMsg=iScmJobService.getOrderMsg();
+       // List<VMsgOrderinfo> listMsg=this.iVMsgOrderinfoService.GetMsgFileValid();
         WxMessage wm=new WxMessage();
         for (VMsgOrderinfo msg:listMsg
         ) {
             if(StringUtils.isNotBlank(msg.getVxcode())) {
                 String mg = "您收到来自" + msg.getWerkst()+ "的" + msg.getNumCount() + "个药品采购项目，请及时查看！";
                 log.info("openid："+msg.getVxcode()+",订单信息");
-                wm.send(msg.getVxcode(), "订单信息", mg, "action=zzxq&id=" + msg.getCode());//供应商部分
+                wm.send(msg.getVxcode(), "订单信息", mg, "action=dingdan&id=" + msg.getCode());//供应商部分
             }
         }
     }
     public  void runOrderInfoModify(){
-        List<VMsgOrderinfomodify> listMsg=this.iVMsgOrderinfomodifyService.GetMsgFileValid();
+        iScmJobService=scmJobImplService.getSapPort();
+        List<VMsgOrderinfomodify> listMsg=iScmJobService.getOrderModifyMsg();
+      //  List<VMsgOrderinfomodify> listMsg=this.iVMsgOrderinfomodifyService.GetMsgFileValid();
         WxMessage wm=new WxMessage();
         for (VMsgOrderinfomodify msg:listMsg
         ) {
             if(StringUtils.isNotBlank(msg.getVxcode())) {
                 String mg = "您收到来自" + msg.getWerkst()+ "的" + msg.getNumCount() + "个采购订单变更信息，请知悉！";
                 log.info("openid："+msg.getVxcode()+",订单信息更改");
-                wm.send(msg.getVxcode(), "采购订单", mg, "action=订单&id=" + msg.getCode());//供应商部分
+                wm.send(msg.getVxcode(), "采购订单", mg, "action=dingdan&id=" + msg.getCode());//供应商部分
             }
         }
     }
     public  void runMaterInfoValid(String openids){
-        List<VMsgMaterinfovalid> listMsg=this.iVMsgMaterinfovalidService.GetMsgFileValid();
+        iScmJobService=scmJobImplService.getSapPort();
+        List<VMsgMaterinfovalid> listMsg=iScmJobService.getMaterValidMsg();
+      //  List<VMsgMaterinfovalid> listMsg=this.iVMsgMaterinfovalidService.GetMsgFileValid();
         WxMessage wm=new WxMessage();
         String[] open_ids = openids.split(StringPool.COMMA);
         for (VMsgMaterinfovalid msg:listMsg
@@ -88,7 +82,9 @@ public class MsgValidTask {
         }
     }
     public  void runQueryPriceInfo(){
-        List<VMsgQuerypriceinfo> listMsg=this.iVMsgQuerypriceinfoService.GetMsgFileValid();
+        iScmJobService=scmJobImplService.getSapPort();
+        List<VMsgQuerypriceinfo> listMsg=iScmJobService.getQueryPriceMsg();
+      //  List<VMsgQuerypriceinfo> listMsg= .GetMsgFileValid();
         WxMessage wm=new WxMessage();
         for (VMsgQuerypriceinfo msg:listMsg
         ) {
@@ -99,16 +95,34 @@ public class MsgValidTask {
             }
         }
     }
-    public  void runReportInfo(){
-        List<VMsgReportinfo> listMsg=this.iVMsgReportinfoService.GetMsgFileValid();
-        WxMessage wm=new WxMessage();
-        for (VMsgReportinfo msg:listMsg
+    public  void runReportInfo() {
+        iScmJobService = scmJobImplService.getSapPort();
+        List<VMsgReportinfo> listMsg = iScmJobService.getReportMsg();
+        //  List<VMsgReportinfo> listMsg=this.iVMsgReportinfoService.GetMsgFileValid();
+        WxMessage wm = new WxMessage();
+        for (VMsgReportinfo msg : listMsg
         ) {
-            if(StringUtils.isNotBlank(msg.getVxCode())) {
-                String mg = "您有一条来自于武汉协和医院通知信息，请知悉！";
-                log.info("openid："+msg.getVxCode()+",消息通知");
+            if (StringUtils.isNotBlank(msg.getVxCode())) {
+                String mg = "您有一条来自于武汉协和医院通知信息，请查收！";
+                log.info("openid：" + msg.getVxCode() + ",消息通知");
                 wm.send(msg.getVxCode(), "消息通知", mg, "action=zzxq&id=" + msg.getCode());//供应商部分
             }
+
         }
+        wm.send("opSQh5VNuPHqJ_vVmF_u52VYA0F8", "消息通知", "您有一条来自于武汉协和医院通知信息", "action=zzsh&id=供应商ID=10000466");
     }
+    public void runGetUsers(){
+        iScmJobService=scmJobImplService.getSapPort();
+        List<User> listMsg=iScmJobService.getUserWithoutOpenid();
+        WxMessage wm=new WxMessage();
+        for (User user:listMsg
+             ) {
+            log.error("微信前code"+user.getCode());
+           String openid= wm.gentWxId(user.getCode().replace("2020",""));
+            log.error("微信openid"+openid);
+          user.setCode(openid);
+        }
+        iScmJobService.setUserOpenid(listMsg);
+    }
+     */
 }

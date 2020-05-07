@@ -11,6 +11,7 @@
             v-model="firstProvince"
             style="width: 100%"
             @change="handleProvinceChange"
+            dropdownMenuStyle="width:200%"
           >
             <a-select-option
               v-for="province in provinceData"
@@ -31,6 +32,7 @@
             v-model="secondCity"
             style="width: 100%"
             @change="handleCityChange"
+            dropdownMenuStyle="width:200%"
           >
             <a-select-option
               v-for="city in cities"

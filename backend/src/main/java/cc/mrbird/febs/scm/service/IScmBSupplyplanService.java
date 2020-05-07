@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
 
         IPage<ScmBSupplyplan> findScmBSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan);
+
         IPage<ScmBSupplyplan> findSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan);
 
         void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException;
@@ -28,21 +29,22 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
 
         void updateSupplyplanOnly(ScmBSupplyplan scmBSupplyplan) throws FebsException;
 
-        void deleteScmBSupplyplans(String[]Ids);
+        void deleteScmBSupplyplans(String[] Ids);
 
 
-
-        Boolean IsExistFphm(String id, String fphm,String gysAccount);
+        Boolean IsExistFphm(String id, String fphm, String gysAccount);
 
         /**
          * 修改预收货数量
+         *
          * @param id
          * @param doneMenge
          */
-        void updateDoneMenge(String id,String doneMenge);
+        void updateDoneMenge(String id, String doneMenge);
 
         /**
          * 取消预收数量
+         *
          * @param id
          */
         void updateCancelDoneMenge(String id);
@@ -50,4 +52,6 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
         void doneSupplyPlan(List<Long> ids);
 
         void cancleSupplyPlan(List<Long> ids);
+
+        Boolean HasSendOrder(String ids);
 }

@@ -5,6 +5,8 @@ import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 
 public interface UserService extends IService<User> {
 
@@ -98,11 +100,18 @@ public interface UserService extends IService<User> {
     void resetPassword(String[] usernames) throws Exception;
 
     /**
-     * 设置微信账户ID
+     * 设置微信账户ID 不更改缓存
      * @param username
      * @param openid
      */
     void updateOpenid(String username, String openid) throws Exception ;
+
+    /**
+     * 再次设置微信账户ID 缓存更改
+     * @param username
+     * @param openid
+     */
+    void updateOpenid2(String username, String openid) throws Exception ;
 
     /**
      * 修改用户的真实姓名
@@ -119,4 +128,9 @@ public interface UserService extends IService<User> {
      * @throws Exception
      */
     void UpdateUserOnly(User user,String username) throws Exception;
+
+
+    List<User> findUserWithoutOpenid();
+
+
 }

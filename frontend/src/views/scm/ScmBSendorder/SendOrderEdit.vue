@@ -3,7 +3,7 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=650
+    width=900
     placement="right"
     :closable="false"
     @close="onClose"
@@ -12,7 +12,7 @@
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="8">
+        <a-col :span="7">
           <a-form-item
             v-bind="formItemLayout"
             label="送货时间"
@@ -20,7 +20,7 @@
             <a-date-picker v-decorator="[ 'sendDate', { rules: [{ required: true, message: '送货时间不能为空' }] }]" />
           </a-form-item>
         </a-col>
-        <a-col :span="8">
+        <a-col :span="10">
           <werks-lgort
             ref="werklgort"
             @werks="setWerks"
@@ -29,7 +29,7 @@
           </werks-lgort>
         </a-col>
         <a-col
-          :span="7"
+          :span="6"
           :offset="1"
         >
           <a-input-search

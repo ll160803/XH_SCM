@@ -248,4 +248,13 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     {
         this.baseMapper.cancelSupplyPlan(ids);
     }
+
+    @Override
+    @Transactional
+    public  Boolean HasSendOrder(String ids)
+    {
+        Long isHas=this.baseMapper.hasSendOrder(ids);
+        if(isHas>0) return  false;
+        return  true;
+    }
 }

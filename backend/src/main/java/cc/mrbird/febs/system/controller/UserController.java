@@ -209,10 +209,10 @@ public class UserController extends BaseController {
             @NotBlank(message = "{required}") String openid) throws FebsException {
         try {
             log.info("openid:"+openid);
-            WxMessage wm=new WxMessage();
-            String openidS=wm.gentWxId(openid);
-            log.info("openid:"+openidS);
-            userService.updateOpenid(username,openidS );
+           // WxMessage wm=new WxMessage();
+
+           // log.info("openid:"+openidS);
+            userService.updateOpenid(username,openid );
         } catch (Exception e) {
             message = "修改用户微信ID失败";
             log.error(message, e);

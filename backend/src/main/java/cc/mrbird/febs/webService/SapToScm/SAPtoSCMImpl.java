@@ -86,7 +86,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
                 if (Flag == "U") {
 
-                    if (StringUtils.equals(item.getKostl(), "L")) {
+                    if (StringUtils.equals(item.getLoekz(), "L")) {
                         if (order != null) {
                             list_Delete.add(order);
                         }

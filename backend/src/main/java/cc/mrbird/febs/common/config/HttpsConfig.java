@@ -5,6 +5,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 import org.apache.catalina.valves.RemoteIpValve;
+import org.apache.coyote.http11.Http11NioProtocol;
 import org.apache.juli.logging.Log;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
@@ -46,7 +47,7 @@ public class HttpsConfig {
 
     @Bean
     public Connector httpConnector() {
-        Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+        Connector connector = new Connector(Http11NioProtocol.class.getName());
         connector.setScheme("http");
         connector.setPort(httpPort);
         connector.setSecure(true);

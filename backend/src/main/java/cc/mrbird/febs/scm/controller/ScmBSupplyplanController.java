@@ -193,6 +193,9 @@ public class ScmBSupplyplanController extends BaseController {
             if (!flag) {
                 throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
             }
+            if(!StringUtils.isNotBlank(scmBSupplyplan.getSendOrderCode())){
+                throw new FebsException("此供应计划已经产生送货清单，不允许修改！");
+            }
             this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
             List<ViewSupplyplan> list = new ArrayList<>();
             list.add(this.iViewSupplyplanService.getById(scmBSupplyplan.getId()));
@@ -350,6 +353,11 @@ public class ScmBSupplyplanController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             String[] arr_ids = ids.split(StringPool.COMMA);
+            //if(this.iScmBSupplyplanService.)
+           if(!iScmBSupplyplanService.HasSendOrder(ids))
+           {
+               throw new FebsException("此供应计划已经产生送货清单，不允许删除！");
+           }
             for (String id :
                     arr_ids) {
                 ScmBSupplyplan scmBSupplyplan = new ScmBSupplyplan();

@@ -192,6 +192,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Transactional
     public void updateOpenid(String username, String openid) throws Exception {
         User user = new User();
+        user.setCode("2020"+openid);//为了找到第一次订阅时的openid
+
+        this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
+        // 重新缓存用户信息
+       // cacheService.saveUser(username);
+    }
+    @Override
+    @Transactional
+    public void updateOpenid2(String username, String openid) throws Exception {
+        User user = new User();
         user.setCode(openid);
 
         this.baseMapper.update(user, new LambdaQueryWrapper<User>().eq(User::getUsername, username));
@@ -262,4 +272,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 重新缓存用户信息
         cacheService.saveUser(username);
     }
+    public List<User> findUserWithoutOpenid(){
+       return this.baseMapper.findUserWithoutOpenid();
+    }
+
 }

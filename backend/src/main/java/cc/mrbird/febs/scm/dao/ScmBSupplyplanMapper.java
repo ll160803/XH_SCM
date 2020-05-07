@@ -36,4 +36,7 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
 
         List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);
+
+        @Select("select COUNT(1) from Scm_B_Supplyplan where id in (${ids}) and Is_Deletemark=1 and LENGTH(SEND_ORDER_CODE)>0")
+        Long hasSendOrder(@Param(value="ids") String ids);
         }

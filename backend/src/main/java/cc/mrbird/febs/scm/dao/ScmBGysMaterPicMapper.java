@@ -27,6 +27,6 @@ public interface ScmBGysMaterPicMapper extends BaseMapper<ScmBGysMaterPic> {
                 " and scm_b_gys_mater_pic.GYSACCOUNT=scm_b_purcharseorder.lifnr \n" +
                 " inner join scm_b_supplyplan on scm_b_purcharseorder.ID=scm_b_supplyplan.BASE_ID\n" +
                 " and scm_b_gys_mater_pic.CHARGE=scm_b_supplyplan.CHARGE\n" +
-                " WHERE scm_b_gys_mater_pic.ID=${id} ")
-        Integer getCount(@Param("value=id") String  id);
+                " WHERE scm_b_gys_mater_pic.ID=#{id} ")
+        Integer getCount(@Param("id") String  id);
 }

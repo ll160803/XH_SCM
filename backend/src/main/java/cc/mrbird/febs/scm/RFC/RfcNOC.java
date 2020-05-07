@@ -203,6 +203,14 @@ public class RfcNOC {
                 IrfTable_IT_SUPLAN.setValue("ZUPFG", ZUPFG);
                 IrfTable_IT_SUPLAN.setValue("ZBTXT", "");
 
+                //总务
+                IrfTable_IT_SUPLAN.setValue("ZLXR", entity.getLinkPerson());//联系人
+                IrfTable_IT_SUPLAN.setValue("KOSTL", entity.getSendDepart());//科室编码
+                IrfTable_IT_SUPLAN.setValue("ZSPTM", entity.getMatnr());
+                IrfTable_IT_SUPLAN.setValue("ZTEL", entity.getLinkTelephone());
+//送货清单
+                IrfTable_IT_SUPLAN.setValue("ZSHQD", entity.getSendOrderCode());
+
             }
 
             // myfun.SetValue("IT_SUPLAN", IrfTable_IT_SUPLAN);
