@@ -174,8 +174,8 @@ export default {
       dataSource: [],
       selectedRowKeys: [],
       sortedInfo: {
-        field: 'state',
-        order: 'asc'
+        field: 'Create_TIME',
+        order: 'descend'
       },
       paginationInfo: null,
       pagination: {
@@ -254,7 +254,7 @@ export default {
     },
     handleAddSuccess () {
       this.addVisiable = false
-      this.$message.success('新增资质文件成功')
+      this.$message.success('新增验收报告成功')
       this.search()
     },
     handleAddClose () {
@@ -265,7 +265,7 @@ export default {
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改资质文件成功')
+      this.$message.success('修改验收报告成功')
       this.search()
     },
     handleEditClose () {

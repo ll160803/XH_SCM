@@ -291,7 +291,7 @@ export default {
       this.$emit('close')
     },
     setFormValues ({ ...scmBSupplyplan }) {
-      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause']
+      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate']
       let fieldDates = ['vfdat', 'hsdat', 'fprq', 'outDate', 'createTime', 'modifyTime']
       Object.keys(scmBSupplyplan).forEach((key) => {
         if (fields.indexOf(key) !== -1) {

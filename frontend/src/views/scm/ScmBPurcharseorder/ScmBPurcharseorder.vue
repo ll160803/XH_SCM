@@ -427,6 +427,7 @@ export default {
       // const dataSource = [...this.dataSource]
       let row = this.dataSource.find(item => item.id === this.baseId);
       this.handleSubData(row)
+      this.selectedRowKeys= []
     },
     handleAddClose () {
       this.addVisiable = false
@@ -465,6 +466,7 @@ export default {
       //this.expandedRowKeys=[]
       //this.search()
       this.handleSubData(this.editRecord)
+      this.selectedRowKeys= []
     },
     handleEditClose () {
       this.editVisiable = false

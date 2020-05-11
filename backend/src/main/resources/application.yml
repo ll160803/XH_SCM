@@ -4,7 +4,7 @@ server:
   port: 1022
   ssl:
     # 证书名字
-    key-store: 2723918__whuh.com.pfx
+    key-store: classpath:2723918__whuh.com.pfx
     #key-store: classpath:keystore.keystore
     key-store-password: 8MaA4L57
     keyStoreType: PKCS12
@@ -31,7 +31,7 @@ spring:
         # 数据源-1，名称为 primary
         primary:
           username: root
-          password: 123456
+          password: Xhscm
           driver-class-name: com.mysql.cj.jdbc.Driver
           url: jdbc:mysql://127.0.0.1:3306/febs?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&allowMultiQueries=true
         # 数据源-2，名称为 test

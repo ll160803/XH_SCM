@@ -193,7 +193,8 @@ public class ScmBSupplyplanController extends BaseController {
             if (!flag) {
                 throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
             }
-            if(!StringUtils.isNotBlank(scmBSupplyplan.getSendOrderCode())){
+            if(!iScmBSupplyplanService.HasSendOrder(scmBSupplyplan.getId().toString()))
+            {
                 throw new FebsException("此供应计划已经产生送货清单，不允许修改！");
             }
             this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
@@ -379,7 +380,7 @@ public class ScmBSupplyplanController extends BaseController {
         } catch (Exception e) {
             message = "删除失败";
             log.error(message, e);
-            throw new FebsException(message);
+            throw new FebsException(e.getMessage());
         }
     }
 
@@ -427,11 +428,11 @@ public class ScmBSupplyplanController extends BaseController {
         StringBuilder sb = new StringBuilder();
         String mark= GenerateMark(orderCode);
         sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
-        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" rowspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\" width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单"+orderCode,mark));
+        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\" width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单",mark));
         sb.append("<tr><td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商编码：%1$s</td>");
         sb.append("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商名称：%2$s</td>");
-        sb.append("<td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：%3$s</td><tr>");
-
+        sb.append("<td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：%3$s</td>");
+        sb.append(String.format("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:center;font-size: 12px;\" >%1$s</td><tr>",orderCode));
         return sb.toString();
 
     }

@@ -1,5 +1,6 @@
 package cc.mrbird.febs.job.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
@@ -15,6 +16,7 @@ import java.util.Properties;
 public class ScheduleConfig {
 
 	@Bean
+	@Qualifier("scheduleFactory")
 	public SchedulerFactoryBean schedulerFactoryBean(DataSource dataSource) {
 		SchedulerFactoryBean factory = new SchedulerFactoryBean();
 		factory.setDataSource(dataSource);
