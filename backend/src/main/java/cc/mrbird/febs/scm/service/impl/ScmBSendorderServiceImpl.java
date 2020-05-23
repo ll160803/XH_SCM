@@ -99,6 +99,12 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
             }
         }
     }
+    @Override
+    @Transactional
+    public  void updateFpjr(String id)
+    {
+        this.baseMapper.UpdateSendOrderFpjr(id);
+    }
 
     @Override
     @Transactional

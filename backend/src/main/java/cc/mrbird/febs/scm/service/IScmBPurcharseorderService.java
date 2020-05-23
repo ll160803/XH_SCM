@@ -25,4 +25,7 @@ public interface IScmBPurcharseorderService extends IService<ScmBPurcharseorder>
         void updateScmBPurcharseorder(ScmBPurcharseorder scmBPurcharseorder);
 
         void deleteScmBPurcharseorders(String[]Ids);
+
+        ScmBPurcharseorder getOrderById(String id);
+
         }

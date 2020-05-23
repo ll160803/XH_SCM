@@ -95,7 +95,7 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setIsDeletemark(1);
             ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
             if (comFile != null) {
-                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMatnr(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
                 if (flag) {
                     this.iScmBGysMaterPicService.createScmBGysMaterPic(scmBGysMaterPic);
                 } else {
@@ -128,7 +128,7 @@ public class ScmBGysMaterPicController extends BaseController {
 
             ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
             if (comFile != null) {
-                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMaterId(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMatnr(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
                 if (flag) {
                     this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
                 } else {
@@ -176,15 +176,15 @@ public class ScmBGysMaterPicController extends BaseController {
         }
     }
 
-    @Log("删除")
+    @Log("审核数据")
     @DeleteMapping("/audit/{ids}")
-    @RequiresPermissions("scmBGysMaterPic:delete")
+    @RequiresPermissions("scmBGysMaterPic:audit")
     public void deleteAuditScmBGysMaterPics(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
             String[] arr_ids = ids.split(StringPool.COMMA);
             this.iScmBGysMaterPicService.deleteScmBGysMaterPics(arr_ids, 1);
         } catch (Exception e) {
-            message = "删除成功";
+            message = "审核成功";
             log.error(message, e);
             throw new FebsException(message);
         }

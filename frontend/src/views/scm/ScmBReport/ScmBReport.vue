@@ -125,7 +125,10 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
-      sortedInfo: null,
+      sortedInfo: {
+        field: 'Create_TIME',
+        order: 'descend'
+      },
       paginationInfo: null,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
@@ -297,6 +300,10 @@ export default {
         // 如果分页信息为空，则设置为默认值
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
+      }
+      if (params.sortField == null) {
+        params.sortField = "Create_TIME"
+        params.sortOrder = "descend"
       }
       this.$get('scmBReport', {
         ...params

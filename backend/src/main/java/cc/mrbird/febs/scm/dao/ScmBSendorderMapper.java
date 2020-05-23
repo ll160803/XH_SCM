@@ -41,4 +41,7 @@ public interface ScmBSendorderMapper extends BaseMapper<ScmBSendorder> {
 
         @Select("Select id from scm_b_supplyplan where SEND_ORDER_CODE=#{sendCode}")
         List<Long> findPlanIds(@Param("sendCode") String sendCode);
+
+        @Update("update scm_b_sendorder set fpjr=( SELECT SUM(FPJR) FROM scm_b_supplyplan WHERE SEND_ORDER_CODE = #{id}) where id= ${id}")
+         void UpdateSendOrderFpjr(@Param("id") String id );
         }

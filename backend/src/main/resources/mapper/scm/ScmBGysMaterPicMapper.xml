@@ -24,8 +24,8 @@
     <select id="findChargeByBaseId" resultType="String">
   select Charge from scm_b_gys_mater_pic
 inner JOIN scm_b_purcharseorder on
-scm_b_gys_mater_pic.MATER_ID=scm_b_purcharseorder.matnr
-where scm_b_purcharseorder.ID=#{base_Id} and scm_b_gys_mater_pic.GYSACCOUNT=#{account} and scm_b_purcharseorder.lifnr=#{account}
+scm_b_gys_mater_pic.matnr=scm_b_purcharseorder.matnr
+where scm_b_purcharseorder.ID=#{base_Id} and scm_b_gys_mater_pic.GYSACCOUNT=#{account} and scm_b_purcharseorder.lifnr=#{account} and scm_b_gys_mater_pic.IS_DELETEMARK=1
     </select>
 
         <!-- 通用查询结果列 -->
@@ -39,7 +39,12 @@ where scm_b_purcharseorder.ID=#{base_Id} and scm_b_gys_mater_pic.GYSACCOUNT=#{ac
 <if test="name != null">NAME=#{name},</if>
 <if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>
 <if test="materId != null">MATER_ID=#{materId},</if>
-<if test="charge != null">CHARGE=#{charge},</if>
+ <if test="matnr != null">matnr=#{matnr},</if>
+            <if test="txz01 != null">txz01=#{txz01},</if>
+            <if test="mseht != null">MSEHT=#{mseht},</if>
+            <if test="produceArea != null">PRODUCE_AREA=#{produceArea},</if>
+            <if test="spec != null">SPEC=#{spec},</if>
+            <if test="spellCode != null">SPELL_CODE=#{spellCode},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="auditCause != null">AUDITCAUSE=#{auditCause},</if>

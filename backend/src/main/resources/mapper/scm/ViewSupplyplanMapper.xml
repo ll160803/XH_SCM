@@ -104,4 +104,293 @@
         </trim>
         where id=#{id}
     </update>
+
+	<select id="findVPurcharseorder_noOrder" resultType="Long" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+		SELECT
+		COUNT(1)
+		FROM
+		`scm_b_supplyplan`
+		WHERE
+		`scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
+		<if test="order.id != null">
+			AND scm_b_supplyplan.id = #{order.id}
+		</if>
+		<if test="order.status != null">
+			AND scm_b_supplyplan.status = #{order.status}
+		</if>
+		<if test="order.doneMenge == 0">
+			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+		</if>
+		<if test="order.gysaccount != null and order.gysaccount != ''">
+			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
+		</if>
+		<if test="order.baseId != null">
+			AND scm_b_supplyplan.base_Id = #{order.baseId}
+		</if>
+		<if test="order.noOrder != null and order.noOrder != ''">
+			AND (length(scm_b_supplyplan.SEND_ORDER_CODE) = 0  or scm_b_supplyplan.SEND_ORDER_CODE is null)
+		</if>
+
+	</select>
+	<select id="findVPurcharseorder_COUNT" resultType="Long" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+	   SELECT
+	COUNT(1)
+FROM
+	(
+		(
+			SELECT
+				base_id
+			FROM
+				`scm_b_supplyplan`
+			WHERE
+		 `scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
+		<if test="order.id != null">
+			AND scm_b_supplyplan.id = #{order.id}
+		</if>
+		<if test="order.status != null">
+			AND scm_b_supplyplan.status = #{order.status}
+		</if>
+		<if test="order.doneMenge == 0">
+			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+		</if>
+		<if test="order.gysaccount != null and order.gysaccount != ''">
+			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
+		</if>
+		<if test="order.baseId != null">
+			AND scm_b_supplyplan.base_Id = #{order.baseId}
+		</if>
+		<if test="order.noOrder != null and order.noOrder != ''">
+			AND (length(scm_b_supplyplan.SEND_ORDER_CODE) = 0  or scm_b_supplyplan.SEND_ORDER_CODE is null)
+		</if>
+		) a
+		JOIN (
+			SELECT
+		scm_b_purcharseorder.id
+			FROM
+				`scm_b_purcharseorder`
+		<if test="order.doneMenge == 1">
+			inner join scm_d_area A1 on scm_b_purcharseorder.werks=A1.`CODE`
+			inner join scm_b_userandarea B1 on A1.ID=B1.AreaID
+			inner join scm_d_area A2 on scm_b_purcharseorder.lgort=A2.`CODE`
+			inner join scm_b_userandarea B2 on A2.ID=B1.AreaID
+		</if>
+		WHERE
+		1 = 1
+		<if test="order.doneMenge == 1">
+			AND B1.UserID=${order.ebelp} AND B2.UserID=${order.ebelp}
+		</if>
+		<if test="order.ebeln != null">
+			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
+		</if>
+		<if test="order.werks != null and order.werks !='0'">
+			AND scm_b_purcharseorder.werks = #{order.werks}
+		</if>
+		<if test="order.lgort != null and order.lgort !='0'">
+			AND scm_b_purcharseorder.lgort = #{order.lgort}
+		</if>
+		<if test="order.gysname != null and order.gysname != ''">
+			AND scm_b_purcharseorder.gysname like concat('%',#{order.gysname},'%')
+		</if>
+		<if test="order.txz01 != null and order.txz01 != ''">
+			AND scm_b_purcharseorder.txz01 like concat('%',#{order.txz01},'%')
+		</if>
+		<if test="order.matnr != null and order.matnr != ''">
+			AND scm_b_purcharseorder.matnr = #{order.matnr}
+		</if>
+		<if test="order.eindt != null">
+			AND scm_b_purcharseorder.bedat <![CDATA[ >= ]]>  #{order.eindt}
+		</if>
+		<if test="order.bedat != null">
+			AND scm_b_purcharseorder.bedat <![CDATA[ <= ]]> #{order.bedat}
+		</if>
+
+		) b
+	)
+WHERE
+	(a.`BASE_ID` = b.`ID`)
+	</select>
+    <select id="findVPurcharseorder" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+        SELECT
+	b.`ebeln` AS `ebeln`,
+	b.`ebelp` AS `ebelp`,
+	b.`matnr` AS `matnr`,
+	b.`txz01` AS `txz01`,
+	b.`werkst` AS `werkst`,
+	b.`werks` AS `werks`,
+	b.`lgort` AS `lgort`,
+	b.`lgortName` AS `lgortName`,
+	b.`menge` AS `menge`,
+	b.`meins` AS `meins`,
+	b.`mseht` AS `mseht`,
+	b.`netpr` AS `netpr`,
+	b.`eindt` AS `eindt`,
+	b.`bedat` AS `bedat`,
+	b.`bsart` AS `bsart`,
+	a.`CHARGE` AS `CHARGE`,
+	a.`VFDAT` AS `VFDAT`,
+	a.`HSDAT` AS `HSDAT`,
+	a.`FPHM` AS `FPHM`,
+	a.`FPJR` AS `FPJR`,
+	a.`FPRQ` AS `FPRQ`,
+	a.`BASE_ID` AS `BASE_ID`,
+	a.`ID` AS `ID`,
+	a.`STATUS` AS `STATUS`,
+	a.`DoneMenge` AS `DONEMENGE`,
+	a.`FPBM` AS `FPBM`,
+	a.`GYSACCOUNT` AS `GYSACCOUNT`,
+	a.`GYSNAME` AS `GYSNAME`,
+	a.`G_Menge` as `GMenge`,
+	a.`PKG_AMOUNT` AS `PKG_AMOUNT`,
+	a.`PKG_NUMBER` AS `PKG_NUMBER`,
+	a.`UNINFORMED_STATE` AS `UNINFORMED_STATE`,
+	a.`INFORMED_STATE` AS `INFORMED_STATE`,
+	a.`BSART_D` AS `BSART_D`,
+	a.`LINK_PERSON` AS `LINK_PERSON`,
+	a.`SEND_DEPART` AS `SEND_DEPART`,
+	a.`LINK_TELEPHONE` AS `LINK_TELEPHONE`,
+	a.`SEND_ORDER_CODE` AS `SEND_ORDER_CODE`,
+	a.`OUT_CAUSE` AS `OUT_CAUSE`,
+	a.`OUT_DATE` AS `OUT_DATE`,
+	a.`IS_DELETEMARK` AS `IS_DELETEMARK`,
+	a.`CREATE_TIME` AS `CREATE_TIME`,
+	a.`MODIFY_TIME` AS `MODIFY_TIME`,
+	a.`CREATE_USER_ID` AS `CREATE_USER_ID`,
+	a.`MODIFY_USER_ID` AS `MODIFY_USER_ID`,
+	b.`NAME` AS `NAME`
+		FROM
+		(
+		(
+		SELECT
+		*
+		FROM
+		`scm_b_supplyplan`
+		WHERE
+		`scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
+		<if test="order.id != null">
+			AND scm_b_supplyplan.id = #{order.id}
+		</if>
+		<if test="order.status != null">
+			AND scm_b_supplyplan.status = #{order.status}
+		</if>
+		<if test="order.doneMenge == 0">
+			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+		</if>
+		<if test="order.gysaccount != null and order.gysaccount != ''">
+			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
+		</if>
+		<if test="order.baseId != null">
+			AND scm_b_supplyplan.base_Id = #{order.baseId}
+		</if>
+		<if test="order.noOrder != null and order.noOrder != ''">
+			AND (length(scm_b_supplyplan.SEND_ORDER_CODE) = 0  or scm_b_supplyplan.SEND_ORDER_CODE is null)
+		</if>
+		<if test="order.sendOrderCode != null and order.sendOrderCode != ''">
+			AND scm_b_supplyplan.SEND_ORDER_CODE = #{order.sendOrderCode}
+		</if>
+		) a
+		JOIN (
+		SELECT
+		scm_b_purcharseorder.*
+		FROM
+		`scm_b_purcharseorder`
+		<if test="order.doneMenge == 1">
+			inner join scm_d_area A1 on scm_b_purcharseorder.werks=A1.`CODE`
+			inner join scm_b_userandarea B1 on A1.ID=B1.AreaID
+			inner join scm_d_area A2 on scm_b_purcharseorder.lgort=A2.`CODE`
+			inner join scm_b_userandarea B2 on A2.ID=B1.AreaID
+		</if>
+		WHERE
+		1 = 1
+		<if test="order.doneMenge == 1">
+			AND B1.UserID=${order.ebelp} AND B2.UserID=${order.ebelp}
+		</if>
+		<if test="order.ebeln != null">
+			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
+		</if>
+		<if test="order.werks != null and order.werks !='0'">
+			AND scm_b_purcharseorder.werks = #{order.werks}
+		</if>
+		<if test="order.lgort != null and order.lgort !='0'">
+			AND scm_b_purcharseorder.lgort = #{order.lgort}
+		</if>
+		<if test="order.gysname != null and order.gysname != ''">
+			AND scm_b_purcharseorder.gysname like concat('%',#{order.gysname},'%')
+		</if>
+		<if test="order.txz01 != null and order.txz01 != ''">
+			AND scm_b_purcharseorder.txz01 like concat('%',#{order.txz01},'%')
+		</if>
+		<if test="order.matnr != null and order.matnr != ''">
+			AND scm_b_purcharseorder.matnr = #{order.matnr}
+		</if>
+		<if test="order.eindt != null">
+			AND scm_b_purcharseorder.bedat <![CDATA[ >= ]]>  #{order.eindt}
+		</if>
+		<if test="order.bedat != null">
+			AND scm_b_purcharseorder.bedat <![CDATA[ <= ]]> #{order.bedat}
+		</if>
+
+		) b
+		)
+		WHERE
+		(a.`BASE_ID` = b.`ID`)
+    </select>
+
+    <select id="findVPlanByOrderCode" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" >
+      SELECT
+	`scm_b_purcharseorder`.`ebeln` AS `ebeln`,
+	`scm_b_purcharseorder`.`ebelp` AS `ebelp`,
+	`scm_b_purcharseorder`.`matnr` AS `matnr`,
+	`scm_b_purcharseorder`.`txz01` AS `txz01`,
+	`scm_b_purcharseorder`.`werkst` AS `werkst`,
+	`scm_b_purcharseorder`.`werks` AS `werks`,
+	`scm_b_purcharseorder`.`lgort` AS `lgort`,
+	`scm_b_purcharseorder`.`lgortName` AS `lgortName`,
+	`scm_b_purcharseorder`.`menge` AS `menge`,
+	`scm_b_purcharseorder`.`meins` AS `meins`,
+	`scm_b_purcharseorder`.`mseht` AS `mseht`,
+	`scm_b_purcharseorder`.`netpr` AS `netpr`,
+	`scm_b_purcharseorder`.`eindt` AS `eindt`,
+	`scm_b_purcharseorder`.`bedat` AS `bedat`,
+	`scm_b_purcharseorder`.`bsart` AS `bsart`,
+	`scm_b_supplyplan`.`G_MENGE` AS `G_MENGE`,
+	`scm_b_supplyplan`.`CHARGE` AS `CHARGE`,
+	`scm_b_supplyplan`.`VFDAT` AS `VFDAT`,
+	`scm_b_supplyplan`.`HSDAT` AS `HSDAT`,
+	`scm_b_supplyplan`.`FPHM` AS `FPHM`,
+	`scm_b_supplyplan`.`FPJR` AS `FPJR`,
+	`scm_b_supplyplan`.`FPRQ` AS `FPRQ`,
+	`scm_b_supplyplan`.`BASE_ID` AS `BASE_ID`,
+	`scm_b_supplyplan`.`ID` AS `ID`,
+	`scm_b_supplyplan`.`STATUS` AS `STATUS`,
+	`scm_b_supplyplan`.`DoneMenge` AS `DONEMENGE`,
+	`scm_b_supplyplan`.`FPBM` AS `FPBM`,
+	`scm_b_supplyplan`.`GYSACCOUNT` AS `GYSACCOUNT`,
+	`scm_b_supplyplan`.`GYSNAME` AS `GYSNAME`,
+	`scm_b_supplyplan`.`PKG_AMOUNT` AS `PKG_AMOUNT`,
+	`scm_b_supplyplan`.`PKG_NUMBER` AS `PKG_NUMBER`,
+	`scm_b_supplyplan`.`UNINFORMED_STATE` AS `UNINFORMED_STATE`,
+	`scm_b_supplyplan`.`INFORMED_STATE` AS `INFORMED_STATE`,
+	`scm_b_supplyplan`.`BSART_D` AS `BSART_D`,
+	`scm_b_supplyplan`.`LINK_PERSON` AS `LINK_PERSON`,
+	`scm_b_supplyplan`.`SEND_DEPART` AS `SEND_DEPART`,
+	`scm_b_supplyplan`.`LINK_TELEPHONE` AS `LINK_TELEPHONE`,
+	`scm_b_supplyplan`.`SEND_ORDER_CODE` AS `SEND_ORDER_CODE`,
+	`scm_b_supplyplan`.`OUT_CAUSE` AS `OUT_CAUSE`,
+	`scm_b_supplyplan`.`OUT_DATE` AS `OUT_DATE`,
+	`scm_b_supplyplan`.`IS_DELETEMARK` AS `IS_DELETEMARK`,
+	`scm_b_supplyplan`.`CREATE_TIME` AS `CREATE_TIME`,
+	`scm_b_supplyplan`.`MODIFY_TIME` AS `MODIFY_TIME`,
+	`scm_b_supplyplan`.`CREATE_USER_ID` AS `CREATE_USER_ID`,
+	`scm_b_supplyplan`.`MODIFY_USER_ID` AS `MODIFY_USER_ID`,
+	`scm_b_purcharseorder`.`NAME` AS `NAME`
+FROM
+	(
+		(select * from `scm_b_supplyplan` where SEND_ORDER_CODE=#{orderCode}) scm_b_supplyplan
+		JOIN `scm_b_purcharseorder`
+	)
+where
+	(
+		`scm_b_supplyplan`.`BASE_ID` = `scm_b_purcharseorder`.`ID`
+	)
+    </select>
 </mapper>

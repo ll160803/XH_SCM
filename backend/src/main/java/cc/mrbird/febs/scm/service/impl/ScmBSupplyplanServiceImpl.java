@@ -10,6 +10,7 @@ import cc.mrbird.febs.scm.entity.ScmBSendinfo;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.service.IScmBSupplyplanService;
+import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -24,10 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -104,6 +102,9 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             }
             if (StringUtils.isNotBlank(scmBSupplyplan.getBaseId())) {
                 queryWrapper.eq(ScmBSupplyplan::getBaseId, scmBSupplyplan.getBaseId());
+            }
+            if (scmBSupplyplan.getStatus()!=null) {
+                queryWrapper.eq(ScmBSupplyplan::getStatus, scmBSupplyplan.getStatus());
             }
             if (StringUtils.isNotBlank(scmBSupplyplan.getGysaccount())) {
                 queryWrapper.eq(ScmBSupplyplan::getGysaccount, scmBSupplyplan.getGysaccount());
@@ -255,6 +256,19 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     {
         Long isHas=this.baseMapper.hasSendOrder(ids);
         if(isHas>0) return  false;
+        return  true;
+    }
+    @Override
+    @Transactional
+    public  Boolean canUpdateSendOrder(String ids){
+        List<String> lids=new ArrayList<>();
+        String[] arr_ids = ids.split(StringPool.COMMA);
+        for (String id :
+                arr_ids) {
+           lids.add(id);
+        }
+        int count=this.baseMapper.flagRecordByIds(lids);
+        if(count>0) return  false;
         return  true;
     }
 }

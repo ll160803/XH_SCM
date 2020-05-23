@@ -54,6 +54,9 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
             if (StringUtils.isNotBlank(scmBGysMaterPic.getMaterId())) {
                 queryWrapper.eq(ScmBGysMaterPic::getMaterId, scmBGysMaterPic.getMaterId());
             }
+            if (StringUtils.isNotBlank(scmBGysMaterPic.getMatnr())) {
+                queryWrapper.eq(ScmBGysMaterPic::getMatnr, scmBGysMaterPic.getMatnr());
+            }
             if (scmBGysMaterPic.getState()!=null &&scmBGysMaterPic.getState()!=-1) {
                 queryWrapper.eq(ScmBGysMaterPic::getState, scmBGysMaterPic.getState());
             }
@@ -107,6 +110,7 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
 
         ScmDMater scmDMater = this.scmDMaterMapper.selectById(matnr.trim());
         scmBGysMaterPic.setState(0);
+        scmBGysMaterPic.setMatnr(scmDMater.getMatnr());
         scmBGysMaterPic.setMseht(scmDMater.getMseht());
         scmBGysMaterPic.setProduceArea(scmDMater.getProduceArea());
         scmBGysMaterPic.setSpellCode(scmDMater.getSpellCode());
@@ -130,6 +134,7 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
 
         LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ScmBGysMaterPic::getMaterId, matnr);
+
         queryWrapper.eq(ScmBGysMaterPic::getGysaccount, scmBGysMaterPic.getGysaccount());
         queryWrapper.eq(ScmBGysMaterPic::getCharge, scmBGysMaterPic.getCharge());
         queryWrapper.ne(ScmBGysMaterPic::getId, scmBGysMaterPic.getId());
@@ -141,6 +146,7 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
         }
         ScmDMater scmDMater = this.scmDMaterMapper.selectById(matnr);
         scmBGysMaterPic.setState(0);
+        scmBGysMaterPic.setMatnr(scmDMater.getMatnr());
         scmBGysMaterPic.setMseht(scmDMater.getMseht());
         scmBGysMaterPic.setProduceArea(scmDMater.getProduceArea());
         scmBGysMaterPic.setSpellCode(scmDMater.getSpellCode());
@@ -155,15 +161,16 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
         List<String> list = Arrays.asList(Ids);
         for (String item :list
         ) {
-            if(this.baseMapper.getCount(item)>0)
-            {
-                throw new FebsException("此药品检验报告存在供应计划，不能删除！！！");
-            }
+
             ScmBGysMaterPic scmBGysMaterPic = new ScmBGysMaterPic();
             scmBGysMaterPic.setId(item);
             scmBGysMaterPic.setState(state);
             if(state==0) {//0是删除 1是审核
                 scmBGysMaterPic.setIsDeletemark(0);
+                if(this.baseMapper.getCount(item)>0)
+                {
+                    throw new FebsException("此药品检验报告存在供应计划，不能删除！！！");
+                }
             }
             this.baseMapper.updateScmBGysMaterPic(scmBGysMaterPic);
         }

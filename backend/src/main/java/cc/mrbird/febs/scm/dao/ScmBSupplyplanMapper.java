@@ -1,6 +1,7 @@
 package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
+import cc.mrbird.febs.scm.entity.StatisticMenge;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -37,6 +38,11 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
         List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);
 
+        int flagRecordByIds(@Param(value = "ids") List<String> ids);
+
         @Select("select COUNT(1) from Scm_B_Supplyplan where id in (${ids}) and Is_Deletemark=1 and LENGTH(SEND_ORDER_CODE)>0")
         Long hasSendOrder(@Param(value="ids") String ids);
+
+        @Select("SELECT sum(G_MENGE) gMenge,sum(DoneMenge) doneMenge FROM scm_b_supplyplan WHERE scm_b_supplyplan.BASE_ID = #{baseId}  AND scm_b_supplyplan.IS_DELETEMARK = 1")
+        StatisticMenge getSupplanMengeByBaseID(@Param(value="baseId") String baseId);
         }

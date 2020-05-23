@@ -22,4 +22,6 @@ public interface ScmBPurcharseorderMapper extends BaseMapper<ScmBPurcharseorder>
         IPage<ScmBPurcharseorder> findPurcharseorder(Page page, @Param("order") ScmBPurcharseorder order);
 
        List<ScmBPurcharseorder> getAllByIds(@Param("ids") List<String> ids);
+
+       ScmBPurcharseorder findPurcharseorderById(@Param("id") String id);
         }

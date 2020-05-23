@@ -53,7 +53,7 @@ public IViewSupplyplanService iViewSupplyplanService;
 @GetMapping
 @RequiresPermissions("viewSupplyplan:view")
 public Map<String, Object> List(QueryRequest request, ViewSupplyplan viewSupplyplan){
-        return getDataTable(this.iViewSupplyplanService.findViewSupplyplans(request, viewSupplyplan));
+        return getDataTable(this.iViewSupplyplanService.findVPurcharseorder(request, viewSupplyplan));
         }
 
 

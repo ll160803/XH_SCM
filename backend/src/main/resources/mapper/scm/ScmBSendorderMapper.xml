@@ -58,7 +58,7 @@
         CODE,
         NAME,
         FPHM,
-        ( SELECT SUM( FPJR ) FROM scm_b_supplyplan WHERE SEND_ORDER_CODE = scm_b_sendorder.ID ) FPJR,
+        FPJR,
         GYSACCOUNT,
         GYSNAME,
         COMMENTS,

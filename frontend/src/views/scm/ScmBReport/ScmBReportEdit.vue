@@ -100,6 +100,7 @@ export default {
   methods: {
     reset () {
       this.loading = false
+      this.fileList=[]
       this.form.resetFields()
     },
     onClose () {
@@ -136,7 +137,7 @@ export default {
               uid: data.id,
               name: data.clientName,
               status: 'done',
-              url: data.serverName
+              url: this.$baseUrl + 'uploadFile/' + data.serverName
             })
           })
         }
@@ -179,6 +180,7 @@ export default {
         if (!err) {
           let scmBReport = this.form.getFieldsValue()
           scmBReport.id = this.scmBReport.id
+          scmBReport.fileId = this.scmBReport.fileId
           this.$put('scmBReport', {
             ...scmBReport
           }).then(() => {

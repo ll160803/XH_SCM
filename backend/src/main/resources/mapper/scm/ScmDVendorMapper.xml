@@ -49,62 +49,63 @@
     </update>
     <select id="getRank" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" resultType="cc.mrbird.febs.scm.entity.VendorRank">
         SELECT
-  gg.rank_NUM,
-	gg.CODE CODE,
-	gg.NAME NAME,
-	gg.pe pe
-FROM
-	(
-SELECT
-	@rownum:=@rownum+1 AS rank_NUM,
-	hh.CODE,
-	hh.NAME,
-	hh.pe
-FROM
-	(
-SELECT
-	m.CODE,
-	m.NAME,
-	pur.menge,
-	p.menge AS Done_Menge,
- to_percent ( IFNULL ( p.menge, 0 ), IFNULL ( pur.menge, 0 ) ) pe
-FROM
-	( SELECT sum( pu.menge ) menge, pu.lifnr FROM scm_b_purcharseorder pu
-	 WHERE
-	1 = 1
+        gg.rank_NUM,
+        gg.CODE CODE,
+        gg.NAME NAME,
+        gg.pe pe
+        FROM
+        (
+        SELECT
+        @rownum:=@rownum+1 AS rank_NUM,
+        hh.CODE,
+        hh.NAME,
+        hh.pe
+        FROM
+        (
+        SELECT
+        m.CODE,
+        m.NAME,
+        pur.menge,
+        p.menge AS Done_Menge,
+        to_percent ( IFNULL ( p.menge, 0 ), IFNULL ( pur.menge, 0 ) ) pe
+        FROM
+        ( SELECT sum( pu.menge ) menge, pu.lifnr FROM
+        (select menge,linfnr from scm_b_purcharseorder pu
+        WHERE
+        1 = 1
         <if test="order.eindt != null">
             AND pu.bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>
         <if test="order.bedat != null">
             AND pu.bedat <![CDATA[ <= ]]> #{order.bedat}
-        </if>
-	GROUP BY pu.lifnr ) pur
-	LEFT JOIN (
-SELECT
-	plan.gysaccount,
-	Sum( plan.G_MENGE ) menge
-FROM
-	scm_b_supplyplan plan
-	INNER JOIN scm_b_purcharseorder pu ON plan.BASE_ID = pu.ID AND pu.bsart=0
-WHERE
-	1 = 1
+        </if>) pu
+        GROUP BY pu.lifnr ) pur
+        LEFT JOIN (
+        SELECT
+        plan.gysaccount,
+        Sum( plan.G_MENGE ) menge
+        FROM
+        scm_b_supplyplan plan
+        INNER JOIN (select ID from scm_b_purcharseorder pu
+        WHERE
+        AND pu.bsart=0
         <if test="order.eindt != null">
             AND pu.bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>
         <if test="order.bedat != null">
             AND pu.bedat <![CDATA[ <= ]]> #{order.bedat}
-        </if>
+        </if> ) pu ON plan.BASE_ID = pu.ID
 
-GROUP BY
-	plan.gysaccount
-	) p ON pur.lifnr = p.gysaccount
-    RIGHT JOIN scm_d_vendor m ON pur.lifnr = m.CODE where m.STATE=1 AND m.LB=0
-	) hh, (SELECT @rownum:=0) r
-ORDER BY
-	hh.pe DESC
-	) gg
-WHERE
-	( 1 = 1 )
+        GROUP BY
+        plan.gysaccount
+        ) p ON pur.lifnr = p.gysaccount
+        RIGHT JOIN scm_d_vendor m ON pur.lifnr = m.CODE where m.STATE=1 AND m.LB=0
+        ) hh, (SELECT @rownum:=0) r
+        ORDER BY
+        hh.pe DESC
+        ) gg
+        WHERE
+        ( 1 = 1 )
         <if test="order.lifnr!= null and order.lifnr !=''">
             And (gg.code = #{order.lifnr} or gg.name like concat('%',#{order.gysname},'%'))
         </if>
@@ -116,7 +117,7 @@ WHERE
         m.NAME NAME,
         pur.menge MENGE,
         p.menge AS DONE_Menge,
-        to_percent ( IFNULL ( p.menge, 0 ), IFNULL ( pur.menge, 0 ) )  Percent,
+        to_percent ( IFNULL ( p.menge, 0 ), IFNULL ( pur.menge, 0 ) ) Percent,
         pur.matnr MATNR,
         CONCAT(mater.txz01, '/' , mater.spec , '/' , mater.produce_area) TXZ01,
         pur.WERKST
@@ -128,8 +129,9 @@ WHERE
         pur1.matnr,
         pur1.WERKST
         FROM
+        (select menge,lifnr,matnr,WERKST from
         scm_b_purcharseorder pur1
-        WHERE  pur1.bsart=0 AND pur1.`status`=1
+        WHERE pur1.bsart=0 AND pur1.`status`=1
         <if test="order.eindt != null">
             AND pur1.bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>
@@ -150,7 +152,7 @@ WHERE
         </if>
         <if test="order.lgortName!= null and order.lgortName !='' and order.lgortName !='0'">
             And pur1.lgortName like concat('%',#{order.lgortName},'%')
-        </if>
+        </if>) pur1
         GROUP BY
         pur1.lifnr,
         pur1.matnr,
@@ -160,12 +162,11 @@ WHERE
         SELECT
         plan.gysaccount,
         Sum( plan.G_MENGE ) menge,
-        pur1.matnr
+        pur2.matnr
         FROM
         scm_b_supplyplan plan
-        INNER JOIN scm_b_purcharseorder pur1 ON plan.BASE_ID=pur1.ID
-        WHERE
-        plan.IS_DELETEMARK=1 and pur1.bsart=0 AND pur1.`status`=1
+        INNER JOIN (select ID,matnr from scm_b_purcharseorde pur1
+        where pur1.bsart=0 AND pur1.`status`=1
         <if test="order.eindt != null">
             AND pur1.bedat <![CDATA[ >= ]]> #{order.eindt}
         </if>
@@ -187,6 +188,9 @@ WHERE
         <if test="order.lgortName!= null and order.lgortName !=''">
             And pur1.name like concat('%',#{order.lgortName},'%')
         </if>
+        ) pur2 ON plan.BASE_ID=pur2.ID
+        WHERE
+        plan.IS_DELETEMARK=1
         GROUP BY
         plan.gysaccount,
         pur1.matnr

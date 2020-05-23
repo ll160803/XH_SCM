@@ -161,7 +161,7 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id',
-        width: 100,
+        width: 120,
         fixed: 'left'
       }, {
         title: '订单号',

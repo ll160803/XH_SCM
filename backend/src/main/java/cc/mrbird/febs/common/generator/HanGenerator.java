@@ -66,7 +66,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"v_msg_materinfovalid","v_msg_orderinfo","v_msg_orderinfomodify","v_msg_queryPriceInfo","v_msg_reportInfo"}); // 需要生成的表
+        strategy.setInclude(new String[]{"v_msg_gysysaudit","v_msg_gysysauditnot","v_msg_vendoraudit","v_msg_vendorundo"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");

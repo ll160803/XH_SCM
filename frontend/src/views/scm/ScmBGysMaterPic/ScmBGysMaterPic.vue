@@ -28,7 +28,7 @@
                 :labelCol="{span: 8}"
                 :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.materId" />
+                <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
             <a-col
@@ -200,7 +200,7 @@ export default {
       sortedInfo = sortedInfo || {}
       return [{
         title: '药品编码',
-        dataIndex: 'materId',
+        dataIndex: 'matnr',
         width: 100
       }, {
         title: '药品名称',

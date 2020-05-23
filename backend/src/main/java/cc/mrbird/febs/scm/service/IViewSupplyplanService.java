@@ -37,4 +37,10 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
         void deleteViewSupplyplans(String[]Ids);
 
         List<ViewSupplyplan> getViewSupplyPlanByIds(String ids);
+
+        List<ViewSupplyplan> findVPlanByOrderCode(String orderCode);
+
+        IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan);
+
+        List<ViewSupplyplan> findPurcharseSendOrder(ViewSupplyplan viewSupplyplan);
         }

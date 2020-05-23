@@ -2,6 +2,8 @@ package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -20,5 +22,14 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
 
         @Select("select *  from view_supplyplan where id in (${ids})")
         List<ViewSupplyplan> GetViewSupplyPlanByIds(@Param(value = "ids") String ids);
+
+        IPage<ViewSupplyplan> findVPurcharseorder(Page page, @Param("order") ViewSupplyplan order);
+
+        Long findVPurcharseorder_COUNT(@Param("order") ViewSupplyplan order);
+
+        Long findVPurcharseorder_noOrder(@Param("order") ViewSupplyplan order);
+        List<ViewSupplyplan>  findVPlanByOrderCode(@Param(value = "orderCode") String orderCode);
+
+        List<ViewSupplyplan> findVPurcharseorder(@Param("order") ViewSupplyplan order);
 
         }

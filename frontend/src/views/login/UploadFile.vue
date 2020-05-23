@@ -16,7 +16,7 @@
             <a-date-picker
               v-decorator="[
           'validdatestart',
-          { rules: [{ required:false , message: '请输入有效期截至时间'}] },
+          { rules: [{ required:this.isRequire , message: '请输入有效期截至时间'}] },
         ]"
               placeholder="请输入有效期起始"
               @change="onChange"

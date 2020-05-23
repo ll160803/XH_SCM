@@ -44,7 +44,7 @@ public class ScmDMaterServiceImpl extends ServiceImpl<ScmDMaterMapper, ScmDMater
                 queryWrapper.eq(ScmDMater::getCode, scmDMater.getCode());
             }
             if (StringUtils.isNotBlank(scmDMater.keyword)) {
-                queryWrapper.and(wrapper -> wrapper.eq(ScmDMater::getId, scmDMater.keyword).or().like(ScmDMater::getSpellCode, scmDMater.keyword).or().like(ScmDMater::getTxz01, scmDMater.keyword));
+                queryWrapper.and(wrapper -> wrapper.eq(ScmDMater::getMatnr, scmDMater.keyword).or().like(ScmDMater::getSpellCode, scmDMater.keyword).or().like(ScmDMater::getTxz01, scmDMater.keyword));
             }
             if(StringUtils.isNotBlank(scmDMater.getGysaccount()))
             {

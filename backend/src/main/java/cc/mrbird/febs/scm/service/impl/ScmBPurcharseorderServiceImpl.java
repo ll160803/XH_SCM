@@ -2,10 +2,13 @@ package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
+import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.entity.ScmDVendor;
+import cc.mrbird.febs.scm.entity.StatisticMenge;
 import cc.mrbird.febs.scm.service.IScmBPurcharseorderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -41,6 +44,8 @@ public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorde
 
     @Autowired
     ScmDVendorMapper scmDVendorMapper;
+    @Autowired
+    ScmBSupplyplanMapper scmBSupplyplanMapper;
 
     @Override
     public IPage<ScmBPurcharseorder> findScmBPurcharseorders(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder) {
@@ -52,7 +57,16 @@ public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorde
             Page<ScmBPurcharseorder> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);
            // return this.page(page, queryWrapper);
-            return  this.baseMapper.findPurcharseorder(page,scmBPurcharseorder);
+            IPage<ScmBPurcharseorder> listPur=  this.baseMapper.findPurcharseorder(page,scmBPurcharseorder);
+            for (ScmBPurcharseorder order: listPur.getRecords()
+                 ) {
+                StatisticMenge stMen=this.scmBSupplyplanMapper.getSupplanMengeByBaseID(order.getId());
+                if(stMen!=null) {
+                    order.setAllmenge(stMen.gMenge);
+                    order.setSuremenge(stMen.doneMenge);
+                }
+            }
+            return  listPur;
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return null;
@@ -81,6 +95,9 @@ public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorde
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
-
-
+    @Override
+    @Transactional
+    public  ScmBPurcharseorder getOrderById(String id){
+        return  this.baseMapper.findPurcharseorderById(id);
+    }
 }

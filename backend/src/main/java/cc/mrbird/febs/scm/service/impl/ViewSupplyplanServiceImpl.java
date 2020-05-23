@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.dao.ViewSupplyplanMapper;
 import cc.mrbird.febs.scm.service.IViewSupplyplanService;
@@ -13,10 +14,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +39,8 @@ import java.time.LocalDate;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper, ViewSupplyplan> implements IViewSupplyplanService {
 
-
+    @Autowired
+    ScmBSupplyplanMapper scmBSupplyplanMapper;
     @Override
     public IPage<ViewSupplyplan> findViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan) {
         try {
@@ -46,7 +50,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (viewSupplyplan.getId() != null) {
                 queryWrapper.eq(ViewSupplyplan::getId, viewSupplyplan.getId());
             }
-            if (viewSupplyplan.getStatus()!=null) {
+            if (viewSupplyplan.getStatus() != null) {
                 queryWrapper.eq(ViewSupplyplan::getStatus, viewSupplyplan.getStatus());
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
@@ -79,9 +83,8 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
                 queryWrapper.eq(ViewSupplyplan::getMatnr, viewSupplyplan.getMatnr());
             }
-            if(StringUtils.isNotBlank(viewSupplyplan.getNoOrder())&&viewSupplyplan.getNoOrder()=="1")
-            {
-               queryWrapper.and(p-> p.isNull(ViewSupplyplan::getSendOrderCode).or().eq(ViewSupplyplan::getSendOrderCode,""));
+            if (StringUtils.isNotBlank(viewSupplyplan.getNoOrder()) && viewSupplyplan.getNoOrder() == "1") {
+                queryWrapper.and(p -> p.isNull(ViewSupplyplan::getSendOrderCode).or().eq(ViewSupplyplan::getSendOrderCode, ""));
             }
             Page<ViewSupplyplan> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);
@@ -105,6 +108,9 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getGysaccount())) {
                 queryWrapper.eq(ViewSupplyplan::getGysaccount, viewSupplyplan.getGysaccount());
+            }
+            if (viewSupplyplan.getStatus() != null) {
+                queryWrapper.eq(ViewSupplyplan::getStatus, viewSupplyplan.getStatus());
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
                 queryWrapper.eq(ViewSupplyplan::getWerks, viewSupplyplan.getWerks());
@@ -139,6 +145,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             return null;
         }
     }
+
     @Override
     @Transactional
     public void createViewSupplyplan(ViewSupplyplan viewSupplyplan) {
@@ -161,16 +168,17 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
-     @Override
-     @Transactional
-    public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids)
-     {
-         return  this.baseMapper.GetViewSupplyPlanByIds(ids);
-     }
+
+    @Override
+    @Transactional
+    public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids) {
+        return this.baseMapper.GetViewSupplyPlanByIds(ids);
+    }
 
     @Override
     public IPage<ViewSupplyplan> findDoneViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan, String statusType) {
         try {
+            /**
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
 
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark, 1);//1是未删 0是已删
@@ -195,11 +203,17 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
                 queryWrapper.eq(ViewSupplyplan::getWerks, viewSupplyplan.getWerks());
             }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                queryWrapper.eq(ViewSupplyplan::getLgort, viewSupplyplan.getLgort());
+            }
             if (StringUtils.isNotBlank(viewSupplyplan.getWerkst())) {
                 queryWrapper.like(ViewSupplyplan::getWerkst, viewSupplyplan.getWerkst());
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getGysname())) {
                 queryWrapper.like(ViewSupplyplan::getGysname, viewSupplyplan.getGysname());
+            }
+            if (viewSupplyplan.getId()!=null) {
+                queryWrapper.eq(ViewSupplyplan::getId, viewSupplyplan.getId());
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getGysaccount())) {
                 queryWrapper.eq(ViewSupplyplan::getGysaccount, viewSupplyplan.getGysaccount());
@@ -215,9 +229,138 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             Page<ViewSupplyplan> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);
             return this.page(page, queryWrapper);
+             **/
+            if (StringUtils.equals(statusType, "0"))//预收
+            {
+                viewSupplyplan.setStatus(0);
+            }
+            if (StringUtils.equals(statusType, "1"))//已收
+            {
+                viewSupplyplan.setStatus(0);
+                viewSupplyplan.setDoneMenge(new BigDecimal(0));
+               // queryWrapper.eq(ViewSupplyplan::getStatus, 0);
+               // queryWrapper.gt(ViewSupplyplan::getDoneMenge, 0);
+            }
+            Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            // return this.page(page, queryWrapper);
+            IPage<ViewSupplyplan> listPage= this.baseMapper.findVPurcharseorder(page, viewSupplyplan);
+            Boolean flag=false;
+            Long totaNum=0L;
+            if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getNoOrder())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerkst())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
+                flag=true;
+            }
+            if (viewSupplyplan.getBedat()!=null) {
+                flag=true;
+            }
+            if (viewSupplyplan.getEindt()!=null) {
+                flag=true;
+            }
+            if(flag) {
+                totaNum = this.baseMapper.findVPurcharseorder_COUNT(viewSupplyplan);
+            }
+            else{//在不搜索订单表的情况下
+                totaNum = this.baseMapper.findVPurcharseorder_noOrder(viewSupplyplan);
+            }
+            listPage.setTotal(totaNum);
+            return  listPage;
         } catch (Exception e) {
             log.error("获取字典信息失败", e);
             return null;
         }
     }
-}
+
+        @Override
+        public IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan){
+            try {
+//            LambdaQueryWrapper<ScmBPurcharseorder> queryWrapper = new LambdaQueryWrapper<>();
+//            if (StringUtils.isNotBlank(scmBPurcharseorder.getCode())) {
+//                queryWrapper.eq(ScmBPurcharseorder::getCode, scmBPurcharseorder.getCode());
+//            }
+                Page<ViewSupplyplan> page = new Page<>();
+                SortUtil.handlePageSort(request, page, false);
+                page.setSearchCount(false);
+                // return this.page(page, queryWrapper);
+                IPage<ViewSupplyplan> listPage= this.baseMapper.findVPurcharseorder(page, viewSupplyplan);
+                Boolean flag=false;
+                Long totaNum=0L;
+                if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
+                     flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+                    flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getNoOrder())) {
+                    flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                    flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getWerkst())) {
+                    flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
+                    flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                    flag=true;
+                }
+                if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
+                    flag=true;
+                }
+                if (viewSupplyplan.getBedat()!=null) {
+                    flag=true;
+                }
+                if (viewSupplyplan.getEindt()!=null) {
+                    flag=true;
+                }
+                if(viewSupplyplan.getDoneMenge()!=null && viewSupplyplan.getDoneMenge().intValue()>0)
+                {
+                    flag=true;
+                }
+                if(flag) {
+                     totaNum = this.baseMapper.findVPurcharseorder_COUNT(viewSupplyplan);
+                }
+                else{//在不搜索订单表的情况下
+                     totaNum = this.baseMapper.findVPurcharseorder_noOrder(viewSupplyplan);
+                }
+                listPage.setTotal(totaNum);
+                return  listPage;
+
+            } catch (Exception e) {
+                log.error("findVPurcharseorder", e);
+                return null;
+            }
+        }
+
+        @Override
+        public  List<ViewSupplyplan> findPurcharseSendOrder(ViewSupplyplan viewSupplyplan) {
+           return  this.baseMapper.findVPurcharseorder(viewSupplyplan);
+        }
+    @Override
+    @Transactional
+   public List<ViewSupplyplan> findVPlanByOrderCode(String orderCode){
+        return  this.baseMapper.findVPlanByOrderCode(orderCode);
+   }
+    }

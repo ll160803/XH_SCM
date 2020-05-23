@@ -81,6 +81,7 @@ export default {
   },
   methods: {
     reset () {
+      this.fileList=[]
       this.loading = false
       this.form.resetFields()
     },
@@ -106,7 +107,7 @@ export default {
         }
       })
       this.scmBReport.id = scmBReport.id
-
+      this.fileList=[]
       if (scmBReport.fileId) {
         if (scmBReport.fileId != '') {
           this.scmBReport.fileId = scmBReport.fileId
@@ -114,11 +115,12 @@ export default {
           this.$get('comFile/' + scmBReport.fileId).then((r) => {
             let data = r.data
             console.info(data)
+            
             this.fileList.push({
               uid: data.id,
               name: data.clientName,
               status: 'done',
-              url: data.serverName
+              url: this.$baseUrl + 'uploadFile/' + data.serverName
             })
           })
         }

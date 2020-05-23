@@ -256,7 +256,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     entity.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
                     entity.setBklas(item.getBklas() == null ? "" : item.getBklas().trim());
                     entity.setTxz01(item.getTxz01());
-                    entity.setId(item.getMatnr().trim());
+                    entity.setId(UUID.randomUUID().toString());
 
                     list_purchase_C.add(entity);
                 }

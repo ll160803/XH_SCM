@@ -38,6 +38,15 @@ public class ScmJobImpl implements  IScmJobService{
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private IVMsgGysysauditnotService iVMsgGysysauditnotService;
+
+    @Autowired
+    private IVMsgGysysauditService iVMsgGysysauditService;
+
+    @Autowired
+    private IVMsgVendorauditService iVMsgVendorauditService;
+
     /*
     获取验收文件有效期的提醒
      */
@@ -111,4 +120,30 @@ public class ScmJobImpl implements  IScmJobService{
 
        }
    }
+    /*
+    验收文件库房审核 发消息给库房管理员
+     */
+    @Override
+   public List<VMsgGysysaudit> getGysysaudit(){
+        List<VMsgGysysaudit> listMsg=this.iVMsgGysysauditService.GetMsg();
+        return  listMsg;
+    }
+
+    /*
+   验收文件审核不通过 发消息给供应商
+    */
+    @Override
+    public List<VMsgGysysauditnot> getGysysauditNot(){
+        List<VMsgGysysauditnot> listMsg=this.iVMsgGysysauditnotService.GetMsg();
+        return  listMsg;
+    }
+
+    /*
+  审核未通过
+   */
+    @Override
+    public List<VMsgVendoraudit> getVendoraudit(){
+        List<VMsgVendoraudit> listMsg=this.iVMsgVendorauditService.GetMsg();
+        return  listMsg;
+    }
 }

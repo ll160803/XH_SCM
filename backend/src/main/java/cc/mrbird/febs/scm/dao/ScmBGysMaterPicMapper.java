@@ -23,7 +23,7 @@ public interface ScmBGysMaterPicMapper extends BaseMapper<ScmBGysMaterPic> {
         List<String> findChargeByBaseId(String base_Id,String account);
 
         @Select("select count(1) as coun  from scm_b_gys_mater_pic \n" +
-                "inner join scm_b_purcharseorder on scm_b_gys_mater_pic.MATER_ID=scm_b_purcharseorder.matnr\n" +
+                "inner join scm_b_purcharseorder on scm_b_gys_mater_pic.matnr=scm_b_purcharseorder.matnr\n" +
                 " and scm_b_gys_mater_pic.GYSACCOUNT=scm_b_purcharseorder.lifnr \n" +
                 " inner join scm_b_supplyplan on scm_b_purcharseorder.ID=scm_b_supplyplan.BASE_ID\n" +
                 " and scm_b_gys_mater_pic.CHARGE=scm_b_supplyplan.CHARGE\n" +

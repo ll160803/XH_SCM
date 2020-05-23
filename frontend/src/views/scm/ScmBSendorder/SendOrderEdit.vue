@@ -52,7 +52,7 @@
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
       :bordered="bordered"
-      :scroll="{ x: 1200 ,y:300 }"
+      :scroll="{ x: 1300 ,y:300 }"
     >
     </a-table>
     <div class="drawer-bootom-button">
@@ -121,6 +121,7 @@ export default {
         title: '生产日期',
         dataIndex: 'hsdat',
         customRender: (text, row, index) => {
+          if(text==null) return ''
           return moment(text).format('YYYY-MM-DD')
         },
         width: 100
@@ -152,10 +153,6 @@ export default {
               return text
           }
         },
-        width: 80
-      }, {
-        title: '发票编码',
-        dataIndex: 'fpbm',
         width: 80
       }, {
         title: '包装规格',
@@ -290,6 +287,7 @@ export default {
         params.sortOrder = "descend"
       }
       params.sendOrderCode = this.orderId
+      params.status = 0 //未收货的数据
       this.$get('scmBSupplyplan/sendOrder', {
         ...params
       }).then((r) => {

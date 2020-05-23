@@ -26,10 +26,16 @@ public class ObjectFactory {
 
     private final static QName _GetUserWithoutOpenid_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getUserWithoutOpenid");
     private final static QName _GetFileValidMsg_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getFileValidMsg");
+    private final static QName _GetGysysauditNot_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getGysysauditNot");
     private final static QName _GetOrderModifyMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderModifyMsgResponse");
     private final static QName _GetReportMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getReportMsgResponse");
     private final static QName _GetOrderModifyMsg_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderModifyMsg");
     private final static QName _GetOrderMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderMsgResponse");
+    private final static QName _GetVendorauditResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getVendorauditResponse");
+    private final static QName _GetGysysauditNotResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getGysysauditNotResponse");
+    private final static QName _GetGysysaudit_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getGysysaudit");
+    private final static QName _GetVendoraudit_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getVendoraudit");
+    private final static QName _GetGysysauditResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getGysysauditResponse");
     private final static QName _GetMaterValidMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getMaterValidMsgResponse");
     private final static QName _SetUserOpenidResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "setUserOpenidResponse");
     private final static QName _GetOrderMsg_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderMsg");
@@ -54,6 +60,14 @@ public class ObjectFactory {
      */
     public GetOrderMsg createGetOrderMsg() {
         return new GetOrderMsg();
+    }
+
+    /**
+     * Create an instance of {@link GetGysysauditResponse }
+     * 
+     */
+    public GetGysysauditResponse createGetGysysauditResponse() {
+        return new GetGysysauditResponse();
     }
 
     /**
@@ -153,6 +167,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetGysysauditNot }
+     * 
+     */
+    public GetGysysauditNot createGetGysysauditNot() {
+        return new GetGysysauditNot();
+    }
+
+    /**
      * Create an instance of {@link GetUserWithoutOpenid }
      * 
      */
@@ -174,6 +196,38 @@ public class ObjectFactory {
      */
     public GetOrderModifyMsg createGetOrderModifyMsg() {
         return new GetOrderModifyMsg();
+    }
+
+    /**
+     * Create an instance of {@link GetGysysauditNotResponse }
+     * 
+     */
+    public GetGysysauditNotResponse createGetGysysauditNotResponse() {
+        return new GetGysysauditNotResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetVendorauditResponse }
+     * 
+     */
+    public GetVendorauditResponse createGetVendorauditResponse() {
+        return new GetVendorauditResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetVendoraudit }
+     * 
+     */
+    public GetVendoraudit createGetVendoraudit() {
+        return new GetVendoraudit();
+    }
+
+    /**
+     * Create an instance of {@link GetGysysaudit }
+     * 
+     */
+    public GetGysysaudit createGetGysysaudit() {
+        return new GetGysysaudit();
     }
 
     /**
@@ -209,11 +263,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VMsgGysysaudit }
+     * 
+     */
+    public VMsgGysysaudit createVMsgGysysaudit() {
+        return new VMsgGysysaudit();
+    }
+
+    /**
      * Create an instance of {@link LocalDate }
      * 
      */
     public LocalDate createLocalDate() {
         return new LocalDate();
+    }
+
+    /**
+     * Create an instance of {@link VMsgVendoraudit }
+     * 
+     */
+    public VMsgVendoraudit createVMsgVendoraudit() {
+        return new VMsgVendoraudit();
+    }
+
+    /**
+     * Create an instance of {@link VMsgGysysauditnot }
+     * 
+     */
+    public VMsgGysysauditnot createVMsgGysysauditnot() {
+        return new VMsgGysysauditnot();
     }
 
     /**
@@ -259,6 +337,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetGysysauditNot }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getGysysauditNot")
+    public JAXBElement<GetGysysauditNot> createGetGysysauditNot(GetGysysauditNot value) {
+        return new JAXBElement<GetGysysauditNot>(_GetGysysauditNot_QNAME, GetGysysauditNot.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetOrderModifyMsgResponse }{@code >}}
      * 
      */
@@ -292,6 +379,51 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getOrderMsgResponse")
     public JAXBElement<GetOrderMsgResponse> createGetOrderMsgResponse(GetOrderMsgResponse value) {
         return new JAXBElement<GetOrderMsgResponse>(_GetOrderMsgResponse_QNAME, GetOrderMsgResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetVendorauditResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getVendorauditResponse")
+    public JAXBElement<GetVendorauditResponse> createGetVendorauditResponse(GetVendorauditResponse value) {
+        return new JAXBElement<GetVendorauditResponse>(_GetVendorauditResponse_QNAME, GetVendorauditResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetGysysauditNotResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getGysysauditNotResponse")
+    public JAXBElement<GetGysysauditNotResponse> createGetGysysauditNotResponse(GetGysysauditNotResponse value) {
+        return new JAXBElement<GetGysysauditNotResponse>(_GetGysysauditNotResponse_QNAME, GetGysysauditNotResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetGysysaudit }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getGysysaudit")
+    public JAXBElement<GetGysysaudit> createGetGysysaudit(GetGysysaudit value) {
+        return new JAXBElement<GetGysysaudit>(_GetGysysaudit_QNAME, GetGysysaudit.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetVendoraudit }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getVendoraudit")
+    public JAXBElement<GetVendoraudit> createGetVendoraudit(GetVendoraudit value) {
+        return new JAXBElement<GetVendoraudit>(_GetVendoraudit_QNAME, GetVendoraudit.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetGysysauditResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getGysysauditResponse")
+    public JAXBElement<GetGysysauditResponse> createGetGysysauditResponse(GetGysysauditResponse value) {
+        return new JAXBElement<GetGysysauditResponse>(_GetGysysauditResponse_QNAME, GetGysysauditResponse.class, null, value);
     }
 
     /**

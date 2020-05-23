@@ -347,8 +347,14 @@ export default {
         content: '当您点击确定按钮后，此记录将会被彻底删除',
         centered: true,
         onOk () {
-          that.$delete('scmBSupplyplan/deleteSendOrder2/' + record.id).then(() => {
-            that.$message.success('删除成功')
+          that.$delete('scmBSupplyplan/deleteSendOrder2/' + record.id).then((r) => {
+            console.log(r)
+            if(r.data==null){
+              that.$message.success('删除成功')
+            }
+            else{
+             that.$message.success(r.data.data)
+            }
             that.search()
             that.expandedRowKeys = []
           })

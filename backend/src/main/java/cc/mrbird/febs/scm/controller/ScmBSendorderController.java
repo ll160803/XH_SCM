@@ -10,6 +10,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.BarCodeUtil;
+import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
 import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
@@ -23,6 +24,7 @@ import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -52,6 +54,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author viki
@@ -155,6 +158,9 @@ public class ScmBSendorderController extends BaseController {
                     log.error("修改送货订单,SAP端接收失败");
                     throw new FebsException("修改送货订单,SAP端接收失败");
                 }
+                else {
+                    this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+                }
             }
 
         } catch (Exception e) {
@@ -191,6 +197,9 @@ public class ScmBSendorderController extends BaseController {
                     log.error("修改送货订单,SAP端接收失败");
                     throw new FebsException("修改送货订单,SAP端接收失败");
                 }
+                else {
+                    this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+                }
             }
         } catch (Exception e) {
             message = "修改失败";
@@ -219,6 +228,10 @@ public class ScmBSendorderController extends BaseController {
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("修改送货订单,SAP端接收失败");
                     throw new FebsException("修改送货订单,SAP端接收失败");
+                }
+                else
+                {
+                    this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
             }
         } catch (Exception e) {
@@ -545,6 +558,9 @@ public class ScmBSendorderController extends BaseController {
         //此代码 可以优化
         for (ScmBSendorder order:records
              ) {
+            viewSupplyplan.setSendOrderCode(order.getId().toString());
+            viewSupplyplan.setIsDeletemark(1);
+            /**
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
@@ -566,7 +582,10 @@ public class ScmBSendorderController extends BaseController {
             if(StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
                 queryWrapper.like(ViewSupplyplan::getLgortName,viewSupplyplan.getLgortName());
             }
-           List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
+     **/
+
+          // List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
+            List<ViewSupplyplan> data= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
            order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
         }
         return getDataTable(list);
@@ -578,9 +597,22 @@ public class ScmBSendorderController extends BaseController {
         scmBSendorder.setBsart("0");
         IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder);
         List<ScmBSendorder> records=list.getRecords();
+        List<String> listCodes=records.stream().map(t->t.getId().toString()).collect(Collectors.toList());
+        User currentUser = FebsUtil.getCurrentUser();
         //此代码 可以优化
         for (ScmBSendorder order:records
         ) {
+            viewSupplyplan.setSendOrderCode(order.getId().toString());
+            viewSupplyplan.setIsDeletemark(1);
+            if(viewSupplyplan.getStatus().equals(0)) {
+                viewSupplyplan.setDoneMenge(new BigDecimal(0));//当设置为0 时，就是取带入库的数据
+            }
+            if(viewSupplyplan.getStatus().equals(1))
+            {
+                viewSupplyplan.setDoneMenge(new BigDecimal(1));//当设置为1 时，就是取已入库的数据
+                viewSupplyplan.setEbelp(currentUser.getUserId().toString());
+            }
+            /**
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
@@ -602,9 +634,26 @@ public class ScmBSendorderController extends BaseController {
             if(StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
                 queryWrapper.eq(ViewSupplyplan::getMatnr,viewSupplyplan.getMatnr());
             }
-            List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
+
+            List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);  **/
+            List<ViewSupplyplan> data= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
             order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
         }
         return getDataTable(list);
+    }
+
+    @GetMapping("phoneSendOrder3")//待入库的送货清单
+    @RequiresPermissions("phoneSendOrder:view")
+    public Map<String, Object> phoneSendOrderList4(QueryRequest request, ViewSupplyplan viewSupplyplan){
+        User currentUser = FebsUtil.getCurrentUser();
+        if(viewSupplyplan.getStatus().equals(0)) {
+            viewSupplyplan.setDoneMenge(new BigDecimal(0));//当设置为0 时，就是取带入库的数据
+        }
+        if(viewSupplyplan.getStatus().equals(1))
+        {
+            viewSupplyplan.setDoneMenge(new BigDecimal(1));//当设置为1 时，就是取已入库的数据
+            viewSupplyplan.setEbelp(currentUser.getUserId().toString());
+        }
+        return getDataTable(this.iViewSupplyplanService.findVPurcharseorder(request, viewSupplyplan));
     }
 }

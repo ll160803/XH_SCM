@@ -29,5 +29,7 @@ public interface IScmBSendorderService extends IService<ScmBSendorder> {
 
         List<Long> findPlanIds(String sendCode);
 
+        void updateFpjr(String id);
+
         IPage<ViewSupplyplan>  findPhoneSendorders(QueryRequest request, ViewSupplyplan viewSupplyplan);
         }

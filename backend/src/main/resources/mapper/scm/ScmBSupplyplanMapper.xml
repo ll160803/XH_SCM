@@ -137,4 +137,12 @@
         </foreach>
         AND  STATUS=0
     </select>
+    <select id="flagRecordByIds"  resultType="Int">
+        SELECT  count(1)  from scm_b_supplyplan where
+        ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND  STATUS=1
+    </select>
 </mapper>

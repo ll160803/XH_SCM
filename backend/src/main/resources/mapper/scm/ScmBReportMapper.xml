@@ -25,6 +25,7 @@
         <trim prefix="set" suffixOverrides=",">
 <if test="code != null">CODE=#{code},</if>
 <if test="name != null">NAME=#{name},</if>
+<if test="fileId != null">file_Id=#{fileId},</if>
 <if test="comments != null">COMMENTS=#{comments},</if>
 <if test="state != null">STATE=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>

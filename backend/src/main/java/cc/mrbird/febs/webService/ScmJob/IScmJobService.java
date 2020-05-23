@@ -54,4 +54,22 @@ public interface IScmJobService {
 
     @WebMethod
     void setUserOpenid(List<User> users);
+
+    /*
+    验收文件库房审核 发消息给库房管理员
+     */
+    @WebMethod
+    List<VMsgGysysaudit> getGysysaudit();
+
+    /*
+   验收文件审核不通过 发消息给供应商
+    */
+    @WebMethod
+    List<VMsgGysysauditnot> getGysysauditNot();
+
+    /*
+  审核未通过
+   */
+    @WebMethod
+    List<VMsgVendoraudit> getVendoraudit();
 }

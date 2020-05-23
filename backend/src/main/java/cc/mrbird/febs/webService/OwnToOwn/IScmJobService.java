@@ -27,17 +27,6 @@ public interface IScmJobService {
     /**
      * 
      * @return
-     *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.User>
-     */
-    @WebMethod
-    @WebResult(targetNamespace = "")
-    @RequestWrapper(localName = "getUserWithoutOpenid", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetUserWithoutOpenid")
-    @ResponseWrapper(localName = "getUserWithoutOpenidResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetUserWithoutOpenidResponse")
-    public List<User> getUserWithoutOpenid();
-
-    /**
-     * 
-     * @return
      *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.VMsgOrderinfo>
      */
     @WebMethod
@@ -49,6 +38,17 @@ public interface IScmJobService {
     /**
      * 
      * @return
+     *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.User>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getUserWithoutOpenid", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetUserWithoutOpenid")
+    @ResponseWrapper(localName = "getUserWithoutOpenidResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetUserWithoutOpenidResponse")
+    public List<User> getUserWithoutOpenid();
+
+    /**
+     * 
+     * @return
      *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.VMsgFilevalidinfo>
      */
     @WebMethod
@@ -56,6 +56,17 @@ public interface IScmJobService {
     @RequestWrapper(localName = "getFileValidMsg", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetFileValidMsg")
     @ResponseWrapper(localName = "getFileValidMsgResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetFileValidMsgResponse")
     public List<VMsgFilevalidinfo> getFileValidMsg();
+
+    /**
+     * 
+     * @return
+     *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.VMsgGysysauditnot>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getGysysauditNot", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetGysysauditNot")
+    @ResponseWrapper(localName = "getGysysauditNotResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetGysysauditNotResponse")
+    public List<VMsgGysysauditnot> getGysysauditNot();
 
     /**
      * 
@@ -104,6 +115,17 @@ public interface IScmJobService {
     /**
      * 
      * @return
+     *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.VMsgGysysaudit>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getGysysaudit", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetGysysaudit")
+    @ResponseWrapper(localName = "getGysysauditResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetGysysauditResponse")
+    public List<VMsgGysysaudit> getGysysaudit();
+
+    /**
+     * 
+     * @return
      *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.VMsgMaterinfovalid>
      */
     @WebMethod
@@ -111,5 +133,16 @@ public interface IScmJobService {
     @RequestWrapper(localName = "getMaterValidMsg", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetMaterValidMsg")
     @ResponseWrapper(localName = "getMaterValidMsgResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetMaterValidMsgResponse")
     public List<VMsgMaterinfovalid> getMaterValidMsg();
+
+    /**
+     * 
+     * @return
+     *     returns java.util.List<cc.mrbird.febs.webService.OwnToOwn.VMsgVendoraudit>
+     */
+    @WebMethod
+    @WebResult(targetNamespace = "")
+    @RequestWrapper(localName = "getVendoraudit", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetVendoraudit")
+    @ResponseWrapper(localName = "getVendorauditResponse", targetNamespace = "http://ScmJob.webService.febs.mrbird.cc/", className = "cc.mrbird.febs.webService.OwnToOwn.GetVendorauditResponse")
+    public List<VMsgVendoraudit> getVendoraudit();
 
 }

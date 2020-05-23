@@ -48,11 +48,18 @@ public class ScmBGysMaterPic implements Serializable {
     @ExcelField(value = "供应商账号")
     private String gysaccount;
     /**
-     * 药品编码
+     * 药品编码ID
      */
     @TableField("MATER_ID")
-    @ExcelField(value = "药品编码")
+    @ExcelField(value = "药品编码ID")
     private String materId;
+
+    /**
+     * 药品编码
+     */
+    @TableField("MATNR")
+    @ExcelField(value = "药品编码")
+    private String matnr;
     /**
      * 批次号
      */
@@ -188,6 +195,15 @@ public class ScmBGysMaterPic implements Serializable {
 
     public void setSpellCode(String spellCode) {
         this.spellCode = spellCode;
+    }
+
+
+    public String getMatnr() {
+        return matnr;
+    }
+
+    public void setMatnr(String matnr) {
+        this.matnr = matnr;
     }
 
     public String getMaterId() {

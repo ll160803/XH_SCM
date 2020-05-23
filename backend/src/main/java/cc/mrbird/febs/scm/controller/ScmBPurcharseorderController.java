@@ -128,7 +128,7 @@ public void export(QueryRequest request, ScmBPurcharseorder scmBPurcharseorder, 
 
 @GetMapping("/{id}")
 public ScmBPurcharseorder detail(@NotBlank(message = "{required}") @PathVariable String id) {
-    ScmBPurcharseorder scmBPurcharseorder=this.iScmBPurcharseorderService.getById(id);
+    ScmBPurcharseorder scmBPurcharseorder=this.iScmBPurcharseorderService.getOrderById(id);
         return scmBPurcharseorder;
         }
         }

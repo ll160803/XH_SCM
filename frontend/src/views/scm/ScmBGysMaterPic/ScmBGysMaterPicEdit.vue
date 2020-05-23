@@ -141,6 +141,7 @@ export default {
       })
       this.scmBGysMaterPic.id = scmBGysMaterPic.id
       this.scmBGysMaterPic.materId = scmBGysMaterPic.materId
+      this.scmBGysMaterPic.matnr = scmBGysMaterPic.matnr
       //console.info(this.$refs.upfc)
       if (scmBGysMaterPic.fileId) {
         if (scmBGysMaterPic.fileId != '') {
@@ -148,7 +149,7 @@ export default {
           this.isShow = 0
           this.fileList = []
           this.$get('comFile/' + scmBGysMaterPic.fileId).then((r) => {
-            this.$refs.upfc.setFormValue(scmBGysMaterPic.materId + '_' + scmBGysMaterPic.txz01, scmBGysMaterPic.materId)
+            this.$refs.upfc.setFormValue(scmBGysMaterPic.matnr + '_' + scmBGysMaterPic.txz01,scmBGysMaterPic.matnr, scmBGysMaterPic.materId)
             let data = r.data
             this.fileList.push({
               uid: data.id,
@@ -215,7 +216,8 @@ export default {
         if (!err) {
           let scmBGysMaterPic = this.form.getFieldsValue()
           scmBGysMaterPic.id = this.scmBGysMaterPic.id
-          scmBGysMaterPic.materId = this.$refs.upfc.matnr
+          scmBGysMaterPic.materId = this.$refs.upfc.materId
+          scmBGysMaterPic.matnr = this.$refs.upfc.matnr
           scmBGysMaterPic.fileId = this.scmBGysMaterPic.fileId
           this.$put('scmBGysMaterPic', {
             ...scmBGysMaterPic

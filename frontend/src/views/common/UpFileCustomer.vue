@@ -36,6 +36,7 @@ export default {
       issue_content: '',//输入框中的内容
       isSelect: 0,
       matnr: '',
+      materId: '',
       serch_result_issue: false,//控制搜索的问题显示隐藏
       dataSource: [],
       selectedRowKeys: [],
@@ -77,7 +78,8 @@ export default {
       const dataSource = [...this.dataSource]
       let row = dataSource.find(item => item.id === selectedRowKeys[0])
       this.issue_content = `${row.matnr}_${row.txz01}`
-      this.matnr = row.matnr
+      this.materId = row.id
+      this.matnr =row.matnr
       this.isSelect = 1
       this.serch_result_issue = false
     },
@@ -113,11 +115,12 @@ export default {
       this.serch_result_issue = false
       //this.fetch()
     },
-    setFormValue (txz01, matnr) {
+    setFormValue (txz01, matnr,materId) {
       this.isSelect = 1
       this.issue_content = txz01
       console.info(matnr)
       this.matnr = matnr
+      this.materId =materId
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -156,7 +159,8 @@ export default {
   //计算属性，当输入内容的时候下面的方法就会根据你输入的内容来过滤serch_result数组中的数据
   computed: {
     columns () {
-      return [{
+      return [
+     {
         title: '物料描述',
         dataIndex: 'txz01',
         width: 200

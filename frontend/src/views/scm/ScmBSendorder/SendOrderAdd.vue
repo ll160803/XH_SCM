@@ -51,7 +51,7 @@
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
       :bordered="bordered"
-      :scroll="{ x: 1200 ,y:300 }"
+      :scroll="{ x: 1300 ,y:300 }"
     >
     </a-table>
     <div class="drawer-bootom-button">
@@ -99,7 +99,7 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id',
-        width: 120
+        width: 130
       }, {
         title: '供应数量',
         dataIndex: 'gMenge',
@@ -119,6 +119,7 @@ export default {
         title: '生产日期',
         dataIndex: 'hsdat',
         customRender: (text, row, index) => {
+          if(text==null) return ''
           return moment(text).format('YYYY-MM-DD')
         },
         width: 100
@@ -129,7 +130,7 @@ export default {
       }, {
         title: '发票金额',
         dataIndex: 'fpjr',
-        width: 80
+        width: 100
       }, {
         title: '院区',
         dataIndex: 'werkst',
@@ -158,10 +159,6 @@ export default {
               return text
           }
         },
-        width: 80
-      }, {
-        title: '发票编码',
-        dataIndex: 'fpbm',
         width: 80
       }, {
         title: '包装规格',
@@ -289,6 +286,7 @@ export default {
         params.sortOrder = "descend"
       }
       params.bsartD = "0"//物资单类型
+      params.status = 0 //为收货的数据
       this.$get('viewSupplyplan/sendOrder', {
         ...params
       }).then((r) => {

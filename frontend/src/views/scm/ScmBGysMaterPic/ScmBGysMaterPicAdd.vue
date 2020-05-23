@@ -113,7 +113,7 @@ export default {
       this.scmBGysMaterPic = {}
       this.$refs.upfc.reset()
       this.$refs.upfc.matnr = ''
-      this.scmBGysMaterPic.matnr = ''
+      this.scmBGysMaterPic.materId = ''
       this.scmBGysMaterPic.fileId = ''
       this.form.resetFields()
     },
@@ -122,7 +122,8 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      this.scmBGysMaterPic.materId = this.$refs.upfc.matnr
+      this.scmBGysMaterPic.materId = this.$refs.upfc.materId
+      this.scmBGysMaterPic.matnr =this.$refs.upfc.matnr
       if (this.scmBGysMaterPic.materId == '') {
         this.$message.warning('请在下列列表里选择药品.')
         return false

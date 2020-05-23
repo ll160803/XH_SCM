@@ -99,6 +99,7 @@ export default {
     reset () {
       this.loading = false
       this.scmBReport = {}
+      this.fileList=[]
       this.form.resetFields()
     },
     onClose () {

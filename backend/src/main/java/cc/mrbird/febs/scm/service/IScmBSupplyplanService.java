@@ -54,4 +54,6 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
         void cancleSupplyPlan(List<Long> ids);
 
         Boolean HasSendOrder(String ids);
+
+        Boolean canUpdateSendOrder(String ids);
 }

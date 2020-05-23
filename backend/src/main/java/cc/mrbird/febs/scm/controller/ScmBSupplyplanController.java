@@ -14,6 +14,7 @@ import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBPurcharseorderService;
+import cc.mrbird.febs.scm.service.IScmBSendorderService;
 import cc.mrbird.febs.scm.service.IScmBSupplyplanService;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 
@@ -59,6 +60,9 @@ public class ScmBSupplyplanController extends BaseController {
     public IViewSupplyplanService iViewSupplyplanService;
     @Autowired
     public IScmBPurcharseorderService iScmBPurcharseorderService;
+    @Autowired
+    public IScmBSendorderService iScmBSendorderService;
+
     @Autowired
     public FebsProperties febsProperties;
 
@@ -325,6 +329,9 @@ public class ScmBSupplyplanController extends BaseController {
     public void deleteSendOrders2(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
+            if(!this.iScmBSupplyplanService.canUpdateSendOrder(ids)) {
+                throw new FebsException("供应计划已经入库，不能删除");
+            }
             String[] arr_ids = ids.split(StringPool.COMMA);
             for (String id :
                     arr_ids) {
@@ -332,6 +339,7 @@ public class ScmBSupplyplanController extends BaseController {
                 scmBSupplyplan.setId(Long.parseLong(id));
                 scmBSupplyplan.setSendOrderCode("");
                 this.iScmBSupplyplanService.updateSupplyplanOnly(scmBSupplyplan);
+
             }
             List<ViewSupplyplan> doneList = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
             RfcNOC rfc = new RfcNOC();
@@ -340,11 +348,14 @@ public class ScmBSupplyplanController extends BaseController {
                 log.error("SAP端处理失败");
                 throw new FebsException("SAP端处理失败");
             }
+            else {
+                this.iScmBSendorderService.updateFpjr(doneList.get(0).getSendOrderCode());//修改送货清单的发票金额
+            }
             //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
         } catch (Exception e) {
             message = "删除失败";
             log.error(message, e);
-            throw new FebsException(message);
+            throw new FebsException(e.getMessage());
         }
     }
 
@@ -406,10 +417,7 @@ public class ScmBSupplyplanController extends BaseController {
     @PostMapping("print")
     public FebsResponse Generate(@NotBlank(message = "{required}") String id, String bsart) {
         FebsResponse feb = new FebsResponse();
-        LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ViewSupplyplan::getSendOrderCode,id);
-        queryWrapper.eq(ViewSupplyplan::getBsart,"0");
-        List<ViewSupplyplan> e1 = iViewSupplyplanService.list(queryWrapper);
+        List<ViewSupplyplan> e1 = iViewSupplyplanService.findVPlanByOrderCode(id);
         StringBuilder sb = new StringBuilder();
         sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst()));
         sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "基本单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "预计补送日期"));
