@@ -102,7 +102,7 @@ export default {
   },
   computed: {
     systemName () {
-      return this.$store.state.setting.systemName
+      return '武汉协和供应链管理平台'
     },
     copyright () {
       return this.$store.state.setting.copyright

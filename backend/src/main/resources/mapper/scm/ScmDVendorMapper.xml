@@ -70,7 +70,7 @@
         to_percent ( IFNULL ( p.menge, 0 ), IFNULL ( pur.menge, 0 ) ) pe
         FROM
         ( SELECT sum( pu.menge ) menge, pu.lifnr FROM
-        (select menge,linfnr from scm_b_purcharseorder pu
+        (select menge,lifnr from scm_b_purcharseorder pu
         WHERE
         1 = 1
         <if test="order.eindt != null">
@@ -87,7 +87,7 @@
         FROM
         scm_b_supplyplan plan
         INNER JOIN (select ID from scm_b_purcharseorder pu
-        WHERE
+        WHERE 1=1
         AND pu.bsart=0
         <if test="order.eindt != null">
             AND pu.bedat <![CDATA[ >= ]]> #{order.eindt}
@@ -112,6 +112,7 @@
     </select>
 
     <select id="getMatnrPercentage" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" resultType="cc.mrbird.febs.scm.entity.MaterPercentage">
+       SELECT *  from (
         SELECT
         m.CODE CODE,
         m.NAME NAME,
@@ -119,17 +120,15 @@
         p.menge AS DONE_Menge,
         to_percent ( IFNULL ( p.menge, 0 ), IFNULL ( pur.menge, 0 ) ) Percent,
         pur.matnr MATNR,
-        CONCAT(mater.txz01, '/' , mater.spec , '/' , mater.produce_area) TXZ01,
-        pur.WERKST
+        CONCAT(mater.txz01, '/' , mater.spec , '/' , mater.produce_area) TXZ01
         FROM
         (
         SELECT
         sum( pur1.menge ) menge,
         pur1.lifnr,
-        pur1.matnr,
-        pur1.WERKST
+        pur1.matnr
         FROM
-        (select menge,lifnr,matnr,WERKST from
+        (select menge,lifnr,matnr from
         scm_b_purcharseorder pur1
         WHERE pur1.bsart=0 AND pur1.`status`=1
         <if test="order.eindt != null">
@@ -155,8 +154,7 @@
         </if>) pur1
         GROUP BY
         pur1.lifnr,
-        pur1.matnr,
-        pur1.WERKST
+        pur1.matnr
         ) pur
         LEFT JOIN (
         SELECT
@@ -165,7 +163,7 @@
         pur2.matnr
         FROM
         scm_b_supplyplan plan
-        INNER JOIN (select ID,matnr from scm_b_purcharseorde pur1
+        INNER JOIN (select ID,matnr from scm_b_purcharseorder pur1
         where pur1.bsart=0 AND pur1.`status`=1
         <if test="order.eindt != null">
             AND pur1.bedat <![CDATA[ >= ]]> #{order.eindt}
@@ -193,17 +191,20 @@
         plan.IS_DELETEMARK=1
         GROUP BY
         plan.gysaccount,
-        pur1.matnr
+        pur2.matnr
         ) p ON pur.lifnr = p.gysaccount
         AND pur.matnr = p.matnr
         LEFT JOIN scm_d_vendor m ON pur.lifnr = m.
         CODE LEFT JOIN scm_d_mater mater ON trim( mater.matnr ) = trim( pur.matnr )
         AND mater.gysaccount = pur.lifnr
         WHERE
-        m.LB=0
+        m.LB=0)p2
+        ORDER BY
+        p2.Percent DESC
     </select>
 
     <select id="getGysAmount" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" resultType="cc.mrbird.febs.scm.entity.TotalStatistic">
+       select  *  from (
         SELECT
         ord.lifnr gysAccount,
         ord.GysName,
@@ -239,10 +240,11 @@
         </if>
         GROUP BY
         ord.GysName,
-        ord.lifnr
+        ord.lifnr )p order by FPJR desc
 
     </select>
     <select id="getMatnrAmount" parameterType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" resultType="cc.mrbird.febs.scm.entity.TotalStatistic">
+        select  *  from (
         SELECT
         ord.txz01,
         ord.matnr,
@@ -279,7 +281,7 @@
         </if>
         GROUP BY
         ord.txz01,
-        ord.matnr
+        ord.matnr )p order by FPJR desc
 
     </select>
 </mapper>

@@ -74,7 +74,7 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
             }
             if(StringUtils.isNotBlank(keyword_mater))
             {
-                queryWrapper.and(qw->qw.eq(ScmBGysMaterPic::getMaterId,keyword_mater).or().like(ScmBGysMaterPic::getTxz01,keyword_mater));
+                queryWrapper.and(qw->qw.eq(ScmBGysMaterPic::getMatnr,keyword_mater).or().like(ScmBGysMaterPic::getTxz01,keyword_mater));
             }
             if(StringUtils.isNotBlank(keyword_gys))
             {

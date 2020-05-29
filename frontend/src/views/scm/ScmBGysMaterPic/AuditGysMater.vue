@@ -12,11 +12,11 @@
               :sm="24"
             >
               <a-form-item
-                label="供应商名称"
+                label="供应商名称\账号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.name" />
+                <a-input v-model="queryParams.keyword_gys" />
               </a-form-item>
             </a-col>
             <a-col
@@ -24,11 +24,11 @@
               :sm="24"
             >
               <a-form-item
-                label="药品编码"
+                label="药品名称\编码"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.materId" />
+                <a-input v-model="queryParams.keyword_mater" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -131,8 +131,8 @@ export default {
       dataSource: [],
       selectedRowKeys: [],
       sortedInfo: {
-        field: 'state',
-        order: 'asc'
+        field: 'Create_TIME',
+        order: 'descend'
       },
       paginationInfo: null,
       pagination: {
@@ -166,8 +166,12 @@ export default {
         width: 100
       }, {
         title: '药品编码',
-        dataIndex: 'materId',
+        dataIndex: 'matnr',
         width: 100
+      }, {
+        title: '药品名称',
+        dataIndex: 'txz01',
+        width: 200
       }, {
         title: '批次号',
         dataIndex: 'charge',

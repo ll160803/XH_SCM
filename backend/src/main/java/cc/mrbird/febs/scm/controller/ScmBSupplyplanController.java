@@ -303,6 +303,99 @@ public class ScmBSupplyplanController extends BaseController {
         }
     }
 
+    @Log("送货清单收货")
+    @PutMapping("overSendOrder")
+    public void updateOverScmBSupplyplan2(@Valid String sendOrderId) throws FebsException {
+        try {
+
+            User currentUser = FebsUtil.getCurrentUser();
+
+            List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
+            List<ViewSupplyplan> doneList = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
+            for (ViewSupplyplan en : list
+            ) {
+                if (en.getStatus().equals(1)) {
+                    message +=  "此送货清单已收货";
+                    break;
+                } else if (!en.getgMenge().equals(en.getDoneMenge())) {
+                    message += "供应计划"+en.getId().toString() + ":预收数量不等于供应计划数量";
+                } else {
+                    en.setStatus(1);
+                    doneList.add(en);
+                    arrids.add(en.getId());
+                }
+
+            }
+            if(!StringUtils.isNotBlank(message)) {
+                log.error("发送SAP收货");
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("SAP端处理失败");
+                    throw new FebsException("SAP端处理失败");
+                } else {
+                    this.iScmBSupplyplanService.doneSupplyPlan(arrids);//修改scm状态
+                }
+            }
+            else
+            {
+                throw new FebsException(message);
+            }
+
+
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @Log("取消送货清单收货")
+    @PutMapping("cancelSendOrder")
+    public void updateCancelScmBSendOrder(@Valid String sendOrderId) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+
+            List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
+            List<ViewSupplyplan> doneList = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
+            for (ViewSupplyplan en : list
+            ) {
+                if (!en.getStatus().equals(1)) {
+                    message += "此送货清单尚未收货";
+                    break;
+                } else {
+                    en.setStatus(0);
+                    doneList.add(en);
+                    arrids.add(en.getId());
+                }
+
+            }
+            if(!StringUtils.isNotBlank(message)) {
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    log.error("SAP端处理失败");
+                    throw new FebsException("SAP端处理失败");
+                } else {
+                    this.iScmBSupplyplanService.cancleSupplyPlan(arrids);//修改scm状态
+                }
+
+            }
+            else
+            {
+                throw new FebsException(message);
+            }
+
+
+        } catch (Exception e) {
+            message = e.getMessage();
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
     @Log("物资去除送货单号")
     @DeleteMapping("deleteSendOrder/{ids}")
     public void deleteSendOrders(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
@@ -349,7 +442,7 @@ public class ScmBSupplyplanController extends BaseController {
                 throw new FebsException("SAP端处理失败");
             }
             else {
-                this.iScmBSendorderService.updateFpjr(doneList.get(0).getSendOrderCode());//修改送货清单的发票金额
+               // this.iScmBSendorderService.updateFpjr(doneList.get(0).getSendOrderCode());//修改送货清单的发票金额
             }
             //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
         } catch (Exception e) {

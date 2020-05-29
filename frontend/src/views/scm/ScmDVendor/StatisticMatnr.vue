@@ -71,6 +71,8 @@
                 <range-date
                   @change="handleDateChange"
                   ref="createTime"
+                  :startDate="startDate"
+                  :endDate="endDate"
                 ></range-date>
               </a-form-item>
             </a-col>
@@ -109,6 +111,7 @@
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
+import moment from 'moment'
 
 export default {
   name: 'rank',
@@ -118,7 +121,10 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
-      queryParams: {},
+       queryParams: {
+        eindt: moment().subtract(1, "months").format("YYYY-MM-DD"),
+        bedat: moment().format("YYYY-MM-DD")
+      },
       sortedInfo: null,
       paginationInfo: null,
       pagination: {
@@ -131,7 +137,9 @@ export default {
       },
       loading: false,
       materInfoVisiable:false,
-      matnr:''
+      matnr:'',
+      startDate: moment().subtract(1, "months"),
+      endDate: moment()
     }
   },
   computed: {
@@ -154,7 +162,7 @@ export default {
     }
   },
   mounted () {
-    this.fetch()
+    this.search()
   },
   methods: {
     onSelectChange (selectedRowKeys) {

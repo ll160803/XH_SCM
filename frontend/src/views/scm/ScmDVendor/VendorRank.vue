@@ -32,6 +32,9 @@
                 <range-date
                   @change="handleDateChange"
                   ref="createTime"
+                  :startDate="startDate"
+                  :endDate="endDate"
+
                 ></range-date>
               </a-form-item>
             </a-col>
@@ -68,7 +71,7 @@
 
 <script>
 import RangeDate from '@/components/datetime/RangeDate'
-
+import moment from 'moment'
 export default {
   name: 'rank',
   components: { RangeDate },
@@ -77,18 +80,23 @@ export default {
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
-      queryParams: {},
+      queryParams: {
+        eindt: moment().subtract(1, "months").format("YYYY-MM-DD"),
+        bedat: moment().format("YYYY-MM-DD")
+      },
       sortedInfo: null,
       paginationInfo: null,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
         defaultCurrent: 1,
-        defaultPageSize: 10,
+        defaultPageSize: 1000,
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       loading: false,
+      startDate: moment().subtract(1, "months"),
+      endDate: moment()
     }
   },
   computed: {
@@ -114,7 +122,7 @@ export default {
     }
   },
   mounted () {
-    this.fetch()
+    this.search()
   },
   methods: {
     onSelectChange (selectedRowKeys) {

@@ -19,7 +19,7 @@
                 :labelCol="{span: 8}"
                 :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.txz01" />
+                <a-input v-model="queryParams.name" />
               </a-form-item>
             </a-col>
             <a-col
@@ -31,7 +31,7 @@
                 :labelCol="{span: 8}"
                 :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.matnr" />
+                <a-input v-model="queryParams.code" />
               </a-form-item>
             </a-col>
           </a-row>

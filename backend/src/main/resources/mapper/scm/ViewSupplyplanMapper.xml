@@ -112,7 +112,7 @@
 		`scm_b_supplyplan`
 		WHERE
 		`scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
-		<if test="order.id != null">
+		<if test="order.id != null and order.id != 0">
 			AND scm_b_supplyplan.id = #{order.id}
 		</if>
 		<if test="order.status != null">
@@ -144,7 +144,7 @@ FROM
 				`scm_b_supplyplan`
 			WHERE
 		 `scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
-		<if test="order.id != null">
+		<if test="order.id != null and order.id != 0">
 			AND scm_b_supplyplan.id = #{order.id}
 		</if>
 		<if test="order.status != null">
@@ -152,6 +152,9 @@ FROM
 		</if>
 		<if test="order.doneMenge == 0">
 			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+		</if>
+		<if test="order.doneMenge == 2">
+			AND (scm_b_supplyplan.doneMenge is null or scm_b_supplyplan.doneMenge <![CDATA[ < ]]> scm_b_supplyplan.g_Menge)
 		</if>
 		<if test="order.gysaccount != null and order.gysaccount != ''">
 			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
@@ -168,17 +171,11 @@ FROM
 		scm_b_purcharseorder.id
 			FROM
 				`scm_b_purcharseorder`
-		<if test="order.doneMenge == 1">
-			inner join scm_d_area A1 on scm_b_purcharseorder.werks=A1.`CODE`
-			inner join scm_b_userandarea B1 on A1.ID=B1.AreaID
-			inner join scm_d_area A2 on scm_b_purcharseorder.lgort=A2.`CODE`
-			inner join scm_b_userandarea B2 on A2.ID=B1.AreaID
+		<if test="order.ebelp !=null">
+			INNER JOIN scm_b_userandarea A2 ON CONCAT(scm_b_purcharseorder.werks,scm_b_purcharseorder.lgort)  = A2.AreaID  AND A2.UserID=${order.ebelp}
 		</if>
 		WHERE
 		1 = 1
-		<if test="order.doneMenge == 1">
-			AND B1.UserID=${order.ebelp} AND B2.UserID=${order.ebelp}
-		</if>
 		<if test="order.ebeln != null">
 			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
 		</if>
@@ -266,7 +263,7 @@ WHERE
 		`scm_b_supplyplan`
 		WHERE
 		`scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
-		<if test="order.id != null">
+		<if test="order.id != null and order.id != 0">
 			AND scm_b_supplyplan.id = #{order.id}
 		</if>
 		<if test="order.status != null">
@@ -274,6 +271,9 @@ WHERE
 		</if>
 		<if test="order.doneMenge == 0">
 			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+		</if>
+		<if test="order.doneMenge == 2">
+			AND (scm_b_supplyplan.doneMenge is null or scm_b_supplyplan.doneMenge <![CDATA[ < ]]> scm_b_supplyplan.g_Menge)
 		</if>
 		<if test="order.gysaccount != null and order.gysaccount != ''">
 			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
@@ -287,23 +287,22 @@ WHERE
 		<if test="order.sendOrderCode != null and order.sendOrderCode != ''">
 			AND scm_b_supplyplan.SEND_ORDER_CODE = #{order.sendOrderCode}
 		</if>
+		<if test="order.sendCodes != null and order.sendCodes != ''">
+			AND scm_b_supplyplan.SEND_ORDER_CODE in ${order.sendCodes}
+		</if>
 		) a
 		JOIN (
 		SELECT
 		scm_b_purcharseorder.*
 		FROM
 		`scm_b_purcharseorder`
-		<if test="order.doneMenge == 1">
-			inner join scm_d_area A1 on scm_b_purcharseorder.werks=A1.`CODE`
-			inner join scm_b_userandarea B1 on A1.ID=B1.AreaID
-			inner join scm_d_area A2 on scm_b_purcharseorder.lgort=A2.`CODE`
-			inner join scm_b_userandarea B2 on A2.ID=B1.AreaID
+
+		<if test="order.ebelp !=null">
+			INNER JOIN scm_b_userandarea A2 ON CONCAT(scm_b_purcharseorder.werks,scm_b_purcharseorder.lgort)  = A2.AreaID  AND A2.UserID=${order.ebelp}
 		</if>
 		WHERE
 		1 = 1
-		<if test="order.doneMenge == 1">
-			AND B1.UserID=${order.ebelp} AND B2.UserID=${order.ebelp}
-		</if>
+
 		<if test="order.ebeln != null">
 			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
 		</if>
@@ -393,4 +392,97 @@ where
 		`scm_b_supplyplan`.`BASE_ID` = `scm_b_purcharseorder`.`ID`
 	)
     </select>
+
+	<select id="findMatnrValid_Count" resultType="Long" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+
+		SELECT
+		count(1)
+		FROM
+		scm_b_supplyplan
+		WHERE
+		CREATE_TIME > DATE_SUB( curdate( ), INTERVAL 6 MONTH )
+		AND `status` = 1
+		AND IS_DELETEMARK = 1
+		AND bsart_d = 0
+	</select>
+	<select id="findMatnrValid_Count2" resultType="Long" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+
+		SELECT
+	count(1)
+FROM
+	(
+		SELECT
+			a.base_id
+		FROM
+			scm_b_supplyplan a
+		WHERE
+			a.CREATE_TIME > DATE_SUB(curdate(), INTERVAL 6 MONTH)
+		AND a.`status` = 1
+		AND a.IS_DELETEMARK = 1
+		AND a.bsart_d = 0
+	) a
+INNER JOIN (
+	SELECT
+		id
+	FROM
+		scm_b_purcharseorder b
+	WHERE
+		b.bedat > DATE_SUB(curdate(), INTERVAL 6 MONTH)
+		<if test="order.werks != null and order.werks !='0'">
+			AND b.werks = #{order.werks}
+		</if>
+		<if test="order.lgort != null and order.lgort !='0'">
+			AND b.lgort = #{order.lgort}
+		</if>
+		<if test="order.txz01 != null and order.txz01 != ''">
+			AND b.txz01 like concat('%',#{order.txz01},'%')
+		</if>
+		<if test="order.matnr != null and order.matnr != ''">
+			AND b.matnr = #{order.matnr}
+		</if>
+) p
+WHERE
+	a.BASE_ID = p.id
+	</select>
+	<select id="findMatnrValid" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+		SELECT
+		p.VFDAT,
+		p.ID,
+		p.CHARGE,
+		a.werks,
+		a.werkst,
+		a.txz01,
+		a.matnr,
+		a.lgort,
+		a.lgortName
+		FROM
+		(
+		SELECT
+		BASE_ID,
+		ID,
+		VFDAT,
+		CHARGE
+		FROM
+		scm_b_supplyplan
+		WHERE
+		CREATE_TIME > DATE_SUB( curdate( ), INTERVAL 6 MONTH )
+		AND `status` = 1
+		AND IS_DELETEMARK = 1
+		AND bsart_d = 0
+		) p
+		INNER JOIN scm_b_purcharseorder a ON p.BASE_ID = a.ID
+		WHERE 1 = 1
+		<if test="order.werks != null and order.werks !='0'">
+			AND a.werks = #{order.werks}
+		</if>
+		<if test="order.lgort != null and order.lgort !='0'">
+			AND a.lgort = #{order.lgort}
+		</if>
+		<if test="order.txz01 != null and order.txz01 != ''">
+			AND a.txz01 like concat('%',#{order.txz01},'%')
+		</if>
+		<if test="order.matnr != null and order.matnr != ''">
+			AND a.matnr = #{order.matnr}
+		</if>
+	</select>
 </mapper>

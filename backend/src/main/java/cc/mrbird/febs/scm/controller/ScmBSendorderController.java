@@ -145,13 +145,18 @@ public class ScmBSendorderController extends BaseController {
             scmBSendorder.setGysaccount(currentUser.getUsername());
             scmBSendorder.setGysname(currentUser.getRealname());
             scmBSendorder.supplyPlanIds = supplyPlanIds;
-            this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
+
 
             if(StringUtils.isNotBlank(supplyPlanIds)) {
                 String ids="'"+supplyPlanIds.replace(",","','")+"'";
 
                 List<ViewSupplyplan> list = new ArrayList<>();
                 list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                scmBSendorder.setWerks(list.get(0).getWerks());
+                scmBSendorder.setWerkst(list.get(0).getWerkst());
+                scmBSendorder.setLgort(list.get(0).getLgort());
+                scmBSendorder.setLgortname(list.get(0).getLgortName());
+                this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
@@ -159,8 +164,11 @@ public class ScmBSendorderController extends BaseController {
                     throw new FebsException("修改送货订单,SAP端接收失败");
                 }
                 else {
-                    this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+                    //this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
+            }
+            else {
+                this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
             }
 
         } catch (Exception e) {
@@ -184,13 +192,20 @@ public class ScmBSendorderController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             scmBSendorder.setModifyUserId(currentUser.getUserId());
             scmBSendorder.supplyPlanIds = supplyPlanIds;
-            this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
+
 
             if(StringUtils.isNotBlank(supplyPlanIds)) {
                 String ids="'"+supplyPlanIds.replace(",","','")+"'";
 
                 List<ViewSupplyplan> list = new ArrayList<>();
                 list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+
+                scmBSendorder.setWerks(list.get(0).getWerks());
+                scmBSendorder.setWerkst(list.get(0).getWerkst());
+                scmBSendorder.setLgort(list.get(0).getLgort());
+                scmBSendorder.setLgortname(list.get(0).getLgortName());
+                this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
+
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
@@ -198,8 +213,12 @@ public class ScmBSendorderController extends BaseController {
                     throw new FebsException("修改送货订单,SAP端接收失败");
                 }
                 else {
-                    this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+                    //this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
+            }
+            else
+            {
+                this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
             }
         } catch (Exception e) {
             message = "修改失败";
@@ -231,7 +250,7 @@ public class ScmBSendorderController extends BaseController {
                 }
                 else
                 {
-                    this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+                   // this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
             }
         } catch (Exception e) {
@@ -553,14 +572,27 @@ public class ScmBSendorderController extends BaseController {
         User currentUser = FebsUtil.getCurrentUser();
         scmBSendorder.setGysaccount(currentUser.getUsername());
         log.error("art:"+scmBSendorder.getBsart());
-        IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder);
+        IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders_phone(request, scmBSendorder);
         List<ScmBSendorder> records=list.getRecords();
+
+        List<String> listCodes=records.stream().map(t->t.getId().toString()).collect(Collectors.toList());
+        String sendCodes="("+String.join(",", listCodes)+")";
+        viewSupplyplan.setIsDeletemark(1);
+        viewSupplyplan.setSendCodes(sendCodes);
+        viewSupplyplan.setGysaccount(currentUser.getUsername());
+        List<ViewSupplyplan> dataAll= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
+        viewSupplyplan.setId(0L);
         //此代码 可以优化
         for (ScmBSendorder order:records
              ) {
+
+            List<ViewSupplyplan> data =dataAll.stream().filter(t->t.getSendOrderCode().equals(order.getId().toString())).collect(Collectors.toList());
+            /**
             viewSupplyplan.setSendOrderCode(order.getId().toString());
             viewSupplyplan.setIsDeletemark(1);
-            /**
+
+
+
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
@@ -582,36 +614,49 @@ public class ScmBSendorderController extends BaseController {
             if(StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
                 queryWrapper.like(ViewSupplyplan::getLgortName,viewSupplyplan.getLgortName());
             }
-     **/
+
 
           // List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
             List<ViewSupplyplan> data= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
-           order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
+           **/
+             order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
         }
         return getDataTable(list);
     }
     @GetMapping("phoneSendOrder")
     @RequiresPermissions("phoneSendOrder:view")
     public Map<String, Object> phoneSendOrderList3(QueryRequest request, ScmBSendorder scmBSendorder, ViewSupplyplan viewSupplyplan) {
+        User currentUser = FebsUtil.getCurrentUser();
         scmBSendorder.setIsDeletemark(1);
         scmBSendorder.setBsart("0");
-        IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder);
+        scmBSendorder.setName(currentUser.getUserId().toString());
+
+        IPage<ScmBSendorder> list= this.iScmBSendorderService.findScmBSendorders_phone(request, scmBSendorder);
         List<ScmBSendorder> records=list.getRecords();
+
+        if(records.size()>0){
         List<String> listCodes=records.stream().map(t->t.getId().toString()).collect(Collectors.toList());
-        User currentUser = FebsUtil.getCurrentUser();
+        String sendCodes="("+String.join(",", listCodes)+")";
+
+
+
+        viewSupplyplan.setIsDeletemark(1);
+        if(viewSupplyplan.getStatus()!=null &&viewSupplyplan.getStatus().equals(0)) {
+            viewSupplyplan.setDoneMenge(new BigDecimal(0));//当设置为0 时，就是取带入库的数据
+        }
+        //if(viewSupplyplan.getStatus().equals(1))
+       // {
+           // viewSupplyplan.setDoneMenge(new BigDecimal(1));//当设置为1 时，就是取已入库的数据
+            viewSupplyplan.setEbelp(currentUser.getUserId().toString());
+       // }
+        viewSupplyplan.setId(0L);
+        viewSupplyplan.setSendCodes(sendCodes);
+        List<ViewSupplyplan> dataAll= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
         //此代码 可以优化
         for (ScmBSendorder order:records
         ) {
-            viewSupplyplan.setSendOrderCode(order.getId().toString());
-            viewSupplyplan.setIsDeletemark(1);
-            if(viewSupplyplan.getStatus().equals(0)) {
-                viewSupplyplan.setDoneMenge(new BigDecimal(0));//当设置为0 时，就是取带入库的数据
-            }
-            if(viewSupplyplan.getStatus().equals(1))
-            {
-                viewSupplyplan.setDoneMenge(new BigDecimal(1));//当设置为1 时，就是取已入库的数据
-                viewSupplyplan.setEbelp(currentUser.getUserId().toString());
-            }
+          //  viewSupplyplan.setSendOrderCode(order.getId().toString());
+            List<ViewSupplyplan> data =dataAll.stream().filter(t->t.getSendOrderCode().equals(order.getId().toString())).collect(Collectors.toList());
             /**
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper=new LambdaQueryWrapper<>();
             queryWrapper.eq(ViewSupplyplan::getSendOrderCode,order.getId().toString());
@@ -635,25 +680,13 @@ public class ScmBSendorderController extends BaseController {
                 queryWrapper.eq(ViewSupplyplan::getMatnr,viewSupplyplan.getMatnr());
             }
 
-            List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);  **/
-            List<ViewSupplyplan> data= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
+            List<ViewSupplyplan> data= this.iViewSupplyplanService.list(queryWrapper);
+          //  List<ViewSupplyplan> data= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
+            **/
             order.innerData=data.toArray(new ViewSupplyplan[data.size()]);
+        }
         }
         return getDataTable(list);
     }
 
-    @GetMapping("phoneSendOrder3")//待入库的送货清单
-    @RequiresPermissions("phoneSendOrder:view")
-    public Map<String, Object> phoneSendOrderList4(QueryRequest request, ViewSupplyplan viewSupplyplan){
-        User currentUser = FebsUtil.getCurrentUser();
-        if(viewSupplyplan.getStatus().equals(0)) {
-            viewSupplyplan.setDoneMenge(new BigDecimal(0));//当设置为0 时，就是取带入库的数据
-        }
-        if(viewSupplyplan.getStatus().equals(1))
-        {
-            viewSupplyplan.setDoneMenge(new BigDecimal(1));//当设置为1 时，就是取已入库的数据
-            viewSupplyplan.setEbelp(currentUser.getUserId().toString());
-        }
-        return getDataTable(this.iViewSupplyplanService.findVPurcharseorder(request, viewSupplyplan));
-    }
 }

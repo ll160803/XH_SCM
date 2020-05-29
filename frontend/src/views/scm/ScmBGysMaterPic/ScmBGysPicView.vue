@@ -169,13 +169,13 @@ export default {
           this.isShow = 0
           this.fileList = []
           this.$get('comFile/' + scmBGysMaterPic.fileId).then((r) => {
-            this.$refs.upfc.setFormValue(scmBGysMaterPic.materId + '_' + scmBGysMaterPic.txz01, scmBGysMaterPic.materId)
+            this.$refs.upfc.setFormValue(scmBGysMaterPic.matnr + '_' + scmBGysMaterPic.txz01, scmBGysMaterPic.materId)
             let data = r.data
             this.fileList.push({
               uid: data.id,
               name: data.clientName,
               status: 'done',
-              url: data.serverName
+              url: this.$baseUrl + 'comFile/checkFile/' + data.serverName
             })
           })
         }

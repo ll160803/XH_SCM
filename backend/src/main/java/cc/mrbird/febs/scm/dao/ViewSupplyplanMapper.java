@@ -23,6 +23,8 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         @Select("select *  from view_supplyplan where id in (${ids})")
         List<ViewSupplyplan> GetViewSupplyPlanByIds(@Param(value = "ids") String ids);
 
+
+
         IPage<ViewSupplyplan> findVPurcharseorder(Page page, @Param("order") ViewSupplyplan order);
 
         Long findVPurcharseorder_COUNT(@Param("order") ViewSupplyplan order);
@@ -31,5 +33,10 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         List<ViewSupplyplan>  findVPlanByOrderCode(@Param(value = "orderCode") String orderCode);
 
         List<ViewSupplyplan> findVPurcharseorder(@Param("order") ViewSupplyplan order);
+
+        Long findMatnrValid_Count(@Param("order") ViewSupplyplan order);
+        Long findMatnrValid_Count2(@Param("order") ViewSupplyplan order);
+
+        IPage<ViewSupplyplan>  findMatnrValid(Page page, @Param("order") ViewSupplyplan order);
 
         }

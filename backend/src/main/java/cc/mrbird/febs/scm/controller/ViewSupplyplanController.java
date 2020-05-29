@@ -22,9 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -55,7 +53,19 @@ public IViewSupplyplanService iViewSupplyplanService;
 public Map<String, Object> List(QueryRequest request, ViewSupplyplan viewSupplyplan){
         return getDataTable(this.iViewSupplyplanService.findVPurcharseorder(request, viewSupplyplan));
         }
-
+    @GetMapping("matnr")
+    @RequiresPermissions("viewSupplyplan:matnr")
+    public Map<String, Object> ListMatnr(QueryRequest request, ViewSupplyplan viewSupplyplan){
+        viewSupplyplan.setBedat(new Date());
+        Calendar c = Calendar.getInstance();
+        //过去一个月
+        c.setTime(new Date());
+        c.add(Calendar.MONTH, - 6);
+        Date preMonth = c.getTime();
+        viewSupplyplan.setEindt(preMonth);
+    viewSupplyplan.setStatus(1);
+        return getDataTable(this.iViewSupplyplanService.findMatnrValid(request, viewSupplyplan));
+    }
 
     @GetMapping("sendOrder")
     public Map<String, Object> ListOrder(QueryRequest request, ViewSupplyplan scmBSupplyplan) {
@@ -142,6 +152,8 @@ public ViewSupplyplan detail(@NotBlank(message = "{required}") @PathVariable Str
         }
     @GetMapping("doneStatus/{statusType}")
     public Map<String, Object> List(QueryRequest request,@PathVariable String statusType,ViewSupplyplan viewSupplyplan){
+        User currentUser= FebsUtil.getCurrentUser();
+        viewSupplyplan.setEbelp(currentUser.getUserId().toString());
         return getDataTable(this.iViewSupplyplanService.findDoneViewSupplyplans(request, viewSupplyplan,statusType));
     }
         }

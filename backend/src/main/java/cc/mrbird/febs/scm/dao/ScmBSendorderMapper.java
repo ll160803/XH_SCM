@@ -30,6 +30,7 @@ public interface ScmBSendorderMapper extends BaseMapper<ScmBSendorder> {
 
         void updateSupplyPlan2(@Param("ids") List<Long> ids,@Param("id") String id);
         IPage<ScmBSendorder> findSendInfos(Page page, @Param("order") ScmBSendorder order);
+        IPage<ScmBSendorder> findSendInfos2(Page page, @Param("order") ScmBSendorder order);
         @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '',FPHM = '' WHERE SEND_ORDER_CODE in (#{ids}) and bsart_d='1' and status=0 ")
         int removeMaterOrderCode(@Param("ids") String ids);
 

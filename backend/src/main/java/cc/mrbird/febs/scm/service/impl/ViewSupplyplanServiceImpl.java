@@ -20,10 +20,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.time.LocalDate;
 
 /**
@@ -174,6 +172,20 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
     public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids) {
         return this.baseMapper.GetViewSupplyPlanByIds(ids);
     }
+    @Override
+    @Transactional
+    public List<ViewSupplyplan> getViewSupplyPlanByOrderId(String sendOrderId) {
+        ViewSupplyplan viewSupplyplan=new ViewSupplyplan();
+        viewSupplyplan.setSendOrderCode(sendOrderId);
+        viewSupplyplan.setBedat(new Date());
+        Calendar c = Calendar.getInstance();
+        //过去一个月
+        c.setTime(new Date());
+        c.add(Calendar.MONTH, - 1);
+        Date preMonth = c.getTime();
+        viewSupplyplan.setEindt(preMonth);
+        return this.baseMapper.findVPurcharseorder(viewSupplyplan);
+    }
 
     @Override
     public IPage<ViewSupplyplan> findDoneViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan, String statusType) {
@@ -233,6 +245,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.equals(statusType, "0"))//预收
             {
                 viewSupplyplan.setStatus(0);
+                viewSupplyplan.setDoneMenge(new BigDecimal(2));
             }
             if (StringUtils.equals(statusType, "1"))//已收
             {
@@ -269,6 +282,9 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                 flag=true;
             }
             if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getEbelp())) {
                 flag=true;
             }
             if (viewSupplyplan.getBedat()!=null) {
@@ -329,6 +345,9 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                 if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                     flag=true;
                 }
+                if (StringUtils.isNotBlank(viewSupplyplan.getEbelp())) {
+                    flag=true;
+                }
                 if (viewSupplyplan.getBedat()!=null) {
                     flag=true;
                 }
@@ -363,4 +382,50 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
    public List<ViewSupplyplan> findVPlanByOrderCode(String orderCode){
         return  this.baseMapper.findVPlanByOrderCode(orderCode);
    }
+    @Override
+    @Transactional
+    public IPage<ViewSupplyplan> findMatnrValid (QueryRequest request, ViewSupplyplan viewSupplyplan){
+        try {
+
+            Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+           // page.setSearchCount(false);
+            // return this.page(page, queryWrapper);
+            Boolean flag=false;
+            Long totaNum=0L;
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
+                flag=true;
+            }
+
+                page.setSearchCount(false);
+
+            IPage<ViewSupplyplan> listPage= this.baseMapper.findMatnrValid(page, viewSupplyplan);
+            if(!flag) {
+                totaNum = this.baseMapper.findMatnrValid_Count(viewSupplyplan);
+
+            }
+            else {
+                totaNum = this.baseMapper.findMatnrValid_Count2(viewSupplyplan);
+            }
+            listPage.setTotal(totaNum);
+            return  listPage;
+
+        } catch (Exception e) {
+            log.error("获取药品有效期", e);
+            return null;
+        }
     }
+
+}

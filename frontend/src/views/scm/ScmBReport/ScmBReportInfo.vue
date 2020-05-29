@@ -29,25 +29,11 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="文件上传"
+        label="附件"
       >
-        <a-upload
-          :fileList="fileList"
-          :remove="handleRemove"
-          :beforeUpload="beforeUpload"
-        >
-          <a-button>
-            <a-icon type="upload" /> 选择文件 </a-button>
-        </a-upload>
-        <a-button
-          type="primary"
-          @click="handleUpload"
-          :disabled="fileList.length === 0 ||isShow===0"
-          :loading="uploading"
-          style="margin-top: 16px"
-        >
-          {{uploading ? '上传中' : '开始上传' }}
-        </a-button>
+       <a :href="serverName">
+        {{clientName}}
+      </a>
       </a-form-item>
     </a-form>
   </a-modal>
@@ -75,14 +61,17 @@ export default {
       formItemLayout,
       form: this.$form.createForm(this),
       scmBReport: {
-        fileId: ''
-      }
+        fileId: '',
+       
+      },
+      serverName: '',
+      clientName: ''
     }
   },
   methods: {
     reset () {
-      this.fileList=[]
       this.loading = false
+      this.fileList=[]
       this.form.resetFields()
     },
     onClose () {
@@ -115,49 +104,18 @@ export default {
           this.$get('comFile/' + scmBReport.fileId).then((r) => {
             let data = r.data
             console.info(data)
-            
-            this.fileList.push({
-              uid: data.id,
-              name: data.clientName,
-              status: 'done',
-              url: this.$baseUrl + 'uploadFile/' + data.serverName
-            })
+            this.clientName=data.clientName;
+            this.serverName=this.$baseUrl + 'uploadFile/' + data.serverName
           })
         }
       }
     },
-    handleRemove (file) {
-      const index = this.fileList.indexOf(file)
-      const newFileList = this.fileList.slice()
-      newFileList.splice(index, 1)
-      this.fileList = newFileList
-      this.isShow = 1
-    },
+   
     onChange (date, dateString) {
       console.log(date, dateString);
-    },
-    beforeUpload (file) {
-      this.fileList = [...this.fileList, file]
-      return false
-    },
-    handleUpload () {
-      const { fileList } = this
-      const formData = new FormData()
-      formData.append('file', fileList[0])
-      this.uploading = true
-
-      // You can use any AJAX library you like
-      this.$upload('comFile/upload', formData).then((r) => {
-        this.scmBReport.fileId = r.data.data
-        //this.fileList = []
-        this.isShow = 0
-        this.uploading = false
-        this.$message.success('上传成功.')
-      }).catch(() => {
-        this.uploading = false
-        this.$message.error('上传失败.')
-      })
     }
+   
+   
   }
 }
 </script>

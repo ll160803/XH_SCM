@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -87,7 +89,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
     @Override
     @Transactional
     public void updateMenu(Menu menu) throws Exception {
-        menu.setModifyTime(new Date());
+        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        menu.setModifyTime(Timestamp.valueOf(simpleDate.format(new Date())));
+
+       // menu.setModifyTime(new Date());
         setMenu(menu);
         baseMapper.updateById(menu);
 

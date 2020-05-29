@@ -62,7 +62,7 @@ public class MsgValidTask {
         for (VMsgOrderinfomodify msg:listMsg
         ) {
             if(StringUtils.isNotBlank(msg.getVxcode())) {
-                String mg = "您收到来自武汉协和医的" + msg.getNumCount() + "个采购订单变更信息";
+                String mg = "您收到来自武汉协和医院" + msg.getNumCount() + "个订单变更信息";
                 log.info("openid："+msg.getVxcode()+",订单信息更改");
                 wm.send(msg.getVxcode(), "采购订单", mg, "action=dingdan&id=" + msg.getCode());//供应商部分
             }
@@ -95,7 +95,7 @@ public class MsgValidTask {
         for (VMsgQuerypriceinfo msg:listMsg
         ) {
             if(StringUtils.isNotBlank(msg.getVxCode())) {
-                String mg = "您有一条来自于武汉协和医院的"+msg.getTxz01()+"的询价信息";
+                String mg = "您有一条来自于武汉协和医院的询价信息";
                 log.info("openid："+msg.getVxCode()+",询价请求");
                 wm.send(msg.getVxCode(), "询价请求", mg, "action=xunjia&id=" + msg.getGysaccount());//供应商部分
             }

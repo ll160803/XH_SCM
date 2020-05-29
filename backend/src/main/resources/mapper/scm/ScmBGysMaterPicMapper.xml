@@ -26,6 +26,7 @@
 inner JOIN scm_b_purcharseorder on
 scm_b_gys_mater_pic.matnr=scm_b_purcharseorder.matnr
 where scm_b_purcharseorder.ID=#{base_Id} and scm_b_gys_mater_pic.GYSACCOUNT=#{account} and scm_b_purcharseorder.lifnr=#{account} and scm_b_gys_mater_pic.IS_DELETEMARK=1
+order  by scm_b_gys_mater_pic.create_time desc
     </select>
 
         <!-- 通用查询结果列 -->

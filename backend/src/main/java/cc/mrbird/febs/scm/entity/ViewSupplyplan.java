@@ -292,6 +292,16 @@ private Long modifyUserId;
 
     private  transient String  noOrder;
 
+    public String getSendCodes() {
+        return sendCodes;
+    }
+
+    public void setSendCodes(String sendCodes) {
+        this.sendCodes = sendCodes;
+    }
+
+    private  transient String  sendCodes;
+
     public BigDecimal getDoneMenge() {
         return doneMenge;
     }

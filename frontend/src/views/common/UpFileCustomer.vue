@@ -168,11 +168,16 @@ export default {
       {
         title: '物料编码',
         dataIndex: 'matnr',
-        width: 80
+        width: 100
       },
       {
         title: '规格',
-        dataIndex: 'mseht',
+        dataIndex: 'spec',
+        width: 100
+      },
+      {
+        title: '生产厂家',
+        dataIndex: 'produceArea',
         width: 80
       }]
     }

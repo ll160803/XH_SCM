@@ -47,7 +47,7 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
     private ViewSupplyplanMapper viewSupplyplanMapper;
 
     @Override
-    public IPage<ScmBSendorder> findScmBSendorders(QueryRequest request, ScmBSendorder scmBSendorder) {
+    public IPage<ScmBSendorder> findScmBSendorders_phone(QueryRequest request, ScmBSendorder scmBSendorder) {
         try {
 //        LambdaQueryWrapper<ScmBSendorder> queryWrapper=new LambdaQueryWrapper<>();
 //        if (StringUtils.isNotBlank(scmBSendorder.getCode())) {
@@ -68,6 +68,27 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
         }
     }
 
+    @Override
+    public IPage<ScmBSendorder> findScmBSendorders(QueryRequest request, ScmBSendorder scmBSendorder) {
+        try {
+//        LambdaQueryWrapper<ScmBSendorder> queryWrapper=new LambdaQueryWrapper<>();
+//        if (StringUtils.isNotBlank(scmBSendorder.getCode())) {
+//        queryWrapper.eq(ScmBSendorder::getCode, scmBSendorder.getCode());
+//        }
+//        queryWrapper.eq(ScmBSendorder::getIsDeletemark, 1);
+//        Page<ScmBSendorder> page=new Page<>();
+//        SortUtil.handlePageSort(request,page,true);
+// return this.page(page,queryWrapper);
+            Page<ScmBSendorder> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            // return this.page(page, queryWrapper);
+            return this.baseMapper.findSendInfos2(page, scmBSendorder);
+
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
     @Override
     @Transactional
     public void createScmBSendorder(ScmBSendorder scmBSendorder) {

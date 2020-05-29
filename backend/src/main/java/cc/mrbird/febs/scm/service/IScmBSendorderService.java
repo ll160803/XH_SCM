@@ -21,6 +21,8 @@ public interface IScmBSendorderService extends IService<ScmBSendorder> {
 
         IPage<ScmBSendorder> findScmBSendorders(QueryRequest request, ScmBSendorder scmBSendorder);
 
+        IPage<ScmBSendorder> findScmBSendorders_phone(QueryRequest request, ScmBSendorder scmBSendorder);
+
         void createScmBSendorder(ScmBSendorder scmBSendorder);
 
         void updateScmBSendorder(ScmBSendorder scmBSendorder);

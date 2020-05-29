@@ -82,7 +82,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
         Page<VendorRank> page = new Page<>();
 
         List<VendorRank> records = this.baseMapper.getRank(order);
-        List<VendorRank> backRerords = records.stream().skip((request.getPageNum() - 1) * request.getPageSize()).limit(request.getPageSize()).collect(Collectors.toList());
+        List<VendorRank> backRerords = records;//.stream().skip((request.getPageNum() - 1) * request.getPageSize()).limit(request.getPageSize()).collect(Collectors.toList());
         page.setRecords(backRerords);
         page.setTotal(records.size());
 
