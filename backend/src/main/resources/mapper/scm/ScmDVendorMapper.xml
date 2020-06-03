@@ -143,10 +143,10 @@
         <if test="order.txz01!= null and order.txz01 !=''">
             And (pur1.matnr = #{order.txz01} or pur1.txz01 like concat('%',#{order.txz01},'%'))
         </if>
-        <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
+        <if test="order.werks!= null and order.werks !='' and order.werks !='0'.toString()">
             And pur1.werks = #{order.werks}
         </if>
-        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'.toString()">
             And pur1.lgort = #{order.lgort}
         </if>
         <if test="order.lgortName!= null and order.lgortName !='' and order.lgortName !='0'">
@@ -177,10 +177,10 @@
         <if test="order.txz01!= null and order.txz01 !=''">
             And (pur1.matnr = #{order.txz01} or pur1.txz01 like concat('%',#{order.txz01},'%'))
         </if>
-        <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
+        <if test="order.werks!= null and order.werks !='' and order.werks !='0'.toString()">
             And pur1.werks = #{order.werks}
         </if>
-        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'.toString()">
             And pur1.lgort = #{order.lgort}
         </if>
         <if test="order.lgortName!= null and order.lgortName !=''">
@@ -223,10 +223,10 @@
         <if test="order.bedat != null">
             AND ord.bedat <![CDATA[ <= ]]> #{order.bedat}
         </if>
-        <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
+        <if test="order.werks!= null and order.werks !='' and order.werks !='0'.toString()">
             And ord.werks = #{order.werks}
         </if>
-        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'.toString()">
             And ord.lgort = #{order.lgort}
         </if>
         <if test="order.lgortName!= null and order.lgortName !=''">
@@ -264,10 +264,10 @@
         <if test="order.bedat != null">
             AND ord.bedat <![CDATA[ <= ]]> #{order.bedat}
         </if>
-        <if test="order.werks!= null and order.werks !='' and order.werks !='0'">
+        <if test="order.werks!= null and order.werks !='' and order.werks !='0'.toString()">
             And ord.werks = #{order.werks}
         </if>
-        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'">
+        <if test="order.lgort!= null and order.lgort !='' and order.lgort !='0'.toString()">
             And ord.lgort = #{order.lgort}
         </if>
         <if test="order.lgortName!= null and order.lgortName !=''">

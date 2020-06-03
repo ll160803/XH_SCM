@@ -154,6 +154,7 @@ public ViewSupplyplan detail(@NotBlank(message = "{required}") @PathVariable Str
     public Map<String, Object> List(QueryRequest request,@PathVariable String statusType,ViewSupplyplan viewSupplyplan){
         User currentUser= FebsUtil.getCurrentUser();
         viewSupplyplan.setEbelp(currentUser.getUserId().toString());
+
         return getDataTable(this.iViewSupplyplanService.findDoneViewSupplyplans(request, viewSupplyplan,statusType));
     }
         }

@@ -179,10 +179,10 @@ FROM
 		<if test="order.ebeln != null">
 			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
 		</if>
-		<if test="order.werks != null and order.werks !='0'">
+		<if test="order.werks != null and order.werks !='0'.toString()">
 			AND scm_b_purcharseorder.werks = #{order.werks}
 		</if>
-		<if test="order.lgort != null and order.lgort !='0'">
+		<if test="order.lgort != null and order.lgort !='0'.toString()">
 			AND scm_b_purcharseorder.lgort = #{order.lgort}
 		</if>
 		<if test="order.gysname != null and order.gysname != ''">
@@ -270,10 +270,10 @@ WHERE
 			AND scm_b_supplyplan.status = #{order.status}
 		</if>
 		<if test="order.doneMenge == 0">
-			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge AND length(scm_b_supplyplan.SEND_ORDER_CODE) <![CDATA[ > ]]> 0
 		</if>
 		<if test="order.doneMenge == 2">
-			AND (scm_b_supplyplan.doneMenge is null or scm_b_supplyplan.doneMenge <![CDATA[ < ]]> scm_b_supplyplan.g_Menge)
+			AND (scm_b_supplyplan.doneMenge is null or scm_b_supplyplan.doneMenge <![CDATA[ < ]]> scm_b_supplyplan.g_Menge) AND length(scm_b_supplyplan.SEND_ORDER_CODE) <![CDATA[ > ]]> 0
 		</if>
 		<if test="order.gysaccount != null and order.gysaccount != ''">
 			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
@@ -306,10 +306,10 @@ WHERE
 		<if test="order.ebeln != null">
 			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
 		</if>
-		<if test="order.werks != null and order.werks !='0'">
+		<if test="order.werks != null and order.werks !='0'.toString()">
 			AND scm_b_purcharseorder.werks = #{order.werks}
 		</if>
-		<if test="order.lgort != null and order.lgort !='0'">
+		<if test="order.lgort != null and order.lgort !='0'.toString()">
 			AND scm_b_purcharseorder.lgort = #{order.lgort}
 		</if>
 		<if test="order.gysname != null and order.gysname != ''">
@@ -428,10 +428,10 @@ INNER JOIN (
 		scm_b_purcharseorder b
 	WHERE
 		b.bedat > DATE_SUB(curdate(), INTERVAL 6 MONTH)
-		<if test="order.werks != null and order.werks !='0'">
+		<if test="order.werks != null and order.werks !='0'.toString()">
 			AND b.werks = #{order.werks}
 		</if>
-		<if test="order.lgort != null and order.lgort !='0'">
+		<if test="order.lgort != null and order.lgort !='0'.toString()">
 			AND b.lgort = #{order.lgort}
 		</if>
 		<if test="order.txz01 != null and order.txz01 != ''">
@@ -472,10 +472,10 @@ WHERE
 		) p
 		INNER JOIN scm_b_purcharseorder a ON p.BASE_ID = a.ID
 		WHERE 1 = 1
-		<if test="order.werks != null and order.werks !='0'">
+		<if test="order.werks != null and order.werks !='0'.toString()">
 			AND a.werks = #{order.werks}
 		</if>
-		<if test="order.lgort != null and order.lgort !='0'">
+		<if test="order.lgort != null and order.lgort !='0'.toString()">
 			AND a.lgort = #{order.lgort}
 		</if>
 		<if test="order.txz01 != null and order.txz01 != ''">
