@@ -172,7 +172,7 @@
             And scm_b_sendorder.GYSNAME like concat('%',#{order.gysname},'%')
         </if>
         <if test="order.fphm != null and order.fphm != ''">
-            AND scm_b_sendorder.FPHM = #{order.fphm}
+            And ((scm_b_sendorder.GYSNAME like concat('%',#{order.fphm},'%')) or (scm_b_sendorder.GYSACCOUNT = #{order.fphm}))
         </if>
         <if test="order.bsart != null and order.bsart != ''">
             AND scm_b_sendorder.BSART = #{order.bsart}

@@ -19,14 +19,21 @@ import cc.mrbird.febs.system.service.LoginLogService;
 import cc.mrbird.febs.system.service.UserService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.code.kaptcha.Constants;
+import com.google.code.kaptcha.Producer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
+import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -49,13 +56,16 @@ public class LoginController {
     @Autowired
     private ObjectMapper mapper;
 
+
     @PostMapping("/login")
 //    @Limit(key = "login", period = 60, count = 20, name = "登录接口", prefix = "limit")
     public FebsResponse login(
             @NotBlank(message = "{required}") String username,
-            @NotBlank(message = "{required}") String password, HttpServletRequest request) throws Exception {
+            @NotBlank(message = "{required}") String password,
+            HttpServletRequest request) throws Exception {
         username = StringUtils.lowerCase(username);
         password = MD5Util.encrypt(username, password);
+
 
         final String errorMessage = "用户名或密码错误";
         User user = this.userManager.getUser(username);

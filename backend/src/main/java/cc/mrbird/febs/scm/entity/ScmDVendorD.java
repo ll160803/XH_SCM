@@ -9,6 +9,7 @@ import java.util.List;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -47,12 +48,14 @@ private String filename;
      */
     @TableField("VALID_DATESTART")
             @ExcelField(value ="有效期开始时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
 private Date validDatestart;
     /**
      * 有效期
      */
     @TableField("VALID_DATE")
             @ExcelField(value ="有效期")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
 private Date validDate;
     /**
      * 是否有效

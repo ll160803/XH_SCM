@@ -39,12 +39,28 @@
               size="large"
               type="password"
               v-decorator="['password',{rules: [{ required: true, message: '请输入密码', whitespace: true}]}]"
+              
             >
               <a-icon
                 slot="prefix"
                 type="lock"
               ></a-icon>
             </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-row>
+              <a-col :span="19">
+                <a-input
+                  size="large"
+                  v-decorator="['verifyCode',{rules: [{ required: true, message: '请输入验证码', whitespace: true}]}]"
+                  placeholder="请输入验证码"
+                >
+                </a-input>
+              </a-col>
+              <a-col :span="4" :offset="1">
+                <a-tag color="#87d068" @click="createCode">{{ showCode}}</a-tag>
+              </a-col>
+            </a-row>
           </a-form-item>
         </a-tab-pane>
 
@@ -97,10 +113,16 @@ export default {
       loading: false,
       error: '',
       activeKey: '1',
-      selectVisiable: false
+      selectVisiable: false,
+      checkCode: '',
+      showCode: ''
     }
   },
+  mounted () {
+   this.createCode()
+  },
   computed: {
+    
     systemName () {
       return '武汉协和供应链管理平台'
     },
@@ -111,33 +133,41 @@ export default {
   created () {
     this.$db.clear()
     this.$router.options.routes = []
+
   },
   methods: {
     doLogin () {
       if (this.activeKey === '1') {
         // 用户名密码登录
-        this.form.validateFields(['name', 'password'], (errors, values) => {
+        this.form.validateFields(['name', 'password', 'verifyCode'], (errors, values) => {
           if (!errors) {
-            this.loading = true
             let name = this.form.getFieldValue('name')
             let password = this.form.getFieldValue('password')
-            this.$post('login', {
-              username: name,
-              password: password
-            }).then((r) => {
-              console.info(r)
-              let data = r.data.data
-              this.saveLoginData(data)
-              setTimeout(() => {
-                this.loading = false
-              }, 500)
-              this.$router.push('/')
-            }).catch((e) => {
-              console.error(e)
-              setTimeout(() => {
-                this.loading = false
-              }, 500)
-            })
+            let verifyCodeActual = this.form.getFieldValue('verifyCode')
+            if (verifyCodeActual.toUpperCase() != this.checkCode) {
+              this.$message.warning('验证码输入错误！')
+              this.createCode();
+            }
+            else {
+              this.loading = true
+              this.$post('login', {
+                username: name,
+                password: password
+              }).then((r) => {
+                console.info(r)
+                let data = r.data.data
+                this.saveLoginData(data)
+                setTimeout(() => {
+                  this.loading = false
+                }, 500)
+                this.$router.push('/')
+              }).catch((e) => {
+                console.error(e)
+                setTimeout(() => {
+                  this.loading = false
+                }, 500)
+              })
+            }
           }
         })
       }
@@ -146,16 +176,30 @@ export default {
         this.$message.warning('暂未开发')
       }
     },
+    createCode () {
+      let code = "";
+      let code2="";
+      const codeLength = 4; //验证码的长度  
+      const random = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+        'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'); //随机数  
+      for (let i = 0; i < codeLength; i++) { //循环操作  
+        let index = Math.floor(Math.random() * 36); //取得随机数的索引（0~35）  
+        code += random[index]; //根据索引取得随机数加到code上  
+        code2 += "        "+random[index];
+      }
+      this.checkCode = code; //把code值赋给验证码  
+      this.showCode=code2;
+    },
     open () {
       this.selectVisiable = true
     },
     close () {
       this.selectVisiable = false
     },
-    observe (type,vendorId) {
+    observe (type, vendorId) {
       this.selectVisiable = false
-      console.info("type:"+this.type+" vendorId:"+vendorId)
-      this.$emit('regist', 'Modify',vendorId)
+      console.info("type:" + this.type + " vendorId:" + vendorId)
+      this.$emit('regist', 'Modify', vendorId)
     },
     regist () {
       this.$emit('regist', 'Regist')

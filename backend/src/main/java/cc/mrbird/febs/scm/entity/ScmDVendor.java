@@ -70,6 +70,13 @@ public class ScmDVendor implements Serializable{
     @TableField("EMAIL")
     @ExcelField(value ="邮件")
     private String email;
+
+    /**
+     * beizhu
+     */
+    @TableField("NOTE")
+    @ExcelField(value ="备注")
+    private String note;
     /**
      * 状态
      */
@@ -141,6 +148,14 @@ public class ScmDVendor implements Serializable{
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getNote(){
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public String getName(){

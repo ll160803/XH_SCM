@@ -3,48 +3,35 @@
     :bordered="false"
     class="card-area"
   >
-    <div ref="lodopDiv"></div>
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="6"
+              :md="12"
               :sm="24"
             >
               <a-form-item
-                label="药品名称"
+                label="药品名称编码"
                 :labelCol="{span: 8}"
                 :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.txz01" />
-              </a-form-item>
-            </a-col>
-            <a-col
-              :md="6"
-              :sm="24"
-            >
-              <a-form-item
-                label="药品编码"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
-              >
-                <a-input v-model="queryParams.matnr" />
+                <a-input v-model="queryParams.keyword_mater" />
               </a-form-item>
             </a-col>
             <a-col
               :md="12"
               :sm="24"
             >
-              <werks-lgort
-                ref="werklgort"
-                @werks="setWerks"
-                @lgort="setLgort"
+              <a-form-item
+                label="供应商"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
-              </werks-lgort>
+                <a-input v-model="queryParams.keyword_gys" />
+              </a-form-item>
             </a-col>
           </a-row>
-
         </div>
         <span style="float: right; margin-top: 3px;">
           <a-button
@@ -77,7 +64,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="scroll"
+        :scroll="{ x: 900 }"
       >
         <template
           slot="remark"
@@ -90,29 +77,47 @@
             <p style="width: 200px;margin-bottom: 0">{{text}}</p>
           </a-popover>
         </template>
+        <template
+          slot="operation"
+          slot-scope="text, record"
+        >
+          <a-icon
+            type="eye"
+            theme="twoTone"
+            twoToneColor="#4a9ff5"
+            @click="edit(record)"
+            title="查看"
+          ></a-icon>
+        </template>
       </a-table>
     </div>
+        <scmBGysMater-view
+      ref="scmBGysmatersendEdit"
+      @close="handleEditClose"
+      :editVisiable="editVisiable"
+      :isShowsub="isShowsub"
+    >
+    </scmBGysMater-view>
   </a-card>
 </template>
 
 <script>
+
 import moment from 'moment'
-import { mapState } from 'vuex'
-import WerksLgort from '../../common/WerksLgort'
+import ScmBGysMaterView from '../ScmBGysmatersend/ScmBGysMaterView'
 
 export default {
-  name: 'ScmBSupplyplan',
-  components: { WerksLgort },
+  name: 'ScmBGysMaterPic',
+  components: { ScmBGysMaterView },
   data () {
     return {
-      scroll: {
-        x: 1000,
-        y: window.innerHeight - 200 - 100 
-      },
       advanced: false,
       dataSource: [],
       selectedRowKeys: [],
-      sortedInfo: null,
+      sortedInfo: {
+        field: 'Create_TIME',
+        order: 'descend'
+      },
       paginationInfo: null,
       pagination: {
         pageSizeOptions: ['10', '20', '30', '40', '100'],
@@ -122,64 +127,58 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {
-        
-      },
+      queryParams: {},
       addVisiable: false,
       editVisiable: false,
+      isShowsub: true,
       loading: false,
-      bordered: true,
-      printIds: '',
-      printVisiable: false,
-      lodop: {}
+      bordered: true
     }
   },
   computed: {
-    ...mapState({
-      user: state => state.account.user
-    }),
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '物料编码',
+        title: '供应商名称',
+        dataIndex: 'name',
+        width: 200
+      }, {
+        title: '供应商账号',
+        dataIndex: 'gysaccount',
+        width: 100
+      }, {
+        title: '药品编码',
         dataIndex: 'matnr',
         width: 100
       }, {
-        title: '物料描述',
+        title: '药品名称',
         dataIndex: 'txz01'
-      }, {
-        title: '院区名称',
-        dataIndex: 'werkst',
-        width: 150
-      }, {
-        title: '库房',
-        dataIndex: 'lgortName',
-        width: 100
-      }, {
-        title: '批次',
-        dataIndex: 'charge',
-        width: 150
-      }, {
-        title: '有效期',
-        dataIndex: 'vfdat',
-        width: 100,
+      },, {
+        title: '配送开始日期',
+        dataIndex: 'sendStartTime',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
-        }
-      }, {
-        title: '剩余有效期',
-        dataIndex: 'id',
-        customRender: (text, row, index) => {
-          return moment(row.vfdat).diff(moment().format('YYYY-MM-DD'), 'days') +'天'
         },
         width: 100
-      }
-      ]
+      }, {
+        title: '配送结束日期',
+        dataIndex: 'sendEndTime',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        },
+        width: 100
+      }, {
+        title: '操作',
+        dataIndex: 'operation',
+        scopedSlots: { customRender: 'operation' },
+        fixed: 'right',
+        width: 100
+      }]
     }
   },
   mounted () {
-    this.search()
+    this.fetch()
   },
   methods: {
     onSelectChange (selectedRowKeys) {
@@ -191,30 +190,77 @@ export default {
         this.queryParams.comments = ''
       }
     },
-    setWerks (werks) {
-      this.queryParams.werks = werks
+    handleAddSuccess () {
+      this.addVisiable = false
+      this.$message.success('新增配送信息成功')
+      this.search()
     },
-    setLgort (lgort) {
-      this.queryParams.lgort = lgort
+    handleAddClose () {
+      this.addVisiable = false
     },
-    print () {
-      if (!this.selectedRowKeys.length) {
-        this.$message.warning('请选择需要打印的记录')
-        return
-      }
-      this.printIds = this.selectedRowKeys.join(',')
-      getLodopDiv(this.$refs.lodopDiv)
-      if (getLodop() == undefined || getLodop() == null) {
-
+    add () {
+      this.addVisiable = true
+    },
+    handleEditSuccess () {
+      this.editVisiable = false
+      this.$message.success('修改配送成功')
+      this.search()
+    },
+    handleEditClose () {
+      this.editVisiable = false
+    },
+    edit (record) {
+      this.$refs.scmBGysmatersendEdit.setFormValues(record)
+      if (record.state == 1) {
+        this.isShowsub = false
       }
       else {
-        this.lodop = getLodop();
-        this.printVisiable = true
+        this.isShowsub = true
       }
+      this.editVisiable = true
     },
-    handlePrintClose () {
-      this.lodop = null
-      this.printVisiable = false
+    batchDelete () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要删除的记录')
+        return
+      }
+      let that = this
+      this.$confirm({
+        title: '确定删除所选中的记录?',
+        content: '当您点击确定按钮后，这些记录将会被彻底删除',
+        centered: true,
+        onOk () {
+          const dataSource = [...that.dataSource]
+          let IsValid = 0
+          for (let key in that.selectedRowKeys) {
+            let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
+
+            if (row.state == 1) {
+              IsValid = 1
+              that.$message.warning(`该${row.materId}_${row.charge}已经审核不能删除,请确认操作`)
+            }
+
+          }
+          if (IsValid == 0) {
+            let scmBGysmatersendIds = that.selectedRowKeys.join(',')
+            that.$delete('scmBGysmatersend/' + scmBGysmatersendIds).then((data) => {
+              if(data===undefined)
+              {
+                that.$message.success('删除成功')
+              }
+              else{
+                that.$message.success(data)
+              }
+              
+              that.selectedRowKeys = []
+              that.search()
+            })
+          }
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
+      })
     },
     exportExcel () {
       let { sortedInfo } = this
@@ -224,7 +270,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('scmBSupplyplan/excel', {
+      this.$export('scmBGysmatersend/excel', {
         sortField: sortField,
         sortOrder: sortOrder,
         ...this.queryParams
@@ -282,13 +328,17 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      if (params.sortField == null) {
-        params.sortField = "vfdat"
-        params.sortOrder = "ascend"
+      if (this.sortedInfo) {
+        if (!params.sortField) {
+          params.sortField = this.sortedInfo.field
+          params.sortOrder = this.sortedInfo.order
+        }
       }
-      params.bsartD = "0"
-      //params.gysaccount = this.user.username//供应商账号
-      this.$get('viewSupplyplan/matnr', {
+       if (params.sortField == null) {
+        params.sortField = "Create_TIME"
+        params.sortOrder = "descend"
+      }
+      this.$get('scmBGysmatersend/audit', {
         ...params
       }).then((r) => {
         let data = r.data

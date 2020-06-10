@@ -3,6 +3,7 @@ package cc.mrbird.febs.scm.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmDVendorDMapper;
+import cc.mrbird.febs.scm.dao.ScmDVendoruserMapper;
 import cc.mrbird.febs.scm.entity.*;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
 import cc.mrbird.febs.scm.service.IScmDVendorService;
@@ -43,6 +44,8 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
 
     @Autowired
     private ScmDVendorDMapper scmDVendorDMapper;
+    @Autowired
+    private ScmDVendoruserMapper scmDVendoruserMapper;
 
     @Override
     public IPage<ScmDVendor> findScmDVendors(QueryRequest request, ScmDVendor scmDVendor, String keyword) {
@@ -142,7 +145,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
 
     @Override
     @Transactional
-    public void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS) {
+    public void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS,ScmDVendoruser enscmDVendoruser) {
         if(!StringUtils.isNotBlank(scmDVendor.getId()))
         {
             scmDVendor.setId(UUID.randomUUID().toString());
@@ -159,11 +162,16 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             scmDVendorD.setBaseId(scmDVendor.getId());
             scmDVendorDMapper.insert(scmDVendorD);
         }
+        if(StringUtils.isNotBlank( enscmDVendoruser.getIdcard())) {
+            enscmDVendoruser.setId(UUID.randomUUID().toString());
+            enscmDVendoruser.setBaseId(scmDVendor.getId());
+            this.scmDVendoruserMapper.insert(enscmDVendoruser);
+        }
     }
 
     @Override
     @Transactional
-    public void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS) {
+    public void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS, ScmDVendoruser enscmDVendoruser) {
         scmDVendor.setModifyTime(new Date());
         this.updateScmDVendor(scmDVendor);
         QueryWrapper<ScmDVendorD> queryWrapper = new QueryWrapper<>();
@@ -176,5 +184,16 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             scmDVendorD.setBaseId(scmDVendor.getId());
             scmDVendorDMapper.insert(scmDVendorD);
         }
+
+        QueryWrapper<ScmDVendoruser> queryWrapper2 = new QueryWrapper<>();
+
+        queryWrapper2.lambda().eq(ScmDVendoruser::getBaseId, F_id);
+        this.scmDVendoruserMapper.delete(queryWrapper2);
+        if(StringUtils.isNotBlank( enscmDVendoruser.getIdcard())) {
+            enscmDVendoruser.setId(UUID.randomUUID().toString());
+            enscmDVendoruser.setBaseId(scmDVendor.getId());
+            this.scmDVendoruserMapper.insert(enscmDVendoruser);
+        }
+
     }
 }

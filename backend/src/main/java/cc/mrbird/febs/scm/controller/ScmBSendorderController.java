@@ -90,7 +90,12 @@ public class ScmBSendorderController extends BaseController {
         log.error("art:"+scmBSendorder.getBsart());
         return getDataTable(this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder));
     }
-
+    @GetMapping("admin")
+    @RequiresPermissions("scmBSendorder:view")
+    public Map<String, Object> List2(QueryRequest request, ScmBSendorder scmBSendorder) {
+        scmBSendorder.setIsDeletemark(1);
+        return getDataTable(this.iScmBSendorderService.findScmBSendorders(request, scmBSendorder));
+    }
     @GetMapping("planIds/{sendCode}")
     public  FebsResponse GetPlanIds(@PathVariable(value = "sendCode") String sendCode)
     {
@@ -624,7 +629,6 @@ public class ScmBSendorderController extends BaseController {
         return getDataTable(list);
     }
     @GetMapping("phoneSendOrder")
-    @RequiresPermissions("phoneSendOrder:view")
     public Map<String, Object> phoneSendOrderList3(QueryRequest request, ScmBSendorder scmBSendorder, ViewSupplyplan viewSupplyplan) {
         User currentUser = FebsUtil.getCurrentUser();
         scmBSendorder.setIsDeletemark(1);

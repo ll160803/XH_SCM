@@ -9,6 +9,7 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ScmDVendorD;
+import cc.mrbird.febs.scm.entity.ScmDVendoruser;
 import cc.mrbird.febs.scm.service.IScmDVendorDService;
 import cc.mrbird.febs.scm.service.IScmDVendorService;
 import cc.mrbird.febs.scm.entity.ScmDVendor;
@@ -159,7 +160,7 @@ public class ScmDVendorController extends BaseController {
     }
 
     @PostMapping("regist")
-    public FebsResponse regist(ScmDVendor scmDVendor, String scmDVendorD)  {
+    public FebsResponse regist(ScmDVendor scmDVendor, String scmDVendorD,String scmDVendoruser)  {
         FebsResponse response=new FebsResponse();
         String F_id = UUID.randomUUID().toString();
         try {
@@ -167,8 +168,8 @@ public class ScmDVendorController extends BaseController {
             scmDVendor.setId(F_id);
             List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {
             });
-
-            this.iScmDVendorService.createScmVendor(scmDVendor, list);
+            ScmDVendoruser enscmDVendoruser = JSON.parseObject(scmDVendoruser, new TypeReference<ScmDVendoruser>() {});
+            this.iScmDVendorService.createScmVendor(scmDVendor, list,enscmDVendoruser);
             response.message(F_id);
         } catch (Exception e) {
             message = "注册失败";
@@ -179,13 +180,13 @@ public class ScmDVendorController extends BaseController {
     }
 
     @PostMapping("Edit")
-    public void edit(ScmDVendor scmDVendor, String scmDVendorD) throws FebsException {
+    public void edit(ScmDVendor scmDVendor, String scmDVendorD, String scmDVendoruser) throws FebsException {
         try {
 
             List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {
             });
-
-            this.iScmDVendorService.updateScmDVendor(scmDVendor, list);
+            ScmDVendoruser enscmDVendoruser = JSON.parseObject(scmDVendoruser, new TypeReference<ScmDVendoruser>() {});
+            this.iScmDVendorService.updateScmDVendor(scmDVendor, list,enscmDVendoruser);
             //region 编辑用户的姓名
             if (StringUtils.isNotBlank(scmDVendor.getCode()) && StringUtils.isNotBlank(scmDVendor.getName())) {
                 this.userService.updateRealname(scmDVendor.getCode(), scmDVendor.getName());
@@ -217,7 +218,7 @@ public class ScmDVendorController extends BaseController {
                             user.setRealname(item.getName());//供应商名称
                             user.setAvatar("default.jpg");
                             user.setSsex("1");
-                            user.setPassword("0000");
+                            user.setPassword("1234qwer");
                             user.setDeptId(1L);
                             user.setStatus("1");//有效
                             user.setCode(item.getId());//存储供应商的ID

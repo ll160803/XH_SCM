@@ -2,7 +2,7 @@
   <a-drawer
     title="详情"
     :maskClosable="false"
-    width=650
+    width=800
     placement="right"
     :closable="false"
     @close="onClose"
@@ -56,6 +56,12 @@
         />
       </a-form-item>
     </a-form>
+            <vendor-user
+      title="业务员信息"
+      isRequire="true"
+      ref="vendorUser"
+    >
+    </vendor-user>
     <attach-file
       v-for="item in attachList"
       :key="item.index"
@@ -80,13 +86,14 @@
 <script>
 import moment from 'moment'
 import AttachFile from './AttachFile'
+import VendorUser from './VendorUser'
 
 const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 18 }
 }
 export default {
-  components: { AttachFile },
+  components: { AttachFile, VendorUser },
   name: 'ScmDVendorEdit',
   props: {
     editVisiable: {
@@ -99,7 +106,8 @@ export default {
       formItemLayout,
       form: this.$form.createForm(this),
       scmDVendor: {},
-      attachList: []
+      attachList: [],
+      scmDVendoruser: {}
     }
   },
   methods: {
@@ -174,6 +182,19 @@ export default {
           }
         }
       })
+      this.setVendorUser(scmDVendor.id)
+    },
+    setVendorUser (vendorId) {
+      this.$get('scmDVendoruser/user2/' + vendorId).then((r) => {
+        console.log(r)
+        if (r.data != null) {
+          let data2 = r.data.data
+          //let vendorUser = data2.scmDVendoruser
+           let that = this
+        
+          that.$refs.vendorUser.getVendorUserFields(data2)
+        }
+      });
     }
   }
 }

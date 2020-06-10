@@ -9,7 +9,7 @@
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -20,8 +20,20 @@
                 <a-input v-model="queryParams.id" />
               </a-form-item>
             </a-col>
+               <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="供应商"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
+              >
+                <a-input v-model="queryParams.fphm" />
+              </a-form-item>
+            </a-col>
              <a-col
-                :md="16"
+                :md="12"
                 :sm="24"
               >
                 <werks-lgort
@@ -212,6 +224,12 @@ export default {
       return [{
         title: '送货清单号',
         dataIndex: 'id'
+      }, {
+        title: '供应商账号',
+        dataIndex: 'gysaccount'
+      }, {
+        title: '供应商名称',
+        dataIndex: 'gysname'
       }, {
         title: '院区',
         dataIndex: 'werkst'
@@ -502,7 +520,7 @@ export default {
         params.sortField = "ID"
         params.sortOrder = "descend"
       }
-      this.$get('scmBSendorder', {
+      this.$get('scmBSendorder/admin', {
         ...params
       }).then((r) => {
         let data = r.data

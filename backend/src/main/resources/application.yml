@@ -94,7 +94,7 @@ febs:
         num: 1000
   shiro:
     # 后端免认证接口 url
-    anonUrl: /webservice/*,/comFile/checkFile/*,/uploadFile/**,/login,/scmDVendor/Edit,/scmDVendor/GetByVendorId/*,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
+    anonUrl: /webservice/*,/comFile/checkFile/*,/uploadFile/**,/login,/kaptcha,/scmDVendoruser/user2/*,/scmDVendor/GetByVendorId/*,/scmDVendor/regist,/comFile/upload,/logout/**,/regist,/user/check/**,/swagger-resources/**,/webjars/**,/v2/**,/swagger-ui.html/**,/favicon.ico
     # token有效期，单位秒
     jwtTimeOut: 10800
   # Swagger相关配置

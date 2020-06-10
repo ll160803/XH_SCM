@@ -1,6 +1,6 @@
 <template>
   <a-drawer
-    title="修改"
+    title="查看"
     :maskClosable="false"
     width=650
     placement="right"
@@ -17,37 +17,45 @@
         <up-fc ref="upfc">
         </up-fc>
       </a-form-item>
-      <a-form-item
+     <a-form-item
         v-bind="formItemLayout"
-        label="批次号"
+        label="配送开始日期"
       >
-        <a-input
-          placeholder="请输入批次号"
-          v-decorator="['charge', {rules: [{ required: true, message: '批次号不能为空' }]}]"
-        />
+         <a-date-picker
+              v-decorator="[
+          'sendStartTime',
+          { rules: [{ required:true , message: '请输入配送开始日期' }] },
+        ]"
+              placeholder="请输入配送开始日期"
+              @change="onChange"
+            />
+      </a-form-item>
+       <a-form-item
+        v-bind="formItemLayout"
+        label="配送结束日期"
+      >
+         <a-date-picker
+              v-decorator="[
+          'sendEndTime',
+          { rules: [{ required:true , message: '请输入配送结束日期' }] },
+        ]"
+              placeholder="请输入配送结束日期"
+              @change="onChange"
+            />
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="备注"
-      >
-        <a-input
-          placeholder="请输入备注"
-          v-decorator="['comments', {}]"
-        />
-      </a-form-item>
-      <a-form-item
-        v-bind="formItemLayout"
-        label="文件上传"
+        label="配送委托函上传"
       >
         <a-upload
           :fileList="fileList"
           :remove="handleRemove"
           :beforeUpload="beforeUpload"
         >
-          <a-button>
-            <a-icon type="upload" /> 选择文件 </a-button>
+        <!--  <a-button>
+       <a-icon type="upload" /> 选择文件 </a-button> -->
         </a-upload>
-        <a-button
+       <!--  <a-button
           type="primary"
           @click="handleUpload"
           :disabled="fileList.length === 0 ||isShow===0"
@@ -55,36 +63,24 @@
           style="margin-top: 16px"
         >
           {{uploading ? '上传中' : '开始上传' }}
-        </a-button>
+        </a-button>-->
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-popconfirm
-        title="确定放弃编辑？"
-        @confirm="onClose"
-        okText="确定"
-        cancelText="取消"
-      >
-        <a-button style="margin-right: .8rem">取消</a-button>
-      </a-popconfirm>
-      <a-button
-        @click="handleSubmit"
-        type="primary"
-        :loading="loading"
-        v-show="isShowsub"
-      >提交</a-button>
+        <a-button @click="onClose" style="margin-right: .8rem">关闭</a-button>
     </div>
   </a-drawer>
 </template>
 <script>
 import upFc from '../../common/UpFileCustomer'
+import moment from 'moment'
 
 const formItemLayout = {
-  labelCol: { span: 3 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 5 },
+  wrapperCol: { span: 16 }
 }
 export default {
-  name: 'ScmBGysMaterPicEdit',
+  name: 'ScmBGysMatersendEdit',
   components: { upFc },
   props: {
     editVisiable: {
@@ -102,7 +98,7 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      scmBGysMaterPic: {
+      scmBGysmatersend: {
         fileId: '',
         materId: ''
       }
@@ -114,48 +110,48 @@ export default {
       this.$refs.upfc.reset()
       this.$refs.upfc.matnr = ''
       this.fileList = []
-      this.scmBGysMaterPic.materId = ''
-      this.scmBGysMaterPic.fileId = ''
+      this.scmBGysmatersend.materId = ''
+      this.scmBGysmatersend.fileId = ''
       this.form.resetFields()
     },
     onClose () {
       this.reset()
       this.$emit('close')
     },
-    setFormValues ({ ...scmBGysMaterPic }) {
-      let fields = ['charge', 'comments']
-      let fieldDates = ['createTime', 'modifyTime']
-      Object.keys(scmBGysMaterPic).forEach((key) => {
+    setFormValues ({ ...scmBGysmatersend }) {
+      let fields = ['sendStartTime', 'sendEndTime']
+      let fieldDates = ['sendStartTime', 'sendEndTime']
+      Object.keys(scmBGysmatersend).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
           let obj = {}
           if (fieldDates.indexOf(key) !== -1) {
-            if (scmBGysMaterPic[key] !== '') {
-              obj[key] = moment(scmBGysMaterPic[key])
+            if (scmBGysmatersend[key] !== '') {
+              obj[key] = moment(scmBGysmatersend[key])
             }
           } else {
-            obj[key] = scmBGysMaterPic[key]
+            obj[key] = scmBGysmatersend[key]
           }
           this.form.setFieldsValue(obj)
         }
       })
-      this.scmBGysMaterPic.id = scmBGysMaterPic.id
-      this.scmBGysMaterPic.materId = scmBGysMaterPic.materId
-      this.scmBGysMaterPic.matnr = scmBGysMaterPic.matnr
+      this.scmBGysmatersend.id = scmBGysmatersend.id
+      this.scmBGysmatersend.materId = scmBGysmatersend.materId
+      this.scmBGysmatersend.matnr = scmBGysmatersend.matnr
       //console.info(this.$refs.upfc)
-      if (scmBGysMaterPic.fileId) {
-        if (scmBGysMaterPic.fileId != '') {
-          this.scmBGysMaterPic.fileId = scmBGysMaterPic.fileId
+      if (scmBGysmatersend.fileId) {
+        if (scmBGysmatersend.fileId != '') {
+          this.scmBGysmatersend.fileId = scmBGysmatersend.fileId
           this.isShow = 0
           this.fileList = []
-          this.$get('comFile/' + scmBGysMaterPic.fileId).then((r) => {
-            this.$refs.upfc.setFormValue(scmBGysMaterPic.matnr + '_' + scmBGysMaterPic.txz01,scmBGysMaterPic.matnr, scmBGysMaterPic.materId)
+          this.$get('comFile/' + scmBGysmatersend.fileId).then((r) => {
+            this.$refs.upfc.setFormValue(scmBGysmatersend.matnr + '_' + scmBGysmatersend.txz01,scmBGysmatersend.matnr, scmBGysmatersend.materId)
             let data = r.data
             this.fileList.push({
               uid: data.id,
               name: data.clientName,
               status: 'done',
-              url: this.$baseUrl + 'comFile/checkFile/' + data.serverName
+              url: this.$baseUrl + 'uploadFile/' + data.serverName
             })
           })
         }
@@ -172,7 +168,7 @@ export default {
       console.log(date, dateString);
     },
     beforeUpload (file) {
-      const isJPG = file.type === 'application/pdf'
+      const isJPG = file.type === 'pdf'
       if (!isJPG) {
         this.$message.error('请只上传pdf文件!')
       }
@@ -192,8 +188,8 @@ export default {
       this.uploading = true
 
       // You can use any AJAX library you like
-      this.$upload('comFile/uploadCheck', formData).then((r) => {
-        this.scmBGysMaterPic.fileId = r.data.data
+      this.$upload('comFile/upload', formData).then((r) => {
+        this.scmBGysmatersend.fileId = r.data.data
         //this.fileList = []
         this.isShow = 0
         this.uploading = false
@@ -204,23 +200,23 @@ export default {
       })
     },
     handleSubmit () {
-      if (this.scmBGysMaterPic.materId == '') {
+      if (this.scmBGysmatersend.materId == '') {
         this.$message.warning('请在下拉列表里选择药品.')
         return false
       }
-      if (this.scmBGysMaterPic.fileId == '') {
+      if (this.scmBGysmatersend.fileId == '') {
         this.$message.warning('请上传资质附件.')
         return false
       }
       this.form.validateFields((err, values) => {
         if (!err) {
-          let scmBGysMaterPic = this.form.getFieldsValue()
-          scmBGysMaterPic.id = this.scmBGysMaterPic.id
-          scmBGysMaterPic.materId = this.$refs.upfc.materId
-          scmBGysMaterPic.matnr = this.$refs.upfc.matnr
-          scmBGysMaterPic.fileId = this.scmBGysMaterPic.fileId
-          this.$put('scmBGysMaterPic', {
-            ...scmBGysMaterPic
+          let scmBGysmatersend = this.form.getFieldsValue()
+          scmBGysmatersend.id = this.scmBGysmatersend.id
+          scmBGysmatersend.materId = this.$refs.upfc.materId
+          scmBGysmatersend.matnr = this.$refs.upfc.matnr
+          scmBGysmatersend.fileId = this.scmBGysmatersend.fileId
+          this.$put('scmBGysmatersend', {
+            ...scmBGysmatersend
           }).then(() => {
             this.reset()
             this.$emit('success')

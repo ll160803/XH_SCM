@@ -26,8 +26,8 @@ public interface IScmDVendorService extends IService<ScmDVendor> {
 
         void deleteScmDVendors(String[]Ids);
 
-        void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS);
-        void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS);
+        void createScmVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS, ScmDVendoruser enscmDVendoruser);
+        void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS, ScmDVendoruser enscmDVendoruser);
 
         IPage<VendorRank> findScmDVendorsRank(QueryRequest request, ScmBPurcharseorder order);
         IPage<MaterPercentage> findScmDVendorsMater(QueryRequest request, ScmBPurcharseorder order);

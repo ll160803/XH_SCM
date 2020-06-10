@@ -31,9 +31,9 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
         @Update("update Scm_B_Supplyplan set doneMenge=0 where id=${id} and status=0")
         int UpdateCancelDoneMenge(@Param(value="id") String id);
 
-        void doneSupplyPlan(@Param("ids") List<Long> ids);
+        void doneSupplyPlan(@Param("ids") List<String> ids);
 
-        void cancelSupplyPlan(@Param("ids") List<Long> ids);
+        void cancelSupplyPlan(@Param("ids") List<String> ids);
 
 
         List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);

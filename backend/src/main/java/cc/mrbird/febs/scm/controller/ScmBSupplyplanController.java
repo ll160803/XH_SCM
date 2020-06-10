@@ -222,6 +222,7 @@ public class ScmBSupplyplanController extends BaseController {
     @PutMapping("cancelplan")
     public void updateCancelScmBSupplyplan(@Valid String ids) throws FebsException {
         try {
+            message ="";
             User currentUser = FebsUtil.getCurrentUser();
             String str_ids = "'" + ids.replace(",", "','") + "'";
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
@@ -260,12 +261,13 @@ public class ScmBSupplyplanController extends BaseController {
     @PutMapping("over")
     public void updateOverScmBSupplyplan(@Valid String ids) throws FebsException {
         try {
+            message ="";
             log.error("收货id"+ids);
             User currentUser = FebsUtil.getCurrentUser();
             String str_ids = "'" + ids.replace(",", "','") + "'";
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
             List<ViewSupplyplan> doneList = new ArrayList<>();
-            List<Long> arrids = new ArrayList<>();
+            List<String> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
                 if (en.getStatus().equals(1)) {
@@ -275,7 +277,7 @@ public class ScmBSupplyplanController extends BaseController {
                 } else {
                     en.setStatus(1);
                     doneList.add(en);
-                    arrids.add(en.getId());
+                    arrids.add(en.getId().toString());
                 }
 
             }
@@ -307,12 +309,12 @@ public class ScmBSupplyplanController extends BaseController {
     @PutMapping("overSendOrder")
     public void updateOverScmBSupplyplan2(@Valid String sendOrderId) throws FebsException {
         try {
-
+            message ="";
             User currentUser = FebsUtil.getCurrentUser();
 
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
             List<ViewSupplyplan> doneList = new ArrayList<>();
-            List<Long> arrids = new ArrayList<>();
+            List<String> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
                 if (en.getStatus().equals(1)) {
@@ -323,7 +325,7 @@ public class ScmBSupplyplanController extends BaseController {
                 } else {
                     en.setStatus(1);
                     doneList.add(en);
-                    arrids.add(en.getId());
+                    arrids.add(en.getId().toString());
                 }
 
             }
@@ -355,11 +357,12 @@ public class ScmBSupplyplanController extends BaseController {
     @PutMapping("cancelSendOrder")
     public void updateCancelScmBSendOrder(@Valid String sendOrderId) throws FebsException {
         try {
+            message ="";
             User currentUser = FebsUtil.getCurrentUser();
 
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
             List<ViewSupplyplan> doneList = new ArrayList<>();
-            List<Long> arrids = new ArrayList<>();
+            List<String> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
                 if (!en.getStatus().equals(1)) {
@@ -368,7 +371,7 @@ public class ScmBSupplyplanController extends BaseController {
                 } else {
                     en.setStatus(0);
                     doneList.add(en);
-                    arrids.add(en.getId());
+                    arrids.add(en.getId().toString());
                 }
 
             }
