@@ -66,13 +66,7 @@ public class ScmBSupplyplanController extends BaseController {
     @Autowired
     public FebsProperties febsProperties;
 
-    /**
-     * 分页查询数据
-     *
-     * @param bootStrapTable 分页信息
-     * @param scmBSupplyplan 查询条件
-     * @return
-     */
+
     @GetMapping
     public Map<String, Object> List(QueryRequest request, ScmBSupplyplan scmBSupplyplan) {
         scmBSupplyplan.setIsDeletemark(1);
@@ -102,14 +96,7 @@ public class ScmBSupplyplanController extends BaseController {
         return this.iScmBSupplyplanService.IsExistFphm(id, fphm, gysAccount);
     }
 
-    /**
-     * 跳转添加页面
-     *
-     * @param request
-     * @param response
-     * @param model
-     * @return
-     */
+
     @Log("新增/按钮")
     @PostMapping
     @RequiresPermissions("scmBSupplyplan:add")
@@ -153,18 +140,16 @@ public class ScmBSupplyplanController extends BaseController {
         }
     }
 
-    /**
-     * 跳转修改页面
-     *
-     * @param request
-     * @param id      实体ID
-     * @return
-     */
+
     @Log("修改预收数量")
     @PutMapping("done")
     public void updateDoneScmBSupplyplan(@Valid String id, String doneMenge) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
+            if(iScmBSupplyplanService.HasSendOrder(id))
+            {
+                throw new FebsException("此供应计划尚未产生送货清单，不允许预收！");
+            }
             this.iScmBSupplyplanService.updateDoneMenge(id, doneMenge);
         } catch (Exception e) {
             message = e.getMessage();
@@ -197,9 +182,9 @@ public class ScmBSupplyplanController extends BaseController {
             if (!flag) {
                 throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
             }
-            if(!iScmBSupplyplanService.HasSendOrder(scmBSupplyplan.getId().toString()))
+            if(!iScmBSupplyplanService.HasPreDone(scmBSupplyplan.getId().toString()))
             {
-                throw new FebsException("此供应计划已经产生送货清单，不允许修改！");
+                throw new FebsException("此供应计划已经产生预收，不允许修改！");
             }
             this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
             List<ViewSupplyplan> list = new ArrayList<>();
@@ -267,7 +252,7 @@ public class ScmBSupplyplanController extends BaseController {
             String str_ids = "'" + ids.replace(",", "','") + "'";
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
             List<ViewSupplyplan> doneList = new ArrayList<>();
-            List<String> arrids = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
                 if (en.getStatus().equals(1)) {
@@ -277,7 +262,7 @@ public class ScmBSupplyplanController extends BaseController {
                 } else {
                     en.setStatus(1);
                     doneList.add(en);
-                    arrids.add(en.getId().toString());
+                    arrids.add(en.getId());
                 }
 
             }
@@ -314,18 +299,18 @@ public class ScmBSupplyplanController extends BaseController {
 
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
             List<ViewSupplyplan> doneList = new ArrayList<>();
-            List<String> arrids = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
                 if (en.getStatus().equals(1)) {
-                    message +=  "此送货清单已收货";
+                    message +=  "此送货清单已入库";
                     break;
                 } else if (!en.getgMenge().equals(en.getDoneMenge())) {
                     message += "供应计划"+en.getId().toString() + ":预收数量不等于供应计划数量";
                 } else {
                     en.setStatus(1);
                     doneList.add(en);
-                    arrids.add(en.getId().toString());
+                    arrids.add(en.getId());
                 }
 
             }
@@ -362,16 +347,16 @@ public class ScmBSupplyplanController extends BaseController {
 
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
             List<ViewSupplyplan> doneList = new ArrayList<>();
-            List<String> arrids = new ArrayList<>();
+            List<Long> arrids = new ArrayList<>();
             for (ViewSupplyplan en : list
             ) {
                 if (!en.getStatus().equals(1)) {
-                    message += "此送货清单尚未收货";
+                    message += "此送货清单尚未入库";
                     break;
                 } else {
                     en.setStatus(0);
                     doneList.add(en);
-                    arrids.add(en.getId().toString());
+                    arrids.add(en.getId());
                 }
 
             }
@@ -462,9 +447,9 @@ public class ScmBSupplyplanController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             String[] arr_ids = ids.split(StringPool.COMMA);
             //if(this.iScmBSupplyplanService.)
-           if(!iScmBSupplyplanService.HasSendOrder(ids))
+           if(!iScmBSupplyplanService.HasPreDone(ids))
            {
-               throw new FebsException("此供应计划已经产生送货清单，不允许删除！");
+               throw new FebsException("此供应计划已经产生预收，不允许删除！");
            }
             for (String id :
                     arr_ids) {

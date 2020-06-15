@@ -15,7 +15,7 @@ public interface UserService extends IService<User> {
      * @param id
      * @param status
      */
-    void updateUserByName( User user);
+    void updateUserByName( User user) throws Exception;
     /**
      * 通过用户名查找用户
      *

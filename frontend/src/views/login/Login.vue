@@ -146,7 +146,7 @@ export default {
             let verifyCodeActual = this.form.getFieldValue('verifyCode')
             if (verifyCodeActual.toUpperCase() != this.checkCode) {
               this.$message.warning('验证码输入错误！')
-              this.createCode();
+              //this.createCode();
             }
             else {
               this.loading = true
@@ -168,6 +168,7 @@ export default {
                 }, 500)
               })
             }
+            this.createCode();
           }
         })
       }

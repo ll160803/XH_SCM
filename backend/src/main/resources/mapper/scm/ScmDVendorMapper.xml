@@ -34,6 +34,7 @@
             <if test="lawPerson != null">LAW_PERSON=#{lawPerson},</if>
             <if test="linkPerson != null">LINK_PERSON=#{linkPerson},</if>
             <if test="phone != null">PHONE=#{phone},</if>
+            <if test="note != null">note=#{note},</if>
             <if test="email != null">EMAIL=#{email},</if>
             <if test="state != null">STATE=#{state},</if>
             <if test="jieKouState != null">JIEKOUSTATE=#{jieKouState},</if>

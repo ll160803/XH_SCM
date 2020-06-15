@@ -68,9 +68,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
     @Override
-    public  void updateUserByName( User user)
+    public  void updateUserByName( User user) throws Exception
     {
         this.baseMapper.updateUserByName(user);
+        // 重新将用户信息加载到 redis中
+        cacheService.saveUser(user.getUsername());
     }
     @Override
     @Transactional

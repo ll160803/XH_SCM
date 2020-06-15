@@ -1,6 +1,5 @@
 package cc.mrbird.febs.system.controller;
 
-import cc.mrbird.febs.common.annotation.Limit;
 import cc.mrbird.febs.common.authentication.JWTToken;
 import cc.mrbird.febs.common.authentication.JWTUtil;
 import cc.mrbird.febs.common.domain.ActiveUser;
@@ -19,8 +18,7 @@ import cc.mrbird.febs.system.service.LoginLogService;
 import cc.mrbird.febs.system.service.UserService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.code.kaptcha.Constants;
-import com.google.code.kaptcha.Producer;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -80,7 +80,7 @@
 import moment from 'moment'
 import AttachFile from './AttachFile'
 import VendorUser from './VendorUser'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 const formItemLayout = {
   labelCol: { span: 3 },
@@ -161,6 +161,20 @@ export default {
       }
     },
     handleSubmit () {
+      let that = this
+      this.$confirm({
+        title: '用户信息更改',
+        content: '信息更改后,账号将暂时冻结，需要管理员重新审核才能进入系统，您确认更改吗？',
+        centered: true,
+        onOk () {
+          that.doSubmit()
+        },
+        onCancel () {
+
+        }
+      })
+    },
+    doSubmit () {
       this.scmDVendorD = []
       this.scmDVendoruser = {}
       var flag = true
@@ -229,13 +243,26 @@ export default {
         }).then(() => {
           this.saveF = true
           this.loading = false
-          this.$message.success('修改成功')
+          this.$message.success('修改成功，请等待药剂科审核')
+         this.logout() //退出系统
+          
+
         }).catch(() => {
           this.saveF = false
           this.loading = false
           this.$message.error('抱歉，修改失败')
         })
       }
+    },
+    logout () {
+      this.$get(`logout/${this.user.id}`).then(() => {
+        return new Promise((resolve, reject) => {
+          this.$db.clear()
+          location.reload()
+        })
+      }).catch(() => {
+        this.$message.error('退出系统失败')
+      })
     },
     fetch (params = {}) {
       this.loading = true

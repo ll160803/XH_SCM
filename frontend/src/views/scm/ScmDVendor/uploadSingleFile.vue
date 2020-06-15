@@ -32,12 +32,13 @@ export default {
       tstyle: { "color": "#0785fd", "font-weight": "bold", "background-color": "#ececec" },
       isShow: 1,
       fileList: [],
-      uploading: false
+      uploading: false,
+      fileId: ''
     }
   },
   props: {
     title: '',
-    fileId: '',
+
     fileName: '',
     showFileOnly: false
   },

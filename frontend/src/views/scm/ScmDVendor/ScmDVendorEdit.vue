@@ -55,6 +55,7 @@
           v-decorator="['email', {}]"
         />
       </a-form-item>
+      <div style="color:red;">{{note}}</div>
     </a-form>
             <vendor-user
       title="业务员信息"
@@ -107,7 +108,8 @@ export default {
       form: this.$form.createForm(this),
       scmDVendor: {},
       attachList: [],
-      scmDVendoruser: {}
+      scmDVendoruser: {},
+      note:''
     }
   },
   methods: {
@@ -137,6 +139,7 @@ export default {
         }
       })
       this.scmDVendor.id = scmDVendor.id
+      this.note=scmDVendor.note //更改信息
       this.$get('scmDVendorD/attach/' + scmDVendor.id, {
       }).then((r) => {
         let data = r.data.data
@@ -147,7 +150,8 @@ export default {
               let entity = {
                 fileName: '',
                 validdatestart: '',
-                validdate: ''
+                validdate: '',
+                noted:''
               }
 
               if (data[index].validDatestart != null) {
@@ -164,7 +168,7 @@ export default {
               if (data[index].filename != null) {
                 entity.fileName = data[index].filename
               }
-
+              entity.noted=data[index].noted//更改信息
               this.$refs['file' + (index + 1)][0].getScmDAreaFields(entity)
               this.attachList[index].fileName = data[index].filename
               this.$refs['file' + (index + 1)][0].fileList = []

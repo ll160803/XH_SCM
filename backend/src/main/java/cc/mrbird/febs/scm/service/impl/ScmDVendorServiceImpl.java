@@ -134,6 +134,11 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
     public void updateScmDVendor(ScmDVendor scmDVendor) {
         scmDVendor.setModifyTime(new Date());
         this.baseMapper.updateScmDVendor(scmDVendor);
+        if(scmDVendor.getState()==1){ //在审核完成时，去除更改消息记录
+            this.baseMapper.removeNoteVendor(scmDVendor.getCode());
+            this.baseMapper.removeNoteVendord(scmDVendor.getCode());
+            this.baseMapper.removeNoteVendoruser(scmDVendor.getCode());
+        }
     }
 
     @Override
@@ -168,18 +173,66 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
             this.scmDVendoruserMapper.insert(enscmDVendoruser);
         }
     }
+    public  String  getModifyInfo(ScmDVendor scmDVendor)
+    {
+        ScmDVendor oldvendor=this.baseMapper.selectById(scmDVendor.getId());
+        String msg="";
+        if(!oldvendor.getAddress().equals(scmDVendor.getAddress())) {
+            msg+="地址变更；";
+        }
+
+        if(!oldvendor.getLinkPerson().equals(scmDVendor.getLinkPerson())) {
+            msg+="联系人变更；";
+        }
+        if(!oldvendor.getEmail().equals(scmDVendor.getEmail())) {
+            msg+="邮箱变更；";
+        }
+        if(!oldvendor.getName().equals(scmDVendor.getName())) {
+            msg+="姓名变更；";
+        }
+        if(!oldvendor.getPhone().equals(scmDVendor.getPhone())) {
+            msg+="电话变更；";
+        }
+        return  msg;
+    }
 
     @Override
     @Transactional
     public void updateScmDVendor(ScmDVendor scmDVendor, List<ScmDVendorD> scmDVendorDS, ScmDVendoruser enscmDVendoruser) {
         scmDVendor.setModifyTime(new Date());
+        String vendorMsg= getModifyInfo(scmDVendor);
+        scmDVendor.setNote(vendorMsg);
+        scmDVendor.setState(0);
         this.updateScmDVendor(scmDVendor);
         QueryWrapper<ScmDVendorD> queryWrapper = new QueryWrapper<>();
         String F_id = scmDVendor.getId();
         queryWrapper.lambda().eq(ScmDVendorD::getBaseId, F_id);
+        List<ScmDVendorD> oldList=scmDVendorDMapper.selectList(queryWrapper);
         scmDVendorDMapper.delete(queryWrapper);
         for (ScmDVendorD scmDVendorD :
                 scmDVendorDS) {
+            //变更的时候增加变更记录 begin
+            List<ScmDVendorD> vdold= oldList.stream().filter(t->t.getTitle().equals(scmDVendorD.getTitle())).collect(Collectors.toList());
+           if(vdold.size()>0)
+           {
+               ScmDVendorD dvoldv=vdold.get(0);
+               String msgNote="";
+               if(!dvoldv.getFileId().equals(scmDVendorD.getFileId()))
+               {
+                   msgNote+="附件更改；";
+               }
+               if(dvoldv.getValidDate()!=null&&!dvoldv.getValidDate().equals(scmDVendorD.getValidDate())) {
+                   msgNote+="有效期更改；";
+               }
+               if(dvoldv.getValidDatestart()!=null&&!dvoldv.getValidDatestart().equals(scmDVendorD.getValidDatestart())) {
+                   msgNote+="起始有效期更改；";
+               }
+               if(msgNote!="")
+               {
+                   scmDVendorD.setNoted(msgNote);
+               }
+           }
+            //变更的时候增加变更记录  end
             scmDVendorD.setId(UUID.randomUUID().toString());
             scmDVendorD.setBaseId(scmDVendor.getId());
             scmDVendorDMapper.insert(scmDVendorD);
@@ -188,6 +241,43 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
         QueryWrapper<ScmDVendoruser> queryWrapper2 = new QueryWrapper<>();
 
         queryWrapper2.lambda().eq(ScmDVendoruser::getBaseId, F_id);
+
+        List<ScmDVendoruser> oldListUser=scmDVendoruserMapper.selectList(queryWrapper2);
+        if(oldListUser.size()>0){
+            String msgUser="";
+            ScmDVendoruser ouser=oldListUser.get(0);
+            if(!ouser.getIdcard().equals(enscmDVendoruser.getIdcard()))
+            {
+                msgUser+="身份证号更改；";
+            }
+            if(!ouser.getAgentImage().equals(enscmDVendoruser.getAgentImage()))
+            {
+                msgUser+="委托图片更改；";
+            }
+            if(!ouser.getIdcardBack().equals(enscmDVendoruser.getIdcardBack()))
+            {
+                msgUser+="身份证背面更改；";
+            }
+            if(!ouser.getIdcardFront().equals(enscmDVendoruser.getIdcardFront()))
+            {
+                msgUser+="身份证前面更改；";
+            }
+            if(!ouser.getHeadImage().equals(enscmDVendoruser.getHeadImage()))
+            {
+                msgUser+="业务员照片更改；";
+            }
+            if(!ouser.getName().equals(enscmDVendoruser.getName()))
+            {
+                msgUser+="业务员姓名更改；";
+            }
+            if(!ouser.getTelphone().equals(enscmDVendoruser.getTelphone()))
+            {
+                msgUser+="业务员电话更改；";
+            }
+            if(msgUser!=""){
+                enscmDVendoruser.setNoteu(msgUser);
+            }
+        }
         this.scmDVendoruserMapper.delete(queryWrapper2);
         if(StringUtils.isNotBlank( enscmDVendoruser.getIdcard())) {
             enscmDVendoruser.setId(UUID.randomUUID().toString());

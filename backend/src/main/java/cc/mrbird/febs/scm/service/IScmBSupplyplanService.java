@@ -49,11 +49,13 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
          */
         void updateCancelDoneMenge(String id);
 
-        void doneSupplyPlan(List<String> ids);
+        void doneSupplyPlan(List<Long> ids);
 
-        void cancleSupplyPlan(List<String> ids);
+        void cancleSupplyPlan(List<Long> ids);
 
         Boolean HasSendOrder(String ids);
+
+        Boolean HasPreDone(String ids);
 
         Boolean canUpdateSendOrder(String ids);
 }

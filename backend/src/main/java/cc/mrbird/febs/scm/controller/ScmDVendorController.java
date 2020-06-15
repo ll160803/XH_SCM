@@ -187,10 +187,18 @@ public class ScmDVendorController extends BaseController {
             });
             ScmDVendoruser enscmDVendoruser = JSON.parseObject(scmDVendoruser, new TypeReference<ScmDVendoruser>() {});
             this.iScmDVendorService.updateScmDVendor(scmDVendor, list,enscmDVendoruser);
-            //region 编辑用户的姓名
-            if (StringUtils.isNotBlank(scmDVendor.getCode()) && StringUtils.isNotBlank(scmDVendor.getName())) {
-                this.userService.updateRealname(scmDVendor.getCode(), scmDVendor.getName());
-            }
+
+            //region  取消审核
+            User user = new User();
+
+            user.setStatus("0");//无效
+
+            this.userService.UpdateUserOnly(user, scmDVendor.getCode());
+            //enndregion
+           //region 编辑用 户的姓名
+           // if (StringUtils.isNotBlank(scmDVendor.getCode()) && StringUtils.isNotBlank(scmDVendor.getName())) {
+              //  this.userService.updateRealname(scmDVendor.getCode(), scmDVendor.getName());
+           // }
             //endregion
         } catch (Exception e) {
             message = "修改失败";

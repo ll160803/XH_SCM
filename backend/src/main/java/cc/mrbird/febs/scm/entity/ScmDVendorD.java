@@ -88,6 +88,12 @@ private Integer fileIndex;
             @ExcelField(value ="创建时间")
 private Date createTime;
     /**
+     * beizhu
+     */
+    @TableField("NOTED")
+    @ExcelField(value ="备注")
+    private String noted;
+    /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
@@ -132,13 +138,21 @@ private String baseId;
             this.title = title;
             }
 
-    public String getFilename(){
-            return filename;
+    public String getNoted(){
+            return noted;
             }
 
-        public void setFilename(String filename) {
-            this.filename = filename;
+        public void setNoted(String noted) {
+            this.noted = noted;
             }
+
+    public String getFilename(){
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
     public Date getValidDatestart(){
             return validDatestart;

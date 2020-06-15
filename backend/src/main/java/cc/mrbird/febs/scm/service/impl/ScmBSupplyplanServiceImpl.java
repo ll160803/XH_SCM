@@ -260,6 +260,14 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     }
     @Override
     @Transactional
+    public  Boolean HasPreDone(String ids)
+    {
+        Long isHas=this.baseMapper.hasPreDone(ids);
+        if(isHas>0) return  false;
+        return  true;
+    }
+    @Override
+    @Transactional
     public  Boolean canUpdateSendOrder(String ids){
         List<String> lids=new ArrayList<>();
         String[] arr_ids = ids.split(StringPool.COMMA);

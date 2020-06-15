@@ -152,6 +152,7 @@
           </a-form-item>
         </a-col>
       </a-row>
+      <div style="color:red;">{{noteu}}</div>
     </a-form>
   </a-card>
 </template>
@@ -186,7 +187,8 @@ export default {
         telphone: '',
         headImage: '',
         agentImage: ''
-      }
+      },
+      noteu:''
     }
   },
   props: {
@@ -237,6 +239,8 @@ export default {
       let fields = ['validDatestart', 'validDate', 'name', 'telphone', 'idcard']
       let fieldDates = ['validDatestart', 'validDate']
       let vendorUser = entity.scmDVendoruser
+      this.noteu=vendorUser.noteu//变更信息
+    
       Object.keys(vendorUser).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)
@@ -251,7 +255,7 @@ export default {
           this.form.setFieldsValue(obj)
         }
       });
-       
+      
       this.vendorUser.idcardBack=entity.fileback.id
       this.vendorUser.idcardFront=entity.filefront.id
 

@@ -72,7 +72,7 @@
           </a-form-item>
         </a-col>
       </a-row>
-
+ <div style="color:red;">{{noted}}</div>
     </a-form>
   </a-card>
 </template>
@@ -100,7 +100,8 @@ export default {
         validdate: this.validdate,
         fileIndex: this.displayIndex,
         fileId: ''
-      }
+      },
+      noted:''
     }
   },
   props: {
@@ -165,6 +166,7 @@ export default {
       //   validdatestart:this.validdatestart,
       //   validdate:this.validdate
       // }
+      this.noted=entity.noted
       Object.keys(entity).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
           this.form.getFieldDecorator(key)

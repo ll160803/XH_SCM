@@ -66,6 +66,13 @@ private String idcardBack;
     @TableField("IDCARD_FRONT")
             @ExcelField(value ="身份证照片正面")
 private String idcardFront;
+
+    /**
+     * beizhu
+     */
+    @TableField("NOTEU")
+    @ExcelField(value ="备注")
+    private String noteu;
     /**
      * 联系电话
      */
@@ -122,6 +129,14 @@ private Date createTime;
     @TableField("MODIFY_TIME")
             @ExcelField(value ="修改时间")
 private Date modifyTime;
+
+    public String getNoteu(){
+        return noteu;
+    }
+
+    public void setNoteu(String noteu) {
+        this.noteu = noteu;
+    }
     /**
      * 创建人
      */

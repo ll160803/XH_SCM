@@ -3,7 +3,7 @@
     :bordered="false"
     class="card-area"
   >
-   <div ref="lodopDiv"></div>
+    <div ref="lodopDiv"></div>
     <div>
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
@@ -20,7 +20,7 @@
                 <a-input v-model="queryParams.id" />
               </a-form-item>
             </a-col>
-               <a-col
+            <a-col
               :md="6"
               :sm="24"
             >
@@ -32,17 +32,17 @@
                 <a-input v-model="queryParams.fphm" />
               </a-form-item>
             </a-col>
-             <a-col
-                :md="12"
-                :sm="24"
-              >
-                <werks-lgort
+            <a-col
+              :md="12"
+              :sm="24"
+            >
+              <werks-lgort
                 ref="werklgort"
                 @werks="setWerks"
                 @lgort="setLgort"
-                >
-                </werks-lgort>
-              </a-col>
+              >
+              </werks-lgort>
+            </a-col>
 
           </a-row>
 
@@ -67,7 +67,8 @@
           ghost
           @click="add"
         >新增</a-button>
-         <a-button
+        <a-button
+          v-hasPermission="['sendorder:add']"
           type="primary"
           ghost
           @click="print"
@@ -180,11 +181,11 @@ import ScmBSendorderEdit from './SendOrderEdit'
 import SendOrderPrint from './SendOrderPrint'
 import WerksLgort from '../../common/WerksLgort'
 import moment from 'moment'
-import { getLodop ,getLodopDiv } from '../../../tools/lodop'
+import { getLodop, getLodopDiv } from '../../../tools/lodop'
 
 export default {
   name: 'Sendorder',
-  components: { ScmBSendorderAdd, ScmBSendorderEdit, SendOrderPrint, WerksLgort  },
+  components: { ScmBSendorderAdd, ScmBSendorderEdit, SendOrderPrint, WerksLgort },
   data () {
     return {
       scroll: {
@@ -244,10 +245,6 @@ export default {
         },
         sorter: true,
         sortOrder: sortedInfo.columnKey === 'sendDate' && sortedInfo.order
-      }, {
-        title: '操作',
-        dataIndex: 'operation',
-        scopedSlots: { customRender: 'operation' }
       }]
     },
     innerColumns () {
@@ -306,10 +303,6 @@ export default {
       }, {
         title: '包装数量',
         dataIndex: 'pkgNumber'
-      }, {
-        title: '操作',
-        dataIndex: 'operation2',
-        scopedSlots: { customRender: 'operation2' }
       }]
     }
   },
@@ -354,12 +347,12 @@ export default {
       }
 
       this.printIds = this.selectedRowKeys.join(',')
-       getLodopDiv(this.$refs.lodopDiv)
-      if(getLodop() == undefined || getLodop() == null){
+      getLodopDiv(this.$refs.lodopDiv)
+      if (getLodop() == undefined || getLodop() == null) {
 
       }
       else {
-        this.lodop= getLodop();
+        this.lodop = getLodop();
         this.printVisiable = true
       }
     },
@@ -391,11 +384,11 @@ export default {
         onOk () {
           that.$delete('scmBSupplyplan/deleteSendOrder2/' + record.id).then((r) => {
             console.log(r)
-            if(r.data==null){
+            if (r.data == null) {
               that.$message.success('删除成功')
             }
-            else{
-             that.$message.success(r.data.data)
+            else {
+              that.$message.success(r.data.data)
             }
             that.search()
             that.expandedRowKeys = []

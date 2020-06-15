@@ -31,9 +31,9 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
         @Update("update Scm_B_Supplyplan set doneMenge=0 where id=${id} and status=0")
         int UpdateCancelDoneMenge(@Param(value="id") String id);
 
-        void doneSupplyPlan(@Param("ids") List<String> ids);
+        void doneSupplyPlan(@Param("ids") List<Long> ids);
 
-        void cancelSupplyPlan(@Param("ids") List<String> ids);
+        void cancelSupplyPlan(@Param("ids") List<Long> ids);
 
 
         List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);
@@ -41,7 +41,10 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
         int flagRecordByIds(@Param(value = "ids") List<String> ids);
 
         @Select("select COUNT(1) from Scm_B_Supplyplan where id in (${ids}) and Is_Deletemark=1 and LENGTH(SEND_ORDER_CODE)>0")
-        Long hasSendOrder(@Param(value="ids") String ids);
+        Long hasSendOrder(@Param(value="ids") String ids);//是否有送货清单
+
+        @Select("select COUNT(1) from Scm_B_Supplyplan where id in (${ids}) and Is_Deletemark=1 and donemenge>0")
+        Long hasPreDone(@Param(value="ids") String ids);//是否预收
 
         @Select("SELECT sum(G_MENGE) gMenge,sum(DoneMenge) doneMenge FROM scm_b_supplyplan WHERE scm_b_supplyplan.BASE_ID = #{baseId}  AND scm_b_supplyplan.IS_DELETEMARK = 1")
         StatisticMenge getSupplanMengeByBaseID(@Param(value="baseId") String baseId);

@@ -214,19 +214,19 @@ export default {
       // 新增业务员用户信息
       this.$refs.vendorUser.setVendorUserFields()
       if (this.$refs.vendorUser.isRequire && this.$refs.vendorUser.vendorUser.headImage == "") {
-        this.$message.error('请上传免冠照片附件');
+        this.$message.error('请上传免冠照片附件')
         flag = false
       }
       if (this.$refs.vendorUser.isRequire && this.$refs.vendorUser.vendorUser.idcardBack == "") {
-        this.$message.error('请上传身份证反面附件');
+        this.$message.error('请上传身份证反面附件')
         flag = false
       }
       if (this.$refs.vendorUser.isRequire && this.$refs.vendorUser.vendorUser.idcardFront == "") {
-        this.$message.error('请上传身份证正面附件');
+        this.$message.error('请上传身份证正面附件')
         flag = false
       }
       if (this.$refs.vendorUser.isRequire && this.$refs.vendorUser.vendorUser.agentImage == "") {
-        this.$message.error('请上传委托人附件');
+        this.$message.error('请上传委托人附件')
         flag = false
       }
       this.scmDVendoruser = this.$refs.vendorUser.vendorUser
@@ -304,10 +304,10 @@ export default {
           let data2 = r.data.data
           //let vendorUser = data2.scmDVendoruser
           let that = this
-        
+
           that.$refs.vendorUser.getVendorUserFields(data2)
         }
-      });
+      })
     }
   }
 }
