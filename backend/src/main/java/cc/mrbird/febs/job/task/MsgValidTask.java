@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class MsgValidTask {
-    /**
+/**
     cc.mrbird.febs.webService.OwnToOwn.IScmJobService iScmJobService;
     ScmJobImplService  scmJobImplService=new ScmJobImplService();
 
@@ -116,7 +116,7 @@ public class MsgValidTask {
             }
 
         }
-        wm.send("opSQh5VNuPHqJ_vVmF_u52VYA0F8", "消息通知", "您有一条来自于武汉协和医院通知信息", "action=zzsh&id=供应商ID=10000466");
+       // wm.send("opSQh5VNuPHqJ_vVmF_u52VYA0F8", "消息通知", "您有一条来自于武汉协和医院通知信息", "action=zzsh&id=供应商ID=10000466");
     }
 
     public void runGetUsers(){
@@ -159,6 +159,20 @@ public class MsgValidTask {
                 String mg = "您有一条检验报告审核待审核";
                 log.info("openid：" + msg.getVxCode() + ",检验报告审核");
                 wm.send(msg.getVxCode(), "检验报告审核", mg, "action=jybgsh&id="+msg.getId());
+            }
+
+        }
+    }
+    public  void runPlanundo() {//供应计划数量不对等的
+        iScmJobService = scmJobImplService.getSapPort();
+        List<VMsgPlanundo> listMsg = iScmJobService.getPlanundo();
+        //  List<VMsgReportinfo> listMsg=this.iVMsgReportinfoService.GetMsgFileValid();
+        WxMessage wm = new WxMessage();
+        for (VMsgPlanundo msg : listMsg
+        ) {
+            if (StringUtils.isNotBlank(msg.getVxCode())) {
+                String mg = msg.getTxz01() +"供应数量小于订单数量";
+                wm.send(msg.getVxCode(), "供应数量", mg, "action=plan&id="+msg.getId());
             }
 
         }

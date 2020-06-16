@@ -47,6 +47,9 @@ public class ScmJobImpl implements  IScmJobService{
     @Autowired
     private IVMsgVendorauditService iVMsgVendorauditService;
 
+    @Autowired
+    private IVMsgPlanundoService ivMsgPlanundoService;
+
     /*
     获取验收文件有效期的提醒
      */
@@ -144,6 +147,11 @@ public class ScmJobImpl implements  IScmJobService{
     @Override
     public List<VMsgVendoraudit> getVendoraudit(){
         List<VMsgVendoraudit> listMsg=this.iVMsgVendorauditService.GetMsg();
+        return  listMsg;
+    }
+    @Override
+    public List<VMsgPlanundo> getPlanundo(){
+        List<VMsgPlanundo> listMsg=this.ivMsgPlanundoService.GetMsgFileValid();
         return  listMsg;
     }
 }

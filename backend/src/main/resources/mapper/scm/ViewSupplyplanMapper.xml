@@ -124,6 +124,10 @@
 		<if test="order.gysaccount != null and order.gysaccount != ''">
 			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
 		</if>
+
+		<if test="order.keyword_gys != null and order.keyword_gys != ''">
+			AND ((scm_b_supplyplan.gysaccount = #{order.keyword_gys}) or (scm_b_supplyplan.gysname like concat('%',#{order.keyword_gys},'%')))
+		</if>
 		<if test="order.baseId != null">
 			AND scm_b_supplyplan.base_Id = #{order.baseId}
 		</if>
@@ -158,6 +162,9 @@ FROM
 		</if>
 		<if test="order.gysaccount != null and order.gysaccount != ''">
 			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
+		</if>
+		<if test="order.keyword_gys != null and order.keyword_gys != ''">
+			AND ((scm_b_supplyplan.gysaccount = #{order.keyword_gys}) or (scm_b_supplyplan.gysname like concat('%',#{order.keyword_gys},'%')))
 		</if>
 		<if test="order.baseId != null">
 			AND scm_b_supplyplan.base_Id = #{order.baseId}
@@ -194,6 +201,10 @@ FROM
 		<if test="order.matnr != null and order.matnr != ''">
 			AND scm_b_purcharseorder.matnr = #{order.matnr}
 		</if>
+		<if test="order.keyword_mater != null and order.keyword_mater != ''">
+			AND ((scm_b_purcharseorder.matnr = #{order.keyword_mater}) or (scm_b_purcharseorder.txz01 like concat('%',#{order.keyword_mater},'%')))
+		</if>
+
 		<if test="order.eindt != null">
 			AND scm_b_purcharseorder.bedat <![CDATA[ >= ]]>  #{order.eindt}
 		</if>
@@ -278,6 +289,9 @@ WHERE
 		<if test="order.gysaccount != null and order.gysaccount != ''">
 			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
 		</if>
+		<if test="order.keyword_gys != null and order.keyword_gys != ''">
+			AND ((scm_b_supplyplan.gysaccount = #{order.keyword_gys}) or (scm_b_supplyplan.gysname like concat('%',#{order.keyword_gys},'%')))
+		</if>
 		<if test="order.baseId != null">
 			AND scm_b_supplyplan.base_Id = #{order.baseId}
 		</if>
@@ -320,6 +334,9 @@ WHERE
 		</if>
 		<if test="order.matnr != null and order.matnr != ''">
 			AND scm_b_purcharseorder.matnr = #{order.matnr}
+		</if>
+		<if test="order.keyword_mater != null and order.keyword_mater != ''">
+			AND ((scm_b_purcharseorder.matnr = #{order.keyword_mater}) or (scm_b_purcharseorder.txz01 like concat('%',#{order.keyword_mater},'%')))
 		</if>
 		<if test="order.eindt != null">
 			AND scm_b_purcharseorder.bedat <![CDATA[ >= ]]>  #{order.eindt}

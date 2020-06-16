@@ -30,6 +30,7 @@ public class ObjectFactory {
     private final static QName _GetOrderModifyMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderModifyMsgResponse");
     private final static QName _GetReportMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getReportMsgResponse");
     private final static QName _GetOrderModifyMsg_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderModifyMsg");
+    private final static QName _GetPlanundoResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getPlanundoResponse");
     private final static QName _GetOrderMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getOrderMsgResponse");
     private final static QName _GetVendorauditResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getVendorauditResponse");
     private final static QName _GetGysysauditNotResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getGysysauditNotResponse");
@@ -42,6 +43,7 @@ public class ObjectFactory {
     private final static QName _GetUserWithoutOpenidResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getUserWithoutOpenidResponse");
     private final static QName _SetUserOpenid_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "setUserOpenid");
     private final static QName _GetFileValidMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getFileValidMsgResponse");
+    private final static QName _GetPlanundo_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getPlanundo");
     private final static QName _GetQueryPriceMsg_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getQueryPriceMsg");
     private final static QName _GetReportMsg_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getReportMsg");
     private final static QName _GetQueryPriceMsgResponse_QNAME = new QName("http://ScmJob.webService.febs.mrbird.cc/", "getQueryPriceMsgResponse");
@@ -100,6 +102,14 @@ public class ObjectFactory {
      */
     public GetFileValidMsgResponse createGetFileValidMsgResponse() {
         return new GetFileValidMsgResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetPlanundo }
+     * 
+     */
+    public GetPlanundo createGetPlanundo() {
+        return new GetPlanundo();
     }
 
     /**
@@ -199,6 +209,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetPlanundoResponse }
+     * 
+     */
+    public GetPlanundoResponse createGetPlanundoResponse() {
+        return new GetPlanundoResponse();
+    }
+
+    /**
      * Create an instance of {@link GetGysysauditNotResponse }
      * 
      */
@@ -276,6 +294,14 @@ public class ObjectFactory {
      */
     public LocalDate createLocalDate() {
         return new LocalDate();
+    }
+
+    /**
+     * Create an instance of {@link VMsgPlanundo }
+     * 
+     */
+    public VMsgPlanundo createVMsgPlanundo() {
+        return new VMsgPlanundo();
     }
 
     /**
@@ -370,6 +396,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getOrderModifyMsg")
     public JAXBElement<GetOrderModifyMsg> createGetOrderModifyMsg(GetOrderModifyMsg value) {
         return new JAXBElement<GetOrderModifyMsg>(_GetOrderModifyMsg_QNAME, GetOrderModifyMsg.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetPlanundoResponse }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getPlanundoResponse")
+    public JAXBElement<GetPlanundoResponse> createGetPlanundoResponse(GetPlanundoResponse value) {
+        return new JAXBElement<GetPlanundoResponse>(_GetPlanundoResponse_QNAME, GetPlanundoResponse.class, null, value);
     }
 
     /**
@@ -478,6 +513,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getFileValidMsgResponse")
     public JAXBElement<GetFileValidMsgResponse> createGetFileValidMsgResponse(GetFileValidMsgResponse value) {
         return new JAXBElement<GetFileValidMsgResponse>(_GetFileValidMsgResponse_QNAME, GetFileValidMsgResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetPlanundo }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://ScmJob.webService.febs.mrbird.cc/", name = "getPlanundo")
+    public JAXBElement<GetPlanundo> createGetPlanundo(GetPlanundo value) {
+        return new JAXBElement<GetPlanundo>(_GetPlanundo_QNAME, GetPlanundo.class, null, value);
     }
 
     /**

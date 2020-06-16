@@ -292,7 +292,27 @@ private Long modifyUserId;
 
     private  transient String  noOrder;
 
-    public String getSendCodes() {
+    public String getKeyword_gys() {
+        return keyword_gys;
+    }
+
+    public void setKeyword_gys(String keyword_gys) {
+        this.keyword_gys = keyword_gys;
+    }
+
+    private transient String keyword_gys;
+
+    public String getKeyword_mater() {
+        return keyword_mater;
+    }
+
+    public void setKeyword_mater(String keyword_mater) {
+        this.keyword_mater = keyword_mater;
+    }
+
+    private transient String keyword_mater;
+
+  public String getSendCodes() {
         return sendCodes;
     }
 

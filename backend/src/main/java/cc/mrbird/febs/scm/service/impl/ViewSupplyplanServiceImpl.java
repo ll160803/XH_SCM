@@ -281,6 +281,9 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
                 flag=true;
             }
+            if (StringUtils.isNotBlank(viewSupplyplan.getKeyword_mater())) {
+                flag=true;
+            }
             if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
                 flag=true;
             }

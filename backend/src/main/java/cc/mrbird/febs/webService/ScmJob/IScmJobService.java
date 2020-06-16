@@ -72,4 +72,10 @@ public interface IScmJobService {
    */
     @WebMethod
     List<VMsgVendoraudit> getVendoraudit();
+
+    /*
+供应计划数量为完成
+*/
+    @WebMethod
+    List<VMsgPlanundo> getPlanundo();
 }
