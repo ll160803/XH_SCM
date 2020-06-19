@@ -172,6 +172,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
     public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids) {
         return this.baseMapper.GetViewSupplyPlanByIds(ids);
     }
+
     @Override
     @Transactional
     public List<ViewSupplyplan> getViewSupplyPlanByOrderId(String sendOrderId) {

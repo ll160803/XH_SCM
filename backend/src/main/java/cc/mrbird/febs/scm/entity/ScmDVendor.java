@@ -77,6 +77,13 @@ public class ScmDVendor implements Serializable{
     @TableField("NOTE")
     @ExcelField(value ="备注")
     private String note;
+
+    /**
+     * 审核原因
+     */
+    @TableField("audit_cause")
+    @ExcelField(value ="审核原因")
+    private String auditCause;
     /**
      * 状态
      */
@@ -158,10 +165,19 @@ public class ScmDVendor implements Serializable{
         this.note = note;
     }
 
+
+    public String getAuditCause(){
+        return auditCause;
+    }
+
+    public void setAuditCause(String auditCause) {
+        this.auditCause = auditCause;
+    }
+
+
     public String getName(){
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }

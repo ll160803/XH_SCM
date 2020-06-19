@@ -150,18 +150,19 @@ public class ScmBSendorderController extends BaseController {
             scmBSendorder.setGysaccount(currentUser.getUsername());
             scmBSendorder.setGysname(currentUser.getRealname());
             scmBSendorder.supplyPlanIds = supplyPlanIds;
-
+            this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
 
             if(StringUtils.isNotBlank(supplyPlanIds)) {
                 String ids="'"+supplyPlanIds.replace(",","','")+"'";
 
                 List<ViewSupplyplan> list = new ArrayList<>();
                 list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+
                 scmBSendorder.setWerks(list.get(0).getWerks());
                 scmBSendorder.setWerkst(list.get(0).getWerkst());
                 scmBSendorder.setLgort(list.get(0).getLgort());
                 scmBSendorder.setLgortname(list.get(0).getLgortName());
-                this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
+
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
@@ -169,12 +170,11 @@ public class ScmBSendorderController extends BaseController {
                     throw new FebsException("修改送货订单,SAP端接收失败");
                 }
                 else {
+                    this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
                     //this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
             }
-            else {
-                this.iScmBSendorderService.createScmBSendorder(scmBSendorder);
-            }
+
 
         } catch (Exception e) {
             message = "新增/按钮失败";
@@ -240,13 +240,24 @@ public class ScmBSendorderController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             scmBSendorder.setModifyUserId(currentUser.getUserId());
             scmBSendorder.supplyPlanIds = supplyPlanIds;
-            this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
 
+            List<ViewSupplyplan> list = new ArrayList<>();
+            List<ViewSupplyplan> listVp1 =this.iViewSupplyplanService.getViewSupplyPlanByOrderId(scmBSendorder.getId().toString());
+            for ( ViewSupplyplan vp:listVp1
+                 ) {
+                if(!supplyPlanIds.contains(vp.getId().toString())&&vp.getStatus().equals(0)) {
+                    vp.setSendOrderCode("");
+                    list.add(vp);
+                }
+            }
             if(StringUtils.isNotBlank(supplyPlanIds)) {
                 String ids="'"+supplyPlanIds.replace(",","','")+"'";
-
-                List<ViewSupplyplan> list = new ArrayList<>();
-                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                List<ViewSupplyplan> listvp=  this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
+                for ( ViewSupplyplan vp2:listvp
+                ) {
+                    vp2.setSendOrderCode(scmBSendorder.getId().toString());
+                    list.add(vp2);
+                }
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
@@ -255,6 +266,7 @@ public class ScmBSendorderController extends BaseController {
                 }
                 else
                 {
+                    this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
                    // this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
             }

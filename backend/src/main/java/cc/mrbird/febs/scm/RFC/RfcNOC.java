@@ -32,6 +32,16 @@ public class RfcNOC {
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "@123456");     //密码
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "EN");        //登录语言
+
+        /** 正式的地址
+         *  connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器
+         *         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "01");        //系统编号
+         *         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");       //SAP集团
+         *         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
+         *         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "822019");     //密码
+         *         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH");        //登录语言
+         */
+
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "5");  //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
 

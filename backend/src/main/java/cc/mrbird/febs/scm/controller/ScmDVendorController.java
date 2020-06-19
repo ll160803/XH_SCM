@@ -209,11 +209,14 @@ public class ScmDVendorController extends BaseController {
 
     @Log("保存用户的账号")
     @PostMapping("SaveCode")
-    public void saveCodeScmDVendor(@Valid String data) throws FebsException {
+    public void saveCodeScmDVendor(@Valid String data,String auditCause) throws FebsException {
         try {
             List<ScmDVendor> list = JSON.parseObject(data, new TypeReference<List<ScmDVendor>>() {
             });
             for (ScmDVendor item : list) {
+                if(StringUtils.isNotBlank(auditCause)) {
+                    item.setAuditCause(auditCause);
+                }
                 if (item.getState() != null) {
                     if (item.getState() == 1) {//保存并审核
                         User user = this.userService.findByName(item.getCode());

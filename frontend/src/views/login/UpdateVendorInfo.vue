@@ -1,6 +1,6 @@
 <template>
   <div style="width:80%">
-    <p style="font-size:26px;color:red;text-align:center;">{{scmDVendor.state=="1"?"您已经审核成功,您的登录账号为"+scmDVendor.code:(scmDVendor.state=="0"?"尚未审核，请等待":"你提交的信息审核未通过")}}</p>
+    <p style="font-size:26px;color:red;text-align:center;">{{scmDVendor.state=="1"?"您已经审核成功,您的登录账号为"+scmDVendor.code:(scmDVendor.state=="0"?"尚未审核，请等待":"你提交的信息审核未通过,原因:"+scmDVendor.auditCause)}}</p>
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
@@ -160,6 +160,7 @@ export default {
       this.scmDVendor.id = scmDVendor.id
       this.scmDVendor.code = scmDVendor.code
       this.scmDVendor.state = scmDVendor.state
+      this.scmDVendor.auditCause = scmDVendor.auditCause
     },
     setscmDVendorFields () {
       let values = this.form.getFieldsValue(['name', 'linkPerson', 'phone', 'email', 'address'])

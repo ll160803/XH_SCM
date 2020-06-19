@@ -135,6 +135,14 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
 
         String supplyPlanIds = scmBSendorder.supplyPlanIds;
 
+        if (scmBSendorder.getBsart() == "1") {//物资
+            this.baseMapper.removeMaterOrderCode(scmBSendorder.getId().toString());//先清空之前的
+        }
+        else
+        {
+            this.baseMapper.removeOrderCode(scmBSendorder.getId().toString());//先清空之前的
+        }
+
         if (StringUtils.isNotBlank(supplyPlanIds)) {
             String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
 
@@ -144,8 +152,8 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
                 ids.add(Long.parseLong(idStr));
             }
             if (scmBSendorder.getBsart() == "1") {//物资
-                String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
-                this.baseMapper.removeMaterOrderCode(str_ids);//先清空之前的
+              //  String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
+
 
                 String fphm = scmBSendorder.getFphm();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -156,8 +164,8 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
                 this.baseMapper.updateSupplyPlan(ids, scmBSendorder.getId().toString(), fphm, fprq);
             } else//药品
             {
-                String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
-                this.baseMapper.removeOrderCode(str_ids);//先清空之前的
+               // String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
+
                 this.baseMapper.updateSupplyPlan2(ids, scmBSendorder.getId().toString());
             }
         }

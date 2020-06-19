@@ -199,8 +199,14 @@ export default {
     },
     observe (type, vendorId) {
       this.selectVisiable = false
-      console.info("type:" + this.type + " vendorId:" + vendorId)
-      this.$emit('regist', 'Modify', vendorId)
+      if(vendorId=='' || vendorId.length < 32)
+      {
+        this.$message.warning('注册码不能为空或注册码位数不对!')
+        return false
+      }
+      else{
+        this.$emit('regist', 'Modify', vendorId)
+      }
     },
     regist () {
       this.$emit('regist', 'Regist')

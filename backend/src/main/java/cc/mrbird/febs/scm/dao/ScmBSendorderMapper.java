@@ -31,13 +31,13 @@ public interface ScmBSendorderMapper extends BaseMapper<ScmBSendorder> {
         void updateSupplyPlan2(@Param("ids") List<Long> ids,@Param("id") String id);
         IPage<ScmBSendorder> findSendInfos(Page page, @Param("order") ScmBSendorder order);
         IPage<ScmBSendorder> findSendInfos2(Page page, @Param("order") ScmBSendorder order);
-        @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '',FPHM = '' WHERE SEND_ORDER_CODE in (#{ids}) and bsart_d='1' and status=0 ")
+        @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '',FPHM = '' WHERE SEND_ORDER_CODE=#{ids}) and bsart_d='1' and status=0 ")
         int removeMaterOrderCode(@Param("ids") String ids);
 
         /*
-        已经收获和已经预收入库的都不可以更改
+        已经收获都不可以更改
          */
-        @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '' WHERE SEND_ORDER_CODE in (#{ids}) and bsart_d='0' and status=0 and !(doneMenge>0)")
+        @Update("UPDATE scm_b_supplyplan SET SEND_ORDER_CODE = '' WHERE SEND_ORDER_CODE =#{ids} and bsart_d='0' and status=0 ")
         int removeOrderCode(@Param("ids") String ids);
 
         @Select("Select id from scm_b_supplyplan where SEND_ORDER_CODE=#{sendCode}")

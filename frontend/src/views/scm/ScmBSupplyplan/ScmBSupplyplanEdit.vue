@@ -331,7 +331,7 @@ export default {
         this.form.setFields({ fpjr: { value: money } })
         let pkg = this.form.getFieldValue('pkgAmount')
         if (pkg) {
-          let num = e.target.value / pkg
+          let num = Math.ceil(e.target.value / pkg)
           this.form.setFields({ pkgNumber: { value: num } })
         }
       }
@@ -341,7 +341,7 @@ export default {
       if (e.target.value) {
         let gMenge = this.form.getFieldValue('gMenge')
         if (gMenge) {
-          let num = gMenge / e.target.value
+          let num = Math.ceil(gMenge / e.target.value)
           this.form.setFields({ pkgNumber: { value: num } })
         }
       }

@@ -304,7 +304,7 @@ export default {
         this.form.setFields({ fpjr: { value: money } })
         let pkg = this.form.getFieldValue('pkgAmount')
         if (pkg) {
-          let num = e.target.value / pkg
+          let num = Math.ceil(e.target.value / pkg)
           this.form.setFields({ pkgNumber: { value: num } })
         }
       }
@@ -326,20 +326,19 @@ export default {
       if (e.target.value) {
         let gMenge = this.form.getFieldValue('gMenge')
         if (gMenge) {
-          let num = gMenge / e.target.value
+          let num = Math.ceil(gMenge / e.target.value)
           this.form.setFields({ pkgNumber: { value: num } })
         }
       }
     },
     handleSubmit () {
-
       this.form.validateFields((err, values) => {
         if (!err) {
           this.loading = true
           this.setFields()
           this.scmBSupplyplan.baseId = this.baseId
           this.scmBSupplyplan.status = 0
-          this.scmBSupplyplan.bsartD = 0//订单类型
+          this.scmBSupplyplan.bsartD = 0 // 订单类型
           this.$post('scmBSupplyplan', {
             ...this.scmBSupplyplan
           }).then(() => {

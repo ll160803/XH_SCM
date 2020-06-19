@@ -51,6 +51,18 @@
           </a>
         </span>
       </a-form>
+      <a-modal
+        title="审核不成功"
+        :visible="unAuditvisible"
+        :confirm-loading="loading"
+        @ok="handleAuditOk"
+        @cancel="handleAuditCancel"
+      >
+        <a-textarea
+          placeholder="请输入审核不成功原因"
+          v-model="auditCause"
+        />
+      </a-modal>
     </div>
     <div>
       <div class="operator">
@@ -65,7 +77,7 @@
         >保存并审核</a-button>
         <a-button
           type="danger"
-          @click="save(2)"
+          @click="auditUndo()"
         >取消审核</a-button>
         <a-button
           type="primary"
@@ -157,7 +169,7 @@ export default {
     return {
       scroll: {
         x: 1500,
-        y: window.innerHeight - 200 - 100 -20 
+        y: window.innerHeight - 200 - 100 - 20
       },
       advanced: false,
       dataSource: [],
@@ -177,6 +189,8 @@ export default {
       },
       addVisiable: false,
       editVisiable: false,
+      unAuditvisible: false,
+      auditCause: '',
       loading: false,
       bordered: true
     }
@@ -372,6 +386,49 @@ export default {
         }
       })
     },
+    handleAuditOk () {
+      let that = this
+      // let scmDVendorIds = that.selectedRowKeys.join(',')
+      let arrCodes = []
+      const dataSource = [...that.dataSource]
+      let IsValid = 0
+      for (let key in that.selectedRowKeys) {
+        let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
+
+        if (row.code == "" || row.state == 0 || row.state == 2) {
+          IsValid = 1
+          that.$message.warning(`该${row.name}用户尚未审核,请确认操作`)
+        }
+        arrCodes.push({
+          id: row.id,
+          code: row.code,
+          name: row.name,
+          state: 2,
+          lb: 0
+        })
+      }
+      if (IsValid === 0) {
+        let arrJson = JSON.stringify(arrCodes)
+        that.$post('scmDVendor/SaveCode', { data: arrJson, auditCause: this.auditCause }).then(() => {
+          this.unAuditvisible = false
+          that.$message.success('操作成功')
+          that.selectedRowKeys = []
+          that.search()
+        })
+      }
+    },
+    handleAuditCancel () {
+      this.auditCause = ''
+      this.unAuditvisible = false
+    },
+    auditUndo () {
+      if (!this.selectedRowKeys.length) {
+        this.$message.warning('请选择需要操作的记录')
+        return
+      }
+      this.auditCause = ''
+      this.unAuditvisible = true
+    },
     save (flag) {
       if (!this.selectedRowKeys.length) {
         this.$message.warning('请选择需要操作的记录')
@@ -452,27 +509,27 @@ export default {
     },
     edit (record) {
       this.$refs.scmDVendorEdit.setFormValues(record)
-      this.$refs.scmDVendorEdit.attachList=[
+      this.$refs.scmDVendorEdit.attachList = [
         { title: "企业法人营业执照", isRequire: true, index: 1, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国组织机构代码证", isRequire: true, index: 2, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "税务登记证", isRequire: true, index: 3, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国药品经营许可证", isRequire: true, index: 4, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国药品经营质量管理规范认证证书(GSP)", isRequire: true, index: 5, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-      
-       { title: "开发票资料及银行账户信息", isRequire: true, index: 6, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-         { title: "企业税票模板", isRequire: true, index: 7, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+
+        { title: "开发票资料及银行账户信息", isRequire: true, index: 6, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "企业税票模板", isRequire: true, index: 7, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "企业出库单模板", isRequire: true, index: 8, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "企业样章备案", isRequire: true, index: 9, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "企业基本情况和质量保证体系情况表", isRequire: true, index: 10, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "下游客户法人授权委托书模板", isRequire: true, index: 11, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "药品供需双方质量保证协议(正本)", isRequire: true, index: 12, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "药品供需双方质量保证协议(副本)", isRequire: true, index: 13, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-         { title: "中华人民共和国药品经营许可证副本及变更记录", isRequire: false, index: 14, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
+        { title: "中华人民共和国药品经营许可证副本及变更记录", isRequire: false, index: 14, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国医疗器械经营企业许可证", isRequire: false, index: 15, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "中华人民共和国危险化学品经营许可证", isRequire: false, index: 16, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "食品流通许可证", isRequire: false, index: 17, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
         { title: "药品销售单位首次开户应收集资料", isRequire: false, index: 18, validdatestart: '', validdate: '', fileId: '', fileName: '', fileList: [], showV: 1 },
-       
+
       ]
       this.editVisiable = true
     },
@@ -554,7 +611,7 @@ export default {
     },
     fetch (params = {}) {
       this.loading = true
-      params.lb=0
+      params.lb = 0
       if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current
