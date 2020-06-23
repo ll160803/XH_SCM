@@ -37,6 +37,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -150,7 +151,21 @@ public class ScmBSupplyplanController extends BaseController {
             {
                 throw new FebsException("此供应计划尚未产生送货清单，不允许预收！");
             }
-            this.iScmBSupplyplanService.updateDoneMenge(id, doneMenge);
+            List<ViewSupplyplan> list = new ArrayList<>();
+            ViewSupplyplan plan=this.iViewSupplyplanService.getById(id);
+            BigDecimal bd=new BigDecimal(doneMenge);
+            plan.setDoneMenge(plan.getDoneMenge()==null?bd:plan.getDoneMenge().add(bd));
+            list.add(plan);
+            RfcNOC rfc = new RfcNOC();
+            List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+            if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                log.error(id + "SAP端处理失败");
+                throw new FebsException("SAP端处理失败,修改预收失败");
+            }
+            else {
+                this.iScmBSupplyplanService.updateDoneMenge(id, doneMenge);
+            }
+
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);
@@ -163,7 +178,21 @@ public class ScmBSupplyplanController extends BaseController {
     public void updateCancelDoneScmBSupplyplan(@Valid String id) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            this.iScmBSupplyplanService.updateCancelDoneMenge(id);
+            List<ViewSupplyplan> list = new ArrayList<>();
+            ViewSupplyplan plan=this.iViewSupplyplanService.getById(id);
+            BigDecimal bd=new BigDecimal(0);
+            plan.setDoneMenge(bd);
+            list.add(plan);
+            RfcNOC rfc = new RfcNOC();
+            List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+            if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                log.error(id + "SAP端处理失败");
+                throw new FebsException("SAP端处理失败,取消预收失败");
+            }
+            else {
+                this.iScmBSupplyplanService.updateCancelDoneMenge(id);
+            }
+
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);

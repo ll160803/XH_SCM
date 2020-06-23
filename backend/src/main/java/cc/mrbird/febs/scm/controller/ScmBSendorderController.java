@@ -245,31 +245,43 @@ public class ScmBSendorderController extends BaseController {
             List<ViewSupplyplan> listVp1 =this.iViewSupplyplanService.getViewSupplyPlanByOrderId(scmBSendorder.getId().toString());
             for ( ViewSupplyplan vp:listVp1
                  ) {
-                if(!supplyPlanIds.contains(vp.getId().toString())&&vp.getStatus().equals(0)) {
-                    vp.setSendOrderCode("");
-                    list.add(vp);
+                if(StringUtils.isNotBlank(supplyPlanIds)) {
+                    if (!supplyPlanIds.contains(vp.getId().toString()) && vp.getStatus().equals(0)) {
+                        vp.setSendOrderCode("");
+                        list.add(vp);
+                    }
+                }
+                else {
+                    if(vp.getStatus().equals(0)) {
+                        vp.setSendOrderCode("");
+                        list.add(vp);
+                    }
                 }
             }
             if(StringUtils.isNotBlank(supplyPlanIds)) {
-                String ids="'"+supplyPlanIds.replace(",","','")+"'";
-                List<ViewSupplyplan> listvp=  this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
-                for ( ViewSupplyplan vp2:listvp
+                String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
+                List<ViewSupplyplan> listvp = this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
+                for (ViewSupplyplan vp2 : listvp
                 ) {
                     vp2.setSendOrderCode(scmBSendorder.getId().toString());
                     list.add(vp2);
                 }
+            }
+            if(list.size()>0) {
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("修改送货订单,SAP端接收失败");
                     throw new FebsException("修改送货订单,SAP端接收失败");
-                }
-                else
-                {
+                } else {
                     this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
-                   // this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+                    // this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
             }
+            else {
+                this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
+            }
+
         } catch (Exception e) {
             message = "修改失败";
             log.error(message, e);

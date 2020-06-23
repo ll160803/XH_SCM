@@ -197,6 +197,7 @@ public class RfcNOC {
                 IrfTable_IT_SUPLAN.setValue("LGORT", entity.getLgort());
 
                 IrfTable_IT_SUPLAN.setValue("MENGE", entity.getgMenge().toString());
+                IrfTable_IT_SUPLAN.setValue("MENGE_S", entity.getDoneMenge()==null?"":entity.getDoneMenge().toString());
                 IrfTable_IT_SUPLAN.setValue("MEINS", entity.getMeins());
 
                 IrfTable_IT_SUPLAN.setValue("CHARG", entity.getCharge());

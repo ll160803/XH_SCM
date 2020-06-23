@@ -188,9 +188,11 @@ public class SCM_XHImpl implements ISCM_XHService {
                     return Msg;
                 }
             }
-            Msg.setIsSuccess(false);
-            Msg.setMess("供应商不存在注册");
-            Msg.setPurchasePlans(null);
+            else {
+                Msg.setIsSuccess(false);
+                Msg.setMess("供应商不存在注册");
+                Msg.setPurchasePlans(null);
+            }
             return Msg;
         } catch (Exception ex) {
             Msg.setIsSuccess(false);

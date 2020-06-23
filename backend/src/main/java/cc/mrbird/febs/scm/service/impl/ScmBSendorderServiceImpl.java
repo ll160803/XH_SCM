@@ -134,8 +134,7 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
         this.baseMapper.updateScmBSendorder(scmBSendorder);
 
         String supplyPlanIds = scmBSendorder.supplyPlanIds;
-
-        if (scmBSendorder.getBsart() == "1") {//物资
+        if (scmBSendorder.getBsart()!=null && scmBSendorder.getBsart().equals("1") ) {//物资
             this.baseMapper.removeMaterOrderCode(scmBSendorder.getId().toString());//先清空之前的
         }
         else
@@ -151,7 +150,7 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
             ) {
                 ids.add(Long.parseLong(idStr));
             }
-            if (scmBSendorder.getBsart() == "1") {//物资
+            if (scmBSendorder.getBsart()!=null && scmBSendorder.getBsart().equals("1")) {//物资
               //  String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
 
 
