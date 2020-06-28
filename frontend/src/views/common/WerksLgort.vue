@@ -52,16 +52,21 @@ export default {
       provinceData: [],
       firstProvince: '',
       cities: [],
-      secondCity: '',
-    };
+      secondCity: ''
+    }
   },
   mounted () {
     this.fetch()
   },
   methods: {
     handleProvinceChange (value) {
-      this.cities = this.areaData.filter(item => item.parentId === value);
-      this.secondCity =''
+      if (value === '0') {
+        this.cities = []
+      }
+      else {
+        this.cities = this.areaData.filter(item => item.parentId === value)
+      }
+      this.secondCity = ''
       this.$emit("werks", value)
     },
     handleCityChange (value) {
@@ -71,12 +76,12 @@ export default {
       this.$get('scmDArea/getAreas', {
       }).then((r) => {
         this.areaData = r.data.data
-        
+
         this.provinceData = this.areaData.filter(item => item.parentId === '0')
-        this.provinceData.push({id:'0',parentId:'0',name:'全部'})
-       
+        this.provinceData.push({ id: '0', parentId: '0', name: '全部' })
+
       })
     }
   }
-};
+}
 </script>

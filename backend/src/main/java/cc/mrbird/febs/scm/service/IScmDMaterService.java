@@ -19,6 +19,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public interface IScmDMaterService extends IService<ScmDMater> {
 
         IPage<ScmDMater> findScmDMaters(QueryRequest request, ScmDMater scmDMater);
+        IPage<ScmDMater> findScmDMaters_send(QueryRequest request, ScmDMater scmDMater);
+
 
         void createScmDMater(ScmDMater scmDMater);
 

@@ -14,7 +14,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class MsgValidTask {
-/**
     cc.mrbird.febs.webService.OwnToOwn.IScmJobService iScmJobService;
     ScmJobImplService  scmJobImplService=new ScmJobImplService();
 
@@ -176,5 +175,5 @@ public class MsgValidTask {
             }
 
         }
-    }**/
+    }
 }

@@ -30,4 +30,6 @@ public class ActiveUser implements Serializable {
     private String loginAddress;
     //真实名称
     private String realname;
+
+    private  String userid;
 }

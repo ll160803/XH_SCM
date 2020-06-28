@@ -31,6 +31,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -153,7 +155,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @GetMapping("password/check")
+    @PutMapping("password/check")
     public boolean checkPassword(
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password) {
@@ -170,14 +172,37 @@ public class UserController extends BaseController {
             @NotBlank(message = "{required}") String username,
             @NotBlank(message = "{required}") String password) throws FebsException {
         try {
+            message="";
+            if(!HasDigit(password) || !judgeContainsStr(password) ||!judgeContainsSpecialStr(password) || password.trim().length()<8){
+                throw new FebsException("至少8位，需包含数字、字母、符号(@$%!+-)");
+            }
             userService.updatePassword(username, password);
         } catch (Exception e) {
-            message = "修改密码失败";
+            message = "修改密码失败,密码至少8位，需包含数字、字母、符号(@$%!+-)";
             log.error(message, e);
-            throw new FebsException(message);
+            throw new FebsException(e.getMessage());
         }
     }
 
+    private boolean HasDigit(String content) {
+        boolean flag = false;
+        Pattern p = Pattern.compile(".*\\d+.*");
+        Matcher m = p.matcher(content);
+        if (m.matches()) {
+            flag = true;
+        }
+        return flag;
+    }
+    public boolean judgeContainsStr(String cardNum) {
+        String regex=".*[a-zA-Z]+.*";
+        Matcher m=Pattern.compile(regex).matcher(cardNum);
+        return m.matches();
+    }
+    public boolean judgeContainsSpecialStr(String cardNum) {
+        String regex=".*[@$%#_+*/!]+.*";
+        Matcher m=Pattern.compile(regex).matcher(cardNum);
+        return m.matches();
+}
     @PutMapping("password/reset")
     @RequiresPermissions("user:reset")
     public void resetPassword(@NotBlank(message = "{required}") String usernames) throws FebsException {

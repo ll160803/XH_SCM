@@ -6,8 +6,8 @@
     <div ref="lodopDiv"></div>
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
-        <div :class="advanced ? null: 'fold'">
-          <a-row>
+        <a-row>
+          <div :class="advanced ? null: 'fold'">
             <a-col
               :md="6"
               :sm="24"
@@ -43,26 +43,76 @@
               >
               </werks-lgort>
             </a-col>
-          </a-row>
-
-        </div>
-        <span style="float: right; margin-top: 3px;">
-          <a-button
-            type="primary"
-            @click="search"
-          >查询</a-button>
-          <a-button
-            style="margin-left: 8px"
-            @click="reset"
-          >重置</a-button>
-          <a
-            @click="toggleAdvanced"
-            style="margin-left: 8px"
-          >
-            {{advanced ? '收起' : '展开'}}
-            <a-icon :type="advanced ? 'up' : 'down'" />
-          </a>
-        </span>
+            <template v-if="advanced">
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="状态"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-select @change="handleChange">
+                    <a-select-option
+                      key="0"
+                      value="0"
+                    >未入库</a-select-option>
+                    <a-select-option
+                      key="1"
+                      value="1"
+                    >已入库</a-select-option>
+                    <a-select-option
+                      key="-1"
+                      value="-1"
+                    >全部</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="订单号"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-input v-model="queryParams.ebeln" />
+                </a-form-item>
+                </a-col>
+                <a-col
+                :md="6"
+                :sm="24"
+              >
+                <a-form-item
+                  label="供应计划号"
+                  :labelCol="{span: 8}"
+                  :wrapperCol="{span: 15, offset: 1}"
+                >
+                  <a-input v-model="queryParams.id" />
+                </a-form-item>
+              </a-col>
+            </template>
+          </div>
+          <span style="float: right; margin-top: 3px;">
+            <a-button
+              type="primary"
+              @click="search"
+            >查询</a-button>
+            <a-button
+              style="margin-left: 8px"
+              @click="reset"
+            >重置</a-button>
+            <a
+              @click="toggleAdvanced"
+              style="margin-left: 8px"
+            >
+              {{advanced ? '收起' : '展开'}}
+              <a-icon :type="advanced ? 'up' : 'down'" />
+            </a>
+          </span>
+        </a-row>
       </a-form>
     </div>
     <div>
@@ -240,15 +290,25 @@ export default {
       }, {
         title: '状态',
         dataIndex: 'status',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未入库</a-tag>
+            case 1:
+              return <a-tag color="green">已入库</a-tag>
+            default:
+              return text
+          }
+        },
         width: 100
       }, {
         title: '包装规格',
         dataIndex: 'pkgAmount',
-        width: 100
+        width: 80
       }, {
         title: '包装数量',
         dataIndex: 'pkgNumber',
-        width: 100
+        width: 80
       }, {
         title: '缺货原因',
         dataIndex: 'outCause'
@@ -271,6 +331,13 @@ export default {
     this.fetch()
   },
   methods: {
+    handleChange (value) {
+      if (value !== '-1') {
+        this.queryParams.status = value
+      } else {
+        this.queryParams.status = ''
+      }
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -293,7 +360,7 @@ export default {
       }
       this.printIds = this.selectedRowKeys.join(',')
       getLodopDiv(this.$refs.lodopDiv)
-      if (getLodop() == undefined || getLodop() == null) {
+      if (getLodop() === undefined || getLodop() == null) {
 
       }
       else {

@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "ScmJobImplService", targetNamespace = "urn:ScmJob.webService.febs.mrbird.cc", wsdlLocation = "http://scmapi.whuh.com/webservice/sjob?wsdl")
+@WebServiceClient(name = "ScmJobImplService", targetNamespace = "urn:ScmJob.webService.febs.mrbird.cc", wsdlLocation = "http://testscmapi.whuh.com/webservice/sjob?wsdl")
 public class ScmJobImplService
     extends Service
 {
@@ -30,7 +30,7 @@ public class ScmJobImplService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://scmapi.whuh.com/webservice/sjob?wsdl");
+            url = new URL("http://testscmapi.whuh.com/webservice/sjob?wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

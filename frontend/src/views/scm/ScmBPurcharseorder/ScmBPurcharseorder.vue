@@ -230,9 +230,9 @@ export default {
       queryParams: {
       },
       addVisiable: false,
-      baseId: '',//采购订单的id
-      editRecord: {},//编辑行
-      addKey: '',//添加的订单id
+      baseId: '', // 采购订单的id
+      editRecord: {}, // 编辑行
+      addKey: '', // 添加的订单id
       amount: 0,
       price: 0,
       eAmount: 0,
@@ -276,7 +276,7 @@ export default {
       }, {
         title: '物料描述',
         dataIndex: 'txz01',
-        width: 200
+        width: 300
       }, {
         title: '院区名称',
         dataIndex: 'werkst',
@@ -323,15 +323,15 @@ export default {
             default:
               return text
           }
-        },
-        width: 80
+        }
       }, {
         title: '供应数量',
         dataIndex: 'allmenge',
         width: 80
       }, {
         title: '收货数量',
-        dataIndex: 'suremenge'
+        dataIndex: 'suremenge',
+        width: 80
       }]
     },
     innerColumns () {
@@ -374,9 +374,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return <a-tag color="purple">未收货</a-tag>
+              return <a-tag color="purple">未入库</a-tag>
             case 1:
-              return <a-tag color="green">已收货</a-tag>
+              return <a-tag color="green">已入库</a-tag>
             default:
               return text
           }

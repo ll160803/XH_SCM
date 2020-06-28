@@ -23,7 +23,7 @@
       >
         <a-input
           placeholder="请输入批次号"
-          v-decorator="['charge', {rules: [{ required: true, message: '批次号不能为空' }]}]"
+          v-decorator="['charge', {rules: [{ required: true, message: '批次号不能为空' }, {max: 20, message: '批次号最长20'}]}]"
         />
       </a-form-item>
       <a-form-item

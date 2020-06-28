@@ -153,6 +153,9 @@ public class ScmBSupplyplanController extends BaseController {
             }
             List<ViewSupplyplan> list = new ArrayList<>();
             ViewSupplyplan plan=this.iViewSupplyplanService.getById(id);
+            if(iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),plan.getWerks()+plan.getLgort()).equals(0L)){
+                throw new FebsException("您没有分配 "+plan.getWerkst()+"  "+plan.getLgortName() +" 的权限！");
+            }
             BigDecimal bd=new BigDecimal(doneMenge);
             plan.setDoneMenge(plan.getDoneMenge()==null?bd:plan.getDoneMenge().add(bd));
             list.add(plan);
@@ -180,6 +183,9 @@ public class ScmBSupplyplanController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             List<ViewSupplyplan> list = new ArrayList<>();
             ViewSupplyplan plan=this.iViewSupplyplanService.getById(id);
+            if(iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),plan.getWerks()+plan.getLgort()).equals(0L)){
+                throw new FebsException("您没有分配 "+plan.getWerkst()+"  "+plan.getLgortName() +" 的权限！");
+            }
             BigDecimal bd=new BigDecimal(0);
             plan.setDoneMenge(bd);
             list.add(plan);
@@ -329,20 +335,29 @@ public class ScmBSupplyplanController extends BaseController {
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
             List<ViewSupplyplan> doneList = new ArrayList<>();
             List<Long> arrids = new ArrayList<>();
-            for (ViewSupplyplan en : list
-            ) {
-                if (en.getStatus().equals(1)) {
-                    message +=  "此送货清单已入库";
-                    break;
-                } else if (!en.getgMenge().equals(en.getDoneMenge())) {
-                    message += "供应计划"+en.getId().toString() + ":预收数量不等于供应计划数量";
-                } else {
-                    en.setStatus(1);
-                    doneList.add(en);
-                    arrids.add(en.getId());
+            if(list.size()>0) {
+                if (iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),  list.get(0).getWerks() +  list.get(0).getLgort()).equals(0L)) {
+                    message = "您没有分配 " + list.get(0).getWerkst() + "  " +  list.get(0).getLgortName() + " 的权限！";
                 }
+                else{
+                    for (ViewSupplyplan en : list
+                    ) {
 
+                        if (en.getStatus().equals(1)) {
+                            message +=  "此送货清单已入库";
+                            break;
+                        } else if (!en.getgMenge().equals(en.getDoneMenge())) {
+                            message += "供应计划"+en.getId().toString() + ":预收数量不等于供应计划数量";
+                        } else {
+                            en.setStatus(1);
+                            doneList.add(en);
+                            arrids.add(en.getId());
+                        }
+
+                    }
+                }
             }
+
             if(!StringUtils.isNotBlank(message)) {
                 log.error("发送SAP收货");
                 RfcNOC rfc = new RfcNOC();
@@ -377,18 +392,26 @@ public class ScmBSupplyplanController extends BaseController {
             List<ViewSupplyplan> list = this.iViewSupplyplanService.getViewSupplyPlanByOrderId(sendOrderId);
             List<ViewSupplyplan> doneList = new ArrayList<>();
             List<Long> arrids = new ArrayList<>();
-            for (ViewSupplyplan en : list
-            ) {
-                if (!en.getStatus().equals(1)) {
-                    message += "此送货清单尚未入库";
-                    break;
-                } else {
-                    en.setStatus(0);
-                    doneList.add(en);
-                    arrids.add(en.getId());
+            if(list.size()>0) {
+                if (iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),  list.get(0).getWerks() +  list.get(0).getLgort()).equals(0L)) {
+                    message = "您没有分配 " + list.get(0).getWerkst() + "  " +  list.get(0).getLgortName() + " 的权限！";
                 }
+                else {
+                    for (ViewSupplyplan en : list
+                    ) {
+                        if (!en.getStatus().equals(1)) {
+                            message += "此送货清单尚未入库";
+                            break;
+                        } else {
+                            en.setStatus(0);
+                            doneList.add(en);
+                            arrids.add(en.getId());
+                        }
 
+                    }
+                }
             }
+
             if(!StringUtils.isNotBlank(message)) {
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
@@ -530,8 +553,8 @@ public class ScmBSupplyplanController extends BaseController {
         List<ViewSupplyplan> e1 = iViewSupplyplanService.findVPlanByOrderCode(id);
         StringBuilder sb = new StringBuilder();
         if(e1!= null && e1.size()>0) {
-            sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst()));
-            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "基本单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "预计补送日期"));
+            sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst()+"  "+e1.get(0).getLgortName()));
+            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "补送日期"));
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             for (ViewSupplyplan f2 : e1) {
@@ -552,11 +575,11 @@ public class ScmBSupplyplanController extends BaseController {
         StringBuilder sb = new StringBuilder();
         String mark= GenerateMark(orderCode);
         sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
-        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\" width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单",mark));
+        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\"text-align:center; width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品送货清单",mark));
         sb.append("<tr><td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商编码：%1$s</td>");
         sb.append("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商名称：%2$s</td>");
-        sb.append("<td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >院区：%3$s</td>");
-        sb.append(String.format("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:center;font-size: 12px;\" >%1$s</td><tr>",orderCode));
+        sb.append("<td colspan=\"5\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >库房：%3$s</td>");
+        sb.append(String.format("<td colspan=\"2\" style=\"height:40px;font-family:宋体;text-align:center;font-size: 12px;\" >%1$s</td><tr>",orderCode));
         return sb.toString();
 
     }
@@ -624,38 +647,38 @@ public class ScmBSupplyplanController extends BaseController {
                         "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%3$s" +
                         "</td>" +
-                        "<td style=\"width: 240px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 240px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%4$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%5$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%6$s" +
                         "</td>" +
                         "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%7$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%8$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%9$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%10$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%11$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%12$s" +
                         "</td>" +
 
                         "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%13$s" +
                         "</td>" +
-                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;border-right:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;border-right:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%14$s" +
                         "</td>" +
                         "</tr>";

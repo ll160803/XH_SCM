@@ -16,6 +16,7 @@
       >
         <up-fc
           ref="upfc"
+          murl="scmDMater/send"
           v-decorator="['matnr2', {rules: [{ required: true, message: '药品不能为空' }]}]"
         >
         </up-fc>

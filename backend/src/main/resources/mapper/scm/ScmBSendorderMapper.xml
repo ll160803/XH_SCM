@@ -156,13 +156,13 @@
         <if test="order.gysaccount!= null and order.gysaccount !=''">
             And scm_b_sendorder.GYSACCOUNT = #{order.gysaccount}
         </if>
-        <if test="order.werks!= null and order.werks !=''">
+        <if test="order.werks!= null and order.werks!='' and order.werks !='0'.toString()">
             And scm_b_sendorder.werks = #{order.werks}
         </if>
         <if test="order.werkst!= null and order.werkst !=''">
             And scm_b_sendorder.werkst = #{order.werkst}
         </if>
-        <if test="order.lgort!= null and order.lgort !=''">
+        <if test="order.lgort!= null and order.lgort!=''  and order.lgort !='0'.toString()">
             And scm_b_sendorder.lgort = #{order.lgort}
         </if>
         <if test="order.lgortname!= null and order.lgortname !=''">
@@ -208,4 +208,5 @@
         </foreach>
         AND STATUS=0
     </update>
+    <!--是否可以删除送货清单-->
 </mapper>

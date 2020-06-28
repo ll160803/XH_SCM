@@ -72,6 +72,37 @@ public class ScmDMaterServiceImpl extends ServiceImpl<ScmDMaterMapper, ScmDMater
     }
 
     @Override
+    public IPage<ScmDMater> findScmDMaters_send(QueryRequest request, ScmDMater scmDMater) {
+        try {
+            LambdaQueryWrapper<ScmDMater> queryWrapper = new LambdaQueryWrapper<>();
+            if (StringUtils.isNotBlank(scmDMater.getCode())) {
+                queryWrapper.eq(ScmDMater::getCode, scmDMater.getCode());
+            }
+            if (StringUtils.isNotBlank(scmDMater.keyword)) {
+                queryWrapper.and(wrapper -> wrapper.eq(ScmDMater::getMatnr, scmDMater.keyword).or().like(ScmDMater::getSpellCode, scmDMater.keyword).or().like(ScmDMater::getTxz01, scmDMater.keyword));
+            }
+            queryWrapper.apply("LENGTH(GYSACCOUNT)=0");
+            if(StringUtils.isNotBlank(scmDMater.getTxz01()))
+            {
+                queryWrapper.like(ScmDMater::getTxz01, scmDMater.getTxz01().trim());
+            }
+            if(StringUtils.isNotBlank(scmDMater.getSpellCode()))
+            {
+                queryWrapper.likeLeft(ScmDMater::getSpellCode, scmDMater.getSpellCode());
+            }
+            if(StringUtils.isNotBlank(scmDMater.getMatnr()))
+            {
+                queryWrapper.eq(ScmDMater::getMatnr, scmDMater.getMatnr());
+            }
+            Page<ScmDMater> page = new Page<>();
+            SortUtil.handlePageSort(request, page, true);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+    @Override
     @Transactional
     public void createScmDMater(ScmDMater scmDMater) {
         scmDMater.setId(scmDMater.getMatnr());

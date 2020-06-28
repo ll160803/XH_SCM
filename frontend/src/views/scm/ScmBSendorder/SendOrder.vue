@@ -272,16 +272,16 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return <a-tag color="purple">未收货</a-tag>
+              return <a-tag color="purple">未入库</a-tag>
             case 1:
-              return <a-tag color="green">已收货</a-tag>
+              return <a-tag color="green">已入库</a-tag>
             default:
               return text
           }
         }
       }, {
-        title: '发票编码',
-        dataIndex: 'fpbm'
+        title: '预收数量',
+        dataIndex: 'doneMenge'
       }, {
         title: '包装规格',
         dataIndex: 'pkgAmount'

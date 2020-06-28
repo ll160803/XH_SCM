@@ -14,7 +14,10 @@
         v-bind="formItemLayout"
         label="药品"
       >
-        <up-fc ref="upfc">
+        <up-fc
+        ref="upfc"
+        murl="scmDMater/send"
+        >
         </up-fc>
       </a-form-item>
      <a-form-item

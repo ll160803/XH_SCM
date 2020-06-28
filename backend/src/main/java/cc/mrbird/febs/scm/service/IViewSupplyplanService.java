@@ -36,6 +36,8 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
 
         void deleteViewSupplyplans(String[]Ids);
 
+        Long findAreaCount(String username,String werks);
+
         List<ViewSupplyplan> getViewSupplyPlanByIds(String ids);
 
         List<ViewSupplyplan> getViewSupplyPlanByOrderId(String sendOrderId);

@@ -233,14 +233,22 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             List<ScmDMater> list_purchase_C = new ArrayList<>();
             for (SAP_MATER item : materList) {
                 LambdaQueryWrapper<ScmDMater> queryWrapperMater = new LambdaQueryWrapper<>();
-                queryWrapperMater.eq(ScmDMater::getGysaccount, item.getGysAccount());
+                if(StringUtils.isNotBlank(item.getGysAccount())) { //20200623 当不存在供应商账号的时候 默认是配送表
+                    queryWrapperMater.eq(ScmDMater::getGysaccount, item.getGysAccount());
+                }
+                else {
+                    queryWrapperMater.apply("LENGTH(GYSACCOUNT)=0");
+                }
                 queryWrapperMater.eq(ScmDMater::getMatnr, item.getMatnr());
 
 
                 ScmDMater ens = scmDMaterMapper.selectOne(queryWrapperMater);
                 if (ens != null) {
                     ens.setMatnr(item.getMatnr().trim());
-                    ens.setGysaccount(item.getGysAccount().trim());
+                    if(StringUtils.isNotBlank(item.getGysAccount())) {
+                         ens.setGysaccount(item.getGysAccount().trim());
+                    }
+
                     ens.setProduceArea(item.getProduceArea() == null ? "" : item.getProduceArea().trim());
                     ens.setSpec(item.getSpec() == null ? "" : item.getSpec().trim());
                     ens.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
@@ -250,7 +258,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                 } else {
                     ScmDMater entity = new ScmDMater();
                     entity.setMatnr(item.getMatnr().trim());
-                    entity.setGysaccount(item.getGysAccount().trim());
+                    if(StringUtils.isNotBlank(item.getGysAccount())) {
+                        ens.setGysaccount(item.getGysAccount().trim());
+                    }
                     entity.setProduceArea(item.getProduceArea() == null ? "" : item.getProduceArea().trim());
                     entity.setSpec(item.getSpec() == null ? "" : item.getSpec().trim());
                     entity.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());

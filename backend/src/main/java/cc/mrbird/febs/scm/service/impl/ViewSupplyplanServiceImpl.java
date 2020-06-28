@@ -166,7 +166,11 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
-
+    @Override
+    @Transactional
+    public Long findAreaCount(String username,String werks){
+        return  this.baseMapper.findAreaCount(username,werks);
+    }
     @Override
     @Transactional
     public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids) {

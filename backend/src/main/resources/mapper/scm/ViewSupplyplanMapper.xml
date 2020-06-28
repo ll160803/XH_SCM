@@ -323,7 +323,7 @@ WHERE
 		WHERE
 		1 = 1
 
-		<if test="order.ebeln != null">
+		<if test="order.ebeln != null and order.ebeln !=''">
 			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
 		</if>
 		<if test="order.werks != null and order.werks !='0'.toString()">
@@ -356,6 +356,7 @@ WHERE
 		WHERE
 		(a.`BASE_ID` = b.`ID`)
     </select>
+
 
     <select id="findVPlanByOrderCode" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" >
       SELECT

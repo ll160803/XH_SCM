@@ -56,14 +56,14 @@ export default {
     }
   },
   props: {
-  
+    murl: 'scmDMater'
   },
   methods: {
-    //监听输入事件，当input中有内容时，下面的搜索列表显示出来
+    // 监听输入事件，当input中有内容时，下面的搜索列表显示出来
     inputFunc () {
       if (this.isSelect == 0) {
         if (this.issue_content.length > 0) {
-          this.serch_result_issue = true;
+          this.serch_result_issue = true
           this.queryParams["keyWord"] = this.issue_content
           this.search()
         } else {
@@ -79,7 +79,7 @@ export default {
       let row = dataSource.find(item => item.id === selectedRowKeys[0])
       this.issue_content = `${row.matnr}_${row.txz01}`
       this.materId = row.id
-      this.matnr =row.matnr
+      this.matnr = row.matnr
       this.isSelect = 1
       this.serch_result_issue = false
     },
@@ -113,14 +113,14 @@ export default {
       this.queryParams = {}
       this.issue_content = ''
       this.serch_result_issue = false
-      //this.fetch()
+      // this.fetch()
     },
     setFormValue (txz01, matnr,materId) {
       this.isSelect = 1
       this.issue_content = txz01
       console.info(matnr)
       this.matnr = matnr
-      this.materId =materId
+      this.materId = materId
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -144,7 +144,8 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      this.$get('scmDMater', {
+      let url = this.murl === undefined ? 'scmDMater' : this.murl
+      this.$get(url, {
         ...params
       }).then((r) => {
         let data = r.data
@@ -156,7 +157,7 @@ export default {
       })
     }
   },
-  //计算属性，当输入内容的时候下面的方法就会根据你输入的内容来过滤serch_result数组中的数据
+  // 计算属性，当输入内容的时候下面的方法就会根据你输入的内容来过滤serch_result数组中的数据
   computed: {
     columns () {
       return [

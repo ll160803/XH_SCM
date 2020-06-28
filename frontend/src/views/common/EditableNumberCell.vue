@@ -18,7 +18,7 @@
       {{ value || 0 }}
       <a-icon
         type="edit"
-        class="editable-cell-icon"
+        class="editable-cell-icon-check"
         @click="edit"
       />
     </div>

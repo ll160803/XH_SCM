@@ -295,8 +295,8 @@ export default {
           }
         }
       }, {
-        title: '发票编码',
-        dataIndex: 'fpbm'
+        title: '预收数量',
+        dataIndex: 'doneMenge'
       }, {
         title: '包装规格',
         dataIndex: 'pkgAmount'
@@ -399,10 +399,10 @@ export default {
         }
       })
     },
-    expandSubGrid (expanded, record) {//获取供应计划的数量
+    expandSubGrid (expanded, record) { // 获取供应计划的数量
       if (expanded) {
         this.expandedRowKeys.push(record.id)
-        this.handleSubData(record) //获取子表数据
+        this.handleSubData(record) // 获取子表数据
       } else {
         let expandedRowKeys = this.expandedRowKeys.filter(RowKey => RowKey !== record.id)
         this.expandedRowKeys = expandedRowKeys

@@ -65,6 +65,12 @@ public Map<String, Object> List(QueryRequest request, ScmDMater scmDMater,String
         scmDMater.keyword=keyWord;
         return getDataTable(this.iScmDMaterService.findScmDMaters(request, scmDMater));
     }
+    @GetMapping("send")
+    public Map<String, Object> ListMater2(QueryRequest request, ScmDMater scmDMater,String keyWord){
+        log.error("关键字"+keyWord);
+        scmDMater.keyword=keyWord;
+        return getDataTable(this.iScmDMaterService.findScmDMaters_send(request, scmDMater));
+    }
 
 /**
  * 跳转添加页面

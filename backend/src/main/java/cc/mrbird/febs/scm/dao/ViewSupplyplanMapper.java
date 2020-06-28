@@ -28,6 +28,8 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         IPage<ViewSupplyplan> findVPurcharseorder(Page page, @Param("order") ViewSupplyplan order);
 
         Long findVPurcharseorder_COUNT(@Param("order") ViewSupplyplan order);
+        @Select("select COUNT(1) from scm_b_userandarea where UserID=#{username} and AreaID=#{werk}")
+        Long findAreaCount(@Param(value = "username") String username,@Param(value = "werk") String werk);
 
         Long findVPurcharseorder_noOrder(@Param("order") ViewSupplyplan order);
         List<ViewSupplyplan>  findVPlanByOrderCode(@Param(value = "orderCode") String orderCode);

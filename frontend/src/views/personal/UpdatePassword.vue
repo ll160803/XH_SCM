@@ -129,8 +129,8 @@ export default {
         if (!err) {
           let newPassword = this.form.getFieldValue('password')
           this.$put('user/password', {
-            password: newPassword,
-            username: this.user.username
+            username: this.user.username,
+            password: newPassword
           }).then(() => {
             this.state.passwordLevelChecked = false
             this.$emit('success')
@@ -190,7 +190,7 @@ export default {
     handleOldPassowrd (rule, value, callback) {
       let password = this.form.getFieldValue('oldPassword')
       if (typeof password !== 'undefined' && password.trim().length) {
-        this.$get('user/password/check', {
+        this.$put('user/password/check', {
           password: password,
           username: this.user.username
         }).then((r) => {
