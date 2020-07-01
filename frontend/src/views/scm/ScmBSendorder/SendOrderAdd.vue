@@ -197,11 +197,6 @@ export default {
     }
   },
   methods: {
-    reset () {
-      this.loading = false
-      this.scmBSendorder = {}
-      this.form.resetFields()
-    },
     onClose () {
       this.reset()
       this.$emit('close')
@@ -243,6 +238,9 @@ export default {
       })
     },
     reset () {
+      this.loading = false
+      this.scmBSendorder = {}
+      this.form.resetFields()
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
@@ -256,8 +254,8 @@ export default {
       this.paginationInfo = null
       // 重置查询参数
       this.queryParams = {}
-
-      //this.fetch()
+      this.$refs.werklgort.reset()
+      // this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -281,12 +279,12 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-       if (params.sortField == null) {
+      if (params.sortField == null) {
         params.sortField = "id"
         params.sortOrder = "descend"
       }
-      params.bsartD = "0"//物资单类型
-      params.status = 0 //为收货的数据
+      params.bsartD = "0" // 物资单类型
+      params.status = 0 // 为收货的数据
       this.$get('viewSupplyplan/sendOrder', {
         ...params
       }).then((r) => {

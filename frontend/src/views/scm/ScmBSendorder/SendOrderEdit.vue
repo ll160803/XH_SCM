@@ -189,11 +189,6 @@ export default {
     }
   },
   methods: {
-    reset () {
-      this.loading = false
-      this.scmBSendorder = {}
-      this.form.resetFields()
-    },
     onClose () {
       this.reset()
       this.$emit('close')
@@ -224,6 +219,9 @@ export default {
       })
     },
     reset () {
+      this.loading = false
+      this.scmBSendorder = {}
+      this.form.resetFields()
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
@@ -237,8 +235,8 @@ export default {
       this.paginationInfo = null
       // 重置查询参数
       this.queryParams = {}
-
-      //this.fetch()
+      this.$refs.werklgort.reset()
+      // this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -288,7 +286,7 @@ export default {
       }
       params.sendOrderCode = this.orderId
       params.status = 0 //未收货的数据
-      this.$get('scmBSupplyplan/sendOrder', {
+      this.$get('viewSupplyplan/sendOrder', {
         ...params
       }).then((r) => {
         let data = r.data

@@ -140,7 +140,7 @@
             And lifnr = #{order.lifnr}
         </if>
         <if test="order.gysname!= null and order.gysname !=''">
-            And gysname = #{order.gysname}
+            AND gysname like concat('%',#{order.gysname},'%')
         </if>
         <if test="order.matnr != null and order.matnr != ''">
             AND matnr = #{order.matnr}

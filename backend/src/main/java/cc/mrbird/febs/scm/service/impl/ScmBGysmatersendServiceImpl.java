@@ -58,6 +58,12 @@ public IPage<ScmBGysmatersend> findScmBGysmatersends(QueryRequest request, ScmBG
                 if (StringUtils.isNotBlank(scmBGysmatersend.getTxz01())) {
                         queryWrapper.like(ScmBGysmatersend::getTxz01, scmBGysmatersend.getTxz01());
                 }
+                if (StringUtils.isNotBlank(scmBGysmatersend.getProduceArea())) {
+                        queryWrapper.like(ScmBGysmatersend::getProduceArea, scmBGysmatersend.getProduceArea());
+                }
+                if (StringUtils.isNotBlank(scmBGysmatersend.getSpec())) {
+                        queryWrapper.like(ScmBGysmatersend::getSpec, scmBGysmatersend.getSpec());
+                }
                 if (StringUtils.isNotBlank(scmBGysmatersend.getGysaccount())) {
                         queryWrapper.eq(ScmBGysmatersend::getGysaccount, scmBGysmatersend.getGysaccount());
                 }

@@ -7,20 +7,8 @@
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row>
-            <a-col
-              :md="12"
-              :sm="24"
-            >
-              <a-form-item
-                label="药品名称编码"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
-              >
-                <a-input v-model="queryParams.keyword_mater" />
-              </a-form-item>
-            </a-col>
-            <a-col
-              :md="12"
+             <a-col
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -29,6 +17,42 @@
                 :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.keyword_gys" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="药品"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.keyword_mater" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="规格"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.spec" />
+              </a-form-item>
+            </a-col>
+             <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="生产厂家"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.produceArea" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -64,7 +88,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :scroll="{ x: 1200 }"
       >
         <template
           slot="remark"
@@ -91,7 +115,7 @@
         </template>
       </a-table>
     </div>
-        <scmBGysMater-view
+    <scmBGysMater-view
       ref="scmBGysmatersendEdit"
       @close="handleEditClose"
       :editVisiable="editVisiable"
@@ -142,7 +166,7 @@ export default {
       return [{
         title: '供应商名称',
         dataIndex: 'name',
-        width: 200
+        width: 180
       }, {
         title: '供应商账号',
         dataIndex: 'gysaccount',
@@ -154,7 +178,15 @@ export default {
       }, {
         title: '药品名称',
         dataIndex: 'txz01'
-      },, {
+      }, {
+        title: '规格',
+        dataIndex: 'spec',
+        width: 100
+      }, {
+        title: '生产厂家',
+        dataIndex: 'produceArea',
+        width: 100
+      }, {
         title: '配送开始日期',
         dataIndex: 'sendStartTime',
         customRender: (text, row, index) => {
@@ -173,7 +205,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 60
       }]
     }
   },
@@ -244,14 +276,13 @@ export default {
           if (IsValid == 0) {
             let scmBGysmatersendIds = that.selectedRowKeys.join(',')
             that.$delete('scmBGysmatersend/' + scmBGysmatersendIds).then((data) => {
-              if(data===undefined)
-              {
+              if (data === undefined) {
                 that.$message.success('删除成功')
               }
-              else{
+              else {
                 that.$message.success(data)
               }
-              
+
               that.selectedRowKeys = []
               that.search()
             })
@@ -334,7 +365,7 @@ export default {
           params.sortOrder = this.sortedInfo.order
         }
       }
-       if (params.sortField == null) {
+      if (params.sortField == null) {
         params.sortField = "Create_TIME"
         params.sortOrder = "descend"
       }

@@ -246,10 +246,17 @@ export default {
         }).then((data) => {
           this.saveF = true
           this.loading = false
-          this.$message.success('注册成功')
-          console.log(data)
-          this.$refs.divID.innerHTML = "请记住此注册码:" + data.data.message + " ,以便查询审核进度。"
-          //this.returnLogin()
+          if (data.data.message.length === 36) {
+            // this.$message.success('注册成功')
+            this.$message.info('注册成功,请记住此注册码:' + data.data.message + ' ,以便查询审核进度。', 300)
+            this.$refs.divID.innerHTML = "请记住此注册码:" + data.data.message + " ,以便查询审核进度。"
+          }
+          else{
+            this.$message.success('注册失败')
+            this.$message.info(data.data.message, 300)
+          }
+          console.log(data)      
+          // this.returnLogin()
         }).catch(() => {
           this.saveF = false
           this.loading = false

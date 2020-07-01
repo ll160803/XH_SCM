@@ -7,10 +7,8 @@
     @cancel="handleCancleClick"
     title="审核"
   >
-  <a-textarea
-   v-model="v_suggestion"
-  >
-  </a-textarea>
+    <a-textarea v-model="v_suggestion">
+    </a-textarea>
     <template slot="footer">
       <a-button
         key="back"
@@ -43,33 +41,33 @@ export default {
       require: true,
       default: false
     },
-    id:'',
-    url:''
+    id: '',
+    url: ''
   },
   data () {
     return {
-      v_suggestion:'同意',
+      v_suggestion: '同意',
       loading: false
     }
   },
   methods: {
-      reset (){
-         this.v_suggestion='同意'
-         this.loading = false
-      },
+    reset () {
+      this.v_suggestion = '同意'
+      this.loading = false
+    },
     handleOk (state) {
       this.loading = true
-      console.info("ssss"+this.url)
+      console.info("ssss" + this.url)
       this.$put(this.url, {
-             id:this.id,
-             state:state,
-             auditCause:this.v_suggestion
-          }).then(() => {
-            this.reset()
-            this.$emit('success')
-          }).catch(() => {
-            this.loading = false
-          })
+        id: this.id,
+        state: state,
+        auditCause: this.v_suggestion
+      }).then(() => {
+        this.reset()
+        this.$emit('success')
+      }).catch(() => {
+        this.loading = false
+      })
     },
     handleCancleClick (e) {
       this.$emit('close')
@@ -79,7 +77,7 @@ export default {
     }
   },
   computed: {
-   show: {
+    show: {
       get: function () {
         return this.auditVisiable
       },

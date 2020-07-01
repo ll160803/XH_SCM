@@ -134,7 +134,7 @@ public class ScmDVendorServiceImpl extends ServiceImpl<ScmDVendorMapper, ScmDVen
     public void updateScmDVendor(ScmDVendor scmDVendor) {
         scmDVendor.setModifyTime(new Date());
         this.baseMapper.updateScmDVendor(scmDVendor);
-        if(scmDVendor.getState()==1){ //在审核完成时，去除更改消息记录
+        if(scmDVendor.getState()!=null && scmDVendor.getState().equals(1)){ //在审核完成时，去除更改消息记录
             this.baseMapper.removeNoteVendor(scmDVendor.getCode());
             this.baseMapper.removeNoteVendord(scmDVendor.getCode());
             this.baseMapper.removeNoteVendoruser(scmDVendor.getCode());

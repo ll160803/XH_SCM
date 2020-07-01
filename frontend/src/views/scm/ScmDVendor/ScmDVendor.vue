@@ -248,9 +248,9 @@ export default {
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
-              return <a-tag color="cyan">不限制</a-tag>
+              return <a-tag color="cyan">限制</a-tag>
             case 1:
-              return <a-tag color="red">限制</a-tag>
+              return <a-tag color="red">不限制</a-tag>
             default:
               return text
           }
@@ -326,32 +326,32 @@ export default {
         centered: true,
         onOk () {
           let scmDVendorIds = that.selectedRowKeys.join(',')
-          let arrCodes = [];
+          let arrCodes = []
           const dataSource = [...that.dataSource]
           let IsValid = 0
           for (let key in that.selectedRowKeys) {
             let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
             if (flag == 0) {//关闭接口
-              if (row.jieKouState == 1) {
-                IsValid = 1
-                that.$message.warning(`该${row.name}用户已经关闭接口,请确认操作`)
-              }
-              arrCodes.push({
-                id: row.id,
-                jieKouState: 1
-              })
-            }
-            if (flag == 1) {//保存审核
               if (row.jieKouState == 0) {
                 IsValid = 1
-                that.$message.warning(`该${row.name}用户已经打开接口,请确认操作`)
+                that.$message.warning(`该${row.name}用户已经关闭接口,请确认操作`)
               }
               arrCodes.push({
                 id: row.id,
                 jieKouState: 0
               })
             }
-            if (flag == 3) {//限制
+            if (flag == 1) {//保存审核
+              if (row.jieKouState == 1) {
+                IsValid = 1
+                that.$message.warning(`该${row.name}用户已经打开接口,请确认操作`)
+              }
+              arrCodes.push({
+                id: row.id,
+                jieKouState: 1
+              })
+            }
+            if (flag == 3) { // 限制
               if (row.fileState == 1) {
                 IsValid = 1
                 that.$message.warning(`该${row.name}用户已经限制资质上传,请确认操作`)
@@ -361,7 +361,7 @@ export default {
                 fileState: 1
               })
             }
-            if (flag == 4) {//不限制
+            if (flag == 4) { // 不限制
               if (row.fileState == 0) {
                 IsValid = 1
                 that.$message.warning(`该${row.name}用户已经不限制资质上传,请确认操作`)

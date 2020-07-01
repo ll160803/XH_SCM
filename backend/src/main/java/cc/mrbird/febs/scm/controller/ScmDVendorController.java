@@ -1,5 +1,6 @@
 package cc.mrbird.febs.scm.controller;
 
+import cc.mrbird.febs.common.annotation.Limit;
 import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.controller.BaseController;
 import cc.mrbird.febs.common.domain.FebsResponse;
@@ -17,6 +18,7 @@ import cc.mrbird.febs.scm.entity.ScmDVendor;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.service.UserService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
@@ -161,10 +163,17 @@ public class ScmDVendorController extends BaseController {
 
     @PostMapping("regist")
     public FebsResponse regist(ScmDVendor scmDVendor, String scmDVendorD,String scmDVendoruser)  {
+       message="";
         FebsResponse response=new FebsResponse();
         String F_id = UUID.randomUUID().toString();
         try {
-
+            LambdaQueryWrapper<ScmDVendor> queryWrapper=new LambdaQueryWrapper<>();
+            queryWrapper.eq(ScmDVendor::getName,scmDVendor.getName());
+            ScmDVendor scmold=this.iScmDVendorService.getOne(queryWrapper);
+            if(scmold!=null) {
+               message="已经存在的供应商,请不要重复注册！";
+               throw new  Exception("已经存在的供应商,注册码为 "+scmold.getId()+",请不要重复注册！");
+            }
             scmDVendor.setId(F_id);
             List<ScmDVendorD> list = JSON.parseObject(scmDVendorD, new TypeReference<List<ScmDVendorD>>() {
             });
@@ -174,7 +183,7 @@ public class ScmDVendorController extends BaseController {
         } catch (Exception e) {
             message = "注册失败";
             log.error(message, e);
-            response.message(message);
+            response.message(e.getMessage());
         }
         return response;
     }
@@ -187,13 +196,14 @@ public class ScmDVendorController extends BaseController {
             });
             ScmDVendoruser enscmDVendoruser = JSON.parseObject(scmDVendoruser, new TypeReference<ScmDVendoruser>() {});
             this.iScmDVendorService.updateScmDVendor(scmDVendor, list,enscmDVendoruser);
-
+            if(StringUtils.isNotBlank(scmDVendor.getCode())) {
             //region  取消审核
             User user = new User();
 
             user.setStatus("0");//无效
 
-            this.userService.UpdateUserOnly(user, scmDVendor.getCode());
+    this.userService.UpdateUserOnly(user, scmDVendor.getCode());
+}
             //enndregion
            //region 编辑用 户的姓名
            // if (StringUtils.isNotBlank(scmDVendor.getCode()) && StringUtils.isNotBlank(scmDVendor.getName())) {

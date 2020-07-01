@@ -108,4 +108,12 @@ febs:
     email: 852252810@qq.com
     license: Apache 2.0
     licenseUrl: https://www.apache.org/licenses/LICENSE-2.0.html
+# sap jco 配置
+jco:
+  ashost: 192.168.64.29
+  sysnr: 00
+  client: 300
+  user: COM_SCM
+  passw: '@123456'
+  lang: EN
 

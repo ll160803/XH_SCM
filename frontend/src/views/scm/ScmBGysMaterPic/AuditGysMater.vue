@@ -12,7 +12,7 @@
               :sm="24"
             >
               <a-form-item
-                label="供应商名称\账号"
+                label="供应商"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
@@ -24,11 +24,23 @@
               :sm="24"
             >
               <a-form-item
-                label="药品名称\编码"
+                label="药品"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
                 <a-input v-model="queryParams.keyword_mater" />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="药品"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
+              >
+                <a-input v-model="queryParams.charge" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -124,7 +136,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 900,
+        x: 1200,
         y: window.innerHeight - 400 + 100 - 50 - 10 + 12 + 10 + 10 + 100
       },
       advanced: false,
@@ -182,7 +194,7 @@ export default {
       }, {
         title: '状态',
         dataIndex: 'state',
-        width: 120,
+        width: 100,
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
@@ -200,7 +212,7 @@ export default {
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },
         fixed: 'right',
-        width: 100
+        width: 60
       }]
     }
   },

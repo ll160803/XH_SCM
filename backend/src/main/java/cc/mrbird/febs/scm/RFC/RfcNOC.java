@@ -1,6 +1,9 @@
 package cc.mrbird.febs.scm.RFC;
 
 import cc.mrbird.febs.common.annotation.Log;
+import cc.mrbird.febs.common.domain.FebsResponse;
+import cc.mrbird.febs.common.properties.FebsProperties;
+import cc.mrbird.febs.common.properties.JcoProperties;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
@@ -10,6 +13,7 @@ import com.sap.conn.rfc.api.IRfcFunction;
 import com.sap.conn.rfc.api.IRfcTable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.runtime.directive.Foreach;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,14 +28,16 @@ import java.util.Properties;
 public class RfcNOC {
     private static final String ABAP_AS_POOLED = "ECC";
 
+    @Autowired
+    private JcoProperties jcoproperties;
     static {
         Properties connectProperties = new Properties();
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.29");//服务器
-        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "00");        //系统编号
-        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "300");       //SAP集团
-        connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
-        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "@123456");     //密码
-        connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "EN");        //登录语言
+        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, JcoProperties.getAshost());//服务器
+        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  JcoProperties.getSysnr());        //系统编号
+        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, JcoProperties.getClient());       //SAP集团
+        connectProperties.setProperty(DestinationDataProvider.JCO_USER, JcoProperties.getUser());  //SAP用户名
+        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
+        connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
 
         /** 正式的地址
          *  connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器

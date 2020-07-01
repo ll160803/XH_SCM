@@ -14,6 +14,7 @@ import java.util.List;
 @Slf4j
 @Component
 public class MsgValidTask {
+    /**  这是消息提醒  在后台发布时候必须注释掉
     cc.mrbird.febs.webService.OwnToOwn.IScmJobService iScmJobService;
     ScmJobImplService  scmJobImplService=new ScmJobImplService();
 
@@ -175,5 +176,5 @@ public class MsgValidTask {
             }
 
         }
-    }
+    }**/
 }

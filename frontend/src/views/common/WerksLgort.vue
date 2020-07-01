@@ -59,6 +59,10 @@ export default {
     this.fetch()
   },
   methods: {
+    reset () {
+      this.firstProvince = ''
+      this.secondCity = ''
+    },
     handleProvinceChange (value) {
       if (value === '0') {
         this.cities = []

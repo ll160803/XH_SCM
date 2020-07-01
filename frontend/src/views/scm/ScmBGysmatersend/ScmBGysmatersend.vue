@@ -8,7 +8,7 @@
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="12"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -20,7 +20,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="12"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -29,6 +29,30 @@
                 :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.matnr" />
+              </a-form-item>
+            </a-col>
+             <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="生产厂家"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.produceArea" />
+              </a-form-item>
+            </a-col>
+             <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="规格"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.spec" />
               </a-form-item>
             </a-col>
           </a-row>
@@ -185,7 +209,15 @@ export default {
       }, {
         title: '药品名称',
         dataIndex: 'txz01'
-      },, {
+      }, {
+        title: '规格',
+        dataIndex: 'spec',
+        width: 100
+      }, {
+        title: '生产厂家',
+        dataIndex: 'produceArea',
+        width: 100
+      }, {
         title: '配送开始日期',
         dataIndex: 'sendStartTime',
         customRender: (text, row, index) => {
