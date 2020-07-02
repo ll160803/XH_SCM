@@ -228,7 +228,7 @@ public class ScmDVendorController extends BaseController {
                     item.setAuditCause(auditCause);
                 }
                 if (item.getState() != null) {
-                    if (item.getState() == 1) {//保存并审核
+                    if (item.getState().equals(1)) {//保存并审核
                         User user = this.userService.findByName(item.getCode());
                         if (user != null) {
                             user.setStatus("1");
@@ -254,11 +254,10 @@ public class ScmDVendorController extends BaseController {
                         }
                     }
                     if (item.getState() == 2) {//取消审核
+                        if(StringUtils.isNotBlank(item.getCode())){
                         User user = new User();
-
                         user.setStatus("0");//无效
-
-                        this.userService.UpdateUserOnly(user, item.getCode());
+                        this.userService.UpdateUserOnly(user, item.getCode());}
                     }
                 }
                 this.iScmDVendorService.updateScmDVendor(item);

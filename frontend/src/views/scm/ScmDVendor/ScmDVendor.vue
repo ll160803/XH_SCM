@@ -31,6 +31,23 @@
                 <a-input v-model="queryParams.code" />
               </a-form-item>
             </a-col>
+             <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="状态"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
+              >
+              <a-select  @change="handleChange">
+                <a-select-option key="0" value="0">未审核</a-select-option>
+                <a-select-option key="1" value="1">已审核</a-select-option>
+                <a-select-option key="2" value="2">审核未通过</a-select-option>
+                <a-select-option key="-1" value="-1">全部</a-select-option>
+              </a-select>
+              </a-form-item>
+            </a-col>
           </a-row>
         </div>
         <span style="float: right; margin-top: 3px;">
@@ -78,7 +95,7 @@
         <a-button
           type="danger"
           @click="auditUndo()"
-        >取消审核</a-button>
+        >审核退回</a-button>
         <a-button
           type="primary"
           @click="open(1)"
@@ -294,6 +311,13 @@ export default {
         this.queryParams.comments = ''
       }
     },
+    handleChange (value) {
+      if (value !== '-1') {
+        this.queryParams.state = value
+      } else {
+        this.queryParams.state = ''
+      }
+    },
     handleAddSuccess () {
       this.addVisiable = false
       this.$message.success('新增字典成功')
@@ -395,9 +419,9 @@ export default {
       for (let key in that.selectedRowKeys) {
         let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
 
-        if (row.code == "" || row.state == 0 || row.state == 2) {
+        if (row.state == 2) {
           IsValid = 1
-          that.$message.warning(`该${row.name}用户尚未审核,请确认操作`)
+          that.$message.warning(`该${row.name}用户已取消审核,请确认操作`)
         }
         arrCodes.push({
           id: row.id,

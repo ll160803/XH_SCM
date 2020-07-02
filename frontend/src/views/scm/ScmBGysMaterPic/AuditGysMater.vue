@@ -36,7 +36,7 @@
               :sm="24"
             >
               <a-form-item
-                label="药品"
+                label="批次"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >

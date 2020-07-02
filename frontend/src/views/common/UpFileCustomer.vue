@@ -28,16 +28,16 @@
     </div>
   </div>
 </template>
- <script>
+<script>
 export default {
   name: 'upfc',
   data () {
     return {
-      issue_content: '',//输入框中的内容
+      issue_content: '', // 输入框中的内容
       isSelect: 0,
       matnr: '',
       materId: '',
-      serch_result_issue: false,//控制搜索的问题显示隐藏
+      serch_result_issue: false, // 控制搜索的问题显示隐藏
       dataSource: [],
       selectedRowKeys: [],
       sortedInfo: null,
@@ -56,21 +56,22 @@ export default {
     }
   },
   props: {
-    murl: 'scmDMater'
+    murl: {
+      default: 'scmDMater'
+    }
   },
   methods: {
     // 监听输入事件，当input中有内容时，下面的搜索列表显示出来
     inputFunc () {
-      if (this.isSelect == 0) {
+      if (this.isSelect === 0) {
         if (this.issue_content.length > 0) {
           this.serch_result_issue = true
-          this.queryParams["keyWord"] = this.issue_content
+          this.queryParams['keyWord'] = this.issue_content
           this.search()
         } else {
           this.serch_result_issue = false
         }
-      }
-      else {
+      } else {
         this.isSelect = 0
       }
     },
@@ -115,7 +116,7 @@ export default {
       this.serch_result_issue = false
       // this.fetch()
     },
-    setFormValue (txz01, matnr,materId) {
+    setFormValue (txz01, matnr, materId) {
       this.isSelect = 1
       this.issue_content = txz01
       console.info(matnr)
@@ -161,26 +162,26 @@ export default {
   computed: {
     columns () {
       return [
-     {
-        title: '物料描述',
-        dataIndex: 'txz01',
-        width: 200
-      },
-      {
-        title: '物料编码',
-        dataIndex: 'matnr',
-        width: 100
-      },
-      {
-        title: '规格',
-        dataIndex: 'spec',
-        width: 100
-      },
-      {
-        title: '生产厂家',
-        dataIndex: 'produceArea',
-        width: 80
-      }]
+        {
+          title: '物料描述',
+          dataIndex: 'txz01',
+          width: 200
+        },
+        {
+          title: '物料编码',
+          dataIndex: 'matnr',
+          width: 100
+        },
+        {
+          title: '规格',
+          dataIndex: 'spec',
+          width: 100
+        },
+        {
+          title: '生产厂家',
+          dataIndex: 'produceArea',
+          width: 80
+        }]
     }
   }
 }

@@ -12,14 +12,30 @@
     <a-form :form="form">
       <a-form-item
         v-bind="formItemLayout"
-        label="药品"
+        label="药品名称"
       >
-        <up-fc
-          ref="upfc"
-          murl="scmDMater/send"
-          v-decorator="['matnr2', {rules: [{ required: true, message: '药品不能为空' }]}]"
-        >
-        </up-fc>
+         <a-input
+          placeholder="请输入药品名称"
+          v-decorator="['txz01', {rules: [{ required: true, message: '药品名称不能为空' }, {max: 100, message: '药品名称不能超100个字符'}]}]"
+        />
+      </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="药品规格"
+      >
+         <a-input
+          placeholder="请输入药品规格"
+          v-decorator="['spec', {rules: [{ required: true, message: '药品规格不能为空' }, {max: 20, message: '药品规格不能超20个字符'}]}]"
+        />
+      </a-form-item>
+      <a-form-item
+        v-bind="formItemLayout"
+        label="生产厂家"
+      >
+         <a-input
+          placeholder="请输入生产厂家"
+          v-decorator="['produceArea', {rules: [{ required: true, message: '生产厂家不能为空' }, {max: 80, message: '生产厂家不能超80个字符'}]}]"
+        />
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
@@ -49,7 +65,7 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="配送委托函上传"
+        label="配送委托函"
       >
         <a-upload
           accept=".pdf"
@@ -68,6 +84,29 @@
           style="margin-top: 16px"
         >
           {{uploading ? '上传中' : '开始上传' }}
+        </a-button>
+      </a-form-item>
+       <a-form-item
+        v-bind="formItemLayout"
+        label="两票制承诺书"
+      >
+        <a-upload
+          accept=".pdf"
+          :fileList="fileList2"
+          :remove="handleRemove2"
+          :beforeUpload="beforeUpload2"
+        >
+        <a-button>
+            <a-icon type="upload" /> 选择文件 </a-button>
+        </a-upload>
+        <a-button
+          type="primary"
+          @click="handleUpload2"
+          :disabled="fileList2.length === 0 ||isShow2===0"
+          :loading="uploading2"
+          style="margin-top: 16px"
+        >
+          {{uploading2 ? '上传中' : '开始上传' }}
         </a-button>
       </a-form-item>
     </a-form>
@@ -89,14 +128,14 @@
   </a-drawer>
 </template>
 <script>
+
 const formItemLayout = {
   labelCol: { span: 5 },
   wrapperCol: { span: 16 }
 }
-import upFc from '../../common/UpFileCustomer'
+
 export default {
   name: 'ScmBGysMatersendAdd',
-  components: { upFc },
   props: {
     addVisiable: {
       default: false
@@ -105,23 +144,27 @@ export default {
   data () {
     return {
       isShow: 1,
+      isShow2: 1,
       fileList: [],
+      fileList2: [],
       uploading: false,
+      uploading2: false,
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
       scmBGysmatersend: {
         fileId: '',
         materId: ''
-      }
+      },
+      murl: 'scmDMater/send'
     }
   },
   methods: {
     reset () {
       this.loading = false
+      this.fileList = []
+      this.fileList2 = []
       this.scmBGysmatersend = {}
-      this.$refs.upfc.reset()
-      this.$refs.upfc.matnr = ''
       this.scmBGysmatersend.materId = ''
       this.scmBGysmatersend.fileId = ''
       this.form.resetFields()
@@ -131,17 +174,14 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      this.scmBGysmatersend.materId = this.$refs.upfc.materId
-      this.scmBGysmatersend.matnr =this.$refs.upfc.matnr
-      if (this.scmBGysmatersend.materId == '') {
-        this.$message.warning('请在下列列表里选择药品.')
-        return false
-      }
-      if (this.scmBGysmatersend.fileId == '') {
+      if (this.scmBGysmatersend.fileId === '') {
         this.$message.warning('请上传配送委托函.')
         return false
       }
-      this.form.setFieldsValue({ matnr2: '2' })
+      if (this.scmBGysmatersend.materId === '') {
+        this.$message.warning('请上传两票制承诺书.')
+        return false
+      }
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
@@ -157,7 +197,7 @@ export default {
       })
     },
     setFields () {
-      let values = this.form.getFieldsValue(['sendStartTime', 'sendEndTime'])
+      let values = this.form.getFieldsValue(['sendStartTime', 'sendEndTime', 'txz01', 'spec', 'produceArea'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmBGysmatersend[_key] = values[_key] })
       }
@@ -169,21 +209,41 @@ export default {
       this.fileList = newFileList
       this.isShow = 1
     },
+    handleRemove2 (file) {
+      const index = this.fileList2.indexOf(file)
+      const newFileList = this.fileList2.slice()
+      newFileList.splice(index, 1)
+      this.fileList2 = newFileList
+      this.isShow2 = 1
+    },
     onChange (date, dateString) {
-      console.log(date, dateString);
+      console.log(date, dateString)
     },
     beforeUpload (file) {
       const isJPG = file.type === 'application/pdf'
       if (!isJPG) {
-       this.$message.error('请只上传pdf文件!')
+        this.$message.error('请只上传pdf文件!')
       }
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isLt2M) {
         this.$message.error('附件必须小于 2MB!')
       }
-      if( isJPG && isLt2M)
-      {
+      if (isJPG && isLt2M) {
         this.fileList = [...this.fileList, file]
+      }
+      return isJPG && isLt2M;
+    },
+    beforeUpload2 (file) {
+      const isJPG = file.type === 'application/pdf'
+      if (!isJPG) {
+        this.$message.error('请只上传pdf文件!')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isLt2M) {
+        this.$message.error('附件必须小于 2MB!')
+      }
+      if (isJPG && isLt2M) {
+        this.fileList2 = [...this.fileList2, file]
       }
       return isJPG && isLt2M;
     },
@@ -195,15 +255,35 @@ export default {
 
       // You can use any AJAX library you like
       this.$upload('comFile/upload', formData).then((r) => {
-        console.info("上传IF:" + r.data.data);
+        console.info('上传IF:' + r.data.data)
         this.scmBGysmatersend.fileId = r.data.data
 
-        //this.fileList = []
+        // this.fileList = []
         this.isShow = 0
         this.uploading = false
         this.$message.success('上传成功.')
       }).catch(() => {
         this.uploading = false
+        this.$message.error('上传失败.')
+      })
+    },
+    handleUpload2 () {
+      const { fileList2 } = this
+      const formData = new FormData()
+      formData.append('file', fileList2[0])
+      this.uploading2 = true
+
+      // You can use any AJAX library you like
+      this.$upload('comFile/upload', formData).then((r) => {
+        console.info('上传IF:' + r.data.data)
+        this.scmBGysmatersend.materId = r.data.data
+
+        // this.fileList = []
+        this.isShow2 = 0
+        this.uploading2 = false
+        this.$message.success('上传成功.')
+      }).catch(() => {
+        this.uploading2 = false
         this.$message.error('上传失败.')
       })
     }

@@ -37,7 +37,6 @@
     <update id="updateScmBGysmatersend" parameterType="cc.mrbird.febs.scm.entity.ScmBGysmatersend">
         update scm_b_gysmatersend
         <trim prefix="set" suffixOverrides=",">
-<if test="id != null">ID=#{id},</if>
 <if test="code != null">CODE=#{code},</if>
 <if test="name != null">NAME=#{name},</if>
 <if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>

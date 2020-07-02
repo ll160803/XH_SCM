@@ -5,22 +5,10 @@
   >
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
-        <div :class="advanced ? null: 'fold'">
-          <a-row>
-             <a-col
-              :md="6"
-              :sm="24"
-            >
-              <a-form-item
-                label="供应商"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
-              >
-                <a-input v-model="queryParams.keyword_gys" />
-              </a-form-item>
-            </a-col>
+        <a-row>
+          <div :class="advanced ? null: 'fold'">
             <a-col
-              :md="6"
+              :md="8"
               :sm="24"
             >
               <a-form-item
@@ -32,7 +20,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="6"
+              :md="8"
               :sm="24"
             >
               <a-form-item
@@ -43,8 +31,43 @@
                 <a-input v-model="queryParams.spec" />
               </a-form-item>
             </a-col>
-             <a-col
-              :md="6"
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="状态"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
+              >
+                <a-select @change="handleChange">
+                  <a-select-option
+                    key="0"
+                    value="0"
+                  >未审核</a-select-option>
+                  <a-select-option
+                    key="1"
+                    value="1"
+                  >已审核</a-select-option>
+                  <a-select-option
+                    key="2"
+                    value="2"
+                  >已停用</a-select-option>
+                  <a-select-option
+                    key="4"
+                    value="4"
+                  >审核未通过</a-select-option>
+                  <a-select-option
+                    key="-1"
+                    value="-1"
+                  >全部</a-select-option>
+                </a-select>
+              </a-form-item>
+            </a-col>
+          </div>
+          <template v-if="advanced">
+            <a-col
+              :md="8"
               :sm="24"
             >
               <a-form-item
@@ -55,25 +78,37 @@
                 <a-input v-model="queryParams.produceArea" />
               </a-form-item>
             </a-col>
-          </a-row>
-        </div>
-        <span style="float: right; margin-top: 3px;">
-          <a-button
-            type="primary"
-            @click="search"
-          >查询</a-button>
-          <a-button
-            style="margin-left: 8px"
-            @click="reset"
-          >重置</a-button>
-          <a
-            @click="toggleAdvanced"
-            style="margin-left: 8px"
-          >
-            {{advanced ? '收起' : '展开'}}
-            <a-icon :type="advanced ? 'up' : 'down'" />
-          </a>
-        </span>
+            <a-col
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="供应商"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.keyword_gys" />
+              </a-form-item>
+            </a-col>
+          </template>
+          <span style="float: right; margin-top: 3px;">
+            <a-button
+              type="primary"
+              @click="search"
+            >查询</a-button>
+            <a-button
+              style="margin-left: 8px"
+              @click="reset"
+            >重置</a-button>
+            <a
+              @click="toggleAdvanced"
+              style="margin-left: 8px"
+            >
+              {{advanced ? '收起' : '展开'}}
+              <a-icon :type="advanced ? 'up' : 'down'" />
+            </a>
+          </span>
+        </a-row>
       </a-form>
     </div>
     <div>
@@ -89,6 +124,7 @@
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="{ x: 1200 }"
+        :rowClassName="rowColor"
       >
         <template
           slot="remark"
@@ -118,10 +154,12 @@
     <scmBGysMater-view
       ref="scmBGysmatersendEdit"
       @close="handleEditClose"
+      @succ="handleEditSuccess"
       :editVisiable="editVisiable"
       :isShowsub="isShowsub"
     >
     </scmBGysMater-view>
+
   </a-card>
 </template>
 
@@ -164,20 +202,9 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '供应商名称',
-        dataIndex: 'name',
-        width: 180
-      }, {
-        title: '供应商账号',
-        dataIndex: 'gysaccount',
-        width: 100
-      }, {
-        title: '药品编码',
-        dataIndex: 'matnr',
-        width: 100
-      }, {
         title: '药品名称',
-        dataIndex: 'txz01'
+        dataIndex: 'txz01',
+        width: 200
       }, {
         title: '规格',
         dataIndex: 'spec',
@@ -187,19 +214,49 @@ export default {
         dataIndex: 'produceArea',
         width: 100
       }, {
+        title: '供应商名称',
+        dataIndex: 'name'
+      }, {
+        title: '供应商账号',
+        dataIndex: 'gysaccount',
+        width: 100
+      }, {
         title: '配送开始日期',
         dataIndex: 'sendStartTime',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         },
-        width: 100
+        width: 120
       }, {
         title: '配送结束日期',
         dataIndex: 'sendEndTime',
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         },
+        width: 120
+      }, {
+        title: '未审核原因',
+        dataIndex: 'auditCause',
         width: 100
+      }, {
+        title: '状态',
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未审核</a-tag>
+            case 1:
+              return <a-tag color="green">已审核</a-tag>
+            case 2:
+              return <a-tag color="red">已停用</a-tag>
+            case 4:
+              return <a-tag color="red">审核未通过</a-tag>
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 80
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -213,6 +270,11 @@ export default {
     this.fetch()
   },
   methods: {
+    rowColor (row) {
+      if (row.state == 1) {
+        return 'green2'
+      }
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -220,6 +282,13 @@ export default {
       this.advanced = !this.advanced
       if (!this.advanced) {
         this.queryParams.comments = ''
+      }
+    },
+    handleChange (value) {
+      if (value !== '-1') {
+        this.queryParams.state = value
+      } else {
+        this.queryParams.state = ''
       }
     },
     handleAddSuccess () {
@@ -235,7 +304,7 @@ export default {
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改配送成功')
+      // this.$message.success('修改配送成功')
       this.search()
     },
     handleEditClose () {
@@ -387,3 +456,4 @@ export default {
 <style lang="less" scoped>
 @import "../../../../static/less/Common";
 </style>
+

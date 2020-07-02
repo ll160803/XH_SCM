@@ -24,14 +24,14 @@
               :sm="24"
             >
               <a-form-item
-                label="药品编码"
+                label="规格"
                 :labelCol="{span: 8}"
                 :wrapperCol="{span: 15, offset: 1}"
               >
-                <a-input v-model="queryParams.matnr" />
+                <a-input v-model="queryParams.spec" />
               </a-form-item>
             </a-col>
-             <a-col
+            <a-col
               :md="6"
               :sm="24"
             >
@@ -43,16 +43,37 @@
                 <a-input v-model="queryParams.produceArea" />
               </a-form-item>
             </a-col>
-             <a-col
+            <a-col
               :md="6"
               :sm="24"
             >
               <a-form-item
-                label="规格"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
+                label="状态"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
               >
-                <a-input v-model="queryParams.spec" />
+                <a-select @change="handleChange">
+                  <a-select-option
+                    key="0"
+                    value="0"
+                  >未审核</a-select-option>
+                  <a-select-option
+                    key="1"
+                    value="1"
+                  >已审核</a-select-option>
+                  <a-select-option
+                    key="2"
+                    value="2"
+                  >已停用</a-select-option>
+                  <a-select-option
+                    key="4"
+                    value="4"
+                  >审核未通过</a-select-option>
+                  <a-select-option
+                    key="-1"
+                    value="-1"
+                  >全部</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
@@ -112,7 +133,7 @@
         :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
-        :scroll="{ x: 900 }"
+        :scroll="{ x: 1000 }"
       >
         <template
           slot="remark"
@@ -203,10 +224,6 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '药品编码',
-        dataIndex: 'matnr',
-        width: 100
-      }, {
         title: '药品名称',
         dataIndex: 'txz01'
       }, {
@@ -216,7 +233,7 @@ export default {
       }, {
         title: '生产厂家',
         dataIndex: 'produceArea',
-        width: 100
+        width: 150
       }, {
         title: '配送开始日期',
         dataIndex: 'sendStartTime',
@@ -231,6 +248,29 @@ export default {
           return moment(text).format('YYYY-MM-DD')
         },
         width: 100
+      }, {
+        title: '未审核原因',
+        dataIndex: 'auditCause',
+        width: 100
+      }, {
+        title: '状态',
+        dataIndex: 'state',
+        customRender: (text, row, index) => {
+          switch (text) {
+            case 0:
+              return <a-tag color="purple">未审核</a-tag>
+            case 1:
+              return <a-tag color="green">已审核</a-tag>
+            case 2:
+              return <a-tag color="red">已停用</a-tag>
+            case 4:
+              return <a-tag color="red">审核未通过</a-tag>
+            default:
+              return text
+          }
+        },
+        fixed: 'right',
+        width: 80
       }, {
         title: '操作',
         dataIndex: 'operation',
@@ -257,6 +297,13 @@ export default {
       this.addVisiable = false
       this.$message.success('新增配送信息成功')
       this.search()
+    },
+    handleChange (value) {
+      if (value !== '-1') {
+        this.queryParams.state = value
+      } else {
+        this.queryParams.state = ''
+      }
     },
     handleAddClose () {
       this.addVisiable = false
@@ -307,14 +354,13 @@ export default {
           if (IsValid == 0) {
             let scmBGysmatersendIds = that.selectedRowKeys.join(',')
             that.$delete('scmBGysmatersend/' + scmBGysmatersendIds).then((data) => {
-              if(data===undefined)
-              {
+              if (data === undefined) {
                 that.$message.success('删除成功')
               }
-              else{
+              else {
                 that.$message.success(data)
               }
-              
+
               that.selectedRowKeys = []
               that.search()
             })
@@ -397,7 +443,7 @@ export default {
           params.sortOrder = this.sortedInfo.order
         }
       }
-       if (params.sortField == null) {
+      if (params.sortField == null) {
         params.sortField = "Create_TIME"
         params.sortOrder = "descend"
       }
