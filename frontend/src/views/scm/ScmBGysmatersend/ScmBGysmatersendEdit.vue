@@ -25,7 +25,7 @@
       >
         <a-input
           placeholder="请输入药品规格"
-          v-decorator="['spec', {rules: [{ required: true, message: '药品规格不能为空' }, {max: 20, message: '药品规格不能超20个字符'}]}]"
+          v-decorator="['spec', {rules: [{ required: true, message: '药品规格不能为空' }, {max: 50, message: '药品规格不能超50个字符'}]}]"
         />
       </a-form-item>
       <a-form-item

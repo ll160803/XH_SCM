@@ -153,6 +153,9 @@ public class ScmBSupplyplanController extends BaseController {
             }
             List<ViewSupplyplan> list = new ArrayList<>();
             ViewSupplyplan plan=this.iViewSupplyplanService.getById(id);
+            if (plan.getStatus().equals(1)){
+                throw new FebsException("该供应计划已经入库，不能进行预收");
+            }
             if(iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),plan.getWerks()+plan.getLgort()).equals(0L)){
                 throw new FebsException("您没有分配 "+plan.getWerkst()+"  "+plan.getLgortName() +" 的权限！");
             }
@@ -185,6 +188,9 @@ public class ScmBSupplyplanController extends BaseController {
             ViewSupplyplan plan=this.iViewSupplyplanService.getById(id);
             if(iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),plan.getWerks()+plan.getLgort()).equals(0L)){
                 throw new FebsException("您没有分配 "+plan.getWerkst()+"  "+plan.getLgortName() +" 的权限！");
+            }
+            if (plan.getStatus().equals(1)){
+                throw new FebsException("该供应计划已经入库，不能进行取消预收");
             }
             BigDecimal bd=new BigDecimal(0);
             plan.setDoneMenge(bd);
@@ -307,7 +313,7 @@ public class ScmBSupplyplanController extends BaseController {
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("SAP端处理失败");
-                    throw new FebsException("SAP端处理失败");
+                    throw new FebsException(backMsg.get(0).getMESS());
                 } else {
                     this.iScmBSupplyplanService.doneSupplyPlan(arrids);//修改scm状态
                 }
@@ -364,7 +370,7 @@ public class ScmBSupplyplanController extends BaseController {
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("SAP端处理失败");
-                    throw new FebsException("SAP端处理失败");
+                    throw new FebsException(backMsg.get(0).getMESS());
                 } else {
                     this.iScmBSupplyplanService.doneSupplyPlan(arrids);//修改scm状态
                 }
@@ -417,7 +423,7 @@ public class ScmBSupplyplanController extends BaseController {
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("SAP端处理失败");
-                    throw new FebsException("SAP端处理失败");
+                    throw new FebsException(backMsg.get(0).getMESS());
                 } else {
                     this.iScmBSupplyplanService.cancleSupplyPlan(arrids);//修改scm状态
                 }
