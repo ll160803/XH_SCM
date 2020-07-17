@@ -46,7 +46,7 @@ public ${table.serviceName} i${entity}Service;
 /**
  * 分页查询数据
  *
- * @param bootStrapTable  分页信息
+ * @param  request 分页信息
  * @param ${table.entityPath} 查询条件
  * @return
  */
@@ -57,10 +57,8 @@ public Map<String, Object> List(QueryRequest request, ${entity} ${table.entityPa
         }
 
 /**
- * 跳转添加页面
- * @param request
- * @param response
- * @param model
+ * 添加
+ * @param  ${table.entityPath}
  * @return
  */
 @Log("新增/按钮")
@@ -79,9 +77,8 @@ public void add${entity}(@Valid ${entity} ${table.entityPath})throws FebsExcepti
         }
 
 /**
- * 跳转修改页面
- * @param request
- * @param id  实体ID
+ * 修改
+ * @param ${table.entityPath}
  * @return
  */
 @Log("修改")

@@ -84,6 +84,34 @@ public class ScmBGysMaterPic implements Serializable {
     @TableField("FILE_ID")
     @ExcelField(value = "附件ID")
     private String fileId;
+
+    /**
+     * 院区
+     */
+    @TableField("werks")
+    @ExcelField(value ="院区ID")
+    private String werks;
+
+    /**
+     * 库房
+     */
+    @TableField("lgort")
+    @ExcelField(value ="库房ID")
+    private String lgort;
+
+    /**
+     * 院区
+     */
+    @TableField("werkt")
+    @ExcelField(value ="院区")
+    private String werkt;
+
+    /**
+     * 库房
+     */
+    @TableField("lgortName")
+    @ExcelField(value ="库房")
+    private String lgortName;
     /**
      * 是否删除
      */
@@ -143,6 +171,8 @@ public class ScmBGysMaterPic implements Serializable {
     @TableField("AUDITCAUSE")
     private  String auditCause;
 
+    private  transient  String userid;
+
     public String getAuditCause() {
         return auditCause;
     }
@@ -175,6 +205,33 @@ public class ScmBGysMaterPic implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public void setLgort(String lgort){
+        this.lgort = lgort;
+    }
+    public String getLgort(){
+       return this.lgort;
+    }
+
+    public void setLgortName(String lgortName){
+        this.lgortName = lgortName;
+    }
+    public String getLgortName(){
+        return this.lgortName;
+    }
+    public void setWerks(String werks){
+        this.werks = werks;
+    }
+
+    public String getWerks(){
+        return this.werks;
+    }
+    public void setWerkt(String werkt){
+        this.werkt = werkt ;
+    }
+    public String getWerkt(){
+        return this.werkt;
     }
 
     public void setName(String name) {

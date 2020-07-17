@@ -73,7 +73,7 @@
 <script>
 const formItemLayout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 15 },
+  wrapperCol: { span: 15 }
 };
 export default {
   name: "file",
@@ -106,7 +106,7 @@ export default {
       const newFileList = this.fileList.slice()
       newFileList.splice(index, 1)
       this.fileList = newFileList
-      this.scmDVendorD.fileId = ''//空 清空
+      this.scmDVendorD.fileId = ''// 空 清空
       this.isShow = 1
     },
     onChange (date, dateString) {
@@ -117,7 +117,7 @@ export default {
       console.info(this.fileList)
       return false
     },
-    handleChange(info) {
+    handleChange (info) {
       if (info.file.status === 'done') {
         this.handleUpload()
       } 

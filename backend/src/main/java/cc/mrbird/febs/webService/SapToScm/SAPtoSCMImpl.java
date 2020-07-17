@@ -233,14 +233,10 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             List<ScmDMater> list_purchase_C = new ArrayList<>();
             for (SAP_MATER item : materList) {
                 LambdaQueryWrapper<ScmDMater> queryWrapperMater = new LambdaQueryWrapper<>();
-                if(StringUtils.isNotBlank(item.getGysAccount())) { //20200623 当不存在供应商账号的时候 默认是配送表
-                    queryWrapperMater.eq(ScmDMater::getGysaccount, item.getGysAccount());
-                }
-                else {
-                    queryWrapperMater.apply("LENGTH(GYSACCOUNT)=0");
-                }
-                queryWrapperMater.eq(ScmDMater::getMatnr, item.getMatnr());
 
+                queryWrapperMater.eq(ScmDMater::getGysaccount, item.getGysAccount().trim());
+
+                queryWrapperMater.eq(ScmDMater::getMatnr, item.getMatnr().trim());
 
                 ScmDMater ens = scmDMaterMapper.selectOne(queryWrapperMater);
                 if (ens != null) {
@@ -256,19 +252,21 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     ens.setTxz01(item.getTxz01());
                     list_Update.add(ens);
                 } else {
+
                     ScmDMater entity = new ScmDMater();
                     entity.setMatnr(item.getMatnr().trim());
-                    if(StringUtils.isNotBlank(item.getGysAccount())) {
-                        ens.setGysaccount(item.getGysAccount().trim());
-                    }
+                    entity.setGysaccount(item.getGysAccount().trim());
+
                     entity.setProduceArea(item.getProduceArea() == null ? "" : item.getProduceArea().trim());
                     entity.setSpec(item.getSpec() == null ? "" : item.getSpec().trim());
                     entity.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
                     entity.setBklas(item.getBklas() == null ? "" : item.getBklas().trim());
-                    entity.setTxz01(item.getTxz01());
+
+                    entity.setTxz01(item.getTxz01() == null?"" : item.getTxz01().trim());
                     entity.setId(UUID.randomUUID().toString());
 
                     list_purchase_C.add(entity);
+
                 }
             }
             try {

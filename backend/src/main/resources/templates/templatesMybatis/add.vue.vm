@@ -9,20 +9,22 @@
             :visible="addVisiable"
             style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
         <a-form :form="form">
-            #set ($nuType="Int,Decimal,Double,BigDecimal")
+            #set ($nuType="Int,Decimal,Double,BigDecimal,Integer")
             #foreach($field in ${table.fields})
+                #if(!$cfg.eliminateFileds.contains($field.name)  && !${field.keyFlag})
                 <a-form-item v-bind="formItemLayout"
                     label="${field.comment}">
                     #if (${field.propertyType} =='Date'||${field.propertyType} =='LocalDate')
-                        <a-date-picker v-decorator="[ '${field.propertyName}', #if (${field.nullable} =='N')validatorRules.${field.propertyName} #else{}#end]" />
+                        <a-date-picker v-decorator="[ '${field.propertyName}', {rules: [{ required: true, message: '${field.comment}不能为空' }] }]" />
                     #elseif (${field.propertyType} =='DateTime' ||${field.propertyType} =='LocalDateTime' )
-                        <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ '${field.propertyName}', #if (${field.nullable} =='N')validatorRules.${field.propertyName} #else{}#end]" />
+                        <a-date-picker showTime format='YYYY-MM-DD HH:mm:ss' v-decorator="[ '${field.propertyName}', {rules: [{ required: true, message: '${field.comment}不能为空' }] }]" />
                     #elseif ($nuType.containsKey(${field.propertyType}))
-                        <a-input-number v-decorator="[ '${field.propertyName}', #if (${field.nullable} =='N')validatorRules.${field.propertyName} #else{}#end]"/>
+                        <a-input-number v-decorator="[ '${field.propertyName}',{rules: [{ required: true, message: '${field.comment}不能为空' }] }]"/>
                     #else
-                        <a-input placeholder="请输入${field.comment}" v-decorator="['${field.propertyName}', #if (${field.nullable} =='N')validatorRules.${field.propertyName} #else{}#end]" />
+                        <a-input placeholder="请输入${field.comment}" v-decorator="['${field.propertyName}', {rules: [{ required: true, message: '${field.comment}不能为空' }] }]" />
                     #end
                 </a-form-item>
+                    #end
             #end
         </a-form>
         <div class="drawer-bootom-button">
@@ -80,7 +82,12 @@
             },
             setFields () {
                 #set ($i=0)
-                let values = this.form.getFieldsValue([#foreach($field in ${table.fields}) #if($i==1) , #end '${field.propertyName}'  #set ($i=1) #end])
+                let values = this.form.getFieldsValue([#foreach($field in ${table.fields})
+    #if(!$cfg.eliminateFileds.contains($field.name) && !${field.keyFlag})
+                    #if($i==1) , #end
+                    '${field.propertyName}'  #set ($i=1) #end
+                #end
+                ])
                 if (typeof values !== 'undefined') {
                     Object.keys(values).forEach(_key => { this.${table.entityPath}[_key] = values[_key] })
                 }

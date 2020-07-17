@@ -111,6 +111,8 @@ export default {
     reset () {
       this.loading = false
       this.scmBGysMaterPic = {}
+      this.fileList = []
+      this.isShow = 1
       this.$refs.upfc.reset()
       this.$refs.upfc.matnr = ''
       this.scmBGysMaterPic.materId = ''
@@ -197,6 +199,7 @@ export default {
         this.uploading = false
         this.$message.error('上传失败.')
       })
+      this.fileList[0].status = 'done'
     }
   }
 }

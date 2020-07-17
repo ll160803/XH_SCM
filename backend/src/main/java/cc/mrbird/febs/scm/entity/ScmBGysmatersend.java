@@ -172,6 +172,34 @@ private String spellCode;
             @ExcelField(value ="审核原因")
 private String AuditCause;
 
+    /**
+     * 院区
+     */
+    @TableField("werks")
+    @ExcelField(value ="院区ID")
+    private String werks;
+
+    /**
+     * 库房
+     */
+    @TableField("lgort")
+    @ExcelField(value ="库房ID")
+    private String lgort;
+
+    /**
+     * 院区
+     */
+    @TableField("werkt")
+    @ExcelField(value ="院区")
+    private String werkt;
+
+    /**
+     * 库房
+     */
+    @TableField("lgortName")
+    @ExcelField(value ="库房")
+    private String lgortName;
+
 
     public static final String ID ="ID" ;
 

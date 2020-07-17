@@ -40,23 +40,60 @@ public class ${table.serviceImplName} extends ${superServiceImplClass}<${table.m
 public IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.entityPath}){
         try{
         LambdaQueryWrapper<${entity}> queryWrapper=new LambdaQueryWrapper<>();
-        if (StringUtils.isNotBlank(${table.entityPath}.getCode())) {
-        queryWrapper.eq(${entity}::getCode, ${table.entityPath}.getCode());
-        }
         queryWrapper.eq(${entity}::getIsDeletemark, 1);//1是未删 0是已删
+
+        #foreach($field in ${table.fields})
+                #if($cfg.searchFileds.contains($field.name))
+                        #if($field.propertyType.indexOf("Date")!=-1)
+                                if (StringUtils.isNotBlank(${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}From()) && StringUtils.isNotBlank(${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}To())) {
+                                queryWrapper
+                                .ge(${entity}::get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}, ${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}From())
+                                .le(${entity}::get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}, ${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}To());
+                                }
+                        #end
+                        #if("${field.propertyType}" == "String")
+                                if (StringUtils.isNotBlank(${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}())) {
+                                queryWrapper.like(${entity}::get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}, ${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}());
+                                }
+                        #end
+                        #if("${field.propertyType}" == "Integer")
+                                if (${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}()!=null) {
+                                queryWrapper.eq(${entity}::get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}, ${table.entityPath}.get${field.propertyName.substring(0,1).toUpperCase()}${field.propertyName.substring(1)}());
+                                }
+                        #end
+                #end
+        #end
+
         Page<${entity}> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
+        SortUtil.handlePageSort(request,page,false);//true 是属性  false是数据库字段可两个
         return this.page(page,queryWrapper);
         }catch(Exception e){
         log.error("获取字典信息失败" ,e);
         return null;
         }
         }
-
+@Override
+public IPage<${entity}> find${entity}List (QueryRequest request, ${entity} ${table.entityPath}){
+        try{
+        Page<${entity}> page=new Page<>();
+        SortUtil.handlePageSort(request,page,false);//true 是属性  false是数据库字段可两个
+        return  this.baseMapper.find${entity}(page,${table.entityPath});
+        }catch(Exception e){
+        log.error("获取${table.comment}失败" ,e);
+        return null;
+        }
+        }
 @Override
 @Transactional
 public void create${entity}(${entity} ${table.entityPath}){
-        ${table.entityPath}.setId(UUID.randomUUID().toString());
+#foreach($field in ${table.fields})
+#if(${field.keyFlag})
+## 主键
+        #if("${field.propertyType}" == "String")
+        ${table.entityPath}.set${field.capitalName}(UUID.randomUUID().toString());
+        #end
+        #end
+        #end
         ${table.entityPath}.setCreateTime(new Date());
         ${table.entityPath}.setIsDeletemark(1);
         this.save(${table.entityPath});

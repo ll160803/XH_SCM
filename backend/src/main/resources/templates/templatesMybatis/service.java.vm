@@ -20,6 +20,8 @@ public interface ${table.serviceName} extends ${superServiceClass}<${entity}> {
 
         IPage<${entity}> find${entity}s(QueryRequest request, ${entity} ${table.entityPath});
 
+        IPage<${entity}> find${entity}List(QueryRequest request, ${entity} ${table.entityPath});
+
         void create${entity}(${entity} ${table.entityPath});
 
         void update${entity}(${entity} ${table.entityPath});

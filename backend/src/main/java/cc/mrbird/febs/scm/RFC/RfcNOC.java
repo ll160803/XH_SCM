@@ -219,7 +219,7 @@ public class RfcNOC {
                 IrfTable_IT_SUPLAN.setValue("ZPSTA", ZPSTA);
                 IrfTable_IT_SUPLAN.setValue("ZUPFG", ZUPFG);
                 IrfTable_IT_SUPLAN.setValue("ZBTXT", "");
-
+                IrfTable_IT_SUPLAN.setValue("ZJYR", ZPSTA == "1" ? userID : "");
                 //总务
                 IrfTable_IT_SUPLAN.setValue("ZLXR", entity.getLinkPerson());//联系人
                 IrfTable_IT_SUPLAN.setValue("KOSTL", entity.getSendDepart());//科室编码

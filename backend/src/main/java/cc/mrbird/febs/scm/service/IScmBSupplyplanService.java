@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.service;
 
 import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
+import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
 
@@ -58,4 +59,6 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
         Boolean HasPreDone(String ids);
 
         Boolean canUpdateSendOrder(String ids);
+
+        void updateWerkAndLgort(ViewSupplyplan plan);
 }

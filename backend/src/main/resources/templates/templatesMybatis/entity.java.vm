@@ -13,6 +13,7 @@ import ${pkg};
 import lombok.Data;
 import lombok.experimental.Accessors;
 #end
+import java.util.Date;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
 
@@ -82,7 +83,14 @@ private static final long serialVersionUID=1L;
     #if("$!field.comment" != "")
     @ExcelField(value ="${field.comment}")
     #end
-private ${field.propertyType} ${field.propertyName};
+    #if($field.propertyType.indexOf("Date")==-1)
+    private ${field.propertyType} ${field.propertyName};
+    #else
+    private Date ${field.propertyName};
+    private transient String ${field.propertyName}From;
+    private transient String ${field.propertyName}To;
+    #end
+
 #end
 ## ----------  END 字段循环遍历  ----------
 

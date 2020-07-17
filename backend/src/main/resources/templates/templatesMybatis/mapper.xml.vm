@@ -44,6 +44,36 @@
      #end
 #end
         </trim>
-        where id=#{id}
+        #foreach($field in ${table.fields})
+            #if(${field.keyFlag})##生成 where id=#{id}
+                where ${field.name}=#{${field.propertyName}}
+            #end
+        #end
+
     </update>
+    <select id="find${entity}" resultType="${package.Entity}.${entity}" parameterType="${package.Entity}.${entity}">
+        select  *  from ${table.name}
+        where  1=1
+#foreach($field in ${table.fields})
+    #if("${field.propertyType}" == "String")
+        #if(!${field.keyFlag})
+            <if test="${table.entityPath}.${field.propertyName} != null and ${table.entityPath}.${field.propertyName} != ''"> and ${table.entityPath}.${field.name} like concat('%', #{ ${table.entityPath}.${field.propertyName}} ,'%')</if>
+        #else
+            <if test="${table.entityPath}.${field.propertyName} != null and ${table.entityPath}.${field.propertyName} != ''"> and ${table.entityPath}.${field.name} =#{ ${table.entityPath}.${field.propertyName}} </if>
+        #end
+    #end
+    #if("${field.propertyType}" == "Integer")
+        <if test="${table.entityPath}.${field.propertyName} != null"> and ${table.entityPath}.${field.name} =#{ ${table.entityPath}.${field.propertyName}} </if>
+    #end
+    #if($field.propertyType.indexOf("Date")!=-1)
+        <if test="${table.entityPath}.${field.propertyName}From!= null">
+            AND ${table.entityPath}.${field.name} <![CDATA[ >= ]]>  #{${table.entityPath}.${field.propertyName}From}
+        </if>
+        <if test="${table.entityPath}.${field.propertyName}To!= null">
+            AND ${table.entityPath}.${field.name} <![CDATA[ <= ]]>  #{${table.entityPath}.${field.propertyName}To}
+        </if>
+    #end
+#end
+</select>
+
 </mapper>

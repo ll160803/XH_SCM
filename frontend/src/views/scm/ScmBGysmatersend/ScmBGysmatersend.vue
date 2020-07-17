@@ -345,22 +345,15 @@ export default {
           for (let key in that.selectedRowKeys) {
             let row = dataSource.find(item => item.id === that.selectedRowKeys[key])
 
-            if (row.state == 1) {
+            if (row.state === 1 || row.state === 2) {
               IsValid = 1
-              that.$message.warning(`该${row.materId}_${row.charge}已经审核不能删除,请确认操作`)
+              that.$message.warning(`该配送已经审核不能删除,请确认操作`)
             }
-
           }
-          if (IsValid == 0) {
+          if (IsValid === 0) {
             let scmBGysmatersendIds = that.selectedRowKeys.join(',')
             that.$delete('scmBGysmatersend/' + scmBGysmatersendIds).then((data) => {
-              if (data === undefined) {
-                that.$message.success('删除成功')
-              }
-              else {
-                that.$message.success(data)
-              }
-
+              that.$message.success('删除成功')
               that.selectedRowKeys = []
               that.search()
             })

@@ -21,6 +21,8 @@ public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
 
         IPage<ScmBGysMaterPic> findScmBGysMaterPics(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, String keyword_mater, String keyword_gys);
 
+        IPage<ScmBGysMaterPic> findScmBGysMaterPicsAudit(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, String keyword_mater, String keyword_gys, String userid );
+
         void createScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException ;
 
         void updateScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException;

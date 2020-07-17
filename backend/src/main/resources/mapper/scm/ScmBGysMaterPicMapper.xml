@@ -12,6 +12,10 @@
                     <result column="CHARGE" property="charge"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="AUDITCAUSE" property="auditCause"/>
+            <result column="lgort" property="lgort"/>
+            <result column="lgortName" property="lgortName"/>
+            <result column="werks" property="werks"/>
+            <result column="werkt" property="werkt"/>
                     <result column="STATE" property="state"/>
                     <result column="FILE_ID" property="fileId"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -58,4 +62,38 @@ order  by scm_b_gys_mater_pic.create_time desc
         </trim>
         where id=#{id}
     </update>
+
+    <select id="findVScmBGyspicUser" resultType="cc.mrbird.febs.scm.entity.ScmBGysMaterPic" parameterType="cc.mrbird.febs.scm.entity.ScmBGysMaterPic">
+        select  *  from scm_b_gys_mater_pic
+        <if test="userid !=null">
+            INNER JOIN scm_b_userandarea A2 ON CONCAT(scm_b_gys_mater_pic.werks,scm_b_gys_mater_pic.lgort)  = A2.AreaID  AND A2.UserID=${userid}
+        </if>
+        where  1=1
+        <if test="vScmBGyspicUser.id != null"> and scm_b_gys_mater_pic.ID like concat('%', #{ vScmBGyspicUser.id} ,'%')</if>
+        <if test="vScmBGyspicUser.code != null  and vScmBGyspicUser.code !='' "> and scm_b_gys_mater_pic.CODE like concat('%', #{ vScmBGyspicUser.code} ,'%')</if>
+        <if test="vScmBGyspicUser.name != null and vScmBGyspicUser.name != ''"> and scm_b_gys_mater_pic.NAME like concat('%', #{ vScmBGyspicUser.name} ,'%')</if>
+        <if test="vScmBGyspicUser.gysaccount != null and vScmBGyspicUser.gysaccount != ''"> and scm_b_gys_mater_pic.GYSACCOUNT like concat('%', #{ vScmBGyspicUser.gysaccount} ,'%')</if>
+        <if test="vScmBGyspicUser.materId != null and vScmBGyspicUser.materId != ''"> and scm_b_gys_mater_pic.MATER_ID like concat('%', #{ vScmBGyspicUser.materId} ,'%')</if>
+        <if test="vScmBGyspicUser.matnr != null and vScmBGyspicUser.matnr != ''" > and scm_b_gys_mater_pic.matnr like concat('%', #{ vScmBGyspicUser.matnr} ,'%')</if>
+        <if test="vScmBGyspicUser.charge != null and vScmBGyspicUser.charge != ''"> and scm_b_gys_mater_pic.CHARGE like concat('%', #{ vScmBGyspicUser.charge} ,'%')</if>
+        <if test="vScmBGyspicUser.comments != null and vScmBGyspicUser.comments != ''"> and scm_b_gys_mater_pic.COMMENTS like concat('%', #{ vScmBGyspicUser.comments} ,'%')</if>
+        <if test="vScmBGyspicUser.state != null"> and scm_b_gys_mater_pic.STATE =#{ vScmBGyspicUser.state} </if>
+        <if test="vScmBGyspicUser.fileId != null and vScmBGyspicUser.fileId != ''"> and scm_b_gys_mater_pic.FILE_ID like concat('%', #{ vScmBGyspicUser.fileId} ,'%')</if>
+        <if test="vScmBGyspicUser.isDeletemark != null"> and scm_b_gys_mater_pic.IS_DELETEMARK =#{ vScmBGyspicUser.isDeletemark} </if>
+        <if test="keyword_gys != null  and keyword_gys != ''"> and (scm_b_gys_mater_pic.GYSACCOUNT = #{keyword_gys} or scm_b_gys_mater_pic.Name like concat('%', #{keyword_gys} ,'%'))</if>
+        <if test="keyword_mater != null  and keyword_mater != ''"> and (scm_b_gys_mater_pic.matnr = #{ keyword_mater} or scm_b_gys_mater_pic.TXZ01 like concat('%', #{ keyword_mater} ,'%'))</if>
+
+
+
+
+        <if test="vScmBGyspicUser.txz01 != null"> and scm_b_gys_mater_pic.TXZ01 like concat('%', #{ vScmBGyspicUser.txz01} ,'%')</if>
+        <if test="vScmBGyspicUser.produceArea != null"> and scm_b_gys_mater_pic.PRODUCE_AREA like concat('%', #{ vScmBGyspicUser.produceArea} ,'%')</if>
+        <if test="vScmBGyspicUser.spec != null"> and scm_b_gys_mater_pic.SPEC like concat('%', #{ vScmBGyspicUser.spec} ,'%')</if>
+        <if test="vScmBGyspicUser.spellCode != null"> and scm_b_gys_mater_pic.SPELL_CODE like concat('%', #{ vScmBGyspicUser.spellCode} ,'%')</if>
+        <if test="vScmBGyspicUser.AuditCause != null"> and scm_b_gys_mater_pic.AuditCause like concat('%', #{ vScmBGyspicUser.AuditCause} ,'%')</if>
+        <if test="vScmBGyspicUser.werks != null"> and scm_b_gys_mater_pic.werks like concat('%', #{ vScmBGyspicUser.werks} ,'%')</if>
+        <if test="vScmBGyspicUser.werkt != null"> and scm_b_gys_mater_pic.werkt like concat('%', #{ vScmBGyspicUser.werkt} ,'%')</if>
+        <if test="vScmBGyspicUser.lgort != null"> and scm_b_gys_mater_pic.lgort like concat('%', #{ vScmBGyspicUser.lgort} ,'%')</if>
+        <if test="vScmBGyspicUser.lgortName != null"> and scm_b_gys_mater_pic.lgortName like concat('%', #{ vScmBGyspicUser.lgortName} ,'%')</if>
+    </select>
 </mapper>

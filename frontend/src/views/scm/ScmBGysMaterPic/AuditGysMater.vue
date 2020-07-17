@@ -8,7 +8,7 @@
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -20,7 +20,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -32,7 +32,7 @@
               </a-form-item>
             </a-col>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
@@ -41,6 +41,35 @@
                 :wrapperCol="{span: 18, offset: 1}"
               >
                 <a-input v-model="queryParams.charge" />
+              </a-form-item>
+            </a-col>
+             <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="状态"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
+              >
+                <a-select @change="handleChange">
+                  <a-select-option
+                    key="0"
+                    value="0"
+                  >未审核</a-select-option>
+                  <a-select-option
+                    key="1"
+                    value="1"
+                  >已审核</a-select-option>
+                  <a-select-option
+                    key="2"
+                    value="2"
+                  >审核未通过</a-select-option>
+                  <a-select-option
+                    key="-1"
+                    value="-1"
+                  >全部</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
           </a-row>
@@ -168,15 +197,7 @@ export default {
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
-      return [{
-        title: '供应商名称',
-        dataIndex: 'name',
-        width: 200
-      }, {
-        title: '供应商账号',
-        dataIndex: 'gysaccount',
-        width: 100
-      }, {
+      return [ {
         title: '药品编码',
         dataIndex: 'matnr',
         width: 100
@@ -189,12 +210,21 @@ export default {
         dataIndex: 'charge',
         width: 120
       }, {
+        title: '供应商名称',
+        dataIndex: 'name',
+        width: 200
+      }, {
+        title: '供应商账号',
+        dataIndex: 'gysaccount',
+        width: 100
+      }, {
         title: '审核原因',
         dataIndex: 'auditCause'
       }, {
         title: '状态',
         dataIndex: 'state',
         width: 100,
+        fixed: 'right',
         customRender: (text, row, index) => {
           switch (text) {
             case 0:
@@ -227,6 +257,13 @@ export default {
       this.advanced = !this.advanced
       if (!this.advanced) {
         this.queryParams.comments = ''
+      }
+    },
+    handleChange (value) {
+      if (value !== '-1') {
+        this.queryParams.state = value
+      } else {
+        this.queryParams.state = ''
       }
     },
     handleEditClose () {

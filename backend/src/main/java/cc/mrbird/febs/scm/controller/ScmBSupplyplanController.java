@@ -13,13 +13,10 @@ import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
 import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
-import cc.mrbird.febs.scm.service.IScmBPurcharseorderService;
-import cc.mrbird.febs.scm.service.IScmBSendorderService;
-import cc.mrbird.febs.scm.service.IScmBSupplyplanService;
+import cc.mrbird.febs.scm.service.*;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
-import cc.mrbird.febs.scm.service.IViewSupplyplanService;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -63,6 +60,8 @@ public class ScmBSupplyplanController extends BaseController {
     public IScmBPurcharseorderService iScmBPurcharseorderService;
     @Autowired
     public IScmBSendorderService iScmBSendorderService;
+    @Autowired
+    public IScmBGysfpService iScmBGysfpService;
 
     @Autowired
     public FebsProperties febsProperties;
@@ -111,6 +110,10 @@ public class ScmBSupplyplanController extends BaseController {
                 throw new FebsException("药品剩余效期不足6个月！");
             }
             User currentUser = FebsUtil.getCurrentUser();
+            if(!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(),currentUser.getUsername(),"")){
+                throw new FebsException("请在发票管理界面上传对应发票！");
+            }
+
             scmBSupplyplan.setCreateUserId(currentUser.getUserId());
             scmBSupplyplan.setGysaccount(currentUser.getUsername());
 
@@ -133,7 +136,7 @@ public class ScmBSupplyplanController extends BaseController {
                 this.iScmBSupplyplanService.updateSupplyplanOnly(deletesupplan);//发送失败 删除数据  假删除
                 throw new FebsException("SAP端接收失败");
             }
-
+            this.iScmBSupplyplanService.updateWerkAndLgort(list.get(0));
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);
@@ -156,6 +159,7 @@ public class ScmBSupplyplanController extends BaseController {
             if (plan.getStatus().equals(1)){
                 throw new FebsException("该供应计划已经入库，不能进行预收");
             }
+
             if(iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(),plan.getWerks()+plan.getLgort()).equals(0L)){
                 throw new FebsException("您没有分配 "+plan.getWerkst()+"  "+plan.getLgortName() +" 的权限！");
             }
@@ -223,6 +227,9 @@ public class ScmBSupplyplanController extends BaseController {
             if (!flag) {
                 throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
             }
+            if(!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(),currentUser.getUsername(),"")){
+                throw new FebsException("请在发票管理界面上传对应发票！");
+            }
             if(!iScmBSupplyplanService.HasPreDone(scmBSupplyplan.getId().toString()))
             {
                 throw new FebsException("此供应计划已经产生预收，不允许修改！");
@@ -234,9 +241,9 @@ public class ScmBSupplyplanController extends BaseController {
             List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
             if (!backMsg.get(0).getMSTYPE().equals("S")) {
                 log.error(scmBSupplyplan.getId().toString() + "SAP端处理失败");
-                throw new FebsException("SAP端处理失败");
+                throw new FebsException(backMsg.get(0).getMESS());
             }
-
+            this.iScmBSupplyplanService.updateWerkAndLgort(list.get(0));
         } catch (Exception e) {
             message = e.getMessage();
             log.error(message, e);
@@ -310,7 +317,7 @@ public class ScmBSupplyplanController extends BaseController {
             if(doneList.size()>0) {
                 log.error("发送SAP收货");
                 RfcNOC rfc = new RfcNOC();
-                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUsername(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("SAP端处理失败");
                     throw new FebsException(backMsg.get(0).getMESS());
@@ -367,7 +374,7 @@ public class ScmBSupplyplanController extends BaseController {
             if(!StringUtils.isNotBlank(message)) {
                 log.error("发送SAP收货");
                 RfcNOC rfc = new RfcNOC();
-                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUsername(), doneList, currentUser.getUsername(), currentUser.getRealname(), "1", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("SAP端处理失败");
                     throw new FebsException(backMsg.get(0).getMESS());

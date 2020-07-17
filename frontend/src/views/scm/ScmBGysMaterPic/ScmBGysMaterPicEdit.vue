@@ -202,6 +202,7 @@ export default {
         this.uploading = false
         this.$message.error('上传失败.')
       })
+      this.fileList[0].status = 'done'
     },
     handleSubmit () {
       if (this.scmBGysMaterPic.materId == '') {

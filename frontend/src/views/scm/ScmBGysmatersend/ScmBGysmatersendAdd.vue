@@ -25,7 +25,7 @@
       >
          <a-input
           placeholder="请输入药品规格"
-          v-decorator="['spec', {rules: [{ required: true, message: '药品规格不能为空' }, {max: 50, message: '药品规格不能超50个字符'}]}]"
+          v-decorator="['spec', {rules: [{ required: true, message: '药品规格不能为空' }]}]"
         />
       </a-form-item>
       <a-form-item
@@ -164,6 +164,8 @@ export default {
       this.loading = false
       this.fileList = []
       this.fileList2 = []
+      this.isShow = 1
+      this.isShow2 = 1
       this.scmBGysmatersend = {}
       this.scmBGysmatersend.materId = ''
       this.scmBGysmatersend.fileId = ''
@@ -266,6 +268,7 @@ export default {
         this.uploading = false
         this.$message.error('上传失败.')
       })
+      this.fileList[0].status = 'done'
     },
     handleUpload2 () {
       const { fileList2 } = this
@@ -286,6 +289,7 @@ export default {
         this.uploading2 = false
         this.$message.error('上传失败.')
       })
+      this.fileList2[0].status = 'done'
     }
   }
 }

@@ -28,6 +28,10 @@
                     <result column="SPEC" property="spec"/>
                     <result column="SPELL_CODE" property="spellCode"/>
                     <result column="AuditCause" property="AuditCause"/>
+            <result column="lgort" property="lgort"/>
+            <result column="lgortName" property="lgortName"/>
+            <result column="werks" property="werks"/>
+            <result column="werkt" property="werkt"/>
         </resultMap>
 
         <!-- 通用查询结果列 -->

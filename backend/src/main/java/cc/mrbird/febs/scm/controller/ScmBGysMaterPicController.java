@@ -8,15 +8,18 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.entity.ComFile;
+import cc.mrbird.febs.scm.entity.VScmBGyspicUser;
 import cc.mrbird.febs.scm.service.IComFileService;
 import cc.mrbird.febs.scm.service.IScmBGysMaterPicService;
 import cc.mrbird.febs.scm.entity.ScmBGysMaterPic;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
+import cc.mrbird.febs.scm.service.IVScmBGyspicUserService;
 import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -46,6 +49,8 @@ public class ScmBGysMaterPicController extends BaseController {
     @Autowired
     public IComFileService iComFileService;
 
+    @Autowired
+    public IVScmBGyspicUserService ivScmBGyspicUserService;
     /**
      * 分页查询数据
      *
@@ -71,7 +76,13 @@ public class ScmBGysMaterPicController extends BaseController {
     @GetMapping("audit")
     @RequiresPermissions("scmBGysMaterPic:view")
     public Map<String, Object> List2(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, String keyword_mater, String keyword_gys) {
-        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, keyword_mater, keyword_gys));
+        User currentUser = FebsUtil.getCurrentUser();
+        String userId= currentUser.getUserId().toString();
+        if(StringUtils.isNotBlank(request.getSortField()))
+        {
+            request.setSortField("scm_b_gys_mater_pic."+request.getSortField());
+        }
+        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPicsAudit(request, scmBGysMaterPic, keyword_mater, keyword_gys,userId));
     }
 
     /**

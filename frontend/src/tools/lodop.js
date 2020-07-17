@@ -135,7 +135,7 @@ export function getLodop(oOBJECT, oEMBED) {
     };
     //===如下空白位置适合调用统一功能(如注册语句、语言选择等):===
     //LODOP.SET_LICENSES("北京XXXXX公司","8xxxxxxxxxxxxx5","","");
-
+    LODOP.SET_LICENSES("北京紫枫科技开发有限公司", "653726269717472919278901905623", "", "");
     //===========================================================
     return LODOP;
   } catch (err) {

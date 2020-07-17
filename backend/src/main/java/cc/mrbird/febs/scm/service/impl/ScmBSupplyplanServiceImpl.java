@@ -9,6 +9,7 @@ import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ScmBSendinfo;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
+import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBSupplyplanService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -278,5 +279,10 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
         int count=this.baseMapper.flagRecordByIds(lids);
         if(count>0) return  false;
         return  true;
+    }
+    @Override
+    @Transactional
+   public void updateWerkAndLgort(ViewSupplyplan plan){
+        this.baseMapper.UpdateWerkAndLgort(plan);
     }
 }

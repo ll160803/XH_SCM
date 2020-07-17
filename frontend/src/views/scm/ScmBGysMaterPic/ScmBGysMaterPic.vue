@@ -254,7 +254,7 @@ export default {
     },
     handleAddSuccess () {
       this.addVisiable = false
-      this.$message.success('新增验收报告成功')
+      this.$message.success('新增检验报告成功')
       this.search()
     },
     handleAddClose () {
@@ -265,7 +265,7 @@ export default {
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改验收报告成功')
+      this.$message.success('修改检验报告成功')
       this.search()
     },
     handleEditClose () {

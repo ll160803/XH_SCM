@@ -91,6 +91,18 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
     }
 
     @Override
+    public IPage<ScmBGysMaterPic> findScmBGysMaterPicsAudit(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic,String keyword_mater,String keyword_gys,String userid)
+    {
+        try {
+        Page<ScmBGysMaterPic> page = new Page<>();
+        SortUtil.handlePageSort(request, page, false);
+        return this.baseMapper.findVScmBGyspicUser(page,scmBGysMaterPic ,keyword_mater, keyword_gys, userid);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+    @Override
     @Transactional
     public void createScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException {
         scmBGysMaterPic.setId(UUID.randomUUID().toString());

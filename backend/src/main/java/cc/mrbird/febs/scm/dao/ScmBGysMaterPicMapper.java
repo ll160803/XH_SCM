@@ -1,8 +1,10 @@
 package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ScmBGysMaterPic;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -29,4 +31,6 @@ public interface ScmBGysMaterPicMapper extends BaseMapper<ScmBGysMaterPic> {
                 " and scm_b_gys_mater_pic.CHARGE=scm_b_supplyplan.CHARGE\n" +
                 " WHERE scm_b_gys_mater_pic.ID=#{id} ")
         Integer getCount(@Param("id") String  id);
+
+        IPage<ScmBGysMaterPic> findVScmBGyspicUser(Page page, @Param("vScmBGyspicUser") ScmBGysMaterPic vScmBGyspicUser,@Param("keyword_mater") String keyword_mater,@Param("keyword_gys") String keyword_gys,@Param("userid") String userid);
 }

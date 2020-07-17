@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.entity.StatisticMenge;
+import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -34,6 +35,10 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
         void doneSupplyPlan(@Param("ids") List<Long> ids);
 
         void cancelSupplyPlan(@Param("ids") List<Long> ids);
+
+        @Update("update scm_b_gysfp set werks=#{plan.werks} ,werkt=#{plan.werkst} ,lgort=#{plan.lgort},lgortName=#{plan.lgortName} where fp_hm= #{plan.fphm} and GYSACCOUNT = #{plan.gysaccount} and state=0;" +
+                "UPDATE scm_b_gys_mater_pic set werks=#{plan.werks} ,werkt=#{plan.werkst} ,lgort=#{plan.lgort},lgortName=#{plan.lgortName} WHERE CHARGE =#{plan.charge} and GYSACCOUNT =#{plan.gysaccount} and matnr=#{plan.matnr} and state=0;")
+        void UpdateWerkAndLgort(@Param("plan") ViewSupplyplan plan);
 
 
         List<ScmBSupplyplan> getAllPlansByIds(@Param(value = "ids") List<String> ids);
