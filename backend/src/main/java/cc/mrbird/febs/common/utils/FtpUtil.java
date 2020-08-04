@@ -13,13 +13,13 @@ import java.net.MalformedURLException;
 @Slf4j
 public class FtpUtil {
     //ftp服务器地址
-    public String hostname = "192.168.64.200";
+    public String hostname = "192.168.65.125";
     //ftp服务器端口号默认为21
     public Integer port = 21 ;
     //ftp登录账号
-    public String username = "adminx";
+    public String username = "xdadmin";
     //ftp登录密码
-    public String password = "xhftpadmin";
+    public String password = "xd@2020";
 
     public FTPClient ftpClient = null;
 

@@ -322,13 +322,7 @@ private Long modifyUserId;
 
     private  transient String  sendCodes;
 
-    public BigDecimal getDoneMenge() {
-        return doneMenge;
-    }
 
-    public void setDoneMenge(BigDecimal doneMenge) {
-        this.doneMenge = doneMenge;
-    }
 
     public String getName(){
             return name;
@@ -689,6 +683,14 @@ private Long modifyUserId;
         public void setModifyUserId(Long modifyUserId) {
             this.modifyUserId = modifyUserId;
             }
+
+    public BigDecimal getDoneMenge() {
+            return doneMenge;
+    }
+
+    public void setDoneMenge(BigDecimal doneMenge) {
+        this.doneMenge = doneMenge;
+    }
 
     public static final String EBELN ="ebeln" ;
 

@@ -278,6 +278,10 @@ export default {
         dataIndex: 'lifnr',
         width: 100
       }, {
+        title: '供应商名称',
+        dataIndex: 'gysname',
+        width: 120
+      }, {
         title: '物料号',
         dataIndex: 'matnr',
         width: 100

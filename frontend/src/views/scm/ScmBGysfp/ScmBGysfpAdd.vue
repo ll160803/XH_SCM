@@ -40,7 +40,7 @@
         label="药厂发票"
       >
         <a-upload
-          accept=".png,.jpg"
+          accept=".png,.jpg,.pdf"
           :fileList="fileList"
           :remove="handleRemove"
           :beforeUpload="beforeUpload"
@@ -63,7 +63,7 @@
         label="供应商发票"
       >
         <a-upload
-          accept=".png,.jpg"
+          accept=".png,.jpg,.pdf"
           :fileList="fileList2"
           :remove="handleRemove2"
           :beforeUpload="beforeUpload2"
@@ -182,10 +182,10 @@ export default {
       this.isShow2 = 1
     },
     beforeUpload (file) {
-      const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png')
+      const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf')
       console.info(file.type)
       if (!isJPG) {
-        this.$message.error('请只上传jpg,png文件!')
+        this.$message.error('请只上传jpg,png,pdf文件!')
       }
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isLt2M) {
@@ -197,10 +197,10 @@ export default {
       return isJPG && isLt2M;
     },
     beforeUpload2 (file) {
-      const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' )
+      const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf' )
       console.info(file.type)
       if (!isJPG) {
-        this.$message.error('请只上传jpg,png文件!')
+        this.$message.error('请只上传jpg,png,pdf文件!')
       }
       const isLt2M = file.size / 1024 / 1024 < 2
       if (!isLt2M) {

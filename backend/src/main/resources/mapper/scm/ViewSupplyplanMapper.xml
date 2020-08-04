@@ -248,7 +248,7 @@ WHERE
 	a.`BASE_ID` AS `BASE_ID`,
 	a.`ID` AS `ID`,
 	a.`STATUS` AS `STATUS`,
-	a.`DoneMenge` AS `DONEMENGE`,
+	(CASE WHEN a.`STATUS`=1 then a.g_Menge ELSE a.DoneMenge end) AS `DONEMENGE`,
 	a.`FPBM` AS `FPBM`,
 	a.`GYSACCOUNT` AS `GYSACCOUNT`,
 	a.`GYSNAME` AS `GYSNAME`,

@@ -46,6 +46,7 @@
             <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
             <if test="createTime != null">CREATE_TIME=#{createTime},</if>
             <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+            <if test="sendDate != null">send_Date=#{sendDate},</if>
             <if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
             <if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
         </trim>

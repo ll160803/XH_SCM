@@ -97,7 +97,7 @@
         <if test="order.bedat != null">
             AND pu.bedat <![CDATA[ <= ]]> #{order.bedat}
         </if> ) pu ON plan.BASE_ID = pu.ID
-
+        where plan.status= 1 and plan.IS_DELETEMARK= 1
         GROUP BY
         plan.gysaccount
         ) p ON pur.lifnr = p.gysaccount

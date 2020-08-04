@@ -390,6 +390,10 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
+      // if (params.sortField == null) {
+      //   params.sortField = "fp_hm"
+      //   params.sortOrder = "descend"
+      // }
       this.$get('scmBGysfp/audit', {
         ...params
       }).then((r) => {

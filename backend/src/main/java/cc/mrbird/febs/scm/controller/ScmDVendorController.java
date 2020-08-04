@@ -228,14 +228,20 @@ public class ScmDVendorController extends BaseController {
                     item.setAuditCause(auditCause);
                 }
                 if (item.getState() != null) {
-                    if (item.getState().equals(1)) {//保存并审核
+                    if (item.getState().equals(1)) {
+                        /**
+                        *保存并审核
+                        */
                         User user = this.userService.findByName(item.getCode());
                         if (user != null) {
                             user.setStatus("1");
                             this.userService.updateUserByName(user);
                         } else {
                             user = new User();
-                            user.setUsername(item.getCode());//供应商编码
+                            /**
+                             * 供应商编码
+                             * */
+                            user.setUsername(item.getCode());
                             user.setRealname(item.getName());//供应商名称
                             user.setAvatar("default.jpg");
                             user.setSsex("1");

@@ -170,6 +170,7 @@
             label="发票编码"
           >
             <a-input
+              @blur="settingNumber"
               placeholder="请输入发票编码"
               v-decorator="['fpbm', {}]"
             />
@@ -255,6 +256,8 @@
   </a-drawer>
 </template>
 <script>
+import moment from 'moment'
+
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15 }
@@ -298,9 +301,34 @@ export default {
       this.reset()
       this.$emit('close')
     },
+    settingNumber () {
+      var Fpbm = this.form.getFieldValue('fpbm')
+      if (Fpbm.trim().length > 0) {
+        var arr = Fpbm.trim().split(',')
+        for (var i = 0; i < arr.length; i++) {
+          if (i === 3) {
+            this.form.setFields({ fphm: { value: arr[i] } })
+          }
+          if (i === 4) {
+            //  var jr=parseFloat(arr[i]);
+            //  var fpjr=jr*1.17;
+            //  $("#FPJR").numberbox("setValue",fpjr.toFixed(2));
+
+          }
+          if (i === 5) {
+            
+            var year = arr[i].substr(0, 4)
+            var month = arr[i].substr(4, 2)
+            var day = arr[i].substr(6, 2)
+            //console.info(year + "-" + month + "-" + day);
+            this.form.setFields({ fprq: {value: moment(year + "-" + month + "-" + day) }})
+          }
+        }
+      }
+    },
     mengeBlur (e) {
       if (e.target.value) {
-        let money = this.price * e.target.value
+        let money = (this.price * e.target.value).toFixed(2)
         this.form.setFields({ fpjr: { value: money } })
         let pkg = this.form.getFieldValue('pkgAmount')
         if (pkg) {
@@ -354,8 +382,8 @@ export default {
       let validateResult = false;  // 自定义规则
       let gMenge = this.form.getFieldValue('gMenge')
       let menge = this.form.getFieldValue('menge')
-      let outCause =this.form.getFieldValue('outCause')
-      if (gMenge < menge && outCause==null) {
+      let outCause = this.form.getFieldValue('outCause')
+      if (gMenge < menge && outCause == null) {
         callback('请输入填写缺货原因！');
       }
       callback();
@@ -364,13 +392,13 @@ export default {
       let validateResult = false;  // 自定义规则
       let gMenge = this.form.getFieldValue('gMenge')
       let menge = this.form.getFieldValue('menge')
-      let outDate =this.form.getFieldValue('outDate')
-      
-    if(!typeof(outDate)==='undefined'){
-        this.form.setFields({ outDate : { value: moment(outDate) } })
+      let outDate = this.form.getFieldValue('outDate')
+
+      if (!typeof (outDate) === 'undefined') {
+        this.form.setFields({ outDate: { value: moment(outDate) } })
       }
-      
-      if (gMenge < menge && typeof(outDate)==='undefined') {
+
+      if (gMenge < menge && typeof (outDate) === 'undefined') {
         callback('请输入补货日期！');
       }
       callback();

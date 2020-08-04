@@ -2,7 +2,7 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width=900
+    width="75%"
     placement="right"
     :closable="false"
     @close="onClose"
@@ -51,7 +51,7 @@
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
       :bordered="bordered"
-      :scroll="{ x: 1300 ,y:300 }"
+      :scroll="{ x: 1700 ,y:300 }"
     >
     </a-table>
     <div class="drawer-bootom-button">
@@ -100,6 +100,14 @@ export default {
         title: '供应计划号',
         dataIndex: 'id',
         width: 130
+      }, {
+        title: '药品编码',
+        dataIndex: 'matnr',
+        width: 100
+      }, {
+        title: '药品名称',
+        dataIndex: 'txz01',
+        width: 200
       }, {
         title: '供应数量',
         dataIndex: 'gMenge',
@@ -240,6 +248,7 @@ export default {
     reset () {
       this.loading = false
       this.scmBSendorder = {}
+      this.rows = []
       this.form.resetFields()
       // 取消选中
       this.selectedRowKeys = []

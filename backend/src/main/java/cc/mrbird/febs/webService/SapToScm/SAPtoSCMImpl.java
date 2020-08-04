@@ -59,8 +59,8 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         List<ScmDSenddepart> listDepart = this.scmDSenddepartMapper.selectList(null);
-        List<GysEntity> listVendors=this.scmDVendorMapper.getGysNameAndCode();
-       // List<ScmDArea> listArea=this.scmDAreaMapper.selectList(null);//在传递订单的时候，检测库房是否存在
+        List<GysEntity> listVendors = this.scmDVendorMapper.getGysNameAndCode();
+        // List<ScmDArea> listArea=this.scmDAreaMapper.selectList(null);//在传递订单的时候，检测库房是否存在
         if (purcharseList.size() > 0) {
             log.info("从SAP更新订单开始");
 
@@ -70,11 +70,10 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             List<ScmBPurcharseorder> list_purchase_C = new ArrayList<>();
             for (Sap_PurchasePlan item : purcharseList) {
 
-                String gysName="";
-                List<GysEntity> listvf=listVendors.stream().filter((GysEntity e0)->e0.getCode().equals(item.getLifnr())).collect(Collectors.toList());
-                if(listvf.size()>0)
-                {
-                    gysName=listvf.get(0).getName();
+                String gysName = "";
+                List<GysEntity> listvf = listVendors.stream().filter((GysEntity e0) -> e0.getCode().equals(item.getLifnr())).collect(Collectors.toList());
+                if (listvf.size() > 0) {
+                    gysName = listvf.get(0).getName();
                 }
 
                 LambdaQueryWrapper<ScmBPurcharseorder> queryWrapperOrder = new LambdaQueryWrapper<>();
@@ -231,25 +230,34 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
             List<ScmDMater> list_Update = new ArrayList<>();
             List<ScmDMater> list_purchase_C = new ArrayList<>();
+            List<String> list_matnr = new ArrayList<>();
             for (SAP_MATER item : materList) {
+                if (list_matnr.contains(item.getMatnr().trim())) {
+                    continue;
+                }
+                list_matnr.add(item.getMatnr().trim());
                 LambdaQueryWrapper<ScmDMater> queryWrapperMater = new LambdaQueryWrapper<>();
 
                 queryWrapperMater.eq(ScmDMater::getGysaccount, item.getGysAccount().trim());
 
                 queryWrapperMater.eq(ScmDMater::getMatnr, item.getMatnr().trim());
 
-                ScmDMater ens = scmDMaterMapper.selectOne(queryWrapperMater);
-                if (ens != null) {
+                List<ScmDMater> ensList = scmDMaterMapper.selectList(queryWrapperMater);
+                ScmDMater ens = null;
+                if (ensList.size() > 0) {
+                    ens = ensList.get(0);
+                }
+                if (ens != null && StringUtils.isNotBlank(ens.getMatnr())) {
                     ens.setMatnr(item.getMatnr().trim());
-                    if(StringUtils.isNotBlank(item.getGysAccount())) {
-                         ens.setGysaccount(item.getGysAccount().trim());
+                    if (StringUtils.isNotBlank(item.getGysAccount())) {
+                        ens.setGysaccount(item.getGysAccount().trim());
                     }
 
                     ens.setProduceArea(item.getProduceArea() == null ? "" : item.getProduceArea().trim());
                     ens.setSpec(item.getSpec() == null ? "" : item.getSpec().trim());
                     ens.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
                     ens.setBklas(item.getBklas() == null ? "" : item.getBklas().trim());
-                    ens.setTxz01(item.getTxz01());
+                    ens.setTxz01(item.getTxz01() == null ? "" : item.getTxz01().trim());
                     list_Update.add(ens);
                 } else {
 
@@ -262,7 +270,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     entity.setSpellCode(item.getSpellCode() == null ? "" : item.getSpellCode().trim());
                     entity.setBklas(item.getBklas() == null ? "" : item.getBklas().trim());
 
-                    entity.setTxz01(item.getTxz01() == null?"" : item.getTxz01().trim());
+                    entity.setTxz01(item.getTxz01() == null ? "" : item.getTxz01().trim());
                     entity.setId(UUID.randomUUID().toString());
 
                     list_purchase_C.add(entity);
@@ -333,7 +341,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     for (HRP_MATER item : materList) {
                         ScmDHrpmater ens = scmDHrpmaterMapper.selectById(item.getMATNR());
                         if (ens != null) {
-                            ens.setMaktx(item.getMAKTX().trim());
+                            ens.setMaktx(item.getMAKTX() == null ? "" : item.getMAKTX().trim());
                             ens.setMeins(item.getMEINS() == null ? "" : item.getMEINS().trim());
                             ens.setMseht(item.getMSEHT() == null ? "" : item.getMSEHT().trim());
                             ens.setMtart(item.getMTART() == null ? "" : item.getMTART().trim());
@@ -345,7 +353,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                             ScmDHrpmater entity = new ScmDHrpmater();
 
                             entity.setMatnr(item.getMATNR().trim());
-                            entity.setMaktx(item.getMAKTX().trim());
+                            entity.setMaktx(item.getMAKTX() == null ? "" : item.getMAKTX().trim());
                             entity.setMeins(item.getMEINS() == null ? "" : item.getMEINS().trim());
                             entity.setMseht(item.getMSEHT() == null ? "" : item.getMSEHT().trim());
                             entity.setMtart(item.getMTART() == null ? "" : item.getMTART().trim());
@@ -356,11 +364,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                             scmDHrpmaterMapper.insert(entity);
                         }
                     }
-                    return  true;
-                }
-                catch ( Exception ex)
-                {
-                    log.error("获取物资信息失败!"+ex.getMessage());
+                    return true;
+                } catch (Exception ex) {
+                    log.error("获取物资信息失败!" + ex.getMessage());
                 }
             }
 

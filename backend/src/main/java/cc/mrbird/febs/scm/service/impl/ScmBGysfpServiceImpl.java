@@ -56,7 +56,7 @@ public IPage<ScmBGysfp> findScmBGysfps(QueryRequest request, ScmBGysfp scmBGysfp
                 }
 
         Page<ScmBGysfp> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
+        SortUtil.handlePageSort(request,page,false);
         return this.page(page,queryWrapper);
         }catch(Exception e){
         log.error("获取字典信息失败" ,e);
@@ -66,7 +66,7 @@ public IPage<ScmBGysfp> findScmBGysfps(QueryRequest request, ScmBGysfp scmBGysfp
     @Override
    public IPage<ScmBGysfp> findScmBGysfpsAudit(QueryRequest request, ScmBGysfp scmBGysfp){
         Page<ScmBGysfp> page=new Page<>();
-        SortUtil.handlePageSort(request,page,true);
+        SortUtil.handlePageSort(request,page,false);
         return  this.baseMapper.findScmBGysfp(page,scmBGysfp);
     }
 @Override

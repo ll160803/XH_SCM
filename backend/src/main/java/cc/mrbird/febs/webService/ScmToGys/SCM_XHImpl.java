@@ -150,7 +150,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     ) {
                         String v_lgort = item.getLgort();//库位表述
                         String v_name = item.getName();
-                        if (item.BSART == "Z004" && item.WERKS == "2200")// hsc 2019 07 05 去除限制
+                        if (item.getBsart() == "Z004" && item.getWerks() == "2200")// hsc 2019 07 05 去除限制
                         {
                             // var v_lgort2 = Ipedf.Web.Common.SendCode.GetDepartCode(item.SEND_DEAPRT_NAME ?? "");
                             v_name = item.getSendDeaprtName() == "" ? "药库" : item.getSendDeaprtName();
@@ -265,13 +265,13 @@ public class SCM_XHImpl implements ISCM_XHService {
     }
 
     private Boolean IsExistFphm(ScmBPurcharseorder entity, String id, String fphm, String gysAccount) {
-        if (entity.getWerks() == "2000" & (entity.getLgort() == "1001" || entity.getLgort() == "1008")) {
+        if (entity.getWerks().equals("2000") & (entity.getLgort() .equals("1001") || entity.getLgort().equals("1008"))) {
             return true;
         }
-        if (entity.getWerks() == "2200" & (entity.getLgort() == "1002" || entity.getLgort() == "1005")) {
+        if (entity.getWerks().equals("2200") & (entity.getLgort().equals("1002") || entity.getLgort().equals("1005"))) {
             return true;
         }
-        if (entity.getWerks() == "2100") {
+        if (entity.getWerks().equals("2100")){
             return true;
         }
         int count = this.scmBSupplyplanMapper.IsExistFphm(id, fphm, gysAccount);
@@ -462,6 +462,7 @@ public class SCM_XHImpl implements ISCM_XHService {
             // entity.ID = item.ID;
 
             entity.setBaseId(order.getId());
+
 
             entity.setPkgAmount(item.getPKG_AMOUNT());
             entity.setPkgNumber(item.getPKG_NUMBER());

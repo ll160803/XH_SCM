@@ -163,13 +163,23 @@ public class RfcNOC {
         return list;
     }
 
+    /**
+     *  发送供应计划给sap
+     * @param userID
+     * @param listEntitys
+     * @param Lifnr
+     * @param NAME1
+     * @param ZPSTA
+     * @param ZUPFG C 是新增 D 是一条删除  U是更改  X是所有数据必须同时更新，一条出错，不进行操作
+     * @return
+     */
     public List<BackFromSAP_SubPlan> SendSupplyPlan_RFC(String userID, List<ViewSupplyplan> listEntitys, String Lifnr, String NAME1, String ZPSTA, String ZUPFG) {
         String fuName = "ZMM00_FM_SCMSUPLANSEND";
         log.info("SendSupplyPlan(发送计划) begin", 1);
         List<BackFromSAP_SubPlan> list = new ArrayList<>();
         JCoDestination destination;
         try {
-            destination = this.GetDestination();
+            destination = RfcNOC.GetDestination();
             if (destination == null) {
                 log.error("配置信息出错");
                 BackFromSAP_SubPlan pur2 = new BackFromSAP_SubPlan();

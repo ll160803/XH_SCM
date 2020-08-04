@@ -3,7 +3,7 @@
   <a-drawer
     title="修改"
     :maskClosable="false"
-    width=900
+    width="75%"
     placement="right"
     :closable="false"
     @close="onClose"
@@ -52,7 +52,7 @@
       :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
       @change="handleTableChange"
       :bordered="bordered"
-      :scroll="{ x: 1300 ,y:300 }"
+      :scroll="{ x: 1700 ,y:300 }"
     >
     </a-table>
     <div class="drawer-bootom-button">
@@ -76,8 +76,8 @@
 import moment from 'moment'
 import WerksLgort from '../../common/WerksLgort'
 const formItemLayout = {
-  labelCol: { span: 5 },
-  wrapperCol: { span: 18 }
+  labelCol: { span: 8 },
+  wrapperCol: { span: 15 }
 }
 export default {
   name: 'SendorderEdit',
@@ -102,6 +102,14 @@ export default {
         title: '供应计划号',
         dataIndex: 'id',
         width: 100
+      }, {
+        title: '药品编码',
+        dataIndex: 'matnr',
+        width: 100
+      }, {
+        title: '药品名称',
+        dataIndex: 'txz01',
+        width: 200
       }, {
         title: '供应数量',
         dataIndex: 'gMenge',
@@ -221,6 +229,7 @@ export default {
     reset () {
       this.loading = false
       this.scmBSendorder = {}
+  
       this.form.resetFields()
       // 取消选中
       this.selectedRowKeys = []

@@ -251,7 +251,8 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id'
-      }, {
+      },
+       {
         title: '供应数量',
         dataIndex: 'gMenge'
       }, {

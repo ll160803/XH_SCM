@@ -69,10 +69,7 @@ public Map<String, Object> List(QueryRequest request, ScmBGysfp scmBGysfp){
         User currentUser = FebsUtil.getCurrentUser();
         String userId= currentUser.getUserId().toString();
         scmBGysfp.setUserid(userId);
-        if(StringUtils.isNotBlank(request.getSortField()))
-        {
-            request.setSortField("scm_b_gysfp."+request.getSortField());
-        }
+      
         return getDataTable(this.iScmBGysfpService.findScmBGysfpsAudit(request, scmBGysfp));
     }
 
@@ -91,6 +88,12 @@ public void addScmBGysfp(@Valid ScmBGysfp scmBGysfp)throws FebsException{
         {
             throw new Exception("已经存在的的发票号码");
         }
+        if(!StringUtils.isNotBlank(scmBGysfp.getFileId())){
+                throw new Exception("请上传药厂发票附件");
+            }
+            if(!StringUtils.isNotBlank(scmBGysfp.getMaterId())){
+                throw new Exception("请上传供应商发票附件");
+            }
         scmBGysfp.setCreateUserId(currentUser.getUserId());
 
         scmBGysfp.setGysaccount(currentUser.getUsername());
@@ -118,6 +121,12 @@ public void updateScmBGysfp(@Valid ScmBGysfp scmBGysfp)throws FebsException{
         User currentUser= FebsUtil.getCurrentUser();
       scmBGysfp.setModifyUserId(currentUser.getUserId());
       scmBGysfp.setState(0);
+            if(!StringUtils.isNotBlank(scmBGysfp.getFileId())){
+                throw new Exception("请上传药厂发票附件");
+            }
+            if(!StringUtils.isNotBlank(scmBGysfp.getMaterId())){
+                throw new Exception("请上传供应商发票附件");
+            }
             if(this.iScmBGysfpService.IsExist(scmBGysfp.getFpHm(),currentUser.getUsername(),scmBGysfp.getId()))
             {
                 throw new Exception("已经存在的的发票号码");

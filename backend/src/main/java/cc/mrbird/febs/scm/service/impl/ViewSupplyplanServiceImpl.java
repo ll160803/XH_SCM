@@ -189,7 +189,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
         c.add(Calendar.MONTH, - 1);
         Date preMonth = c.getTime();
         viewSupplyplan.setEindt(preMonth);
-        return this.baseMapper.findVPurcharseorder(viewSupplyplan);
+        return this.baseMapper.findVPlanByOrderCode(sendOrderId);
     }
 
     @Override

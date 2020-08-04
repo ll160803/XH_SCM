@@ -69,6 +69,18 @@
                   </a-select>
                 </a-form-item>
               </a-col>
+            <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="供应商"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-input v-model="queryParams.keyword_gys" />
+              </a-form-item>
+            </a-col>
             </template>
 
           </div>
@@ -133,7 +145,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 2500,
+        x: 3000,
         y: window.innerHeight - 200 - 100 - 20 - 5
       },
       advanced: false,
@@ -187,6 +199,14 @@ export default {
       }, {
         title: '物料描述',
         dataIndex: 'txz01',
+        width: 200
+      }, {
+        title: '供应商账号',
+        dataIndex: 'gysaccount',
+        width: 100
+      }, {
+        title: '供应商名称',
+        dataIndex: 'gysname',
         width: 200
       }, {
         title: '院区名称',

@@ -62,6 +62,8 @@ export default {
       let LODOP= this.lodop
       LODOP.PRINT_INIT("送货清单打印");
       LODOP.ADD_PRINT_HTM(10, 10, this.$refs.printDiv.clientWidth, this.$refs.printDiv.clientHeight, this.printHtml);
+      // LODOP.ADD_PRINT_HTM(500, 2000, 100, 100, "<font format='ChineseNum'><span tdata='pageNo'>第##页</span><span tdata='pageCount'>共##页</span></font>")
+      // LODOP.SET_PRINT_STYLEA(0,"ItemType",1);
       LODOP.SET_PRINT_PAGESIZE(2, 2100, 2970, "");//横向
       // LODOP.PREVIEW();
       LODOP.PRINTA(); //直接打印在默认打印机
@@ -70,6 +72,8 @@ export default {
       let LODOP= this.lodop
       LODOP.PRINT_INIT("送货清单打印");
       LODOP.ADD_PRINT_HTM(10, 10, this.$refs.printDiv.clientWidth, this.$refs.printDiv.clientHeight, this.printHtml);
+      // LODOP.ADD_PRINT_HTM(600, 500, 100, 100, "<font format='ChineseNum'><span tdata='pageNo'>第##页</span><span tdata='pageCount'>共##页</span></font>")
+      // LODOP.SET_PRINT_STYLEA(0,"ItemType",1);
       LODOP.SET_PRINT_PAGESIZE(2, 2100, 2970, "");
       LODOP.PREVIEW();
       //LODOP.PRINT();

@@ -244,8 +244,13 @@ public class ScmBSendorderController extends BaseController {
 
             List<ViewSupplyplan> list = new ArrayList<>();
             List<ViewSupplyplan> listVp1 =this.iViewSupplyplanService.getViewSupplyPlanByOrderId(scmBSendorder.getId().toString());
+            String werks="";
+            String lgort="";
+
             for ( ViewSupplyplan vp:listVp1
                  ) {
+                werks= vp.getWerks();
+                lgort=vp.getLgort();
                 if(vp.getStatus().equals(1)){
                     message="送货清单已经入库，不能修改";
                     throw new FebsException("送货清单已经入库，不能修改");
@@ -268,6 +273,15 @@ public class ScmBSendorderController extends BaseController {
                 List<ViewSupplyplan> listvp = this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
                 for (ViewSupplyplan vp2 : listvp
                 ) {
+                    if(werks.equals("")){
+                        werks=vp2.getWerks();
+                        lgort=vp2.getLgort();
+                    }
+                    else {
+                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()))) {
+                            throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致");
+                        }
+                    }
                     vp2.setSendOrderCode(scmBSendorder.getId().toString());
                     list.add(vp2);
                 }
