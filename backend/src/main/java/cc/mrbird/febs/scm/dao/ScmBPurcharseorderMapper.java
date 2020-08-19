@@ -18,10 +18,18 @@ import java.util.List;
  * @since 2019-11-21
  */
 public interface ScmBPurcharseorderMapper extends BaseMapper<ScmBPurcharseorder> {
-        void updateScmBPurcharseorder(ScmBPurcharseorder scmBPurcharseorder);
-        IPage<ScmBPurcharseorder> findPurcharseorder(Page page, @Param("order") ScmBPurcharseorder order);
+    void updateScmBPurcharseorder(ScmBPurcharseorder scmBPurcharseorder);
 
-       List<ScmBPurcharseorder> getAllByIds(@Param("ids") List<String> ids);
+    IPage<ScmBPurcharseorder> findPurcharseorder(Page page, @Param("order") ScmBPurcharseorder order);
 
-       ScmBPurcharseorder findPurcharseorderById(@Param("id") String id);
-        }
+    List<ScmBPurcharseorder> getAllByIds(@Param("ids") List<String> ids);
+
+    ScmBPurcharseorder findPurcharseorderById(@Param("id") String id);
+
+    /**
+     * 最近一个月的订单数据
+     *
+     * @return 定订单数据
+     */
+    List<ScmBPurcharseorder> findlastmonth();
+}

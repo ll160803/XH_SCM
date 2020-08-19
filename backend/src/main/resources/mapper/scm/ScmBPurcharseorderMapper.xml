@@ -164,6 +164,46 @@
             #{item}
         </foreach>
     </select>
+    <select id="findlastmonth" resultType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder" >
+        SELECT
+        ID,
+        CREATE_USER_ID,
+        send_deaprt_contact,
+        MODIFY_USER_ID,
+        matnr,
+        MODIFY_TIME,
+        eindt,
+        lgortName,
+        menge,
+        send_deaprt_name,
+        lifnr,
+        lgort,
+        NAME,
+        STATUS,
+        CODE,
+        send_deaprt_id,
+        send_deaprt_phone,
+        ebelp,
+        ebeln,
+
+        bedat,
+        IS_DELETEMARK,
+        netpr,
+        comments,
+        bsart,
+        txz01,
+        werks,
+        CREATE_TIME,
+        meins,
+        werkst,
+        mseht,
+        GysName
+        FROM
+        scm_b_purcharseorder
+        WHERE
+        date_format(CREATE_TIME,'%Y-%m-%d') <![CDATA[ >= ]]> date_format(DATE_SUB(curdate(), INTERVAL 1 MONTH),'%Y-%m-%d')
+    </select>
+
 
     <select id="findPurcharseorderById" resultType="cc.mrbird.febs.scm.entity.ScmBPurcharseorder">
         SELECT

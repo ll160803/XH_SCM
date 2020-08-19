@@ -28,4 +28,10 @@ public interface IScmBPurcharseorderService extends IService<ScmBPurcharseorder>
 
         ScmBPurcharseorder getOrderById(String id);
 
+        /**
+         * 接口操作  获取最近一个月的订单数据
+         * @return
+         */
+        List<ScmBPurcharseorder> findscmbpurcharseorderlastmonth();
+
         }

@@ -32,6 +32,9 @@ public class FebsConstant {
     // 供应商名称和编码
     public static final String GYS_CACHE_PREFIX = "febs.cache.gys";
 
+
+    // scm 最近一个月的采购订单
+    public static final String GOBAL_ORDER_CACHE_PREFIX = "scm.cache.order";
     // 网络资源 Url
     public static final String MEIZU_WEATHER_URL = "http://aider.meizu.com/app/weather/listWeather";
     public static final String MRYW_TODAY_URL = "https://interface.meiriyiwen.com/article/today";

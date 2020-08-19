@@ -101,4 +101,10 @@ public class ScmBPurcharseorderServiceImpl extends ServiceImpl<ScmBPurcharseorde
     public  ScmBPurcharseorder getOrderById(String id){
         return  this.baseMapper.findPurcharseorderById(id);
     }
+
+    @Override
+    @Transactional
+    public List<ScmBPurcharseorder> findscmbpurcharseorderlastmonth(){
+       return this.baseMapper.findlastmonth();
+    }
 }

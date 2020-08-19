@@ -2,6 +2,7 @@ package cc.mrbird.febs.webService.SapToScm;
 
 import cc.mrbird.febs.scm.dao.*;
 import cc.mrbird.febs.scm.entity.*;
+import cc.mrbird.febs.scm.service.IScmCacheService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
     @Autowired
     private ScmDAreaMapper scmDAreaMapper;
+
+    @Autowired
+    private IScmCacheService iScmCacheService;
 
     public String HelloWorld() {
         return "haha";
@@ -213,6 +217,13 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                 for (ScmBPurcharseorder deleteOrder : list_Delete) {
                     this.scmBPurcharseorderMapper.deleteById(deleteOrder.getId());
                 }
+            }
+            try {
+                //更新最近两个月的缓存
+                iScmCacheService.savePurcharseList();
+            }
+            catch (Exception ex){
+                log.error(ex.getMessage());
             }
             return true;
 

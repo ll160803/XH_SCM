@@ -1,6 +1,7 @@
 package cc.mrbird.febs.webService.ScmToGys;
 
 
+import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.common.utils.MD5Util;
 import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
 import cc.mrbird.febs.scm.RFC.RfcNOC;
@@ -9,6 +10,7 @@ import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
 import cc.mrbird.febs.scm.entity.*;
+import cc.mrbird.febs.scm.service.IScmCacheService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.manager.UserManager;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -44,6 +46,10 @@ public class SCM_XHImpl implements ISCM_XHService {
     private UserManager userManager;
     @Autowired
     private ScmBGysMaterPicMapper scmBGysMaterPicMapper;
+
+    @Autowired
+    private IScmCacheService iScmCacheService;
+
     public String HelloWorld() {
         return  "haha";
     }
@@ -123,14 +129,22 @@ public class SCM_XHImpl implements ISCM_XHService {
                         return Msg;
                     }
 
-
-                    LambdaQueryWrapper<ScmBPurcharseorder> queryOrderWrapper = new LambdaQueryWrapper<>();
+                    /**
+                     * 获取最近1个月的采购订单数据
+                     */
+                    List<ScmBPurcharseorder> listAllLastMonth= FebsUtil.selectCacheByTemplate(
+                            () -> this.iScmCacheService.getPurcharseList(),
+                            () -> this.scmBPurcharseorderMapper.findlastmonth());
+                    List<ScmBPurcharseorder> list =  listAllLastMonth.stream().filter(p->p.getLifnr().equals(accountCode)
+                    && p.getStatus().equals(1) && p.getCreateTime().compareTo(startDate)>=0
+                            && p.getCreateTime().compareTo(endDate)<=0).collect(Collectors.toList());
+                  /**  LambdaQueryWrapper<ScmBPurcharseorder> queryOrderWrapper = new LambdaQueryWrapper<>();
                     queryOrderWrapper.eq(ScmBPurcharseorder::getLifnr, accountCode);
                     queryOrderWrapper.eq(ScmBPurcharseorder::getStatus, "1");
-                    queryOrderWrapper.between(ScmBPurcharseorder::getBedat, startDate, endDate);
+                    queryOrderWrapper.between(ScmBPurcharseorder::getBedat, startDate, endDate);*/
 
 
-                    List<ScmBPurcharseorder> list = this.scmBPurcharseorderMapper.selectList(queryOrderWrapper);
+                    //  List<ScmBPurcharseorder> list = this.scmBPurcharseorderMapper.selectList(queryOrderWrapper);
                     list.sort(
                             new Comparator<ScmBPurcharseorder>() {
                                 @Override
@@ -356,7 +370,14 @@ public class SCM_XHImpl implements ISCM_XHService {
             ListMess.add(Msg);
             return ListMess;
         }
-        List<ScmBPurcharseorder> listOrder = this.scmBPurcharseorderMapper.getAllByIds(orderIds);//获取对应的采购订单
+        /**
+         * 获取最近1个月的采购订单数据
+         */
+        List<ScmBPurcharseorder> listAllLastMonth= FebsUtil.selectCacheByTemplate(
+                () -> this.iScmCacheService.getPurcharseList(),
+                () -> this.scmBPurcharseorderMapper.findlastmonth());
+        List<ScmBPurcharseorder> listOrder =listAllLastMonth.stream().filter(h->orderIds.contains(h.getId())).collect(Collectors.toList());
+                // this.scmBPurcharseorderMapper.getAllByIds(orderIds);//获取对应的采购订单
         if (listOrder.size() <= 0) {
             WcfPlan_XH Msg = new WcfPlan_XH();
             Msg.setIsSuccess(false);
@@ -437,7 +458,7 @@ public class SCM_XHImpl implements ISCM_XHService {
             if ("U,D".contains(item.getFLAG()))//修改删除
             {
                 Long planId = Long.parseLong(item.getCODE());
-                entity = listPlans.stream().filter(t -> t.getId() == planId).findFirst().get();
+                entity = listPlans.stream().filter(t -> t.getId().equals(planId)).findFirst().get();
 
                 if (entity == null) {
                     ListMess.add(GenerateMsg(item.getID(), "不存在的供应计划", false));
@@ -497,7 +518,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         queryGysPic.eq(ScmBGysMaterPic::getGysaccount, user.getUsername());
                         queryGysPic.eq(ScmBGysMaterPic::getCharge, item.getCHARG());
                         int fileCount = this.scmBGysMaterPicMapper.selectCount(queryGysPic);
-                        if (fileCount < 0) {
+                        if (fileCount <= 0) {
                             WcfPlan_XH Msg = new WcfPlan_XH();
                             Msg.setIsSuccess(false);
                             Msg.setMess("没有对应的药品验收报告！");
@@ -548,7 +569,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         queryGysPic.eq(ScmBGysMaterPic::getGysaccount, user.getUsername());
                         queryGysPic.eq(ScmBGysMaterPic::getCharge, item.getCHARG());
                         int fileCount = this.scmBGysMaterPicMapper.selectCount(queryGysPic);
-                        if (fileCount < 0) {
+                        if (fileCount <= 0) {
                             WcfPlan_XH Msg = new WcfPlan_XH();
                             Msg.setIsSuccess(false);
                             Msg.setMess("没有对应的药品验收报告！");
