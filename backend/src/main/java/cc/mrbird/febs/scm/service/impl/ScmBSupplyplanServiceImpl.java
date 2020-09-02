@@ -5,12 +5,13 @@ import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
 import cc.mrbird.febs.scm.dao.ScmBSendinfoMapper;
-import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
-import cc.mrbird.febs.scm.entity.ScmBSendinfo;
-import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
+import cc.mrbird.febs.scm.dao.ScmBSupplyplanDMapper;
+import cc.mrbird.febs.scm.entity.*;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
-import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBSupplyplanService;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.time.LocalDate;
 
@@ -46,6 +48,10 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
 
     @Autowired
     private ScmBSendinfoMapper scmBSendinfoMapper;
+
+    @Autowired
+    private ScmBSupplyplanDMapper scmBSupplyplanDMapper;
+
 
     @Override
     public IPage<ScmBSupplyplan> findScmBSupplyplans(QueryRequest request, ScmBSupplyplan scmBSupplyplan) {
@@ -149,7 +155,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
 
         scmBSupplyplan.setCreateTime(new Date());
         this.save(scmBSupplyplan);
-        log.error("sadasdasd:" + scmBSupplyplan.getBsartD());
+        log.error("BsartD:" + scmBSupplyplan.getBsartD());
         String artd = scmBSupplyplan.getBsartD();
         String typear = "1";//z真是坑爹 不这么些 就是不行
         if (artd.equals(typear)) {//物资供应商才能生成送货单
@@ -176,9 +182,35 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
             scmBSendinfoMapper.insert(scmBSendinfo);
         }
         //  }
+       // HandleScmBSupplyD(scmBSupplyplan);//hsc 20200819 增加箱数数据
     }
 
+private  void HandleScmBSupplyD(ScmBSupplyplan scmBSupplyplan){
+        //删除已经存在的
+    scmBSupplyplanDMapper.deleteByBaseId(scmBSupplyplan.getId().toString());
+    /** 增加箱数的设计 */
+    String str_num = scmBSupplyplan.getPkgNumber().toString();
+    String gyjhId = scmBSupplyplan.getId().toString();
+    Integer num = Convert.toInt(StrUtil.sub(str_num, str_num.indexOf("."), str_num.length() - 1));
+    BigDecimal menge_d = scmBSupplyplan.getPkgAmount();
+    BigDecimal leftMenge=  NumberUtil.sub(scmBSupplyplan.getgMenge(),NumberUtil.mul( new BigDecimal(num-1) , menge_d));
 
+    for (Integer i = 1; i <= num; i++) {
+        ScmBSupplyplanD scmd = new ScmBSupplyplanD();
+        scmd.setId(gyjhId + (i < 10 ? "0" + i.toString() : i.toString()));
+        if(i.equals(num)){
+            scmd.setMenge(leftMenge);
+        }
+        else {
+            scmd.setMenge(menge_d);
+        }
+        scmd.setBaseId(scmBSupplyplan.getId());
+        scmd.setState(0);
+        scmd.setCreateTime(new Date());
+        scmd.setModifyTime(new Date());
+        scmBSupplyplanDMapper.insert(scmd);
+    }
+}
     @Override
     @Transactional
     public void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
@@ -212,6 +244,8 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
 
             scmBSendinfoMapper.updateScmBSendinfo(scmBSendinfo);
         }
+
+       // HandleScmBSupplyD(scmBSupplyplan);//hsc 20200819 增加箱数数据
     }
 
     @Override
@@ -234,9 +268,9 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
 
     @Override
     @Transactional
-    public void updateCancelDoneMenge(String id)
+    public void updateCancelDoneMenge(String id,String doneMenge)
     {
-        this.baseMapper.UpdateCancelDoneMenge(id);
+        this.baseMapper.UpdateCancelDoneMenge(id, doneMenge);
     }
     @Override
     @Transactional

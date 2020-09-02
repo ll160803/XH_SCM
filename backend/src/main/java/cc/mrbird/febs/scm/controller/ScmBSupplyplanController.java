@@ -12,12 +12,17 @@ import cc.mrbird.febs.common.utils.BarCodeUtil;
 import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
 import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
+import cc.mrbird.febs.scm.entity.ScmBSupplyplanD;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.*;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cn.hutool.Hutool;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.google.zxing.WriterException;
@@ -62,6 +67,9 @@ public class ScmBSupplyplanController extends BaseController {
     public IScmBSendorderService iScmBSendorderService;
     @Autowired
     public IScmBGysfpService iScmBGysfpService;
+
+    @Autowired
+    public IScmBSupplyplanDService iScmBSupplyplanDService;
 
     @Autowired
     public FebsProperties febsProperties;
@@ -131,6 +139,8 @@ public class ScmBSupplyplanController extends BaseController {
             if (!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(), currentUser.getUsername(), "")) {
                 throw new FebsException("请在发票管理界面上传对应发票！");
             }
+            BigDecimal bd =scmBSupplyplan.getgMenge().divide(scmBSupplyplan.getPkgAmount(),2);
+            scmBSupplyplan.setPkgNumber(bd.setScale( 0, BigDecimal.ROUND_UP ));
 
             scmBSupplyplan.setCreateUserId(currentUser.getUserId());
             scmBSupplyplan.setGysaccount(currentUser.getUsername());
@@ -142,6 +152,8 @@ public class ScmBSupplyplanController extends BaseController {
                 throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
             }
             this.iScmBSupplyplanService.createScmBSupplyplan(scmBSupplyplan);
+            //处理设置箱数的问题  viki 2020-08-19
+            this.iScmBSupplyplanDService.HandlePackage(scmBSupplyplan);
 
             List<ViewSupplyplan> list = new ArrayList<>();
             list.add(this.iViewSupplyplanService.getById(scmBSupplyplan.getId()));
@@ -165,14 +177,29 @@ public class ScmBSupplyplanController extends BaseController {
 
     @Log("修改预收数量")
     @PutMapping("done")
-    public void updateDoneScmBSupplyplan(@Valid String id, String doneMenge) throws FebsException {
+    public void updateDoneScmBSupplyplan(@Valid String ids, String doneMenge) throws FebsException {
         try {
             User currentUser = FebsUtil.getCurrentUser();
-            if (iScmBSupplyplanService.HasSendOrder(id)) {
+            LambdaQueryWrapper<ScmBSupplyplanD> queryWrapper = new LambdaQueryWrapper<>();
+            String[] arr = ids.split(",");
+
+            queryWrapper.eq(ScmBSupplyplanD::getIsDeletemark, 1);
+            queryWrapper.in(ScmBSupplyplanD::getId, arr);
+            List<ScmBSupplyplanD> scmds = this.iScmBSupplyplanDService.list(queryWrapper);
+            BigDecimal doneM=new BigDecimal(0);
+            for (ScmBSupplyplanD scmd:scmds
+                 ) {
+                if (scmd.getState().equals(1)) {
+                    throw new FebsException(scmd.getId()+"此箱药品已经预收！");
+                }
+                doneM=doneM.add(scmd.getMenge());
+            }
+
+            if (iScmBSupplyplanService.HasSendOrder(arr[0].substring(0, 12))) {
                 throw new FebsException("此供应计划尚未产生送货清单，不允许预收！");
             }
             List<ViewSupplyplan> list = new ArrayList<>();
-            ViewSupplyplan plan = this.iViewSupplyplanService.getById(id);
+            ViewSupplyplan plan = this.iViewSupplyplanService.getById(arr[0].substring(0, 12));
             if (plan.getStatus().equals(1)) {
                 throw new FebsException("该供应计划已经入库，不能进行预收");
             }
@@ -180,8 +207,8 @@ public class ScmBSupplyplanController extends BaseController {
             if (iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(), plan.getWerks() + plan.getLgort()).equals(0L)) {
                 throw new FebsException("您没有分配 " + plan.getWerkst() + "  " + plan.getLgortName() + " 的权限！");
             }
-            BigDecimal bd = new BigDecimal(doneMenge);
-            BigDecimal newDoneMenge = plan.getDoneMenge() == null ? bd : plan.getDoneMenge().add(bd);
+
+            BigDecimal newDoneMenge = plan.getDoneMenge() == null ? doneM : plan.getDoneMenge().add(doneM);
             if (newDoneMenge.compareTo(plan.getgMenge()) == 1) {
                 throw new FebsException("预收数量大于供应计划数量！");
             }
@@ -190,10 +217,15 @@ public class ScmBSupplyplanController extends BaseController {
             RfcNOC rfc = new RfcNOC();
             List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
             if (!backMsg.get(0).getMSTYPE().equals("S")) {
-                log.error(id + "SAP端处理失败");
                 throw new FebsException("SAP端处理失败,修改预收失败");
             } else {
-                this.iScmBSupplyplanService.updateDoneMenge(id, doneMenge);
+                this.iScmBSupplyplanService.updateDoneMenge(arr[0].substring(0, 12), doneM.toString());
+                //修改箱数中 数量的状态
+                for (ScmBSupplyplanD scmd2:scmds
+                ) {
+                    scmd2.setState(1);
+                    this.iScmBSupplyplanDService.updateScmBSupplyplanD(scmd2);
+                }
             }
 
         } catch (Exception e) {
@@ -207,17 +239,20 @@ public class ScmBSupplyplanController extends BaseController {
     @PutMapping("cancel")
     public void updateCancelDoneScmBSupplyplan(@Valid String id) throws FebsException {
         try {
+            ScmBSupplyplanD scmd = this.iScmBSupplyplanDService.getById(id);
+            if (scmd.getState().equals(0)) {
+                throw new FebsException("此箱药品尚未预收！");
+            }
             User currentUser = FebsUtil.getCurrentUser();
             List<ViewSupplyplan> list = new ArrayList<>();
-            ViewSupplyplan plan = this.iViewSupplyplanService.getById(id);
+            ViewSupplyplan plan = this.iViewSupplyplanService.getById(id.substring(0, 12));
             if (iViewSupplyplanService.findAreaCount(currentUser.getUserId().toString(), plan.getWerks() + plan.getLgort()).equals(0L)) {
                 throw new FebsException("您没有分配 " + plan.getWerkst() + "  " + plan.getLgortName() + " 的权限！");
             }
             if (plan.getStatus().equals(1)) {
                 throw new FebsException("该供应计划已经入库，不能进行取消预收");
             }
-            BigDecimal bd = new BigDecimal(0);
-            plan.setDoneMenge(bd);
+            plan.setDoneMenge(plan.getDoneMenge().subtract(scmd.getMenge()));
             list.add(plan);
             RfcNOC rfc = new RfcNOC();
             List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
@@ -225,7 +260,11 @@ public class ScmBSupplyplanController extends BaseController {
                 log.error(id + "SAP端处理失败");
                 throw new FebsException("SAP端处理失败,取消预收失败");
             } else {
-                this.iScmBSupplyplanService.updateCancelDoneMenge(id);
+                this.iScmBSupplyplanService.updateCancelDoneMenge(id.substring(0, 12),scmd.getMenge().toString());
+                //修改箱数中 数量的状态
+
+                scmd.setState(0);
+                this.iScmBSupplyplanDService.updateScmBSupplyplanD(scmd);
             }
 
         } catch (Exception e) {
@@ -242,6 +281,10 @@ public class ScmBSupplyplanController extends BaseController {
         try {
             User currentUser = FebsUtil.getCurrentUser();
             scmBSupplyplan.setModifyUserId(currentUser.getUserId());
+
+            BigDecimal bd =scmBSupplyplan.getgMenge().divide(scmBSupplyplan.getPkgAmount(),2);
+            scmBSupplyplan.setPkgNumber(bd.setScale( 0, BigDecimal.ROUND_UP ));
+
             Boolean flag = IsExistFphm(scmBSupplyplan.getBaseId(), scmBSupplyplan.getId().toString(), scmBSupplyplan.getFphm(), currentUser.getUsername());
             if (!flag) {
                 throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
@@ -253,6 +296,9 @@ public class ScmBSupplyplanController extends BaseController {
                 throw new FebsException("此供应计划已经产生预收，不允许修改！");
             }
             this.iScmBSupplyplanService.updateScmBSupplyplan(scmBSupplyplan);
+            //处理设置箱数的问题  viki 2020-08-19
+            this.iScmBSupplyplanDService.HandlePackage(scmBSupplyplan);
+
             List<ViewSupplyplan> list = new ArrayList<>();
             list.add(this.iViewSupplyplanService.getById(scmBSupplyplan.getId()));
             RfcNOC rfc = new RfcNOC();
@@ -394,7 +440,7 @@ public class ScmBSupplyplanController extends BaseController {
                 String mess = "";
                 for (BackFromSAP_SubPlan itSub : backMsg) {
                     if (!itSub.getMSTYPE().equals("S")) {
-                        mess += (itSub.getZGYJH()+itSub.getMESS());
+                        mess += (itSub.getZGYJH() + itSub.getMESS());
                     }
                 }
                 if (StringUtils.isNotBlank(mess)) {
@@ -450,7 +496,7 @@ public class ScmBSupplyplanController extends BaseController {
                 String mess = "";
                 for (BackFromSAP_SubPlan itSub : backMsg) {
                     if (!itSub.getMSTYPE().equals("S")) {
-                        mess += (itSub.getZGYJH()+itSub.getMESS());
+                        mess += (itSub.getZGYJH() + itSub.getMESS());
                     }
                 }
                 if (StringUtils.isNotBlank(mess)) {
@@ -740,12 +786,19 @@ public class ScmBSupplyplanController extends BaseController {
             List<ViewSupplyplan> entitys = e1.stream().filter((ViewSupplyplan s) -> s.getId().equals(idl)).collect(Collectors.toList());
 
             ViewSupplyplan entity = entitys.get(0);
-
-            String data = GenerateMark(entity.getId().toString());
-            if (i == 0) {
-                GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.2f", entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), entity.getId().toString(), "", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.2f", entity.getPkgAmount()), entity.getPkgNumber() == null ? "" : String.format("%.0f", entity.getPkgNumber()), String.format("%.2f", entity.getgMenge()), entity.getWerkst(), entity.getName());
-            } else {
-                GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.2f", entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), entity.getId().toString(), "page-break-before: always;", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.2f", entity.getPkgAmount()), entity.getPkgNumber() == null ? "" : String.format("%.0f", entity.getPkgNumber()), String.format("%.2f", entity.getgMenge()), entity.getWerkst(), entity.getName());
+            //增加 箱数的显示 viki 2020-08-19
+            String str_num = entity.getPkgNumber().toString();
+            Integer num = Convert.toInt(str_num);
+            BigDecimal menge_d = entity.getPkgAmount();
+            BigDecimal leftMenge = NumberUtil.sub(entity.getgMenge(), NumberUtil.mul(new BigDecimal(num - 1), menge_d));
+            for (Integer y = 1; y <= num; y++) {
+                String sub_code=entity.getId().toString() + "_" + y.toString();
+                String data = GenerateMark(sub_code);
+                if (i == 0 && y == 1) {
+                    GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.0f", entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), sub_code, "", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.0f", entity.getPkgAmount()), y.toString() + "/" + num.toString(), String.format("%.0f", entity.getgMenge()), entity.getWerkst(), entity.getName());
+                } else {
+                    GenerateCode(sb, data, entity.getTxz01(), entity.getMatnr(), entity.getCharge(), String.format("%.0f", entity.getMenge()), entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()), "", entity.getGysname(), sub_code, "page-break-before: always;", entity.getMseht(), entity.getPkgAmount() == null ? "" : String.format("%.0f", entity.getPkgAmount()), y.toString() + "/" + num.toString(), String.format("%.0f", entity.getgMenge()), entity.getWerkst(), entity.getName());
+                }
             }
         }
 
@@ -872,12 +925,10 @@ public class ScmBSupplyplanController extends BaseController {
                 " <td style=\"width:70px;height:16px;font-family:宋体;font-size: 14px;\">" +
                 "订单数量：" +
                 "</td>" +
-                "<td  style=\"width: 170px;height:16px;font-family:宋体;font-size: 14px;\">" +
+                "<td  colspan=\"2\"  style=\"width: 270px;height:16px;font-family:宋体;font-size: 14px;\">" +
                 "%5$s%11$s(%17$s)" +
+                "<span style=\"float:right\">%8$s</sapn>" +
                 " </td>" +
-                "<td style=\"width:100px;height:16px;font-family:宋体;font-size: 12pt;\">" +
-                "%8$s" +
-                "</td>" +
                 "</tr>" +
                 "<tr>" +
                 "<td style=\"width:70px;height:30px;font-family:宋体;vertical-align:top;font-size: 14px;\">" +

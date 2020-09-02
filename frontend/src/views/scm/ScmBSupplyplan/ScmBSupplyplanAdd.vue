@@ -179,27 +179,27 @@
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="包装规格"
+            label="每箱数量"
           >
             <a-input-number
               :precision="2"
               style="width: 100%"
               @blur="pkgNumberBlur"
-              placeholder="请输入包装规格"
-              v-decorator="['pkgAmount', { rules: [{ required: true, message: '包装规格不能为空' }] }]"
+              placeholder="请输入每箱数量"
+              v-decorator="['pkgAmount', { rules: [{ required: true, message: '每箱数量不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="包装数量"
+            label="总共箱数"
           >
             <a-input-number
               :precision="2"
-              placeholder="请输入包装数量"
+              placeholder="请输入总共箱数"
               style="width: 100%"
-              v-decorator="['pkgNumber',{ rules: [{ required: true, message: '包装数量不能为空' }] }]"
+              v-decorator="['pkgNumber',{ rules: [{ required: true, message: '总共箱数不能为空' }] }]"
             />
           </a-form-item>
         </a-col>

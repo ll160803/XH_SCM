@@ -48,7 +48,7 @@ public interface IScmBSupplyplanService extends IService<ScmBSupplyplan> {
          *
          * @param id
          */
-        void updateCancelDoneMenge(String id);
+        void updateCancelDoneMenge(String id,String doneMenge);
 
         void doneSupplyPlan(List<Long> ids);
 

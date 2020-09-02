@@ -282,6 +282,12 @@ private Long createUserId;
             @ExcelField(value ="修改人")
 private Long modifyUserId;
 
+    @TableField(exist = false)
+    public   BigDecimal subMenge;
+
+    @TableField(exist = false)
+    public   Integer subState;
+
     public String getNoOrder() {
         return noOrder;
     }

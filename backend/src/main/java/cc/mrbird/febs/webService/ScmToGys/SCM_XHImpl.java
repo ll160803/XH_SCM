@@ -10,9 +10,11 @@ import cc.mrbird.febs.scm.dao.ScmBPurcharseorderMapper;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.dao.ScmDVendorMapper;
 import cc.mrbird.febs.scm.entity.*;
+import cc.mrbird.febs.scm.service.IScmBSupplyplanDService;
 import cc.mrbird.febs.scm.service.IScmCacheService;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.manager.UserManager;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.jws.WebService;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,6 +53,9 @@ public class SCM_XHImpl implements ISCM_XHService {
     @Autowired
     private IScmCacheService iScmCacheService;
 
+    @Autowired
+    private IScmBSupplyplanDService iScmBSupplyplanDService;
+
     public String HelloWorld() {
         return  "haha";
     }
@@ -75,7 +81,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate;
         try {
-            startDate = sdf.parse(startTime);
+            startDate = DateUtil.parse(endTime +" 00:00:00");
         }
         catch (Exception ex)
         {
@@ -86,7 +92,8 @@ public class SCM_XHImpl implements ISCM_XHService {
         }
         Date endDate;
         try {
-            endDate = sdf.parse(endTime);
+            //endDate = sdf.parse(endTime);
+            endDate =  DateUtil.parse(endTime +" 23:59:59");
         }
         catch (Exception ex)
         {
@@ -103,7 +110,7 @@ public class SCM_XHImpl implements ISCM_XHService {
             if (en_MDMs.size() > 0) {
                 ScmDVendor en_MDM = en_MDMs.get(0);
 
-                if (en_MDM != null && en_MDM.getJieKouState() == 1) {
+                if (en_MDM != null && en_MDM.getJieKouState()==1) {
                     String username = StringUtils.lowerCase(accountCode);
                     password = MD5Util.encrypt(username, password);
 
@@ -135,6 +142,9 @@ public class SCM_XHImpl implements ISCM_XHService {
                     List<ScmBPurcharseorder> listAllLastMonth= FebsUtil.selectCacheByTemplate(
                             () -> this.iScmCacheService.getPurcharseList(),
                             () -> this.scmBPurcharseorderMapper.findlastmonth());
+                    if(listAllLastMonth.size()<=0){
+                        listAllLastMonth =this.scmBPurcharseorderMapper.findlastmonth();
+                    }
                     List<ScmBPurcharseorder> list =  listAllLastMonth.stream().filter(p->p.getLifnr().equals(accountCode)
                     && p.getStatus().equals(1) && p.getCreateTime().compareTo(startDate)>=0
                             && p.getCreateTime().compareTo(endDate)<=0).collect(Collectors.toList());
@@ -376,8 +386,11 @@ public class SCM_XHImpl implements ISCM_XHService {
         List<ScmBPurcharseorder> listAllLastMonth= FebsUtil.selectCacheByTemplate(
                 () -> this.iScmCacheService.getPurcharseList(),
                 () -> this.scmBPurcharseorderMapper.findlastmonth());
+        if(listAllLastMonth.size()<=0){
+            listAllLastMonth =this.scmBPurcharseorderMapper.findlastmonth();
+        }
         List<ScmBPurcharseorder> listOrder =listAllLastMonth.stream().filter(h->orderIds.contains(h.getId())).collect(Collectors.toList());
-                // this.scmBPurcharseorderMapper.getAllByIds(orderIds);//获取对应的采购订单
+       // List<ScmBPurcharseorder> listOrder= this.scmBPurcharseorderMapper.getAllByIds(orderIds);//获取对应的采购订单
         if (listOrder.size() <= 0) {
             WcfPlan_XH Msg = new WcfPlan_XH();
             Msg.setIsSuccess(false);
@@ -486,7 +499,8 @@ public class SCM_XHImpl implements ISCM_XHService {
 
 
             entity.setPkgAmount(item.getPKG_AMOUNT());
-            entity.setPkgNumber(item.getPKG_NUMBER());
+            BigDecimal bd =item.getMENGE().divide(item.getPKG_AMOUNT(),2);
+            entity.setPkgNumber(bd.setScale( 0, BigDecimal.ROUND_UP ));
 
             entity.setVfdat(item.getVFDAT());
             entity.setOutCause(item.getOUT_CAUSE());
@@ -512,9 +526,9 @@ public class SCM_XHImpl implements ISCM_XHService {
                         ListMess.add(Msg);
                         continue;
                     }
-                    if (IsLimit == 1) {
+                    if (IsLimit >0) {
                         LambdaQueryWrapper<ScmBGysMaterPic> queryGysPic = new LambdaQueryWrapper<>();
-                        queryGysPic.eq(ScmBGysMaterPic::getMaterId, order.getMatnr());
+                        queryGysPic.eq(ScmBGysMaterPic::getMatnr, order.getMatnr());
                         queryGysPic.eq(ScmBGysMaterPic::getGysaccount, user.getUsername());
                         queryGysPic.eq(ScmBGysMaterPic::getCharge, item.getCHARG());
                         int fileCount = this.scmBGysMaterPicMapper.selectCount(queryGysPic);
@@ -531,6 +545,8 @@ public class SCM_XHImpl implements ISCM_XHService {
                     entity.setCreateTime(new Date());
                     entity.setCreateUserId(user.getUserId());
                     this.scmBSupplyplanMapper.insert(entity);
+                    //处理设置箱数的问题  viki 2020-08-19
+                    this.iScmBSupplyplanDService.HandlePackage(entity);
                     if (entity.getId() != null) {
                         ViewSupplyplan addOrderEnrity = getViewSupplan(order, entity, item.getID());
                         list_supp_C.add(addOrderEnrity);//上传SAP
@@ -563,9 +579,9 @@ public class SCM_XHImpl implements ISCM_XHService {
                         ListMess.add(Msg);
                         continue;
                     }
-                    if (IsLimit == 1) {
+                    if (IsLimit > 0) {
                         LambdaQueryWrapper<ScmBGysMaterPic> queryGysPic = new LambdaQueryWrapper<>();
-                        queryGysPic.eq(ScmBGysMaterPic::getMaterId, order.getMatnr());
+                        queryGysPic.eq(ScmBGysMaterPic::getMatnr, order.getMatnr());
                         queryGysPic.eq(ScmBGysMaterPic::getGysaccount, user.getUsername());
                         queryGysPic.eq(ScmBGysMaterPic::getCharge, item.getCHARG());
                         int fileCount = this.scmBGysMaterPicMapper.selectCount(queryGysPic);
@@ -583,6 +599,9 @@ public class SCM_XHImpl implements ISCM_XHService {
                     entity.setModifyTime(new Date());
 
                     this.scmBSupplyplanMapper.updateScmBSupplyplan(entity);
+                    //处理设置箱数的问题  viki 2020-08-19
+                    this.iScmBSupplyplanDService.HandlePackage(entity);
+
                     WcfPlan_XH Msg = new WcfPlan_XH();
                     Msg.setIsSuccess(false);
                     Msg.setMess("更新数据成功！");
