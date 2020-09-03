@@ -18,7 +18,7 @@ import com.wuwenze.poi.annotation.ExcelField;
  * @since 2019-11-21
  */
 
-@Excel("scm_b_gys_mater_pic")
+@Excel("批次表")
 public class ScmBGysMaterPic implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -27,31 +27,29 @@ public class ScmBGysMaterPic implements Serializable {
      * 主键
      */
     @TableId("ID")
-    @ExcelField(value = "主键")
     private String id;
     /**
      * 编码
      */
     @TableField("CODE")
-    @ExcelField(value = "编码")
+
     private String code;
     /**
      * 姓名
      */
     @TableField("NAME")
-    @ExcelField(value = "姓名")
+
     private String name;
     /**
      * 供应商账号
      */
     @TableField("GYSACCOUNT")
-    @ExcelField(value = "供应商账号")
+
     private String gysaccount;
     /**
      * 药品编码ID
      */
     @TableField("MATER_ID")
-    @ExcelField(value = "药品编码ID")
     private String materId;
 
     /**
@@ -70,102 +68,87 @@ public class ScmBGysMaterPic implements Serializable {
      * 备注
      */
     @TableField("COMMENTS")
-    @ExcelField(value = "备注")
     private String comments;
     /**
      * 状态
      */
     @TableField("STATE")
-    @ExcelField(value = "状态")
     private Integer state;
     /**
      * 附件ID
      */
     @TableField("FILE_ID")
-    @ExcelField(value = "附件ID")
     private String fileId;
 
     /**
      * 院区
      */
     @TableField("werks")
-    @ExcelField(value ="院区ID")
     private String werks;
 
     /**
      * 库房
      */
     @TableField("lgort")
-    @ExcelField(value ="库房ID")
     private String lgort;
 
     /**
      * 院区
      */
     @TableField("werkt")
-    @ExcelField(value ="院区")
     private String werkt;
 
     /**
      * 库房
      */
     @TableField("lgortName")
-    @ExcelField(value ="库房")
     private String lgortName;
     /**
      * 是否删除
      */
     @TableField("IS_DELETEMARK")
-    @ExcelField(value = "是否删除")
     private Integer isDeletemark;
     /**
      * 创建时间
      */
     @TableField("CREATE_TIME")
-    @ExcelField(value = "创建时间")
     private Date createTime;
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
-    @ExcelField(value = "修改时间")
     private Date modifyTime;
     /**
      * 创建人
      */
     @TableField("CREATE_USER_ID")
-    @ExcelField(value = "创建人")
     private Long createUserId;
     /**
      * 修改人
      */
     @TableField("MODIFY_USER_ID")
-    @ExcelField(value = "修改人")
     private Long modifyUserId;
 
     /**
      * 单位描述
      */
     @TableField("MSEHT")
-    @ExcelField(value = "单位描述")
     private String mseht;
     /**
      * 物料描述
      */
     @TableField("TXZ01")
-    @ExcelField(value = "物料描述")
+    @ExcelField(value = "药品名称")
     private String txz01;
     /**
      * 生产厂家
      */
     @TableField("PRODUCE_AREA")
-    @ExcelField(value = "生产厂家")
     private String produceArea;
     /**
      * 规格
      */
     @TableField("SPEC")
-    @ExcelField(value = "规格")
     private String spec;
 
     @TableField("AUDITCAUSE")
@@ -184,7 +167,6 @@ public class ScmBGysMaterPic implements Serializable {
      * 拼音码
      */
     @TableField("SPELL_CODE")
-    @ExcelField(value = "拼音码")
     private String spellCode;
 
     public String getId() {

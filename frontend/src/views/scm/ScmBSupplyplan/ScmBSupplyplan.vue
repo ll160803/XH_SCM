@@ -80,8 +80,8 @@
                 >
                   <a-input v-model="queryParams.ebeln" />
                 </a-form-item>
-                </a-col>
-                <a-col
+              </a-col>
+              <a-col
                 :md="6"
                 :sm="24"
               >
@@ -122,6 +122,11 @@
           ghost
           @click="print"
         >打印供应计划</a-button>
+        <a-button
+          type="primary"
+          ghost
+          @click="exportExcel"
+        >导出</a-button>
       </div>
       <!-- 表格区域 -->
       <a-table
@@ -159,6 +164,7 @@
       :lodop="lodop"
     >
     </supplyplan-print>
+
   </a-card>
 </template>
 
@@ -380,9 +386,13 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('scmBSupplyplan/excel', {
-        sortField: sortField,
-        sortOrder: sortOrder,
+      this.queryParams.bsartD = "0"
+      this.queryParams.gysaccount = this.user.username//供应商账号
+      this.queryParams.pageSize = 10000
+      this.queryParams.pageNum = 1
+      this.$export('viewSupplyplan/excel', {
+        sortField: "id",
+        sortOrder: "descend",
         ...this.queryParams
       })
     },

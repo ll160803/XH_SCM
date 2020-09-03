@@ -133,10 +133,9 @@ public void deleteViewSupplyplans(@NotBlank(message = "{required}") @PathVariabl
         }
         }
 @PostMapping("excel")
-@RequiresPermissions("viewSupplyplan:export")
 public void export(QueryRequest request, ViewSupplyplan viewSupplyplan, HttpServletResponse response) throws FebsException {
         try {
-        List<ViewSupplyplan> viewSupplyplans = this.iViewSupplyplanService.findViewSupplyplans(request, viewSupplyplan).getRecords();
+        List<ViewSupplyplan> viewSupplyplans = this.iViewSupplyplanService.findVPurcharseorder(request, viewSupplyplan).getRecords();
         ExcelKit.$Export(ViewSupplyplan.class, response).downXlsx(viewSupplyplans, false);
         } catch (Exception e) {
         message = "导出Excel失败";

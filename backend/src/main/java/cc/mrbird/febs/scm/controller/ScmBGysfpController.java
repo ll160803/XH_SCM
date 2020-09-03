@@ -154,9 +154,11 @@ public void deleteScmBGysfps(@NotBlank(message = "{required}") @PathVariable Str
         }
         }
 @PostMapping("excel")
-@RequiresPermissions("scmBGysfp:export")
+@RequiresPermissions("scmBGysfp:add")
 public void export(QueryRequest request, ScmBGysfp scmBGysfp, HttpServletResponse response) throws FebsException {
         try {
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBGysfp.setGysaccount(currentUser.getUsername());
         List<ScmBGysfp> scmBGysfps = this.iScmBGysfpService.findScmBGysfps(request, scmBGysfp).getRecords();
         ExcelKit.$Export(ScmBGysfp.class, response).downXlsx(scmBGysfps, false);
         } catch (Exception e) {

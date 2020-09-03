@@ -66,7 +66,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"test"}); // 需要生成的表
+        strategy.setInclude(new String[]{"scm_b_supplyplan_d"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -105,7 +105,7 @@ public class HanGenerator {
         //在生成页面时候 排除一些字段
         List<String> eliminateFiledsList = new ArrayList<>();
         eliminateFiledsList.add("COMMENTS");
-        eliminateFiledsList.add("STATE");
+        eliminateFiledsList.add("state");
         eliminateFiledsList.add("IS_DELETEMARK");
         eliminateFiledsList.add("CREATE_TIME");
         eliminateFiledsList.add("MODIFY_TIME");
@@ -115,7 +115,7 @@ public class HanGenerator {
         //在生成页面时候  查询字段设置
         List<String> searchFiledsList = new ArrayList<>();
         searchFiledsList.add("name");
-        searchFiledsList.add("STATE");
+        searchFiledsList.add("state");
         searchFiledsList.add("CREATE_TIME");
         searchFiledsList.add("MODIFY_TIME");
 
@@ -132,6 +132,7 @@ public class HanGenerator {
         };
         // 自定义 xxListIndex.html 生成
         List<FileOutConfig> focList = new ArrayList<FileOutConfig>();
+        /**
         focList.add(new FileOutConfig("/templates/templatesMybatis/list.vue.vm") {
             @Override
             public String outputFile(TableInfo tableInfo) {
@@ -162,7 +163,7 @@ public class HanGenerator {
                 return PageUrl + moduleName + "/" + tableInfo.getEntityName() + "/" + tableInfo.getEntityName() + "Edit.vue";
             }
         });
-
+         **/
         //  自定义 xxUpdate.html生成
         focList.add(new FileOutConfig("/templates/templatesMybatis/mapper.java.vm") {
             @Override

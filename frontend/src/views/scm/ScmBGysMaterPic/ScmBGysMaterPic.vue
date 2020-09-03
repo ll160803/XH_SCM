@@ -85,6 +85,12 @@
           v-hasPermission="['scmBGysMaterPic:delete']"
           @click="batchDelete"
         >删除</a-button>
+         <a-button
+          v-hasPermission="['scmBGysMaterPic:add']"
+          type="primary"
+          ghost
+          @click="exportExcel"
+        >导出</a-button>
         <a-dropdown v-hasPermission="['scmBGysMaterPic:export']">
           <a-menu slot="overlay">
             <a-menu-item
@@ -332,9 +338,11 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+      this.queryParams.pageSize = 10000
+      this.queryParams.pageNum = 1
       this.$export('scmBGysMaterPic/excel', {
-        sortField: sortField,
-        sortOrder: sortOrder,
+        sortField: "Create_TIME",
+        sortOrder: "descend",
         ...this.queryParams
       })
     },

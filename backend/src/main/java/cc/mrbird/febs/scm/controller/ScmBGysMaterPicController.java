@@ -202,10 +202,12 @@ public class ScmBGysMaterPicController extends BaseController {
     }
 
     @PostMapping("excel")
-    @RequiresPermissions("scmBGysMaterPic:export")
-    public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response, String keyword_mater, String keyword_gys) throws FebsException {
+    @RequiresPermissions("scmBGysMaterPic:add")
+    public void export(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response) throws FebsException {
         try {
-            List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, keyword_mater, keyword_gys).getRecords();
+            User currentUser = FebsUtil.getCurrentUser();
+            scmBGysMaterPic.setGysaccount(currentUser.getUsername());
+            List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, "", "").getRecords();
             ExcelKit.$Export(ScmBGysMaterPic.class, response).downXlsx(scmBGysMaterPics, false);
         } catch (Exception e) {
             message = "导出Excel失败";

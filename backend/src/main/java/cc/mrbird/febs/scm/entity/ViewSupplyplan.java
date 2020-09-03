@@ -1,6 +1,8 @@
 package cc.mrbird.febs.scm.entity;
 
 import java.math.BigDecimal;
+
+import cc.mrbird.febs.common.converter.TimeConverter;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
 import java.util.Date;
@@ -18,11 +20,17 @@ import com.wuwenze.poi.annotation.ExcelField;
  * @since 2019-12-05
  */
 
-@Excel("view_supplyplan")
+@Excel("供应计划")
 public class ViewSupplyplan implements Serializable{
 
 private static final long serialVersionUID=1L;
 
+    /**
+     * 主键
+     */
+    @TableField("ID")
+    @ExcelField(value ="供应计划号")
+    private Long id;
     /**
      * 订单号
      */
@@ -36,13 +44,28 @@ private String ebelp;
     /**
      * 物料ID
      */
-            @ExcelField(value ="物料ID")
+            @ExcelField(value ="药品编码")
 private String matnr;
     /**
      * 物料描述
      */
-            @ExcelField(value ="物料描述")
+            @ExcelField(value ="药品名称")
 private String txz01;
+
+    /**
+     * 批号
+     */
+    @TableField("CHARGE")
+    @ExcelField(value ="批次号")
+    private String charge;
+
+    /**
+     * 发票号码
+     */
+    @TableField("FPHM")
+    @ExcelField(value ="发票号码")
+    private String fphm;
+
     /**
      * 院区名称
      */
@@ -51,12 +74,11 @@ private String werkst;
     /**
      * 院区ID
      */
-            @ExcelField(value ="院区ID")
+
 private String werks;
     /**
      * 库房ID
      */
-            @ExcelField(value ="库房ID")
 private String lgort;
     /**
      * 库房名称
@@ -72,7 +94,7 @@ private BigDecimal menge;
     /**
      * 计量单位ID
      */
-            @ExcelField(value ="计量单位ID")
+
 private String meins;
     /**
      * 计量单位
@@ -87,17 +109,17 @@ private BigDecimal netpr;
     /**
      * 订单开始时间
      */
-            @ExcelField(value ="订单开始时间")
+
 private Date eindt;
     /**
      * 订单结束时间
      */
-            @ExcelField(value ="订单结束时间")
+
 private Date bedat;
     /**
      * 类型
      */
-            @ExcelField(value ="类型")
+
 private String bsart;
     /**
      * 供应数量
@@ -111,37 +133,25 @@ private BigDecimal gMenge;
     @TableField("DONEMENGE")
     @ExcelField(value ="已收货数量")
     private BigDecimal doneMenge;
-    /**
-     * 批号
-     */
-    @TableField("CHARGE")
-            @ExcelField(value ="批号")
-private String charge;
 
     /**
      *  所送库房
      */
     @TableField("NAME")
-    @ExcelField(value ="未知")
     private String name;
     /**
      * 有效期
      */
     @TableField("VFDAT")
-            @ExcelField(value ="有效期")
+            @ExcelField(value ="有效期" , writeConverter = TimeConverter.class)
 private Date vfdat;
     /**
      * 生产日期
      */
     @TableField("HSDAT")
-            @ExcelField(value ="生产日期")
+            @ExcelField(value ="生产日期", writeConverter = TimeConverter.class)
 private Date hsdat;
-    /**
-     * 发票号码
-     */
-    @TableField("FPHM")
-            @ExcelField(value ="发票号码")
-private String fphm;
+
     /**
      * 发票金额
      */
@@ -152,56 +162,46 @@ private BigDecimal fpjr;
      * 发票日期
      */
     @TableField("FPRQ")
-            @ExcelField(value ="发票日期")
+            @ExcelField(value ="发票日期", writeConverter = TimeConverter.class)
 private Date fprq;
     /**
      * 父ID
      */
     @TableField("BASE_ID")
-            @ExcelField(value ="父ID")
 private String baseId;
-    /**
-     * 主键
-     */
-    @TableField("ID")
-            @ExcelField(value ="主键")
-private Long id;
+
     /**
      * 状态
      */
     @TableField("STATUS")
-            @ExcelField(value ="状态")
 private Integer status;
     /**
      * 发票编码
      */
     @TableField("FPBM")
-            @ExcelField(value ="发票编码")
 private String fpbm;
     /**
      * 供应商账号
      */
     @TableField("GYSACCOUNT")
-            @ExcelField(value ="供应商账号")
 private String gysaccount;
     /**
      * 供应商名称
      */
     @TableField("GYSNAME")
-            @ExcelField(value ="供应商名称")
 private String gysname;
     /**
      * 包装规格
      */
     @TableField("PKG_AMOUNT")
-            @ExcelField(value ="包装规格")
+            @ExcelField(value ="每箱数量")
 private BigDecimal pkgAmount;
 
     /**
      * 包装数量
      */
     @TableField("PKG_NUMBER")
-            @ExcelField(value ="包装数量")
+            @ExcelField(value ="箱数")
 private BigDecimal pkgNumber;
     @TableField("UNINFORMED_STATE")
         private String uninformedState;
@@ -211,25 +211,21 @@ private BigDecimal pkgNumber;
      * 订单类型
      */
     @TableField("BSART_D")
-            @ExcelField(value ="订单类型")
 private String bsartD;
     /**
      * 联系人
      */
     @TableField("LINK_PERSON")
-            @ExcelField(value ="联系人")
 private String linkPerson;
     /**
      * 送达科室
      */
     @TableField("SEND_DEPART")
-            @ExcelField(value ="送达科室")
 private String sendDepart;
     /**
      * 联系方式
      */
     @TableField("LINK_TELEPHONE")
-            @ExcelField(value ="联系方式")
 private String linkTelephone;
     /**
      * 送货清单号
@@ -249,37 +245,32 @@ private String outCause;
      * 补货日期
      */
     @TableField("OUT_DATE")
-            @ExcelField(value ="补货日期")
+            @ExcelField(value ="补货日期", writeConverter = TimeConverter.class)
 private Date outDate;
     /**
      * 是否删除
      */
     @TableField("IS_DELETEMARK")
-            @ExcelField(value ="是否删除")
 private Integer isDeletemark;
     /**
      * 创建时间
      */
     @TableField("CREATE_TIME")
-            @ExcelField(value ="创建时间")
 private Date createTime;
     /**
      * 修改时间
      */
     @TableField("MODIFY_TIME")
-            @ExcelField(value ="修改时间")
 private Date modifyTime;
     /**
      * 创建人
      */
     @TableField("CREATE_USER_ID")
-            @ExcelField(value ="创建人")
 private Long createUserId;
     /**
      * 修改人
      */
     @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="修改人")
 private Long modifyUserId;
 
     @TableField(exist = false)
