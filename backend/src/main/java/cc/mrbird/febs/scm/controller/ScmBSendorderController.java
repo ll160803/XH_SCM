@@ -355,6 +355,7 @@ public class ScmBSendorderController extends BaseController {
         FebsResponse feb=new FebsResponse();
         LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ViewSupplyplan::getSendOrderCode,id);
+        queryWrapper.eq(ViewSupplyplan::getIsDeletemark,1);
         List<ViewSupplyplan> entitys= iViewSupplyplanService.list(queryWrapper);
         StringBuilder sb = new StringBuilder();
         String markCode = GenerateMark(id);//生成送货清单二维码

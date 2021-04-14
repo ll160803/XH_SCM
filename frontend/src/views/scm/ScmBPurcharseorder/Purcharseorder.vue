@@ -518,7 +518,8 @@ export default {
     handleSubData (record) {
       this.loading = true
       this.$get('scmBSupplyplan', {
-        baseId: record.id
+        baseId: record.id,
+        pageSize: 50
       }).then((r) => {
         let data = r.data
         this.loading = false

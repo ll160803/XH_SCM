@@ -227,7 +227,7 @@ WHERE
 	b.`ebeln` AS `ebeln`,
 	b.`ebelp` AS `ebelp`,
 	b.`matnr` AS `matnr`,
-	b.`txz01` AS `txz01`,
+		CONCAT(b.`txz01`,'/',IFNULL(b.send_deaprt_name,'')) AS `txz01`,
 	b.`werkst` AS `werkst`,
 	b.`werks` AS `werks`,
 	b.`lgort` AS `lgort`,
@@ -357,13 +357,12 @@ WHERE
 		(a.`BASE_ID` = b.`ID`)
     </select>
 
-
     <select id="findVPlanByOrderCode" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" >
       SELECT
 	`scm_b_purcharseorder`.`ebeln` AS `ebeln`,
 	`scm_b_purcharseorder`.`ebelp` AS `ebelp`,
 	`scm_b_purcharseorder`.`matnr` AS `matnr`,
-	`scm_b_purcharseorder`.`txz01` AS `txz01`,
+	CONCAT(`scm_b_purcharseorder`.`txz01`,'/',IFNULL(`scm_b_purcharseorder`.send_deaprt_name,'')) AS `txz01`,
 	`scm_b_purcharseorder`.`werkst` AS `werkst`,
 	`scm_b_purcharseorder`.`werks` AS `werks`,
 	`scm_b_purcharseorder`.`lgort` AS `lgort`,
@@ -414,6 +413,7 @@ FROM
 where
 	(
 		`scm_b_supplyplan`.`BASE_ID` = `scm_b_purcharseorder`.`ID`
+		and `scm_b_supplyplan`.`IS_DELETEMARK` = 1
 	)
     </select>
 	<!--pda 获取供应计划接口-->
@@ -422,7 +422,7 @@ where
 		b.`ebeln` AS `ebeln`,
 		b.`ebelp` AS `ebelp`,
 		b.`matnr` AS `matnr`,
-		b.`txz01` AS `txz01`,
+		CONCAT(b.`txz01`,'/',IFNULL(b.send_deaprt_name,'')) AS `txz01`,
 		b.`werkst` AS `werkst`,
 		b.`werks` AS `werks`,
 		b.`lgort` AS `lgort`,

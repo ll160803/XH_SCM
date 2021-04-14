@@ -137,6 +137,10 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setGysaccount(currentUser.getUsername());
             scmBGysMaterPic.setName(currentUser.getRealname());
 
+             if(this.iScmBGysMaterPicService.IsDelete(scmBGysMaterPic.getId())){
+                 throw new FebsException("已经使用的批次号，不能修改");
+             }
+
             ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
             if (comFile != null) {
                 Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMatnr(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");

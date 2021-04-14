@@ -129,6 +129,16 @@ public class ScmBGysmatersendServiceImpl extends ServiceImpl<ScmBGysmatersendMap
         List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
     }
-
+    @Override
+    @Transactional
+    public void updateDateScmBGysmatersends(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
+        this.baseMapper.updateDateScmBGysmatersend(list);
+    }
+    @Override
+    @Transactional
+    public void updateDateAll(){
+        this.baseMapper.updateDateAll();
+    }
 
 }

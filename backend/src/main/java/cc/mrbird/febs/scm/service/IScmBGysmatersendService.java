@@ -25,4 +25,7 @@ public interface IScmBGysmatersendService extends IService<ScmBGysmatersend> {
         void updateScmBGysmatersend(ScmBGysmatersend scmBGysmatersend);
 
         void deleteScmBGysmatersends(String[]Ids);
+
+        void updateDateScmBGysmatersends(String[]Ids);
+        void updateDateAll();
         }

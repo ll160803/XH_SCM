@@ -274,6 +274,12 @@ private  void HandleScmBSupplyD(ScmBSupplyplan scmBSupplyplan){
     }
     @Override
     @Transactional
+    public void updateCancelDoneMengeApp(String id)
+    {
+        this.baseMapper.UpdateCancelDoneMengeApp(id);
+    }
+    @Override
+    @Transactional
    public void doneSupplyPlan(List<Long> ids)
     {
         this.baseMapper.doneSupplyPlan(ids);

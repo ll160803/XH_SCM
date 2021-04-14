@@ -112,6 +112,12 @@
       </a-form>
     </div>
     <div>
+       <div class="operator">
+        <a-button
+          type="primary"
+          @click="updateDate"
+        >一键延期一年</a-button>
+      </div>
       <!-- 表格区域 -->
       <a-table
         ref="TableInfo"
@@ -319,6 +325,30 @@ export default {
         this.isShowsub = true
       }
       this.editVisiable = true
+    },
+    updateDate () {
+       let that = this
+       let note= "确定延期所有记录"
+       if(that.selectedRowKeys.length>0){
+         note ='确定延期所选中的记录?'
+       }
+      this.$confirm({
+        title: note,
+        content: '当您点击确定按钮后，这些记录配送时间将延后一年',
+        centered: true,
+        onOk () {
+            let scmBGysmatersendIds = that.selectedRowKeys.join(',')
+            that.$post('scmBGysmatersend/updateDate',{ids: scmBGysmatersendIds}).then((data) => {
+              that.$message.success('操作成功')
+              that.selectedRowKeys = []
+              that.search()
+            })
+          
+        },
+        onCancel () {
+          that.selectedRowKeys = []
+        }
+      })
     },
     batchDelete () {
       if (!this.selectedRowKeys.length) {

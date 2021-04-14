@@ -14,6 +14,7 @@ import cc.mrbird.febs.system.domain.User;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -122,6 +123,23 @@ public class ScmBGysmatersendController extends BaseController {
             this.iScmBGysmatersendService.deleteScmBGysmatersends(arr_ids);
         } catch (Exception e) {
             message = "删除失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+    @Log("修改送货药品的时间")
+    @PostMapping("updateDate")
+    public void updateDateScmBGysmatersends(String ids) throws FebsException {
+        try {
+            if(StringUtils.isNotBlank(ids)) {
+                String[] arr_ids = ids.split(StringPool.COMMA);
+                this.iScmBGysmatersendService.updateDateScmBGysmatersends(arr_ids);
+            }
+            else{
+                this.iScmBGysmatersendService.updateDateAll();
+            }
+        } catch (Exception e) {
+            message = "操作失败";
             log.error(message, e);
             throw new FebsException(message);
         }

@@ -301,6 +301,7 @@ public class RfcNOC {
             if (myfun == null)
             {
                 log.info("ZMM00_FM_SCM003 is NULL");
+                return  false;
             }
 
 

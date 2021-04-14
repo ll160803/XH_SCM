@@ -44,7 +44,8 @@ order  by scm_b_gys_mater_pic.create_time desc
 <if test="name != null">NAME=#{name},</if>
 <if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>
 <if test="materId != null">MATER_ID=#{materId},</if>
- <if test="matnr != null">matnr=#{matnr},</if>
+ <if test="charge != null">charge=#{charge},</if>
+            <if test="matnr != null">matnr=#{matnr},</if>
             <if test="txz01 != null">txz01=#{txz01},</if>
             <if test="mseht != null">MSEHT=#{mseht},</if>
             <if test="produceArea != null">PRODUCE_AREA=#{produceArea},</if>
@@ -96,4 +97,6 @@ order  by scm_b_gys_mater_pic.create_time desc
         <if test="vScmBGyspicUser.lgort != null"> and scm_b_gys_mater_pic.lgort like concat('%', #{ vScmBGyspicUser.lgort} ,'%')</if>
         <if test="vScmBGyspicUser.lgortName != null"> and scm_b_gys_mater_pic.lgortName like concat('%', #{ vScmBGyspicUser.lgortName} ,'%')</if>
     </select>
+
+
 </mapper>

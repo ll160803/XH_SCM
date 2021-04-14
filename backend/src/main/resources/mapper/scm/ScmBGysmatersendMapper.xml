@@ -67,4 +67,22 @@
         </trim>
         where id=#{id}
     </update>
+    <update id="updateDateScmBGysmatersend" >
+        UPDATE scm_b_gysmatersend
+        SET Send_Start_Time = DATE_ADD(Send_Start_Time, INTERVAL 1 YEAR),
+        Send_END_Time = DATE_ADD(Send_END_Time, INTERVAL 1 YEAR)
+        WHERE
+        ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND IS_DELETEMARK=1
+    </update>
+    <update id="updateDateAll" >
+        UPDATE scm_b_gysmatersend
+        SET Send_Start_Time = DATE_ADD(Send_Start_Time, INTERVAL 1 YEAR),
+        Send_END_Time = DATE_ADD(Send_END_Time, INTERVAL 1 YEAR)
+        WHERE
+         IS_DELETEMARK=1
+    </update>
 </mapper>

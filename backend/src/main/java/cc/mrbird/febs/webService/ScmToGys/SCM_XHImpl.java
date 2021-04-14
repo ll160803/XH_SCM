@@ -81,7 +81,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date startDate;
         try {
-            startDate = DateUtil.parse(endTime +" 00:00:00");
+            startDate = DateUtil.parse(startTime +" 00:00:00");
         }
         catch (Exception ex)
         {
@@ -174,10 +174,10 @@ public class SCM_XHImpl implements ISCM_XHService {
                     ) {
                         String v_lgort = item.getLgort();//库位表述
                         String v_name = item.getName();
-                        if (item.getBsart() == "Z004" && item.getWerks() == "2200")// hsc 2019 07 05 去除限制
+                        if ("2200".equals(item.getWerks()))// hsc 2019 07 05 去除限制
                         {
                             // var v_lgort2 = Ipedf.Web.Common.SendCode.GetDepartCode(item.SEND_DEAPRT_NAME ?? "");
-                            v_name = item.getSendDeaprtName() == "" ? "药库" : item.getSendDeaprtName();
+                            v_name = item.getSendDeaprtName().equals("") ? "药库" : item.getSendDeaprtName();
                         }
                         Purchase purchase = new Purchase();
                         purchase.setId(item.getEbeln() + item.getEbelp());
@@ -306,7 +306,6 @@ public class SCM_XHImpl implements ISCM_XHService {
     }
 
     public List<WcfPlan_XH> ImportSupplyPlan(String userName, String password, String trueName, List<PlanDetail> PlanDetails) {
-        log.info("用户：" + userName + "上传供应计划");
         List<WcfPlan_XH> ListMess = new ArrayList<>();
         int IsLimit = 1;//0是不限制是否上传 1限制
         //region 校验密码
@@ -380,6 +379,7 @@ public class SCM_XHImpl implements ISCM_XHService {
             ListMess.add(Msg);
             return ListMess;
         }
+        log.info("00000000000000000");
         /**
          * 获取最近1个月的采购订单数据
          */
@@ -389,6 +389,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         if(listAllLastMonth.size()<=0){
             listAllLastMonth =this.scmBPurcharseorderMapper.findlastmonth();
         }
+      //  log.info("11111111111111");
         List<ScmBPurcharseorder> listOrder =listAllLastMonth.stream().filter(h->orderIds.contains(h.getId())).collect(Collectors.toList());
        // List<ScmBPurcharseorder> listOrder= this.scmBPurcharseorderMapper.getAllByIds(orderIds);//获取对应的采购订单
         if (listOrder.size() <= 0) {
@@ -411,6 +412,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         for (PlanDetail item : PlanDetails) {
             //region 数据验证
             ScmBPurcharseorder order = listOrder.stream().filter(p -> p.getId().equals(item.getEBELN())).findFirst().get();
+            //log.info("1000020292");
             if (order == null) {
                 ListMess.add(GenerateMsg(item.getID(), "不存在的订单号", false));
                 continue;
@@ -441,11 +443,11 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(GenerateMsg(item.getID(), "FALG字段不能为空", false));
                 continue;
             }
-            if (item.getPKG_AMOUNT() == null && item.getPKG_AMOUNT().longValue() < 0) {
-                ListMess.add(GenerateMsg(item.getID(), "PKG_AMOUNT数值必须大于等于0", false));
+            if (item.getPKG_AMOUNT() == null || item.getPKG_AMOUNT().longValue() <= 0) {
+                ListMess.add(GenerateMsg(item.getID(), "PKG_AMOUNT数值必须大于0", false));
                 continue;
             }
-            if (item.getPKG_NUMBER() == null && item.getPKG_NUMBER().longValue() < 0) {
+            if (item.getPKG_NUMBER() == null || item.getPKG_NUMBER().longValue() < 0) {
                 ListMess.add(GenerateMsg(item.getID(), "PKG_NUMBER数值必须大于等于0", false));
                 continue;
             }
@@ -478,6 +480,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     continue;
                 }
             }
+
             //endregion
             //region 赋值数据
             entity.setCharge(item.getCHARG());
@@ -492,6 +495,7 @@ public class SCM_XHImpl implements ISCM_XHService {
 
             entity.setGysaccount(user.getUsername());
             entity.setGysname(user.getRealname());
+           // log.info("888888888888");
             entity.setHsdat(item.getHSDAT());
             // entity.ID = item.ID;
 
@@ -499,6 +503,7 @@ public class SCM_XHImpl implements ISCM_XHService {
 
 
             entity.setPkgAmount(item.getPKG_AMOUNT());
+
             BigDecimal bd =item.getMENGE().divide(item.getPKG_AMOUNT(),2);
             entity.setPkgNumber(bd.setScale( 0, BigDecimal.ROUND_UP ));
 
@@ -510,13 +515,14 @@ public class SCM_XHImpl implements ISCM_XHService {
 
 
             entity.setBsartD("0");//hsc 2017 06 08 如果总务需要做接口 需要做更多修改
-
+           // log.info("22456412432");
             //endregion
             if (item.getFLAG().equals("C")) {
                 entity.setStatus(0);// = "0";//0新建 1确认
                 // list_supp_C.Add(entity);
                 try {
                     Long isMenge = this.scmBSupplyplanMapper.IsOutMenge(entity);
+
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
                         Msg.setIsSuccess(false);
@@ -560,6 +566,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                         continue;
                     }
                 } catch (Exception ex) {
+
                     WcfPlan_XH Msg = new WcfPlan_XH();
                     Msg.setIsSuccess(false);
                     Msg.setMess(ex.getMessage());
@@ -680,11 +687,11 @@ public class SCM_XHImpl implements ISCM_XHService {
                    String deleteID="";
                    if(deList.size()>0)
                    {
-                       log.info("sssssss");
+                      // log.info("sssssss");
                        deleteID=deList.get(0).getBaseId();
                    }
                     WcfPlan_XH Msg = new WcfPlan_XH();
-                    log.info("getMSTYPE:"+back.getMSTYPE());
+                  //  log.info("getMSTYPE:"+back.getMSTYPE());
                     if (!back.getMSTYPE().equals("S")) {
                         ScmBSupplyplan deletesupplan = new ScmBSupplyplan();
                         deletesupplan.setId(gyjh);
@@ -724,7 +731,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         }
 
         //endregion
-
+      //   log.info("上传成功了");
         return ListMess;
     }
 }

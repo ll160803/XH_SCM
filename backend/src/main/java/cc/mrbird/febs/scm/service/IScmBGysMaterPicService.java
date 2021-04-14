@@ -37,4 +37,6 @@ public interface IScmBGysMaterPicService extends IService<ScmBGysMaterPic> {
         是否可以删除验收资质
          */
         Boolean IsDelete(String id);
+
+        Boolean findByCharge(String matnr,String gysAccount,String charge);
         }

@@ -6,6 +6,7 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmDMaterMapper;
 import cc.mrbird.febs.scm.entity.ScmBGysMaterPic;
 import cc.mrbird.febs.scm.dao.ScmBGysMaterPicMapper;
+import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.entity.ScmDMater;
 import cc.mrbird.febs.scm.service.IScmBGysMaterPicService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -198,6 +199,16 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
     {
         Integer count=  this.baseMapper.getCount(id);
         if(count>0) return  true;
+        return  false;
+    }
+
+    @Override
+    @Transactional
+    public Boolean findByCharge(String matnr,String gysAccount,String charge){
+        List<String> list=this.baseMapper.findByCharge(matnr,charge,gysAccount);
+        if(list.size()>0){
+            return  true;
+        }
         return  false;
     }
 

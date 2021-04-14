@@ -2,6 +2,9 @@ package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ScmBGysmatersend;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface ScmBGysmatersendMapper extends BaseMapper<ScmBGysmatersend> {
         void updateScmBGysmatersend(ScmBGysmatersend scmBGysmatersend);
+
+        void updateDateScmBGysmatersend(@Param("ids") List<String> ids);
+
+        void updateDateAll();
         }
