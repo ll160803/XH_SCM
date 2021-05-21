@@ -147,6 +147,9 @@ public class ComFileController extends BaseController{
             throw new FebsException("空文件");
         }
         String fileName2 = file.getOriginalFilename();  // 文件名
+        if(!checkFile(fileName2)){
+            throw new FebsException("文件类型不对");
+        }
         String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
         String filePath = febsProperties.getUploadPath(); // 上传后的路径
         String fileName = UUID.randomUUID() + suffixName; // 新文件名
@@ -168,13 +171,26 @@ public class ComFileController extends BaseController{
         iComFileService.createComFile(cf);
         return new FebsResponse().data(Id) ;
     }
-
+    private boolean checkFile(String fileName) {
+        //设置允许上传文件类型
+        String suffixList = "jpg,gif,png,pdf,jpeg";
+        // 获取文件后缀
+        String suffix = fileName.substring(fileName.lastIndexOf(".")
+                + 1, fileName.length());
+        if (suffixList.contains(suffix.trim().toLowerCase())) {
+            return true;
+        }
+        return false;
+    }
     @PostMapping("uploadCheck")
     public FebsResponse UploadCheck(@RequestParam("file") MultipartFile file) throws FebsException {
         if (file.isEmpty()) {
             throw new FebsException("空文件");
         }
         String fileName2 = file.getOriginalFilename();  // 文件名
+        if(!checkFile(fileName2)){
+            throw new FebsException("文件类型不对");
+        }
         String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
         String filePath = febsProperties.getUploadPath(); // 上传后的路径Check
         String fileName = UUID.randomUUID() + suffixName; // 新文件名

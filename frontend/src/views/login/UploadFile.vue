@@ -46,11 +46,11 @@
           :sm="24"
         >
           <a-upload
-            accept=".png,.jpg,.pdf,.bmp,.gif,.jpeg"
+            accept=".png,.jpg,.pdf,.gif"
             :fileList="fileList"
             :remove="handleRemove"
             :beforeUpload="beforeUpload"
-            @change="handleUpload"
+            @change="handleChange"
             :disabled="!(fileList.length === 0)"
           >
             <a-button>
@@ -113,14 +113,26 @@ export default {
       console.log(date, dateString);
     },
     beforeUpload (file) {
-      this.fileList = [...this.fileList, file]
-      console.info(this.fileList)
-      return false
+      this.fileList =[]
+        const isJPG = (file.type === 'application/pdf' ||file.type ==='image/png' || file.type ==='image/gif' ||file.type ==='image/jpeg')
+      console.info(file.type)
+      if (!isJPG) {
+        this.$message.error('请只上传pdf，png, gif文件!')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 20
+      if (!isLt2M) {
+        this.$message.error('附件必须小于 20MB!')
+      }
+      if (isJPG && isLt2M) {
+        this.fileList = [...this.fileList, file]
+       // this.handleUpload()
+      }
+      return isJPG && isLt2M;
     },
     handleChange (info) {
-      if (info.file.status === 'done') {
-        this.handleUpload()
-      } 
+       if (info.file.status === 'uploading') {
+         this.handleUpload()
+       } 
     },
     handleUpload () {
       const { fileList } = this

@@ -30,23 +30,25 @@ public class RfcNOC {
 
     @Autowired
     private JcoProperties jcoproperties;
+
     static {
         Properties connectProperties = new Properties();
-        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, JcoProperties.getAshost());//服务器
-        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  JcoProperties.getSysnr());        //系统编号
-        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, JcoProperties.getClient());       //SAP集团
-        connectProperties.setProperty(DestinationDataProvider.JCO_USER, JcoProperties.getUser());  //SAP用户名
-        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
-        connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
+
+         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, JcoProperties.getAshost());//服务器
+         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  JcoProperties.getSysnr());        //系统编号
+         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, JcoProperties.getClient());       //SAP集团
+         connectProperties.setProperty(DestinationDataProvider.JCO_USER, JcoProperties.getUser());  //SAP用户名
+         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
+         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
 
         /** 正式的地址
-         *  connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器
-         *         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "01");        //系统编号
-         *         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");       //SAP集团
-         *         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
-         *         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "822019");     //密码
-         *         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH");        //登录语言
-         */
+        connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器
+        connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "01");        //系统编号
+        connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");       //SAP集团
+        connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
+        connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "822019");     //密码
+        connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH");        //登录语言
+        */
 
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "5");  //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
@@ -164,13 +166,14 @@ public class RfcNOC {
     }
 
     /**
-     *  发送供应计划给sap
+     * 发送供应计划给sap
+     *
      * @param userID
      * @param listEntitys
      * @param Lifnr
      * @param NAME1
      * @param ZPSTA
-     * @param ZUPFG C 是新增 D 是一条删除  U是更改  X是所有数据必须同时更新，一条出错，不进行操作
+     * @param ZUPFG       C 是新增 D 是一条删除  U是更改  X是所有数据必须同时更新，一条出错，不进行操作
      * @return
      */
     public List<BackFromSAP_SubPlan> SendSupplyPlan_RFC(String userID, List<ViewSupplyplan> listEntitys, String Lifnr, String NAME1, String ZPSTA, String ZUPFG) {
@@ -213,18 +216,18 @@ public class RfcNOC {
                 IrfTable_IT_SUPLAN.setValue("LGORT", entity.getLgort());
 
                 IrfTable_IT_SUPLAN.setValue("MENGE", entity.getgMenge().toString());
-                IrfTable_IT_SUPLAN.setValue("MENGE_S", entity.getDoneMenge()==null?"":entity.getDoneMenge().toString());
+                IrfTable_IT_SUPLAN.setValue("MENGE_S", entity.getDoneMenge() == null ? "" : entity.getDoneMenge().toString());
                 IrfTable_IT_SUPLAN.setValue("MEINS", entity.getMeins());
 
                 IrfTable_IT_SUPLAN.setValue("CHARG", entity.getCharge());
                 IrfTable_IT_SUPLAN.setValue("ZHSDAT", entity.getHsdat() == null ? "" : sdf.format(entity.getHsdat()));
 
-                IrfTable_IT_SUPLAN.setValue("ZVFDAT", entity.getVfdat()==null?"":sdf.format(entity.getVfdat()));
+                IrfTable_IT_SUPLAN.setValue("ZVFDAT", entity.getVfdat() == null ? "" : sdf.format(entity.getVfdat()));
                 IrfTable_IT_SUPLAN.setValue("ZFPHM", entity.getFphm());
                 IrfTable_IT_SUPLAN.setValue("BARCODE", entity.getFpbm());
                 IrfTable_IT_SUPLAN.setValue("ZFPJR", entity.getFpjr().toString());
                 log.error("我到这里啦666");
-                IrfTable_IT_SUPLAN.setValue("ZFPRQ", entity.getFprq()==null?"":sdf.format(entity.getFprq()));
+                IrfTable_IT_SUPLAN.setValue("ZFPRQ", entity.getFprq() == null ? "" : sdf.format(entity.getFprq()));
 
                 IrfTable_IT_SUPLAN.setValue("ZPSTA", ZPSTA);
                 IrfTable_IT_SUPLAN.setValue("ZUPFG", ZUPFG);
@@ -279,29 +282,25 @@ public class RfcNOC {
         return list;
     }
 
-    public static Boolean SendUploadInfo_RFC(String GysName, String matnr, String charge, String serverName, String I_Type)
-    {
+    public static Boolean SendUploadInfo_RFC(String GysName, String matnr, String charge, String serverName, String I_Type) {
         log.info("SendUploadInfo_RFC(发送附件信息) begin");
         List<BackFromSAP_SubPlan> list = new ArrayList<>();
         JCoDestination destination;
-         String fuName = "ZMM00_FM_SCM003";
-        try
-        {
-            destination =RfcNOC.GetDestination();
-            if(destination==null)
-            {
+        String fuName = "ZMM00_FM_SCM003";
+        try {
+            destination = RfcNOC.GetDestination();
+            if (destination == null) {
                 log.error("SAP 链接失败");
-                return  false;
+                return false;
             }
 
             JCoRepository rfcrep = destination.getRepository();
             JCoFunction myfun = null;
             myfun = rfcrep.getFunction(fuName);
             //  myfun.SetValue("IS_SELCOND", "0");//SAP里面的传入参数
-            if (myfun == null)
-            {
+            if (myfun == null) {
                 log.info("ZMM00_FM_SCM003 is NULL");
-                return  false;
+                return false;
             }
 
 
@@ -315,15 +314,11 @@ public class RfcNOC {
             log.info("上传文件，调用成功。");
 
             log.info("SendUploadInfo_RFC(发送附件信息) END SUCCESS!", 1);
-            return  true;
-        }
-        catch (Exception ex)
-        {
+            return true;
+        } catch (Exception ex) {
             log.error("SendUploadInfo_RFC(发送附件信息)出现问题：" + ex.getMessage());
-            return  false;
-        }
-        finally
-        {
+            return false;
+        } finally {
             destination = null;
         }
 

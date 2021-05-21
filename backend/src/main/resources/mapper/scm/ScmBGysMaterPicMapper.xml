@@ -85,7 +85,12 @@ order  by scm_b_gys_mater_pic.create_time desc
         <if test="keyword_mater != null  and keyword_mater != ''"> and (scm_b_gys_mater_pic.matnr = #{ keyword_mater} or scm_b_gys_mater_pic.TXZ01 like concat('%', #{ keyword_mater} ,'%'))</if>
 
 
-
+        <if test="vScmBGyspicUser.createTimeFrom!= null">
+            AND scm_b_gys_mater_pic.create_time <![CDATA[ >= ]]>  #{vScmBGyspicUser.createTimeFrom}
+        </if>
+        <if test="vScmBGyspicUser.createTimeTo!= null">
+            AND scm_b_gys_mater_pic.create_time <![CDATA[ <= ]]>  #{vScmBGyspicUser.createTimeTo}
+        </if>
 
         <if test="vScmBGyspicUser.txz01 != null"> and scm_b_gys_mater_pic.TXZ01 like concat('%', #{ vScmBGyspicUser.txz01} ,'%')</if>
         <if test="vScmBGyspicUser.produceArea != null"> and scm_b_gys_mater_pic.PRODUCE_AREA like concat('%', #{ vScmBGyspicUser.produceArea} ,'%')</if>

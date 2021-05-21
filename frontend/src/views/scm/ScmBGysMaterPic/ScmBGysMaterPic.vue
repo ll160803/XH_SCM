@@ -170,6 +170,7 @@
 <script>
 import ScmBGysMaterPicAdd from './ScmBGysMaterPicAdd'
 import ScmBGysMaterPicEdit from './ScmBGysMaterPicEdit'
+import moment from 'moment'
 
 export default {
   name: 'ScmBGysMaterPic',
@@ -216,6 +217,18 @@ export default {
         title: '批次号',
         dataIndex: 'charge',
         width: 100
+      },{
+        title: '上传日期',
+        dataIndex: 'createTime',
+        width: 120,
+        customRender: (text, row, index) => {
+          if (text) {
+            return moment(text).format('YYYY-MM-DD')
+          }
+          else {
+            return ''
+          }
+        }
       }, {
         title: '审核原因',
         dataIndex: 'auditCause'
@@ -249,6 +262,7 @@ export default {
     this.fetch()
   },
   methods: {
+    moment,
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },

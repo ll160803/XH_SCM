@@ -8,6 +8,7 @@ import java.util.Date;
 
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
+import lombok.Data;
 
 /**
  * <p>
@@ -17,7 +18,7 @@ import com.wuwenze.poi.annotation.ExcelField;
  * @author viki
  * @since 2019-11-21
  */
-
+@Data
 @Excel("批次表")
 public class ScmBGysMaterPic implements Serializable {
 
@@ -113,6 +114,8 @@ public class ScmBGysMaterPic implements Serializable {
      */
     @TableField("CREATE_TIME")
     private Date createTime;
+    private transient String createTimeFrom;
+    private transient String createTimeTo;
     /**
      * 修改时间
      */
@@ -156,206 +159,12 @@ public class ScmBGysMaterPic implements Serializable {
 
     private  transient  String userid;
 
-    public String getAuditCause() {
-        return auditCause;
-    }
 
-    public void setAuditCause(String auditCause) {
-        this.auditCause = auditCause;
-    }
     /**
      * 拼音码
      */
     @TableField("SPELL_CODE")
     private String spellCode;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setLgort(String lgort){
-        this.lgort = lgort;
-    }
-    public String getLgort(){
-       return this.lgort;
-    }
-
-    public void setLgortName(String lgortName){
-        this.lgortName = lgortName;
-    }
-    public String getLgortName(){
-        return this.lgortName;
-    }
-    public void setWerks(String werks){
-        this.werks = werks;
-    }
-
-    public String getWerks(){
-        return this.werks;
-    }
-    public void setWerkt(String werkt){
-        this.werkt = werkt ;
-    }
-    public String getWerkt(){
-        return this.werkt;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getGysaccount() {
-        return gysaccount;
-    }
-
-    public void setGysaccount(String gysaccount) {
-        this.gysaccount = gysaccount;
-    }
-
-    public String getSpellCode() {
-        return spellCode;
-    }
-
-    public void setSpellCode(String spellCode) {
-        this.spellCode = spellCode;
-    }
-
-
-    public String getMatnr() {
-        return matnr;
-    }
-
-    public void setMatnr(String matnr) {
-        this.matnr = matnr;
-    }
-
-    public String getMaterId() {
-        return materId;
-    }
-
-    public void setMaterId(String materId) {
-        this.materId = materId;
-    }
-
-    public String getCharge() {
-        return charge;
-    }
-
-    public void setCharge(String charge) {
-        this.charge = charge;
-    }
-
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public String getMseht() {
-        return mseht;
-    }
-
-    public void setMseht(String mseht) {
-        this.mseht = mseht;
-    }
-
-    public String getTxz01() {
-        return txz01;
-    }
-
-    public void setTxz01(String txz01) {
-        this.txz01 = txz01;
-    }
-
-    public String getProduceArea() {
-        return produceArea;
-    }
-
-    public void setProduceArea(String produceArea) {
-        this.produceArea = produceArea;
-    }
-
-    public String getSpec() {
-        return spec;
-    }
-
-    public void setSpec(String spec) {
-        this.spec = spec;
-    }
-
-    public Integer getState() {
-        return state;
-    }
-
-    public void setState(Integer state) {
-        this.state = state;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public Integer getIsDeletemark() {
-        return isDeletemark;
-    }
-
-    public void setIsDeletemark(Integer isDeletemark) {
-        this.isDeletemark = isDeletemark;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getModifyTime() {
-        return modifyTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public Long getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(Long createUserId) {
-        this.createUserId = createUserId;
-    }
-
-    public Long getModifyUserId() {
-        return modifyUserId;
-    }
-
-    public void setModifyUserId(Long modifyUserId) {
-        this.modifyUserId = modifyUserId;
-    }
 
     public static final String ID = "ID";
 

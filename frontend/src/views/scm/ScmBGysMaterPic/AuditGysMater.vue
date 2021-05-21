@@ -73,7 +73,38 @@
               </a-form-item>
             </a-col>
           </a-row>
+           <a-row v-if="advanced">
+              <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="开始时间"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-date-picker
+                  @change="onChange"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col
+              :md="6"
+              :sm="24"
+            >
+              <a-form-item
+                label="结束时间"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
+              >
+                <a-date-picker
+                  @change="onChange2"
+                />
+              </a-form-item>
+            </a-col>
+           </a-row>
         </div>
+        
         <span style="float: right; margin-top: 3px;">
           <a-button
             type="primary"
@@ -158,6 +189,7 @@
 
 <script>
 import ScmBGysMaterPicView from './ScmBGysPicView'
+import moment from 'moment'
 
 export default {
   name: 'ScmBGysMaterPic',
@@ -165,7 +197,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 1200,
+        x: 1300,
         y: window.innerHeight - 400 + 100 - 50 - 10 + 12 + 10 + 10 + 100
       },
       advanced: false,
@@ -218,6 +250,13 @@ export default {
         dataIndex: 'gysaccount',
         width: 100
       }, {
+        title: '上传日期',
+        dataIndex: 'createTime',
+        customRender: (text, row, index) => {
+          return moment(text).format('YYYY-MM-DD')
+        },
+        width: 120
+      }, {
         title: '审核原因',
         dataIndex: 'auditCause'
       }, {
@@ -250,6 +289,7 @@ export default {
     this.fetch()
   },
   methods: {
+    moment,
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -268,6 +308,12 @@ export default {
     },
     handleEditClose () {
       this.editVisiable = false
+    },
+        onChange (date, dateString) {
+      this.queryParams.createTimeFrom = dateString
+    },
+    onChange2 (date, dateString) {
+      this.queryParams.createTimeTo = dateString
     },
     batchAudit () {
       if (!this.selectedRowKeys.length) {
