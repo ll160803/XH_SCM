@@ -24,6 +24,8 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
         Long IsOutMenge(@Param(value = "plan") ScmBSupplyplan scmBSupplyplan);
 
+        Long orderMenge(@Param(value = "plan") ScmBSupplyplan scmBSupplyplan);
+
         int IsExistFphm(@Param(value="id") String id,@Param(value="fphm") String fphm,@Param(value="gys") String gys);
 
         @Update("update Scm_B_Supplyplan set doneMenge=ifnull(doneMenge,0) + ${doneMenge} where id=${id} and status=0")

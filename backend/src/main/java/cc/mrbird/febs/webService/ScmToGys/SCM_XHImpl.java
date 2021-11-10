@@ -305,6 +305,17 @@ public class SCM_XHImpl implements ISCM_XHService {
         return true;
     }
 
+    private  Long getExistMenge(ScmBSupplyplan entity){
+        Long havData = this.scmBSupplyplanMapper.IsOutMenge(entity); //已经存在的供应计划数量
+        Long orderMenge = this.scmBSupplyplanMapper.orderMenge(entity);
+        if(havData==null){
+            return Long.parseLong(entity.getgMenge().toString())-orderMenge;
+        }
+        else{
+           return havData + Long.parseLong(entity.getgMenge().toString())-orderMenge;
+        }
+    }
+
     public List<WcfPlan_XH> ImportSupplyPlan(String userName, String password, String trueName, List<PlanDetail> PlanDetails) {
         List<WcfPlan_XH> ListMess = new ArrayList<>();
         int IsLimit = 1;//0是不限制是否上传 1限制
@@ -521,7 +532,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 entity.setStatus(0);// = "0";//0新建 1确认
                 // list_supp_C.Add(entity);
                 try {
-                    Long isMenge = this.scmBSupplyplanMapper.IsOutMenge(entity);
+                    Long isMenge =getExistMenge(entity);
 
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
@@ -576,7 +587,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 }
             } else if (item.getFLAG().equals("U")) {
                 try {
-                    Long isMenge = this.scmBSupplyplanMapper.IsOutMenge(entity);
+                    Long isMenge = getExistMenge(entity);
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
                         Msg.setIsSuccess(false);
