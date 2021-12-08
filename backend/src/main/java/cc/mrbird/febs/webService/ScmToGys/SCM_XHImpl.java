@@ -336,7 +336,7 @@ public class SCM_XHImpl implements ISCM_XHService {
         if (en_MDMs.size() > 0) {
             ScmDVendor en_MDM = en_MDMs.get(0);
 
-            if (en_MDM != null && en_MDM.getJieKouState() == 1) {
+            if (en_MDM != null && en_MDM.getJieKouState().equals(1)) {
                 String username = StringUtils.lowerCase(accountCode);
                 password = MD5Util.encrypt(username, password);
 
@@ -374,7 +374,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(Msg);
                 return ListMess;
             }
-            if (en_MDM != null && en_MDM.getFileState() == 1) {//是否限制文件上传
+            if (en_MDM != null && en_MDM.getFileState().equals(1)) {//是否限制文件上传
                 IsLimit = 0;
             }
         }
