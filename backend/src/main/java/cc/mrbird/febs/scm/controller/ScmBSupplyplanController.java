@@ -98,6 +98,9 @@ public class ScmBSupplyplanController extends BaseController {
         if (entity.getWerks().equals("2200") & (entity.getLgort().equals("1002") || entity.getLgort().equals("1005"))) {
             return true;
         }
+        if (entity.getWerks().equals("2300") && (entity.getLgort().equals("1001") || entity.getLgort().equals("1005")|| entity.getLgort().equals("2003") ||entity.getLgort().equals("2012") )) {
+            return true;
+        }
         if (entity.getWerks().equals("2100")) {
             return true;
         }

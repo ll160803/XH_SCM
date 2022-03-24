@@ -289,10 +289,13 @@ public class SCM_XHImpl implements ISCM_XHService {
     }
 
     private Boolean IsExistFphm(ScmBPurcharseorder entity, String id, String fphm, String gysAccount) {
-        if (entity.getWerks().equals("2000") & (entity.getLgort() .equals("1001") || entity.getLgort().equals("1008"))) {
+        if (entity.getWerks().equals("2000") && (entity.getLgort() .equals("1001") || entity.getLgort().equals("1008"))) {
             return true;
         }
-        if (entity.getWerks().equals("2200") & (entity.getLgort().equals("1002") || entity.getLgort().equals("1005"))) {
+        if (entity.getWerks().equals("2200") && (entity.getLgort().equals("1002") || entity.getLgort().equals("1005"))) {
+            return true;
+        }
+        if (entity.getWerks().equals("2300") && (entity.getLgort().equals("1001") || entity.getLgort().equals("1005")|| entity.getLgort().equals("2003") ||entity.getLgort().equals("2012") )) {
             return true;
         }
         if (entity.getWerks().equals("2100")){

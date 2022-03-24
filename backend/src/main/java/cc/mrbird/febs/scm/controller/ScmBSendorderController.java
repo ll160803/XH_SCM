@@ -635,9 +635,11 @@ public class ScmBSendorderController extends BaseController {
         List<ScmBSendorder> records=list.getRecords();
 
         List<String> listCodes=records.stream().map(t->t.getId().toString()).collect(Collectors.toList());
-        String sendCodes="("+String.join(",", listCodes)+")";
+        if(listCodes.size()>0) {
+            String sendCodes = "(" + String.join(",", listCodes) + ")";
+            viewSupplyplan.setSendCodes(sendCodes);
+        }
         viewSupplyplan.setIsDeletemark(1);
-        viewSupplyplan.setSendCodes(sendCodes);
         viewSupplyplan.setGysaccount(currentUser.getUsername());
         List<ViewSupplyplan> dataAll= this.iViewSupplyplanService.findPurcharseSendOrder(viewSupplyplan);
         viewSupplyplan.setId(0L);
