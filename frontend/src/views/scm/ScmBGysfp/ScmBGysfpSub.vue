@@ -3,8 +3,8 @@
     :bordered="false"
     class="card-area"
   >
-   <div ref="lodopDiv"></div>
-    <div>
+    <!-- <div ref="lodopDiv"></div>
+    <div> -->
       <a-form layout="horizontal">
         <div :class="advanced ? null: 'fold'">
           <a-row>
@@ -13,7 +13,7 @@
               :sm="24"
             >
               <a-form-item
-                label="送货单号"
+                label="开票单号"
                 :labelCol="{span: 5}"
                 :wrapperCol="{span: 18, offset: 1}"
               >
@@ -21,63 +21,28 @@
               </a-form-item>
             </a-col>
              <a-col
-                :md="16"
-                :sm="24"
+              :md="8"
+              :sm="24"
+            >
+              <a-form-item
+                label="开票金额"
+                :labelCol="{span: 5}"
+                :wrapperCol="{span: 18, offset: 1}"
               >
-                <werks-lgort
-                ref="werklgort"
-                @werks="setWerks"
-                @lgort="setLgort"
-                >
-                </werks-lgort>
-              </a-col>
-
+                <a-input-number v-model="queryParams.fpjr" />
+              </a-form-item>
+            </a-col>
           </a-row>
-
         </div>
         <span style="float: right; margin-top: 3px;">
           <a-button
             type="primary"
             @click="search"
-          >查询</a-button>
-          <a-button
-            style="margin-left: 8px"
-            @click="reset"
-          >重置</a-button>
+            :loading="loading"
+          >搜索</a-button>
         </span>
       </a-form>
-    </div>
     <div>
-      <div class="operator">
-        <a-button
-          v-hasPermission="['sendorder:add']"
-          type="primary"
-          ghost
-          @click="add"
-        >新增</a-button>
-         <a-button
-          type="primary"
-          ghost
-          @click="print"
-        >打印送货清单</a-button>
-        <a-button
-          v-hasPermission="['sendorder:delete']"
-          @click="batchDelete"
-        >删除</a-button>
-        <a-dropdown v-hasPermission="['sendorder:export']">
-          <a-menu slot="overlay">
-            <a-menu-item
-              key="export-data"
-              @click="exportExcel"
-            >导出Excel</a-menu-item>
-          </a-menu>
-          <a-button>
-            更多操作
-            <a-icon type="down" />
-          </a-button>
-        </a-dropdown>
-      </div>
-      <!-- 表格区域 -->
       <a-table
         ref="TableInfo"
         :columns="columns"
@@ -85,30 +50,12 @@
         :dataSource="dataSource"
         :pagination="pagination"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{type:'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         @change="handleTableChange"
         :bordered="bordered"
         :expandedRowKeys="expandedRowKeys"
         @expand="expandSubGrid"
       >
-        <template
-          slot="operation"
-          slot-scope="text, record"
-        >
-          <a-icon
-            v-hasPermission="['sendorder:update']"
-            type="setting"
-            theme="twoTone"
-            twoToneColor="#4a9ff5"
-            @click="edit(record)"
-            title="修改"
-          ></a-icon>
-          <a-badge
-            v-hasNoPermission="['sendorder:update']"
-            status="warning"
-            text="无权限"
-          ></a-badge>
-        </template>
         <a-table
           ref="subTable"
           slot="expandedRowRender"
@@ -118,61 +65,17 @@
           :pagination="false"
           :rowKey="record2 => record2.id"
         >
-          <template
-            slot="operation2"
-            slot-scope="text, record2"
-          >
-            <a-icon
-              type="delete"
-              theme="twoTone"
-              twoToneColor="#4a9ff5"
-              @click="subDelete(record2)"
-              title="删除"
-            ></a-icon>
-          </template>
         </a-table>
       </a-table>
     </div>
-    <!-- 新增字典 -->
-    <scmBSendorder-add
-      @close="handleAddClose"
-      @success="handleAddSuccess"
-      :addVisiable="addVisiable"
-    >
-    </scmBSendorder-add>
-    <!-- 修改字典 -->
-    <scmBSendorder-edit
-      ref="scmBSendorderEdit"
-      @close="handleEditClose"
-      @success="handleEditSuccess"
-      :editVisiable="editVisiable"
-      :orderId="orderId"
-    >
-    </scmBSendorder-edit>
-    <!-- 打印送货清单 -->
-    <sendOrder-print
-      ref="sendinfoPrint"
-      @close="handlePrintClose"
-      :printVisiable="printVisiable"
-      :ids="printIds"
-      bsart="0"
-      :lodop="lodop"
-    >
-    </sendOrder-print>
   </a-card>
 </template>
 
 <script>
-import ScmBSendorderAdd from './SendOrderAdd'
-import ScmBSendorderEdit from './SendOrderEdit'
-import SendOrderPrint from './SendOrderPrint'
-import WerksLgort from '../../common/WerksLgort'
 import moment from 'moment'
-import { getLodop ,getLodopDiv } from '../../../tools/lodop'
-
 export default {
   name: 'Sendorder',
-  components: { ScmBSendorderAdd, ScmBSendorderEdit, SendOrderPrint, WerksLgort  },
+  components: {  },
   data () {
     return {
       scroll: {
@@ -193,16 +96,19 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {},
+      queryParams: {
+        
+      },
       addVisiable: false,
       editVisiable: false,
       loading: false,
       bordered: true,
-      fph: '',
-      printIds: '',
-      printVisiable: false,
-      orderId: '',
-      lodop: {}
+      
+    }
+  },
+  props: {
+    fphm: {
+        default: ''
     }
   },
   computed: {
@@ -210,23 +116,18 @@ export default {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
       return [{
-        title: '送货清单号',
-        dataIndex: 'id'
-      }, {
         title: '院区',
         dataIndex: 'werkst'
-      }, {
+      },{
         title: '库房',
-        dataIndex: 'lgortname'
+        dataIndex: 'lgortName'
+      },{
+        title: '开票单号',
+        dataIndex: 'id'
       }, {
-        title: '送货日期',
-        dataIndex: 'sendDate',
-        customRender: (text, row, index) => {
-          return moment(text).format('YYYY-MM-DD')
-        },
-        sorter: true,
-        sortOrder: sortedInfo.columnKey === 'sendDate' && sortedInfo.order
-      }, {
+        title: '开票金额',
+        dataIndex: 'fpjr'
+      },{
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' }
@@ -236,7 +137,8 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id'
-      }, {
+      },
+       {
         title: '供应数量',
         dataIndex: 'gMenge'
       }, {
@@ -289,18 +191,15 @@ export default {
       }, {
         title: '包装数量',
         dataIndex: 'pkgNumber'
-      }, {
-        title: '操作',
-        dataIndex: 'operation2',
-        scopedSlots: { customRender: 'operation2' }
       }]
     }
   },
   mounted () {
-    this.fetch()
+    //this.fetch()
   },
   methods: {
     onSelectChange (selectedRowKeys) {
+      this.getFpjr(selectedRowKeys[0])
       this.selectedRowKeys = selectedRowKeys
     },
     toggleAdvanced () {
@@ -309,90 +208,26 @@ export default {
         this.queryParams.comments = ''
       }
     },
+    getFpjr(key){
+        console.info(key)
+      let data= this.dataSource
+      var data2= data.filter(p=>p.id==key)
+      console.info(data2)
+      this.$emit('sucess',data2[0].fpjr,key)
+    },
     setWerks (werks) {
       this.queryParams.werks = werks
     },
     setLgort (lgort) {
       this.queryParams.lgort = lgort
     },
-    handleAddSuccess () {
-      this.addVisiable = false
-      this.$message.success('新增成功')
-      this.search()
-    },
     handleAddClose () {
       this.addVisiable = false
     },
-    add () {
-      this.addVisiable = true
-    },
-    print () {
-      if (!this.selectedRowKeys.length) {
-        this.$message.warning('请选择需要打印的记录')
-        return
-      }
-      if (this.selectedRowKeys.length > 1) {
-        this.$message.warning('请选择一条需要打印的记录')
-        return
-      }
-
-      this.printIds = this.selectedRowKeys.join(',')
-       getLodopDiv(this.$refs.lodopDiv)
-      if(getLodop() == undefined || getLodop() == null){
-
-      }
-      else {
-        this.lodop= getLodop();
-        this.printVisiable = true
-      }
-    },
-    handlePrintClose () {
-      this.printVisiable = false
-    },
-    handleEditSuccess () {
-      this.editVisiable = false
-      this.$message.success('修改成功')
-      this.search()
-    },
-    handleEditClose () {
-      this.editVisiable = false
-    },
-    edit (record) {
-      let that = this
-      this.orderId = record.id
-      this.editVisiable = true
-      setTimeout(function () {
-        that.$refs.scmBSendorderEdit.setFormValues(record.sendDate, record.id)
-      }, 100);
-    },
-    subDelete (record, pRecord) {
-      let that = this
-      this.$confirm({
-        title: '确定删除所选中的记录?',
-        content: '当您点击确定按钮后，此记录将会被彻底删除',
-        centered: true,
-        onOk () {
-          that.$delete('scmBSupplyplan/deleteSendOrder2/' + record.id).then((r) => {
-            console.log(r)
-            if(r.data==null){
-              that.$message.success('删除成功')
-            }
-            else{
-             that.$message.success(r.data.data)
-            }
-            that.search()
-            that.expandedRowKeys = []
-          })
-        },
-        onCancel () {
-
-        }
-      })
-    },
-    expandSubGrid (expanded, record) {//获取供应计划的数量
+       expandSubGrid (expanded, record) { // 获取供应计划的数量
       if (expanded) {
         this.expandedRowKeys.push(record.id)
-        this.handleSubData(record) //获取子表数据
+        this.handleSubData(record) // 获取子表数据
       } else {
         let expandedRowKeys = this.expandedRowKeys.filter(RowKey => RowKey !== record.id)
         this.expandedRowKeys = expandedRowKeys
@@ -401,51 +236,20 @@ export default {
     handleSubData (record) {
       this.loading = true
       this.$get('scmBSupplyplan', {
-        sendOrderCode: record.id
+        code: record.id
       }).then((r) => {
         let data = r.data
         this.loading = false
         record.innerData = data.rows
       })
     },
-    batchDelete () {
-      if (!this.selectedRowKeys.length) {
-        this.$message.warning('请选择需要删除的记录')
-        return
-      }
-      let that = this
-      this.$confirm({
-        title: '确定删除所选中的记录?',
-        content: '当您点击确定按钮后，这些记录将会被彻底删除',
-        centered: true,
-        onOk () {
-          let scmBSendorderIds = that.selectedRowKeys.join(',')
-          that.$delete('scmBSendorder/' + scmBSendorderIds).then(() => {
-            that.$message.success('删除成功')
-            that.selectedRowKeys = []
-            that.search()
-          })
-        },
-        onCancel () {
-          that.selectedRowKeys = []
-        }
-      })
-    },
-    exportExcel () {
-      let { sortedInfo } = this
-      let sortField, sortOrder
-      // 获取当前列的排序和列的过滤规则
-      if (sortedInfo) {
-        sortField = sortedInfo.field
-        sortOrder = sortedInfo.order
-      }
-      this.$export('scmBSendorder/excel', {
-        sortField: sortField,
-        sortOrder: sortOrder,
-        ...this.queryParams
-      })
-    },
     search () {
+      
+        if(this.queryParams.fpjr==undefined || this.queryParams.fpjr== ''){
+            this.$message.error('请输入开票金额')
+            return false
+        }
+      
       let { sortedInfo } = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
@@ -498,12 +302,13 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.bsart = "0"
+      
       if (params.sortField == null) {
         params.sortField = "ID"
         params.sortOrder = "descend"
       }
-      this.$get('scmBSendorder', {
+      params.fphm = this.fphm
+      this.$get('scmBFpplan/fp', {
         ...params
       }).then((r) => {
         let data = r.data

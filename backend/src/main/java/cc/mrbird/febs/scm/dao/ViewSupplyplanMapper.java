@@ -24,6 +24,7 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         List<ViewSupplyplan> GetViewSupplyPlanByIds(@Param(value = "ids") String ids);
 
 
+        IPage<ViewSupplyplan> findVPurcharseorder2022(Page page,@Param("order") ViewSupplyplan order);
 
         IPage<ViewSupplyplan> findVPurcharseorder(Page page, @Param("order") ViewSupplyplan order);
 
@@ -32,9 +33,12 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         Long findAreaCount(@Param(value = "username") String username,@Param(value = "werk") String werk);
 
         Long findVPurcharseorder_noOrder(@Param("order") ViewSupplyplan order);
+        Long findVPurcharseorder_noOrder2022(@Param("order") ViewSupplyplan order);
         List<ViewSupplyplan>  findVPlanByOrderCode(@Param(value = "orderCode") String orderCode);
 
         List<ViewSupplyplan> findVPurcharseorder(@Param("order") ViewSupplyplan order);
+
+        Long findVPurcharseorder_COUNT2022(@Param("order") ViewSupplyplan order);
 
         Long findMatnrValid_Count(@Param("order") ViewSupplyplan order);
         Long findMatnrValid_Count2(@Param("order") ViewSupplyplan order);

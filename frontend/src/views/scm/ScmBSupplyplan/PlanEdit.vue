@@ -134,27 +134,16 @@
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="发票号码"
-          >
-            <a-input
-              placeholder="请输入发票号码"
-              v-decorator="['fphm', { rules: [{ required: true, message: '发票号码不能为空' }] }]"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="发票金额"
+            label="供应金额"
           >
             <a-input
               :disabled="true"
-              placeholder="请输入发票金额"
-              v-decorator="['fpjr', { rules: [{ required: true, message: '发票金额不能为空' }] }]"
+              placeholder="请输入供应金额"
+              v-decorator="['fpjr', { rules: [{ required: true, message: '供应金额不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <!-- <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
             label="发票日期"
@@ -173,7 +162,7 @@
               v-decorator="['fpbm', {}]"
             />
           </a-form-item>
-        </a-col>
+        </a-col> -->
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
@@ -292,7 +281,7 @@ export default {
       this.$emit('close')
     },
     setFormValues ({ ...scmBSupplyplan }) {
-      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate']
+      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat',  'fpjr', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate']
       let fieldDates = ['vfdat', 'hsdat', 'fprq', 'outDate', 'createTime', 'modifyTime']
       Object.keys(scmBSupplyplan).forEach((key) => {
         if (fields.indexOf(key) !== -1) {
@@ -404,7 +393,6 @@ export default {
           }
           scmBSupplyplan.id = this.scmBSupplyplan.id
           scmBSupplyplan.baseId = this.scmBSupplyplan.baseId
-          scmBSupplyplan.isHp ='1' //不检验时间有效期
           this.$put('scmBSupplyplan', {
             ...scmBSupplyplan
           }).then(() => {

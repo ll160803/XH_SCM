@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.scm.dao.ScmBFpplanMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmBFpplan">
+                    <id column="ID" property="id"/>
+                    <result column="CODE" property="code"/>
+                    <result column="NAME" property="name"/>
+                    <result column="FPHM" property="fphm"/>
+                    <result column="FPJR" property="fpjr"/>
+                    <result column="FPRQ" property="fprq"/>
+                    <result column="GYSACCOUNT" property="gysaccount"/>
+                    <result column="GYSNAME" property="gysname"/>
+                    <result column="COMMENTS" property="comments"/>
+                    <result column="Status" property="Status"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+                    <result column="werks" property="werks"/>
+                    <result column="werkst" property="werkst"/>
+                    <result column="lgort" property="lgort"/>
+                    <result column="lgortName" property="lgortName"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        ID, CODE, NAME, FPHM, FPJR, FPRQ, GYSACCOUNT, GYSNAME, COMMENTS, Status, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID, werks, werkst, lgort, lgortName
+    </sql>
+    <update id="updateScmBFpplan" parameterType="cc.mrbird.febs.scm.entity.ScmBFpplan">
+        update scm_b_fpplan
+        <trim prefix="set" suffixOverrides=",">
+<if test="code != null">CODE=#{code},</if>
+<if test="name != null">NAME=#{name},</if>
+<if test="fphm != null">FPHM=#{fphm},</if>
+<if test="fpjr != null">FPJR=#{fpjr},</if>
+<if test="fprq != null">FPRQ=#{fprq},</if>
+<if test="gysaccount != null">GYSACCOUNT=#{gysaccount},</if>
+<if test="gysname != null">GYSNAME=#{gysname},</if>
+<if test="comments != null">COMMENTS=#{comments},</if>
+<if test="Status != null">Status=#{Status},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+<if test="werks != null">werks=#{werks},</if>
+<if test="werkst != null">werkst=#{werkst},</if>
+<if test="lgort != null">lgort=#{lgort},</if>
+<if test="lgortName != null">lgortName=#{lgortName},</if>
+        </trim>
+                where ID=#{id}
+
+    </update>
+    <select id="findScmBFpplan" resultType="cc.mrbird.febs.scm.entity.ScmBFpplan" parameterType="cc.mrbird.febs.scm.entity.ScmBFpplan">
+        select  *  from scm_b_fpplan
+        where  1=1
+            <if test="scmBFpplan.code != null and scmBFpplan.code != ''"> and scmBFpplan.CODE like concat('%', #{ scmBFpplan.code} ,'%')</if>
+            <if test="scmBFpplan.name != null and scmBFpplan.name != ''"> and scmBFpplan.NAME like concat('%', #{ scmBFpplan.name} ,'%')</if>
+            <if test="scmBFpplan.fphm != null and scmBFpplan.fphm != ''"> and scmBFpplan.FPHM like concat('%', #{ scmBFpplan.fphm} ,'%')</if>
+        <if test="scmBFpplan.fprqFrom!= null">
+            AND scmBFpplan.FPRQ <![CDATA[ >= ]]>  #{scmBFpplan.fprqFrom}
+        </if>
+        <if test="scmBFpplan.fprqTo!= null">
+            AND scmBFpplan.FPRQ <![CDATA[ <= ]]>  #{scmBFpplan.fprqTo}
+        </if>
+            <if test="scmBFpplan.gysaccount != null and scmBFpplan.gysaccount != ''"> and scmBFpplan.GYSACCOUNT like concat('%', #{ scmBFpplan.gysaccount} ,'%')</if>
+            <if test="scmBFpplan.gysname != null and scmBFpplan.gysname != ''"> and scmBFpplan.GYSNAME like concat('%', #{ scmBFpplan.gysname} ,'%')</if>
+            <if test="scmBFpplan.comments != null and scmBFpplan.comments != ''"> and scmBFpplan.COMMENTS like concat('%', #{ scmBFpplan.comments} ,'%')</if>
+        <if test="scmBFpplan.Status != null"> and scmBFpplan.Status =#{ scmBFpplan.Status} </if>
+        <if test="scmBFpplan.isDeletemark != null"> and scmBFpplan.IS_DELETEMARK =#{ scmBFpplan.isDeletemark} </if>
+        <if test="scmBFpplan.createTimeFrom!= null">
+            AND scmBFpplan.CREATE_TIME <![CDATA[ >= ]]>  #{scmBFpplan.createTimeFrom}
+        </if>
+        <if test="scmBFpplan.createTimeTo!= null">
+            AND scmBFpplan.CREATE_TIME <![CDATA[ <= ]]>  #{scmBFpplan.createTimeTo}
+        </if>
+        <if test="scmBFpplan.modifyTimeFrom!= null">
+            AND scmBFpplan.MODIFY_TIME <![CDATA[ >= ]]>  #{scmBFpplan.modifyTimeFrom}
+        </if>
+        <if test="scmBFpplan.modifyTimeTo!= null">
+            AND scmBFpplan.MODIFY_TIME <![CDATA[ <= ]]>  #{scmBFpplan.modifyTimeTo}
+        </if>
+            <if test="scmBFpplan.werks != null and scmBFpplan.werks != ''"> and scmBFpplan.werks like concat('%', #{ scmBFpplan.werks} ,'%')</if>
+            <if test="scmBFpplan.werkst != null and scmBFpplan.werkst != ''"> and scmBFpplan.werkst like concat('%', #{ scmBFpplan.werkst} ,'%')</if>
+            <if test="scmBFpplan.lgort != null and scmBFpplan.lgort != ''"> and scmBFpplan.lgort like concat('%', #{ scmBFpplan.lgort} ,'%')</if>
+            <if test="scmBFpplan.lgortName != null and scmBFpplan.lgortName != ''"> and scmBFpplan.lgortName like concat('%', #{ scmBFpplan.lgortName} ,'%')</if>
+</select>
+    <!-- 药品 -->
+    <update id="updateSupplyPlan2">
+        UPDATE scm_b_supplyplan
+        SET CODE = #{id}
+        WHERE
+        ID in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND STATUS=1
+    </update>
+</mapper>

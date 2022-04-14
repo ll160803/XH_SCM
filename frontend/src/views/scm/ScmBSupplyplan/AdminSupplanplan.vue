@@ -263,6 +263,7 @@ export default {
         dataIndex: 'fprq',
         width: 120,
         customRender: (text, row, index) => {
+          if(text== null) return ''
           return moment(text).format('YYYY-MM-DD')
         }
       }, {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.scm.dao.ScmDControlMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmDControl">
+                    <id column="id" property="id"/>
+                    <result column="end_time" property="endTime"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, end_time
+    </sql>
+    <update id="updateScmDControl" parameterType="cc.mrbird.febs.scm.entity.ScmDControl">
+        update scm_d_control
+        <trim prefix="set" suffixOverrides=",">
+<if test="endTime != null">end_time=#{endTime},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findScmDControl" resultType="cc.mrbird.febs.scm.entity.ScmDControl" parameterType="cc.mrbird.febs.scm.entity.ScmDControl">
+        select  *  from scm_d_control
+        where  1=1
+        <if test="scmDControl.id != null"> and scmDControl.id =#{ scmDControl.id} </if>
+        <if test="scmDControl.endTimeFrom!= null">
+            AND scmDControl.end_time <![CDATA[ >= ]]>  #{scmDControl.endTimeFrom}
+        </if>
+        <if test="scmDControl.endTimeTo!= null">
+            AND scmDControl.end_time <![CDATA[ <= ]]>  #{scmDControl.endTimeTo}
+        </if>
+</select>
+
+</mapper>

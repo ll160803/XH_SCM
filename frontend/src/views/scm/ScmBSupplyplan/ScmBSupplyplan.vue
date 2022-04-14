@@ -62,6 +62,10 @@
                       key="1"
                       value="1"
                     >已入库</a-select-option>
+                     <a-select-option
+                      key="2"
+                      value="2"
+                    >已入帐</a-select-option>
                     <a-select-option
                       key="-1"
                       value="-1"
@@ -81,7 +85,28 @@
                   <a-input v-model="queryParams.ebeln" />
                 </a-form-item>
               </a-col>
-              <a-col
+              
+               <a-col :md="6" :sm="24">
+              <a-form-item
+                label="入账开始时间"
+                :labelCol="{ span: 8 }"
+                
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker style="width:100%" @change="onChange"  />
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item
+                label="入账结束时间"
+               
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker  style="width:100%" @change="onChange2"  />
+              </a-form-item>
+            </a-col>
+            <a-col
                 :md="6"
                 :sm="24"
               >
@@ -291,6 +316,7 @@ export default {
         dataIndex: 'fprq',
         width: 120,
         customRender: (text, row, index) => {
+          if(text== null) return ''
           return moment(text).format('YYYY-MM-DD')
         }
       }, {
@@ -301,6 +327,9 @@ export default {
             case 0:
               return <a-tag color="purple">未入库</a-tag>
             case 1:
+              if(row.materCode!=null && row.materCode!=''){
+                return <a-tag color="orange">已入帐</a-tag>
+              }
               return <a-tag color="green">已入库</a-tag>
             default:
               return text
@@ -346,6 +375,12 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
+    },
+    onChange (date, dateString) {
+      this.queryParams.materCodeFrom = dateString
+    },
+    onChange2 (date, dateString) {
+      this.queryParams.materCodeTo = dateString
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
@@ -454,7 +489,7 @@ export default {
       }
       params.bsartD = "0"
       params.gysaccount = this.user.username//供应商账号
-      this.$get('viewSupplyplan', {
+      this.$get('viewSupplyplan/time', {
         ...params
       }).then((r) => {
         let data = r.data

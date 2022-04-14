@@ -1,18 +1,18 @@
 <template>
   <a-drawer
-    title="查看"
+    title="新增"
     :maskClosable="false"
-     width="80%"
+    width="80%"
     placement="right"
     :closable="false"
     @close="onClose"
-    :visible="editVisiable"
+    :visible="addVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
-     <a-form :form="form">
-   <a-row>
+  <a-form :form="form">
+  <a-row>
     <a-col :sm="8">
- 
+    
       <a-form-item
         v-bind="formItemLayout"
         label="发票号码"
@@ -23,15 +23,15 @@
         />
       </a-form-item>
       </a-col>
-       <a-col :sm="8">
-      <a-form-item
+      <a-col :sm="8">
+       <a-form-item
             v-bind="formItemLayout"
             label="发票日期"
           >
             <a-date-picker v-decorator="[ 'fprq', { rules: [{ required: true, message: '发票日期不能为空' }] }]" />
         </a-form-item>
-         </a-col>
-       <a-col :sm="8">
+      </a-col>
+      <a-col :sm="8">
       <a-form-item
         v-bind="formItemLayout"
         label="发票金额"
@@ -39,23 +39,26 @@
         <a-input-number
           :precision="2"
           placeholder="请输入供应商发票金额"
+          disabled
           v-decorator="['fpAmount', {rules: [{ required: true, message: '发票金额不能为空' }] }]"
         />
       </a-form-item>
-       </a-col>
-       <a-col :sm="8">
+      </a-col>
+ <a-col :sm="8">
       <a-form-item
         v-bind="formItemLayout"
         label="药厂发票"
       >
         <a-upload
-          accept=".jpg,.png,.pdf"
+          accept=".png,.jpg,.pdf"
           :fileList="fileList"
           :remove="handleRemove"
           :beforeUpload="beforeUpload"
         >
-         
+          <a-button>
+            <a-icon type="upload" /> 选择文件 </a-button>
         </a-upload>
+       
         <a-button
           type="primary"
           @click="handleUpload"
@@ -67,18 +70,19 @@
         </a-button>
       </a-form-item>
        </a-col>
-       <a-col :sm="8">
+         <a-col :sm="8">
       <a-form-item
         v-bind="formItemLayout"
         label="供应商发票"
       >
         <a-upload
-          accept=".jpg,.png,.pdf"
+          accept=".png,.jpg,.pdf"
           :fileList="fileList2"
           :remove="handleRemove2"
           :beforeUpload="beforeUpload2"
         >
-         
+          <a-button>
+            <a-icon type="upload" /> 选择文件 </a-button>
         </a-upload>
         <a-button
           type="primary"
@@ -90,32 +94,41 @@
           {{uploading2 ? '上传中' : '开始上传' }}
         </a-button>
       </a-form-item>
-       </a-col>
-   </a-row>
+         </a-col>
+      </a-row>
     </a-form>
     <div class="drawer-bootom-button">
+      <a-popconfirm
+        title="确定放弃编辑？"
+        @confirm="onClose"
+        okText="确定"
+        cancelText="取消"
+      >
+        <a-button style="margin-right: .8rem">取消</a-button>
+      </a-popconfirm>
       <a-button
-        @click="onClose"
+        @click="handleSubmit"
         type="primary"
-      >关闭</a-button>
+        :loading="loading"
+      >提交</a-button>
     </div>
-    <sub-view ref="sub">
-    </sub-view>
+    <a-card title="开票数据选择" :border="false">
+       <scm-b-gysfp-sub ref="sub" fphm=""  @sucess="selectSucess">
+       </scm-b-gysfp-sub>
+    </a-card>
   </a-drawer>
 </template>
 <script>
-import moment from 'moment'
-import SubView from './SubView.vue'
-
+import ScmBGysfpSub from './ScmBGysfpSub.vue'
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 }
 }
 export default {
-  components: { SubView },
-  name: 'ScmBGysfpEdit',
+  components: { ScmBGysfpSub },
+  name: 'ScmBGysfpAdd',
   props: {
-    editVisiable: {
+    addVisiable: {
       default: false
     }
   },
@@ -123,7 +136,6 @@ export default {
     return {
       isShow: 1,
       isShow2: 1,
-      state: 0,
       fileList: [],
       fileList2: [],
       uploading: false,
@@ -134,94 +146,79 @@ export default {
       scmBGysfp: {
         fileId: '',
         materId: ''
-      }
+      },
+      fpjr: '',
+      kpjr: ''
     }
   },
   methods: {
     reset () {
       this.loading = false
+      this.isShow = 1
+      this.isShow2 = 1
       this.fileList = []
       this.fileList2 = []
       this.scmBGysfp.materId = ''
       this.scmBGysfp.fileId = ''
+      this.scmBGysfp = {
+
+      }
+      this.$refs.sub.reset()
       this.form.resetFields()
     },
     onClose () {
       this.reset()
       this.$emit('close')
     },
-    setFormValues ({ ...scmBGysfp }) {
-      let fields = ['fpHm', 'fpBm', 'fpAmount', 'fprq']
-      let fieldDates = ['fprq']
-      Object.keys(scmBGysfp).forEach((key) => {
-        if (fields.indexOf(key) !== -1) {
-          this.form.getFieldDecorator(key)
-          let obj = {}
-          if (fieldDates.indexOf(key) !== -1) {
-            if (scmBGysfp[key] !== '') {
-              obj[key] = moment(scmBGysfp[key])
-            }
-            else {
-              obj[key] = ''
-            }
-          } else {
-            obj[key] = scmBGysfp[key]
-          }
-          this.form.setFieldsValue(obj)
+    selectSucess(fpjr, key){
+      console.info(fpjr)
+      this.scmBGysfp.fpBm= key
+      this.form.setFieldsValue({ fpAmount: fpjr })
+    },
+    getFpjr(){
+     var values= this.form.getFieldValue('fpAmount')
+      this.fpjr = values
+    },
+    handleSubmit () {
+      if(this.scmBGysfp.fpBm==''){
+        this.$message.warning('请选择开票数据.')
+        return false
+      }
+      if (this.scmBGysfp.fileId === '') {
+        this.$message.warning('请上传厂家发票.')
+        return false
+      }
+      if (this.scmBGysfp.materId === '') {
+        this.$message.warning('请上传供应商发票.')
+        return false
+      }
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.setFields()
+          this.$post('scmBGysfp', {
+            ...this.scmBGysfp
+          }).then(() => {
+            this.reset()
+            this.$emit('success')
+          }).catch(() => {
+            this.loading = false
+          })
         }
       })
-      this.scmBGysfp.id = scmBGysfp.id
-      this.scmBGysfp.materId = scmBGysfp.materId
-      this.state = scmBGysfp.state
-      if (scmBGysfp.fileId) {
-        if (scmBGysfp.fileId !== '') {
-          this.scmBGysfp.fileId = scmBGysfp.fileId
-          this.isShow = 0
-          this.fileList = []
-          this.$get('comFile/' + scmBGysfp.fileId).then((r) => {
-            let data = r.data
-            this.fileList.push({
-              uid: data.id,
-              name: data.clientName,
-              status: 'done',
-              url: this.$baseUrl + 'uploadFile/' + data.serverName
-            })
-          })
-        }
-      }
-      if (scmBGysfp.materId) {
-        if (scmBGysfp.materId !== '') {
-          this.scmBGysfp.materId = scmBGysfp.materId
-          this.isShow2 = 0
-          this.fileList2 = []
-          this.$get('comFile/' + scmBGysfp.materId).then((r) => {
-            let data = r.data
-            this.fileList2.push({
-              uid: data.id,
-              name: data.clientName,
-              status: 'done',
-              url: this.$baseUrl + 'uploadFile/' + data.serverName
-            })
-          })
-        }
-      }
-      let that= this 
-      setTimeout(()=>{
-        that.$refs.sub.search(scmBGysfp.fpHm,scmBGysfp.fpAmount)
-      },300)
     },
     handleRemove (file) {
-      this.scmBGysfp.fileId = ''
-      this.fileList = []
+      const index = this.fileList.indexOf(file)
+      const newFileList = this.fileList.slice()
+      newFileList.splice(index, 1)
+      this.fileList = newFileList
       this.isShow = 1
     },
     handleRemove2 (file) {
-      this.scmBGysfp.materId = ''
-      this.fileList2 = []
+      const index = this.fileList2.indexOf(file)
+      const newFileList = this.fileList2.slice()
+      newFileList.splice(index, 1)
+      this.fileList2 = newFileList
       this.isShow2 = 1
-    },
-    onChange (date, dateString) {
-      console.log(date, dateString)
     },
     beforeUpload (file) {
       const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf')
@@ -236,7 +233,7 @@ export default {
       if (isJPG && isLt2M) {
         this.fileList = [...this.fileList, file]
       }
-      return isJPG && isLt2M
+      return isJPG && isLt2M;
     },
     beforeUpload2 (file) {
       const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf')
@@ -251,7 +248,7 @@ export default {
       if (isJPG && isLt2M) {
         this.fileList2 = [...this.fileList2, file]
       }
-      return isJPG && isLt2M
+      return isJPG && isLt2M;
     },
     handleUpload () {
       const { fileList } = this
@@ -261,7 +258,9 @@ export default {
 
       // You can use any AJAX library you like
       this.$upload('comFile/upload', formData).then((r) => {
+        console.info('上传IF:' + r.data.data)
         this.scmBGysfp.fileId = r.data.data
+
         // this.fileList = []
         this.isShow = 0
         this.uploading = false
@@ -280,7 +279,9 @@ export default {
 
       // You can use any AJAX library you like
       this.$upload('comFile/upload', formData).then((r) => {
+        console.info('上传IF:' + r.data.data)
         this.scmBGysfp.materId = r.data.data
+
         // this.fileList = []
         this.isShow2 = 0
         this.uploading2 = false
@@ -291,31 +292,11 @@ export default {
       })
       this.fileList2[0].status = 'done'
     },
-    handleSubmit () {
-      if (this.scmBGysfp.materId === '') {
-        this.$message.warning('请上传两票制承诺书附件.')
-        return false
+    setFields () {
+      let values = this.form.getFieldsValue(['fpHm', 'fpAmount', 'fprq'])
+      if (typeof values !== 'undefined') {
+        Object.keys(values).forEach(_key => { this.scmBGysfp[_key] = values[_key] })
       }
-      if (this.scmBGysfp.fileId === '') {
-        this.$message.warning('请上传委托书附件.')
-        return false
-      }
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          let scmBGysfp = this.form.getFieldsValue()
-          scmBGysfp.materId = this.scmBGysfp.materId
-          scmBGysfp.fileId = this.scmBGysfp.fileId
-          scmBGysfp.id = this.scmBGysfp.id
-          this.$put('scmBGysfp', {
-            ...scmBGysfp
-          }).then(() => {
-            this.reset()
-            this.$emit('success')
-          }).catch(() => {
-            this.loading = false
-          })
-        }
-      })
     }
   }
 }

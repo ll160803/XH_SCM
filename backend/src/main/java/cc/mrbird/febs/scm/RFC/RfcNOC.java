@@ -34,12 +34,20 @@ public class RfcNOC {
     static {
         Properties connectProperties = new Properties();
 
-         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, JcoProperties.getAshost());//服务器
-         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  JcoProperties.getSysnr());        //系统编号
-         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, JcoProperties.getClient());       //SAP集团
-         connectProperties.setProperty(DestinationDataProvider.JCO_USER, JcoProperties.getUser());  //SAP用户名
-         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
-         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
+//         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, JcoProperties.getAshost());//服务器
+//         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR,  JcoProperties.getSysnr());        //系统编号
+//         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, JcoProperties.getClient());       //SAP集团
+//         connectProperties.setProperty(DestinationDataProvider.JCO_USER, JcoProperties.getUser());  //SAP用户名
+//         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
+//         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
+
+        /** 测试的地址**/
+         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.29");//服务器
+         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "00");        //系统编号
+         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "300");       //SAP集团
+         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
+         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "@123456");     //密码
+         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "EN");        //登录语言
 
         /** 正式的地址
         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器
@@ -48,7 +56,7 @@ public class RfcNOC {
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "822019");     //密码
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH");        //登录语言
-        */
+         */
 
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "5");  //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
@@ -150,8 +158,10 @@ public class RfcNOC {
                 pur.setTxz01(rfcReturn.getString("TXZ01"));
                 pur.setWerks(rfcReturn.getString("WERKS"));
                 pur.setWerkst(rfcReturn.getString("WERKST"));
+
                 pur.setId(rfcReturn.getString("EBELN") + rfcReturn.getString("EBELP"));
 
+                pur.setCode(rfcReturn.getString("CODE")); //这是什么订单类型
                 list.add(pur);
             }
             log.info("list fill succeed ,GetPurcharseList end");

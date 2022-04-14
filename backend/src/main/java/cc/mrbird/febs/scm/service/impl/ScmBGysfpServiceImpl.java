@@ -89,6 +89,13 @@ public void updateScmBGysfp(ScmBGysfp scmBGysfp){
 @Transactional
 public void deleteScmBGysfps(String[]Ids){
         List<String> list=Arrays.asList(Ids);
+    for (String id:list
+         ) {
+        ScmBGysfp scmBGysfp= this.getById(id);
+        if(scmBGysfp.getState().equals(1)){
+
+        }
+    }
         this.baseMapper.deleteBatchIds(list);
         }
         @Override
@@ -106,4 +113,10 @@ public void deleteScmBGysfps(String[]Ids){
           }
           return  false;
         }
+
+    @Override
+    @Transactional
+    public void updateFpState( String fphm,  String gys,int state){
+       this.baseMapper.updateFpState(fphm,gys,state);
+    }
         }

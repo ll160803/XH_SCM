@@ -367,6 +367,7 @@ export default {
           this.scmBSupplyplan.baseId = this.baseId
           this.scmBSupplyplan.status = 0
           this.scmBSupplyplan.bsartD = 0 // 订单类型
+           this.scmBSupplyplan.isHp ='1' //不检验时间有效期
           this.$post('scmBSupplyplan', {
             ...this.scmBSupplyplan
           }).then(() => {

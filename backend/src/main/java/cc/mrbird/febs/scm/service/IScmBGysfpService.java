@@ -29,4 +29,6 @@ public interface IScmBGysfpService extends IService<ScmBGysfp> {
         void deleteScmBGysfps(String[]Ids);
 
         boolean IsExist(String fphm,String gys,String id);
+
+        void updateFpState( String fphm,  String gys,int state);
         }

@@ -1,15 +1,16 @@
 <template>
   <a-drawer
-    title="修改"
+    title="新增"
     :maskClosable="false"
     width=650
     placement="right"
     :closable="false"
     @close="onClose"
-    :visible="editVisiable"
+    :visible="addVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
+
       <a-row>
         <a-col :span="12">
           <a-form-item
@@ -85,6 +86,7 @@
             <a-input-number
               :min="0"
               :max="amount"
+              :precision="2"
               @blur="mengeBlur"
               style="width: 100%"
               placeholder="请输入供应数量"
@@ -131,7 +133,7 @@
             <a-date-picker v-decorator="[ 'hsdat', { rules: [{ required: true, message: '生产日期不能为空' }] }]" />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <!-- <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
             label="发票号码"
@@ -141,28 +143,28 @@
               v-decorator="['fphm', { rules: [{ required: true, message: '发票号码不能为空' }] }]"
             />
           </a-form-item>
-        </a-col>
+        </a-col> -->
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
-            label="发票金额"
+            label="供应金额"
           >
             <a-input
               :disabled="true"
-              placeholder="请输入发票金额"
-              v-decorator="['fpjr', { rules: [{ required: true, message: '发票金额不能为空' }] }]"
+              placeholder="请输入供应金额"
+              v-decorator="['fpjr', { rules: [{ required: true, message: '供应金额不能为空' }] }]"
             />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
+        <!-- <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
             label="发票日期"
           >
             <a-date-picker v-decorator="[ 'fprq', { rules: [{ required: true, message: '发票日期不能为空' }] }]" />
           </a-form-item>
-        </a-col>
-        <a-col :span="12">
+        </a-col> -->
+        <!-- <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
             label="发票编码"
@@ -173,13 +175,14 @@
               v-decorator="['fpbm', {}]"
             />
           </a-form-item>
-        </a-col>
+        </a-col> -->
         <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
             label="每箱数量"
           >
             <a-input-number
+              :precision="2"
               style="width: 100%"
               @blur="pkgNumberBlur"
               placeholder="请输入每箱数量"
@@ -194,8 +197,8 @@
           >
             <a-input-number
               :precision="2"
-              style="width: 100%"
               placeholder="请输入总共箱数"
+              style="width: 100%"
               v-decorator="['pkgNumber',{ rules: [{ required: true, message: '总共箱数不能为空' }] }]"
             />
           </a-form-item>
@@ -206,11 +209,15 @@
             label="缺货原因"
           >
             <a-select
-              placeholder="请选择缺货原因"
+              mode="single"
+              :allowClear="true"
               style="width: 100%"
-              v-decorator="['outCause',  { rules: [{ message: '请输入缺货原因' },{
+              v-decorator="[
+          'outCause',
+          { rules: [{ message: '请输入缺货原因' },{
             validator: this.handleValidator
-          }] }]"
+          }] }
+        ]"
             >
               <a-select-option value="库存不足">库存不足</a-select-option>
               <a-select-option value="厂家停产">厂家停产</a-select-option>
@@ -256,11 +263,12 @@ const formItemLayout = {
   wrapperCol: { span: 15 }
 }
 export default {
-  name: 'ScmBSupplyplanEdit',
+  name: 'ScmBSupplyplanAdd',
   props: {
-    editVisiable: {
+    addVisiable: {
       default: false
     },
+    baseId: '',
     price: {
       type: Number,
       default: 0
@@ -268,6 +276,9 @@ export default {
     amount: {
       type: Number,
       default: 0
+    },
+    pRecord: {
+
     }
   },
   data () {
@@ -276,8 +287,6 @@ export default {
       formItemLayout,
       form: this.$form.createForm(this),
       scmBSupplyplan: {
-        baseId: '',
-        id: ''
       },
       chargeData: []
     }
@@ -285,36 +294,14 @@ export default {
   methods: {
     reset () {
       this.loading = false
+      this.scmBSupplyplan = {}
       this.form.resetFields()
     },
     onClose () {
       this.reset()
       this.$emit('close')
     },
-    setFormValues ({ ...scmBSupplyplan }) {
-      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate']
-      let fieldDates = ['vfdat', 'hsdat', 'fprq', 'outDate', 'createTime', 'modifyTime']
-      Object.keys(scmBSupplyplan).forEach((key) => {
-        if (fields.indexOf(key) !== -1) {
-          this.form.getFieldDecorator(key)
-          let obj = {}
-          if (fieldDates.indexOf(key) !== -1) {
-            if (scmBSupplyplan[key] !== null && scmBSupplyplan[key] !== '') {
-              obj[key] = moment(scmBSupplyplan[key])
-            }
-            else {
-              obj[key] = ''
-            }
-          } else {
-            obj[key] = scmBSupplyplan[key]
-          }
-          this.form.setFieldsValue(obj)
-        }
-      })
-      this.scmBSupplyplan.id = scmBSupplyplan.id
-      this.scmBSupplyplan.baseId = scmBSupplyplan.baseId
-    },
-     settingNumber () {
+    settingNumber () {
       var Fpbm = this.form.getFieldValue('fpbm')
       if (Fpbm.trim().length > 0) {
         var arr = Fpbm.trim().split(',')
@@ -339,18 +326,6 @@ export default {
         }
       }
     },
-    setOrderFormValues ({ ...order }) {
-      let fields = ['menge', 'ebeln', 'ebelp', 'netpr', 'matnr', 'txz01']
-      Object.keys(order).forEach((key) => {
-        if (fields.indexOf(key) !== -1) {
-          this.form.getFieldDecorator(key)
-          let obj = {}
-
-          obj[key] = order[key]
-          this.form.setFieldsValue(obj)
-        }
-      })
-    },
     mengeBlur (e) {
       if (e.target.value) {
         let money = (this.price * e.target.value).toFixed(2)
@@ -363,6 +338,18 @@ export default {
       }
 
     },
+    setOrderFormValues ({ ...order }) {
+      let fields = ['menge', 'ebeln', 'ebelp', 'netpr', 'matnr', 'txz01']
+      Object.keys(order).forEach((key) => {
+        if (fields.indexOf(key) !== -1) {
+          this.form.getFieldDecorator(key)
+          let obj = {}
+
+          obj[key] = order[key]
+          this.form.setFieldsValue(obj)
+        }
+      })
+    },
     pkgNumberBlur (e) {
       if (e.target.value) {
         let gMenge = this.form.getFieldValue('gMenge')
@@ -372,41 +359,16 @@ export default {
         }
       }
     },
-    handleValidator (rule, val, callback) {
-      let gMenge = this.form.getFieldValue('gMenge')
-      let menge = this.form.getFieldValue('menge')
-      let outCause = this.form.getFieldValue('outCause')
-      if (gMenge < menge && outCause == null) {
-        callback('请输入缺货原因！');
-      }
-       callback();
-    },
-    handleValidator2 (rule, val, callback) {
-      let gMenge = this.form.getFieldValue('gMenge')
-      let menge = this.form.getFieldValue('menge')
-      let outDate =this.form.getFieldValue('outDate')
-      
-      if(!typeof(outDate)==='undefined'){
-        this.form.setFields({ outDate : { value: moment(outDate) } })
-      }
-      
-      if (gMenge < menge && typeof(outDate)==='undefined') {
-        callback('请输入补货日期！');
-      }
-       callback();
-    },
     handleSubmit () {
       this.form.validateFields((err, values) => {
         if (!err) {
-          let scmBSupplyplan = this.form.getFieldsValue()
-          if (scmBSupplyplan.outDate == '') {
-            scmBSupplyplan.outDate = null
-          }
-          scmBSupplyplan.id = this.scmBSupplyplan.id
-          scmBSupplyplan.baseId = this.scmBSupplyplan.baseId
-          scmBSupplyplan.isHp ='1' //不检验时间有效期
-          this.$put('scmBSupplyplan', {
-            ...scmBSupplyplan
+          this.loading = true
+          this.setFields()
+          this.scmBSupplyplan.baseId = this.baseId
+          this.scmBSupplyplan.status = 0
+          this.scmBSupplyplan.bsartD = 0 // 订单类型
+          this.$post('scmBSupplyplan', {
+            ...this.scmBSupplyplan
           }).then(() => {
             this.reset()
             this.$emit('success')
@@ -415,21 +377,49 @@ export default {
           })
         }
       })
+    },
+    handleValidator (rule, val, callback) {
+      let validateResult = false;  // 自定义规则
+      let gMenge = this.form.getFieldValue('gMenge')
+      let menge = this.form.getFieldValue('menge')
+      let outCause = this.form.getFieldValue('outCause')
+      if (gMenge < menge && outCause == null) {
+        callback('请输入填写缺货原因！');
+      }
+      callback();
+    },
+    handleValidator2 (rule, val, callback) {
+      let validateResult = false;  // 自定义规则
+      let gMenge = this.form.getFieldValue('gMenge')
+      let menge = this.form.getFieldValue('menge')
+      let outDate = this.form.getFieldValue('outDate')
+
+      if (!typeof (outDate) === 'undefined') {
+        this.form.setFields({ outDate: { value: moment(outDate) } })
+      }
+
+      if (gMenge < menge && typeof (outDate) === 'undefined') {
+        callback('请输入补货日期！');
+      }
+      callback();
+    },
+    setFields () {
+      let values = this.form.getFieldsValue(['gMenge', 'charge', 'vfdat', 'hsdat',  'fpjr',  'pkgAmount', 'pkgNumber', 'outCause', 'outDate'])
+      if (typeof values !== 'undefined') {
+        Object.keys(values).forEach(_key => { this.scmBSupplyplan[_key] = values[_key] })
+      }
     }
   },
   watch: {
-    editVisiable: {
+    addVisiable: {
       handler: function () {
-        if (this.editVisiable) {
-          this.$get("scmBGysMaterPic/charge/" + this.scmBSupplyplan.baseId).then(r => {
+        if (this.addVisiable) {
+          this.$get("scmBGysMaterPic/charge/" + this.baseId).then(r => {
             this.chargeData = r.data
           })
         }
       }
     }
-  },
-  mounted () {
-    // amount
   }
 }
 </script>

@@ -135,13 +135,15 @@ public class ScmBSupplyplanController extends BaseController {
             c.setTime(new Date());
             c.add(Calendar.MONTH, 6);
             Date m = c.getTime();
-            if (scmBSupplyplan.getVfdat().compareTo(m) < 0) {
-                throw new FebsException("药品剩余效期不足6个月！");
+            if (scmBSupplyplan.getVfdat().compareTo(m) < 0 ) {//货票同行不检测
+                if(StringUtils.isEmpty(scmBSupplyplan.getIsHp())) {
+                    throw new FebsException("药品剩余效期不足6个月！");
+                }
             }
             User currentUser = FebsUtil.getCurrentUser();
-            if (!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(), currentUser.getUsername(), "")) {
-                throw new FebsException("请在发票管理界面上传对应发票！");
-            }
+//            if (!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(), currentUser.getUsername(), "")) {
+//                throw new FebsException("请在发票管理界面上传对应发票！");
+//            }
             BigDecimal bd = scmBSupplyplan.getgMenge().divide(scmBSupplyplan.getPkgAmount(), 2);
             scmBSupplyplan.setPkgNumber(bd.setScale(0, BigDecimal.ROUND_UP));
 
@@ -150,10 +152,10 @@ public class ScmBSupplyplanController extends BaseController {
 
             scmBSupplyplan.setGysname(currentUser.getRealname());
 
-            Boolean flag = IsExistFphm(scmBSupplyplan.getBaseId(), "", scmBSupplyplan.getFphm(), currentUser.getUsername());
-            if (!flag) {
-                throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
-            }
+//            Boolean flag = IsExistFphm(scmBSupplyplan.getBaseId(), "", scmBSupplyplan.getFphm(), currentUser.getUsername());
+//            if (!flag) {
+//                throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
+//            }
             this.iScmBSupplyplanService.createScmBSupplyplan(scmBSupplyplan);
             //处理设置箱数的问题  viki 2020-08-19
             this.iScmBSupplyplanDService.HandlePackage(scmBSupplyplan);
@@ -358,16 +360,26 @@ public class ScmBSupplyplanController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             scmBSupplyplan.setModifyUserId(currentUser.getUserId());
 
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date());
+            c.add(Calendar.MONTH, 6);
+            Date m = c.getTime();
+            if (scmBSupplyplan.getVfdat().compareTo(m) < 0 ) {//货票同行不检测
+                if(StringUtils.isEmpty(scmBSupplyplan.getIsHp())) {
+                    throw new FebsException("药品剩余效期不足6个月！");
+                }
+            }
+
             BigDecimal bd = scmBSupplyplan.getgMenge().divide(scmBSupplyplan.getPkgAmount(), 2);
             scmBSupplyplan.setPkgNumber(bd.setScale(0, BigDecimal.ROUND_UP));
 
-            Boolean flag = IsExistFphm(scmBSupplyplan.getBaseId(), scmBSupplyplan.getId().toString(), scmBSupplyplan.getFphm(), currentUser.getUsername());
-            if (!flag) {
-                throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
-            }
-            if (!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(), currentUser.getUsername(), "")) {
-                throw new FebsException("请在发票管理界面上传对应发票！");
-            }
+//            Boolean flag = IsExistFphm(scmBSupplyplan.getBaseId(), scmBSupplyplan.getId().toString(), scmBSupplyplan.getFphm(), currentUser.getUsername());
+//            if (!flag) {
+//                throw new FebsException("发票号码已经存在，一个发票号只对应一个供应计划！");
+//            }
+//            if (!this.iScmBGysfpService.IsExist(scmBSupplyplan.getFphm(), currentUser.getUsername(), "")) {
+//                throw new FebsException("请在发票管理界面上传对应发票！");
+//            }
             if (!iScmBSupplyplanService.HasPreDone(scmBSupplyplan.getId().toString())) {
                 throw new FebsException("此供应计划已经产生预收，不允许修改！");
             }
@@ -664,6 +676,42 @@ public class ScmBSupplyplanController extends BaseController {
         }
     }
 
+    @Log("去除开票号码")
+    @DeleteMapping("deleteFpPlan/{ids}")
+    public void deleteFpPlan(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
+        try {
+            User currentUser = FebsUtil.getCurrentUser();
+            if (!this.iScmBSupplyplanService.canUpdateSendOrder(ids)) {
+                throw new FebsException("供应计划已经入库，不能删除");
+            }
+            String[] arr_ids = ids.split(StringPool.COMMA);
+            for (String id :
+                    arr_ids) {
+                ScmBSupplyplan scmBSupplyplan = new ScmBSupplyplan();
+                scmBSupplyplan.setId(Long.parseLong(id));
+                scmBSupplyplan.setCode("");
+                this.iScmBSupplyplanService.updateSupplyplanOnly(scmBSupplyplan);
+
+            }
+//            List<ViewSupplyplan> doneList = this.iViewSupplyplanService.getViewSupplyPlanByIds(ids);
+//            RfcNOC rfc = new RfcNOC();
+//            List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), doneList, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+//            if (!backMsg.get(0).getMSTYPE().equals("S")) {
+//                log.error("SAP端处理失败");
+//                throw new FebsException("SAP端处理失败");
+//            } else {
+//                // this.iScmBSendorderService.updateFpjr(doneList.get(0).getSendOrderCode());//修改送货清单的发票金额
+//            }
+            //this.iScmBSupplyplanService.deleteScmBSupplyplans(arr_ids);
+        } catch (Exception e) {
+            message = "删除失败";
+            log.error(message, e);
+            throw new FebsException(e.getMessage());
+        }
+    }
+
+
+
     @Log("删除")
     @DeleteMapping("/{ids}")
     public void deleteScmBSupplyplans(@NotBlank(message = "{required}") @PathVariable String ids) throws FebsException {
@@ -726,11 +774,11 @@ public class ScmBSupplyplanController extends BaseController {
         StringBuilder sb = new StringBuilder();
         if (e1 != null && e1.size() > 0) {
             sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst() + "  " + e1.get(0).getLgortName()));
-            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "补送日期"));
+            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次",  "供应金额", "缺货原因", "补送日期"));
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             for (ViewSupplyplan f2 : e1) {
-                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(), f2.getFphm(), String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
+                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(),  String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
             }
             sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)： %1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", e1.get(0).getGysname()));
             sb.append("</table>");
@@ -784,20 +832,20 @@ public class ScmBSupplyplanController extends BaseController {
                         "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%9$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%10$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td colspan=\"2\" style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%11$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+//                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+//                        "%12$s" +
+//                        "</td>" +
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%12$s" +
                         "</td>" +
-                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
-                        "%13$s" +
-                        "</td>" +
                         "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;border-right:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
-                        "%14$s" +
+                        "%13$s" +
                         "</td>" +
                         "</tr>";
 
@@ -835,21 +883,21 @@ public class ScmBSupplyplanController extends BaseController {
                         "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%9$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%10$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%11$s" +
                         "</td>" +
-                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
-                        "%12$s" +
-                        "</td>" +
+//                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
+//                        "%12$s" +
+//                        "</td>" +
 
                         "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
-                        "%13$s" +
+                        "%12$s" +
                         "</td>" +
                         "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;border-right:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
-                        "%14$s" +
+                        "%13$s" +
                         "</td>" +
                         "</tr>";
 

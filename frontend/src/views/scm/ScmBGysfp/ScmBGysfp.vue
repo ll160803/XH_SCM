@@ -77,7 +77,13 @@
           type="primary"
           ghost
           @click="add"
-        >新增</a-button>
+        >日常采购发票维护</a-button>
+        <a-button
+          v-hasPermission="['scmBGysfp:add']"
+          type="primary"
+          ghost
+          @click="add2"
+        >临时采购发票维护</a-button>
         <a-button
           v-hasPermission="['scmBGysfp:delete']"
           @click="batchDelete"
@@ -130,18 +136,12 @@
           slot-scope="text, record"
         >
           <a-icon
-            v-hasPermission="['scmBGysfp:update']"
             type="setting"
             theme="twoTone"
             twoToneColor="#4a9ff5"
             @click="edit(record)"
-            title="修改"
+            title="查看"
           ></a-icon>
-          <a-badge
-            v-hasNoPermission="['scmBGysfp:update']"
-            status="warning"
-            text="无权限"
-          ></a-badge>
         </template>
       </a-table>
     </div>
@@ -152,6 +152,13 @@
       :addVisiable="addVisiable"
     >
     </scmBGysfp-add>
+    <!-- 新增字典 -->
+    <scmBGysfp-addOld
+      @close="handleAddClose"
+      @success="handleAddSuccess"
+      :addVisiable="addVisiable2"
+    >
+    </scmBGysfp-addOld>
     <!-- 修改字典 -->
     <scmBGysfp-edit
       ref="scmBGysfpEdit"
@@ -165,6 +172,7 @@
 
 <script>
 import ScmBGysfpAdd from './ScmBGysfpAdd'
+import ScmBGysfpAddOld from './ScmBGysfpAddOld'
 import ScmBGysfpEdit from './ScmBGysfpEdit'
 import moment from 'moment'
 
@@ -174,7 +182,7 @@ const formItemLayout = {
 }
 export default {
   name: 'ScmBGysfp',
-  components: { ScmBGysfpAdd, ScmBGysfpEdit },
+  components: { ScmBGysfpAdd, ScmBGysfpAddOld, ScmBGysfpEdit },
   data () {
     return {
       advanced: false,
@@ -194,6 +202,7 @@ export default {
       queryParams: {
       },
       addVisiable: false,
+      addVisiable2: false,
       editVisiable: false,
       loading: false,
       bordered: true
@@ -273,13 +282,18 @@ export default {
     },
     handleAddSuccess () {
       this.addVisiable = false
+      this.addVisiable2 = false
       this.$message.success('新增成功')
       this.search()
     },
     handleAddClose () {
       this.addVisiable = false
+      this.addVisiable2 = false
     },
     add () {
+      this.addVisiable2 = true
+    },
+    add2 () {
       this.addVisiable = true
     },
     handleEditSuccess () {
@@ -399,8 +413,8 @@ export default {
         params.pageNum = this.pagination.defaultCurrent
       }
       // if (params.sortField == null) {
-      //   params.sortField = "fp_hm"
-      //   params.sortOrder = "descend"
+         params.sortField = "CREATE_TIME"
+         params.sortOrder = "descend"
       // }
       this.$get('scmBGysfp', {
         ...params

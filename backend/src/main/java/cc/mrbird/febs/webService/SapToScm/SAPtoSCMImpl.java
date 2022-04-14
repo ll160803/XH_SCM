@@ -2,6 +2,7 @@ package cc.mrbird.febs.webService.SapToScm;
 
 import cc.mrbird.febs.scm.dao.*;
 import cc.mrbird.febs.scm.entity.*;
+import cc.mrbird.febs.scm.service.IScmBGysfpService;
 import cc.mrbird.febs.scm.service.IScmCacheService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jdk.net.SocketFlow;
@@ -51,6 +52,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
     @Autowired
     private IScmCacheService iScmCacheService;
+
+    @Autowired
+    private IScmBGysfpService iScmBGysfpService;
 
     public String HelloWorld() {
         return "haha";
@@ -163,6 +167,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     entity.setName(item.getName());
                     entity.setLgortName(item.getName());
                     entity.setStatus(1);
+
                     entity.setNetpr(new BigDecimal(item.getNetpr().replace(",", "")));
 
                     entity.setWerks(item.getWerks());
@@ -176,6 +181,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     entity.setSendDeaprtPhone(item.getPhone());
                     entity.setComments(item.getComments());
                     entity.setId(UUID.randomUUID().toString());
+                    entity.setCode(item.getCode()); //采购计划的类型 2022 04 12
 
                     if (StringUtils.equals(item.getBsart().trim(), "Z004")) {
                         entity.setSendDeaprtName(item.getRemark());//西院的药品订单 接收科室放在订单备注里
@@ -310,6 +316,30 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
     }
 
     @Override
+    public Boolean ChangeMaterCodeFromSap(List<String> codeList, String time) {
+        log.info("从SAP更改供应计划状态");
+        try {
+            if (codeList.size() > 0) {
+                LambdaQueryWrapper<ScmBSupplyplan> queryWrapperPlan = new LambdaQueryWrapper<>();
+                List<Long> arr = new ArrayList<>();
+                for (String code : codeList) {
+                    ScmBSupplyplan plan = new ScmBSupplyplan();
+                    plan.setMaterCode(time);
+                    plan.setId(Long.parseLong(code.trim()));
+                    scmBSupplyplanMapper.updateScmBSupplyplan(plan);
+                }
+                log.info("从SAP更改供应计划状态成功！");
+                return true;
+
+            }
+        } catch (Exception ex) {
+            log.error("从SAP更改供应计划状态失败！");
+            log.error(ex.getMessage());
+        }
+        return false;
+    }
+
+    @Override
     public Boolean ChangeStausFromSap(List<String> codeList, String status) {
         log.info("从SAP更改供应计划状态");
         try {
@@ -385,5 +415,29 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
         return false;
 
+    }
+
+    @Override
+    public Boolean ChangeFpState(String fphm,String lifnr,int state){
+        try {
+            log.info("发票号码："+fphm+";"+lifnr+";"+state);
+            this.iScmBGysfpService.updateFpState(fphm,lifnr,state);
+            return  true;
+        }
+        catch (Exception ex){
+            log.error("更改发票状态:"+ex.getMessage());
+        }
+        return  false;
+    }
+    @Override
+    public  Boolean ChangeSupplanTime(String id,String time){
+        try {
+            this.scmBSupplyplanMapper.updateSupplanTime(id,time);
+            return  true;
+        }
+        catch (Exception ex){
+            log.error("更改入账时间:"+ex.getMessage());
+        }
+        return  false;
     }
 }

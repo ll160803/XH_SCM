@@ -1,26 +1,17 @@
-
 <template>
   <a-drawer
-    title="修改"
+    title="新增"
     :maskClosable="false"
     width="75%"
     placement="right"
     :closable="false"
     @close="onClose"
-    :visible="editVisiable"
+    :visible="addVisiable"
     style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="7">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="送货时间"
-          >
-            <a-date-picker v-decorator="[ 'sendDate', { rules: [{ required: true, message: '送货时间不能为空' }] }]" />
-          </a-form-item>
-        </a-col>
-        <a-col :span="10">
+        <a-col :span="12">
           <werks-lgort
             ref="werklgort"
             @werks="setWerks"
@@ -29,7 +20,7 @@
           </werks-lgort>
         </a-col>
         <a-col
-          :span="6"
+          :span="5"
           :offset="1"
         >
           <a-input-search
@@ -75,24 +66,23 @@
 <script>
 import moment from 'moment'
 import WerksLgort from '../../common/WerksLgort'
+
 const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 15 }
 }
 export default {
-  name: 'SendorderEdit',
+  name: 'SendorderAdd',
+  components: {WerksLgort},
   props: {
-    editVisiable: {
+    addVisiable: {
       default: false
-    },
-    orderId: ''
+    }
   },
-  components: { WerksLgort },
   watch: {
-    editVisiable () {
-      if (this.editVisiable) {
-        this.fetch({})
-        this.getPlanIds()
+    addVisiable () {
+      if (this.addVisiable) {
+        this.fetch()
       }
     }
   },
@@ -101,7 +91,7 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id',
-        width: 100
+        width: 130
       }, {
         title: '药品编码',
         dataIndex: 'matnr',
@@ -140,12 +130,19 @@ export default {
       }, {
         title: '发票金额',
         dataIndex: 'fpjr',
+        width: 100
+      }, {
+        title: '院区',
+        dataIndex: 'werkst',
+        width: 120
+      }, {
+        title: '库房',
+        dataIndex: 'lgortName',
         width: 80
       }, {
         title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
-          if(text== null) return ''
           return moment(text).format('YYYY-MM-DD')
         },
         width: 100
@@ -169,8 +166,7 @@ export default {
         width: 80
       }, {
         title: '包装数量',
-        dataIndex: 'pkgNumber',
-        width: 80
+        dataIndex: 'pkgNumber'
       }]
     }
   },
@@ -179,7 +175,7 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      scmBSendorder: {},
+      scmBFpplan: {},
       dataSource: [],
       selectedRowKeys: [],
       sortedInfo: null,
@@ -194,7 +190,10 @@ export default {
       },
       queryParams: {},
       loading: false,
-      bordered: true
+      bordered: true,
+      werks: '',
+      lgort: '',
+      rows: []
     }
   },
   methods: {
@@ -204,13 +203,23 @@ export default {
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
-      //   const dataSource = [...this.dataSource]
-      //   let row = dataSource.find(item => item.id === selectedRowKeys[0])
-      //   this.issue_content = `${row.matnr}`
-      //   this.matnr = row.matnr
-      //   this.isSelect = 1
-      //   this.serch_result_issue = false
-      //   this.$emit("sucess", { maktx: row.maktx, meins: row.meins, mseht: row.mseht })
+      const dataSource = [...this.dataSource];
+      for (let item of dataSource) {
+        const rows2 = [...this.rows]
+        if (this.selectedRowKeys.indexOf(item.id) >= 0) {
+          this.rows = rows2.filter(item2 => item2.id !== item.id);
+          this.rows.push(item)
+        }
+        else {
+          this.rows = rows2.filter(item2 => item2.id !== item.id);
+        }
+      }
+    },
+    setWerks (werks) {
+      this.queryParams.werks = werks
+    },
+    setLgort (lgort) {
+      this.queryParams.lgort = lgort
     },
     search () {
       let { sortedInfo } = this
@@ -221,6 +230,7 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
+
       this.fetch({
         sortField: sortField,
         sortOrder: sortOrder,
@@ -230,7 +240,7 @@ export default {
     reset () {
       this.loading = false
       this.scmBSendorder = {}
-  
+      this.rows = []
       this.form.resetFields()
       // 取消选中
       this.selectedRowKeys = []
@@ -257,25 +267,6 @@ export default {
         ...this.queryParams
       })
     },
-    getPlanIds () {
-      this.$get('scmBSendorder/planIds/' + this.orderId, {
-
-      }).then((r) => {
-        let data = r.data.data
-        console.info(data);
-        for (let element of data) {
-          console.info(element);
-          this.selectedRowKeys.push(element);
-        }
-        //this.selectedRowKeys = data;
-      })
-    },
-    setWerks (werks) {
-      this.queryParams.werks = werks
-    },
-    setLgort (lgort) {
-      this.queryParams.lgort = lgort
-    },
     fetch (params = {}) {
       this.loading = true
       if (this.paginationInfo) {
@@ -289,14 +280,12 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.bsartD = "0"
       if (params.sortField == null) {
         params.sortField = "id"
         params.sortOrder = "descend"
       }
-      params.sendOrderCode = this.orderId
-      params.status = 0 //未收货的数据
-      this.$get('viewSupplyplan/sendOrder', {
+      params.status = 1 // 为收货的数据
+      this.$get('viewSupplyplan/code', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -309,12 +298,38 @@ export default {
     },
     handleSubmit () {
       let supplyPlanIds = this.selectedRowKeys.join(",")
-      this.scmBSendorder["supplyPlanIds"] = supplyPlanIds
+      this.scmBFpplan["supplyPlanIds"] = supplyPlanIds
+      var werks = ''
+      var lgort = ''
+      var msg = ''
+      for (let item of this.rows) {
+        if (werks == '') {
+          werks = item.werks;
+        }
+        else {
+          if (werks != item.werks) {
+            msg += item.id + ":" + item.werks + "院区不一致"
+          }
+        }
+        if (lgort == '') {
+          lgort = item.lgort;
+        }
+        else {
+          if (lgort != item.lgort) {
+            msg += item.id + ":" + item.lgortName + "库房不一致"
+          }
+        }
+      }
+      if (msg != "") {
+        this.$message.warning(msg);
+        return
+      }
+
+
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.setFields()
-          this.$put('scmBSendorder/orderEdit', {
-            ...this.scmBSendorder
+          this.$post('scmBFpplan/planAdd', {
+            ...this.scmBFpplan
           }).then(() => {
             this.reset()
             this.$emit('success')
@@ -324,18 +339,6 @@ export default {
         }
       })
     },
-    setFields () {
-      let values = this.form.getFieldsValue(['sendDate'])
-      if (typeof values !== 'undefined') {
-        Object.keys(values).forEach(_key => { this.scmBSendorder[_key] = values[_key] })
-      }
-    },
-    setFormValues (sendDate, id) {
-      if (sendDate && sendDate != "") {
-        this.form.setFieldsValue({ sendDate: moment(sendDate) })
-      }
-      this.scmBSendorder.id = id
-    }
   }
 }
 </script>

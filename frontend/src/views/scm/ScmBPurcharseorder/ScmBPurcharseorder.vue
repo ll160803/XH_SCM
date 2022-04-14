@@ -1,96 +1,62 @@
 <template>
-  <a-card
-    :bordered="false"
-    class="card-area"
-  >
+  <a-card :bordered="false" class="card-area">
     <div :class="advanced ? 'search' : null">
       <a-form layout="horizontal">
         <a-row>
-          <div :class="advanced ? null: 'fold'">
-
-            <a-col
-              :md="6"
-              :sm="24"
-            >
+          <div :class="advanced ? null : 'fold'">
+            <a-col :md="6" :sm="24">
               <a-form-item
                 label="物料名称"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
               >
                 <a-input v-model="queryParams.txz01" />
               </a-form-item>
             </a-col>
-            <a-col
-              :md="6"
-              :sm="24"
-            >
+            <a-col :md="6" :sm="24">
               <a-form-item
                 label="物料编码"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
               >
                 <a-input v-model="queryParams.matnr" />
               </a-form-item>
             </a-col>
-            <a-col
-              :md="6"
-              :sm="24"
-            >
+            <a-col :md="6" :sm="24">
               <a-form-item
                 label="开始时间"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
               >
-                <a-date-picker
-                  @change="onChange"
-                  :defaultValue="start"
-                />
+                <a-date-picker @change="onChange" :defaultValue="start" />
               </a-form-item>
             </a-col>
-            <a-col
-              :md="6"
-              :sm="24"
-            >
+            <a-col :md="6" :sm="24">
               <a-form-item
                 label="结束时间"
-                :labelCol="{span: 8}"
-                :wrapperCol="{span: 15, offset: 1}"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
               >
-                <a-date-picker
-                  @change="onChange2"
-                  :defaultValue="enddate"
-                />
+                <a-date-picker @change="onChange2" :defaultValue="enddate" />
               </a-form-item>
             </a-col>
 
             <template v-if="advanced">
-              <a-col
-                :md="12"
-                :sm="24"
-              >
-                 <werks-lgort
-                ref="werklgort"
-                @werks="setWerks"
-                @lgort="setLgort"
+              <a-col :md="12" :sm="24">
+                <werks-lgort
+                  ref="werklgort"
+                  @werks="setWerks"
+                  @lgort="setLgort"
                 >
                 </werks-lgort>
               </a-col>
             </template>
           </div>
-          <span style="float: right; margin-top: 3px;">
-            <a-button
-              type="primary"
-              @click="search"
-            >查询</a-button>
-            <a-button
-              style="margin-left: 8px"
-              @click="reset"
-            >重置</a-button>
-            <a
-              @click="toggleAdvanced"
-              style="margin-left: 8px"
-            >
-              {{advanced ? '收起' : '展开'}}
+          <span style="float: right; margin-top: 3px">
+            <a-button type="primary" @click="search">查询</a-button>
+            <a-button style="margin-left: 8px" @click="reset">重置</a-button>
+            <a @click="toggleAdvanced" style="margin-left: 8px">
+              {{ advanced ? "收起" : "展开" }}
               <a-icon :type="advanced ? 'up' : 'down'" />
             </a>
           </span>
@@ -104,32 +70,33 @@
           type="primary"
           ghost
           @click="add"
-        >创建供应计划</a-button>
+          >创建供应计划</a-button
+        >
       </div>
       <!-- 表格区域 -->
       <a-table
         ref="TableInfo"
         :columns="columns"
-        :rowKey="record => record.id"
+        :rowKey="(record) => record.id"
         :dataSource="dataSource"
         :pagination="pagination"
         :expandedRowKeys="expandedRowKeys"
         :loading="loading"
-        :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+        :rowSelection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange,
+        }"
         @change="handleTableChange"
         :bordered="bordered"
         :scroll="scroll"
         @expand="expandSubGrid"
       >
-        <template
-          slot="remark"
-          slot-scope="text, record"
-        >
+        <template slot="remark" slot-scope="text, record">
           <a-popover placement="topLeft">
             <template slot="content">
-              <div style="max-width: 200px">{{text}}</div>
+              <div style="max-width: 200px">{{ text }}</div>
             </template>
-            <p style="width: 200px;margin-bottom: 0">{{text}}</p>
+            <p style="width: 200px; margin-bottom: 0">{{ text }}</p>
           </a-popover>
         </template>
 
@@ -140,18 +107,15 @@
           :columns="innerColumns"
           :dataSource="record.innerData"
           :pagination="false"
-          :rowKey="record2 => record2.id"
+          :rowKey="(record2) => record2.id"
         >
-          <template
-            slot="operation"
-            slot-scope="text, record2"
-          >
+          <template slot="operation" slot-scope="text, record2">
             <a-icon
               type="setting"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              v-show="record2.status==0 && record.status==1 "
-              @click="edit(record2,record)"
+              v-show="record2.status == 0 && record.status == 1"
+              @click="edit(record2, record)"
               title="修改"
             ></a-icon>
             <a-icon
@@ -159,7 +123,7 @@
               type="delete"
               theme="twoTone"
               twoToneColor="#4a9ff5"
-              v-show="record2.status==0 && record.status==1 "
+              v-show="record2.status == 0 && record.status == 1"
               @click="subDelete(record2)"
               title="删除"
             ></a-icon>
@@ -183,6 +147,16 @@
       :amount="amount"
     >
     </scmBSupplyplan-add>
+    <plan-add
+      ref="scmBPurcharseorderAdd2"
+      @close="handleAddClose"
+      @success="handleAddSuccess"
+      :addVisiable="addVisiable2"
+      :price="price"
+      :baseId="baseId"
+      :amount="amount"
+    >
+    </plan-add>
     <!-- 修改字典 -->
     <scmBSupplyplan-edit
       ref="scmBPurcharseorderEdit"
@@ -193,18 +167,29 @@
       :amount="eAmount"
     >
     </scmBSupplyplan-edit>
+    <plan-edit
+      ref="scmBPurcharseorderEdit2"
+      @close="handleEditClose"
+      @success="handleEditSuccess"
+      :editVisiable="editVisiable2"
+      :price="ePrice"
+      :amount="eAmount"
+    >
+    </plan-edit>
   </a-card>
 </template>
 <script>
 import ScmBSupplyplanAdd from '../ScmBSupplyplan/ScmBSupplyplanAdd'
 import ScmBSupplyplanEdit from '../ScmBSupplyplan/ScmBSupplyplanEdit'
+import PlanEdit from '../ScmBSupplyplan/PlanEdit'
+import PlanAdd from '../ScmBSupplyplan/PlanAdd'
 import WerksLgort from '../../common/WerksLgort'
 import moment from 'moment'
 import { mapState } from 'vuex'
 
 export default {
   name: 'ScmBPurcharseorder',
-  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit, WerksLgort },
+  components: { ScmBSupplyplanAdd, ScmBSupplyplanEdit, WerksLgort, PlanEdit, PlanAdd  },
   data () {
     return {
       scroll: {
@@ -230,6 +215,7 @@ export default {
       queryParams: {
       },
       addVisiable: false,
+      addVisiable2: false,
       baseId: '', // 采购订单的id
       editRecord: {}, // 编辑行
       addKey: '', // 添加的订单id
@@ -238,6 +224,7 @@ export default {
       eAmount: 0,
       ePrice: 0,
       editVisiable: false,
+      editVisiable2: false,
       loading: false,
       bordered: true
     }
@@ -255,7 +242,21 @@ export default {
     columns () {
       let { sortedInfo } = this
       sortedInfo = sortedInfo || {}
-      return [{
+      return [
+        {
+        title: '订单类型',
+        dataIndex: 'code',
+        width: 100,
+        customRender: (text, row, index) => {
+          if(row.netpr<0){
+            return '退货订单'
+          }
+          if(text==null||text==''){
+            return '日常采购'
+          }
+          return '临时采购'
+        },
+      },{
         title: '订单号',
         dataIndex: 'ebeln',
         sorter: true,
@@ -356,19 +357,24 @@ export default {
         customRender: (text, row, index) => {
           return moment(text).format('YYYY-MM-DD')
         }
-      }, {
+      },
+      {
         title: '发票号码',
         dataIndex: 'fphm'
-      }, {
-        title: '发票金额',
+      },
+      {
+        title: '供应金额',
         dataIndex: 'fpjr'
-      }, {
+      },
+      {
         title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
+          if (text == null) return ''
           return moment(text).format('YYYY-MM-DD')
         }
-      }, {
+      },
+      {
         title: '状态',
         dataIndex: 'status',
         customRender: (text, row, index) => {
@@ -381,10 +387,12 @@ export default {
               return text
           }
         }
-      }, {
+      },
+      {
         title: '发票编码',
         dataIndex: 'fpbm'
-      }, {
+      },
+      {
         title: '包装规格',
         dataIndex: 'pkgAmount'
       }, {
@@ -421,17 +429,19 @@ export default {
     },
     handleAddSuccess () {
       this.addVisiable = false
+      this.addVisiable2 = false
       this.$message.success('新增供应计划成功')
       // this.expandedRowKeys=[]
       //this.search()
       // const dataSource = [...this.dataSource]
       let row = this.dataSource.find(item => item.id === this.baseId);
       this.handleSubData(row)
-      this.selectedRowKeys= []
+      this.selectedRowKeys = []
     },
     handleAddClose () {
       this.addVisiable = false
-      this.selectedRowKeys= [] //增加后清空选择项
+      this.addVisiable2 = false
+      this.selectedRowKeys = [] //增加后清空选择项
     },
     setWerks (werks) {
       this.queryParams.werks = werks
@@ -457,28 +467,43 @@ export default {
       }
       this.price = row.netpr
       this.amount = row.menge - (row.allmenge == null ? 0 : row.allmenge)
-      this.$refs.scmBPurcharseorderAdd.setOrderFormValues(row)
-      this.addVisiable = true
+      if (row.code == '1') {//货票同行
+        this.$refs.scmBPurcharseorderAdd.setOrderFormValues(row)
+        this.addVisiable = true
+      }
+      else {
+        this.$refs.scmBPurcharseorderAdd2.setOrderFormValues(row)
+        this.addVisiable2 = true
+      }
     },
     handleEditSuccess (baseId) {
       this.editVisiable = false
+      this.editVisiable2 = false
       this.$message.success('修改供应计划成功')
       //this.expandedRowKeys=[]
       //this.search()
       this.handleSubData(this.editRecord)
-      this.selectedRowKeys= []
+      this.selectedRowKeys = []
     },
     handleEditClose () {
       this.editVisiable = false
+      this.editVisiable2 = false
     },
     edit (record, pRecord) {
       if (record.doneMenge > 0) {
         this.$message.warning('此供应计划已经预收入库，不能修改！！！')
         return
       }
-      this.$refs.scmBPurcharseorderEdit.setFormValues(record)
-      this.$refs.scmBPurcharseorderEdit.setOrderFormValues(pRecord)
-      this.editVisiable = true
+      if (record.code == '1') {
+        this.$refs.scmBPurcharseorderEdit.setFormValues(record)
+        this.$refs.scmBPurcharseorderEdit.setOrderFormValues(pRecord)
+        this.editVisiable = true
+      }
+      else {
+        this.$refs.scmBPurcharseorderEdit2.setFormValues(record)
+        this.$refs.scmBPurcharseorderEdit2.setOrderFormValues(pRecord)
+        this.editVisiable2 = true
+      }
       this.ePrice = pRecord.netpr
       this.eAmount = pRecord.menge - (pRecord.allmenge == null ? 0 : pRecord.allmenge) + record.gMenge
       this.editRecord = pRecord

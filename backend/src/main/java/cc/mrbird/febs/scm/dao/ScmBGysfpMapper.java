@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * <p>
@@ -24,5 +25,8 @@ public interface ScmBGysfpMapper extends BaseMapper<ScmBGysfp> {
 
         @Select("SELECT count(1) FROM `scm_b_gysfp` WHERE fp_hm=#{fphm} and GYSACCOUNT=#{gys} and id!=#{id} ")
         Integer IsExistById( @Param("fphm") String fphm,@Param("gys") String gys,@Param("id") String id);
+
+        @Update("update scm_b_gysfp set STATE=#{state} where fp_hm=#{fphm} and GYSACCOUNT=#{gys}")
+        void updateFpState(@Param("fphm") String fphm, @Param("gys") String gys,@Param("state") int state);
 
         }

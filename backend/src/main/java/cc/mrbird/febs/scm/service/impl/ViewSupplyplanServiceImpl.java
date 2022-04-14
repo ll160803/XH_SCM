@@ -3,9 +3,12 @@ package cc.mrbird.febs.scm.service.impl;
 import cc.mrbird.febs.common.domain.QueryRequest;
 import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
+import cc.mrbird.febs.scm.dao.ScmDControlMapper;
+import cc.mrbird.febs.scm.entity.ScmDControl;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.dao.ViewSupplyplanMapper;
 import cc.mrbird.febs.scm.service.IViewSupplyplanService;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -39,6 +42,8 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
 
     @Autowired
     ScmBSupplyplanMapper scmBSupplyplanMapper;
+    @Autowired
+    ScmDControlMapper scmDControlMapper;
     @Override
     public IPage<ViewSupplyplan> findViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan) {
         try {
@@ -132,6 +137,50 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                 ).or().eq(ViewSupplyplan::getSendOrderCode, viewSupplyplan.getSendOrderCode()));
             }
             queryWrapper.eq(ViewSupplyplan::getBsartD, viewSupplyplan.getBsartD());//订单类型
+            if (viewSupplyplan.getIsDeletemark() != null) {
+                queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
+            }
+            Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<ViewSupplyplan> findViewSupplyplans_byMaterCode(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        try {
+            List<ScmDControl> control= this.scmDControlMapper.selectList(null);
+            String time= DateUtil.format(control.get(0).getEndTime(),"yyyy-MM-dd");
+            LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
+
+           queryWrapper.and(wrapper -> wrapper.ne(ViewSupplyplan::getMaterCode,""));
+
+            queryWrapper.le(ViewSupplyplan::getMaterCode,time);// 只有在截至时间之前的数据 才可以
+
+            queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getCode).or().eq(ViewSupplyplan::getCode, ""
+            ).or().eq(ViewSupplyplan::getCode, viewSupplyplan.getCode()));
+            if (viewSupplyplan.getId() != null) {
+                queryWrapper.eq(ViewSupplyplan::getId, viewSupplyplan.getId());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getBaseId())) {
+                queryWrapper.eq(ViewSupplyplan::getBaseId, viewSupplyplan.getBaseId());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getGysaccount())) {
+                queryWrapper.eq(ViewSupplyplan::getGysaccount, viewSupplyplan.getGysaccount());
+            }
+            if (viewSupplyplan.getStatus() != null) {
+                queryWrapper.eq(ViewSupplyplan::getStatus, viewSupplyplan.getStatus());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+                queryWrapper.eq(ViewSupplyplan::getWerks, viewSupplyplan.getWerks());
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                queryWrapper.eq(ViewSupplyplan::getLgort, viewSupplyplan.getLgort());
+            }
+
             if (viewSupplyplan.getIsDeletemark() != null) {
                 queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
             }
@@ -316,7 +365,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
     }
 
         @Override
-        public IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan){
+        public IPage<ViewSupplyplan> findVPurcharseorder_2022 (QueryRequest request, ViewSupplyplan viewSupplyplan){
             try {
 //            LambdaQueryWrapper<ScmBPurcharseorder> queryWrapper = new LambdaQueryWrapper<>();
 //            if (StringUtils.isNotBlank(scmBPurcharseorder.getCode())) {
@@ -326,7 +375,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                 SortUtil.handlePageSort(request, page, false);
                 page.setSearchCount(false);
                 // return this.page(page, queryWrapper);
-                IPage<ViewSupplyplan> listPage= this.baseMapper.findVPurcharseorder(page, viewSupplyplan);
+                IPage<ViewSupplyplan> listPage= this.baseMapper.findVPurcharseorder2022(page, viewSupplyplan);
                 Boolean flag=false;
                 Long totaNum=0L;
                 if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
@@ -367,10 +416,10 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                     flag=true;
                 }
                 if(flag) {
-                     totaNum = this.baseMapper.findVPurcharseorder_COUNT(viewSupplyplan);
+                     totaNum = this.baseMapper.findVPurcharseorder_COUNT2022(viewSupplyplan);
                 }
                 else{//在不搜索订单表的情况下
-                     totaNum = this.baseMapper.findVPurcharseorder_noOrder(viewSupplyplan);
+                     totaNum = this.baseMapper.findVPurcharseorder_noOrder2022(viewSupplyplan);
                 }
                 listPage.setTotal(totaNum);
                 return  listPage;
@@ -380,6 +429,72 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                 return null;
             }
         }
+
+    @Override
+    public IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan){
+        try {
+//            LambdaQueryWrapper<ScmBPurcharseorder> queryWrapper = new LambdaQueryWrapper<>();
+//            if (StringUtils.isNotBlank(scmBPurcharseorder.getCode())) {
+//                queryWrapper.eq(ScmBPurcharseorder::getCode, scmBPurcharseorder.getCode());
+//            }
+            Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            page.setSearchCount(false);
+            // return this.page(page, queryWrapper);
+            IPage<ViewSupplyplan> listPage= this.baseMapper.findVPurcharseorder(page, viewSupplyplan);
+            Boolean flag=false;
+            Long totaNum=0L;
+            if (StringUtils.isNotBlank(viewSupplyplan.getEbeln())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerks())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getNoOrder())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getWerkst())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getLgortName())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getMatnr())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getTxz01())) {
+                flag=true;
+            }
+            if (StringUtils.isNotBlank(viewSupplyplan.getEbelp())) {
+                flag=true;
+            }
+            if (viewSupplyplan.getBedat()!=null) {
+                flag=true;
+            }
+            if (viewSupplyplan.getEindt()!=null) {
+                flag=true;
+            }
+            if(viewSupplyplan.getDoneMenge()!=null && viewSupplyplan.getDoneMenge().intValue()>0)
+            {
+                flag=true;
+            }
+            if(flag) {
+                totaNum = this.baseMapper.findVPurcharseorder_COUNT(viewSupplyplan);
+            }
+            else{//在不搜索订单表的情况下
+                totaNum = this.baseMapper.findVPurcharseorder_noOrder(viewSupplyplan);
+            }
+            listPage.setTotal(totaNum);
+            return  listPage;
+
+        } catch (Exception e) {
+            log.error("findVPurcharseorder", e);
+            return null;
+        }
+    }
 
         @Override
         public  List<ViewSupplyplan> findPurcharseSendOrder(ViewSupplyplan viewSupplyplan) {

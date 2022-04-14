@@ -53,6 +53,11 @@ public IViewSupplyplanService iViewSupplyplanService;
 public Map<String, Object> List(QueryRequest request, ViewSupplyplan viewSupplyplan){
         return getDataTable(this.iViewSupplyplanService.findVPurcharseorder(request, viewSupplyplan));
         }
+    @GetMapping("time")
+    @RequiresPermissions("viewSupplyplan:view")
+    public Map<String, Object> List23(QueryRequest request, ViewSupplyplan viewSupplyplan){
+        return getDataTable(this.iViewSupplyplanService.findVPurcharseorder_2022(request, viewSupplyplan));
+    }
     @GetMapping("matnr")
     @RequiresPermissions("viewSupplyplan:matnr")
     public Map<String, Object> ListMatnr(QueryRequest request, ViewSupplyplan viewSupplyplan){
@@ -74,6 +79,14 @@ public Map<String, Object> List(QueryRequest request, ViewSupplyplan viewSupplyp
         scmBSupplyplan.setGysaccount(currentUser.getUsername());
 
         return getDataTable(this.iViewSupplyplanService.findViewSupplyplans2(request, scmBSupplyplan));
+    }
+    @GetMapping("code")
+    public Map<String, Object> ListOrder3(QueryRequest request, ViewSupplyplan scmBSupplyplan) {
+        scmBSupplyplan.setIsDeletemark(1);
+        User currentUser = FebsUtil.getCurrentUser();
+        scmBSupplyplan.setGysaccount(currentUser.getUsername());
+
+        return getDataTable(this.iViewSupplyplanService.findViewSupplyplans_byMaterCode(request, scmBSupplyplan));
     }
 /**
  * 跳转添加页面

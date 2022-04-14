@@ -233,6 +233,20 @@ private String linkTelephone;
     @TableField("SEND_ORDER_CODE")
             @ExcelField(value ="送货清单号")
 private String sendOrderCode;
+
+    /**
+     * 开票单号
+     */
+    @TableField("CODE")
+    @ExcelField(value ="开票单号")
+    private String code;
+
+    /**
+     * 开票时间 字符串yyyy-MM-dd
+     */
+    @TableField("MATER_CODE")
+    @ExcelField(value ="开票时间")
+    private String materCode;
     /**
      * 缺货原因
      */
@@ -309,6 +323,28 @@ private Long modifyUserId;
 
     private transient String keyword_mater;
 
+    public String getMaterCodeFrom() {
+        return materCodeFrom;
+    }
+
+    public void setMaterCodeFrom(String materCodeFrom) {
+        this.materCodeFrom = materCodeFrom;
+    }
+
+    private transient String materCodeFrom;
+
+
+    public String getMaterCodeTo() {
+        return materCodeTo;
+    }
+
+    public void setMaterCodeTo(String materCodeTo) {
+        this.materCodeTo = materCodeTo;
+    }
+
+    private transient String materCodeTo;
+
+
   public String getSendCodes() {
         return sendCodes;
     }
@@ -319,7 +355,21 @@ private Long modifyUserId;
 
     private  transient String  sendCodes;
 
+    public String getCode(){
+        return code;
+    }
 
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getMaterCode(){
+        return materCode;
+    }
+
+    public void setMaterCode(String materCode) {
+        this.materCode = materCode;
+    }
 
     public String getName(){
             return name;

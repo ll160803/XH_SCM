@@ -12,14 +12,6 @@
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="7">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="送货时间"
-          >
-            <a-date-picker v-decorator="[ 'sendDate', { rules: [{ required: true, message: '送货时间不能为空' }] }]" />
-          </a-form-item>
-        </a-col>
         <a-col :span="10">
           <werks-lgort
             ref="werklgort"
@@ -179,7 +171,7 @@ export default {
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      scmBSendorder: {},
+      scmBFpplan: {},
       dataSource: [],
       selectedRowKeys: [],
       sortedInfo: null,
@@ -229,7 +221,7 @@ export default {
     },
     reset () {
       this.loading = false
-      this.scmBSendorder = {}
+      this.scmBFpplan = {}
   
       this.form.resetFields()
       // 取消选中
@@ -258,7 +250,7 @@ export default {
       })
     },
     getPlanIds () {
-      this.$get('scmBSendorder/planIds/' + this.orderId, {
+      this.$get('scmBFpplan/planIds/' + this.orderId, {
 
       }).then((r) => {
         let data = r.data.data
@@ -289,14 +281,14 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      params.bsartD = "0"
+    
       if (params.sortField == null) {
         params.sortField = "id"
         params.sortOrder = "descend"
       }
-      params.sendOrderCode = this.orderId
-      params.status = 0 //未收货的数据
-      this.$get('viewSupplyplan/sendOrder', {
+      params.code = this.orderId
+      params.status = 1 //未收货的数据
+      this.$get('viewSupplyplan/code', {
         ...params
       }).then((r) => {
         let data = r.data
@@ -309,12 +301,12 @@ export default {
     },
     handleSubmit () {
       let supplyPlanIds = this.selectedRowKeys.join(",")
-      this.scmBSendorder["supplyPlanIds"] = supplyPlanIds
+      this.scmBFpplan["supplyPlanIds"] = supplyPlanIds
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.setFields()
-          this.$put('scmBSendorder/orderEdit', {
-            ...this.scmBSendorder
+          //this.setFields()
+          this.$put('scmBFpplan/orderEdit', {
+            ...this.scmBFpplan
           }).then(() => {
             this.reset()
             this.$emit('success')
@@ -327,14 +319,11 @@ export default {
     setFields () {
       let values = this.form.getFieldsValue(['sendDate'])
       if (typeof values !== 'undefined') {
-        Object.keys(values).forEach(_key => { this.scmBSendorder[_key] = values[_key] })
+        Object.keys(values).forEach(_key => { this.scmBFpplan[_key] = values[_key] })
       }
     },
-    setFormValues (sendDate, id) {
-      if (sendDate && sendDate != "") {
-        this.form.setFieldsValue({ sendDate: moment(sendDate) })
-      }
-      this.scmBSendorder.id = id
+    setFormValues (id) {
+      this.scmBFpplan.id = id
     }
   }
 }

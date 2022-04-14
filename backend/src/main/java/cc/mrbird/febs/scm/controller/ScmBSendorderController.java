@@ -140,7 +140,7 @@ public class ScmBSendorderController extends BaseController {
             throw new FebsException(message);
         }
     }
-    @Log("药品新增/按钮")
+  @Log("药品新增/按钮")
     @PostMapping("OrderAdd")
     @RequiresPermissions("sendorder:add")
     public void addSendorder(@Valid ScmBSendorder scmBSendorder, String supplyPlanIds) throws FebsException {
@@ -182,6 +182,8 @@ public class ScmBSendorderController extends BaseController {
             throw new FebsException(message);
         }
     }
+
+
     /**
      * 跳转修改页面
      *

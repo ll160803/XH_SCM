@@ -30,6 +30,7 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
 
         IPage<ViewSupplyplan> findDoneViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan, String statusType);
 
+        IPage<ViewSupplyplan> findViewSupplyplans_byMaterCode(QueryRequest request, ViewSupplyplan viewSupplyplan);
         void createViewSupplyplan(ViewSupplyplan viewSupplyplan);
 
         void updateViewSupplyplan(ViewSupplyplan viewSupplyplan);
@@ -45,6 +46,7 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
         List<ViewSupplyplan> findVPlanByOrderCode(String orderCode);
 
         IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan);
+        IPage<ViewSupplyplan> findVPurcharseorder_2022 (QueryRequest request, ViewSupplyplan viewSupplyplan);
 
         List<ViewSupplyplan> findPurcharseSendOrder(ViewSupplyplan viewSupplyplan);
 

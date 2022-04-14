@@ -58,4 +58,7 @@ public interface ScmBSupplyplanMapper extends BaseMapper<ScmBSupplyplan> {
 
         @Select("SELECT sum(G_MENGE) gMenge,sum(DoneMenge) doneMenge FROM scm_b_supplyplan WHERE scm_b_supplyplan.BASE_ID = #{baseId}  AND scm_b_supplyplan.IS_DELETEMARK = 1")
         StatisticMenge getSupplanMengeByBaseID(@Param(value="baseId") String baseId);
+
+        @Update("update scm_b_supplyplan set MATER_CODE= #{materCode} where ID =#{id}")
+        void updateSupplanTime(@Param(value="id") String id,@Param(value="materCode") String materCode);
         }

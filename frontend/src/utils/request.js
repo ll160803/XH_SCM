@@ -5,9 +5,12 @@ import store from '../store'
 import db from 'utils/localstorage'
 moment.locale('zh-cn')
 
+let url= 'https://testscmapi.whuh.com/';
+//let url= 'http://localhost:1044/';
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: 'https://scmapi.whuh.com/',
+  baseURL: url,
+  //baseURL: 'http://localhost:1044/',
   responseType: 'json',
   validateStatus (status) {
     // 200 外的状态码都认定为失败
@@ -79,7 +82,7 @@ FEBS_REQUEST.interceptors.response.use((config) => {
   return Promise.reject(error)
 })
 const request = {
-  baseURL: 'https://scmapi.whuh.com/',
+  baseURL: url,
   post (url, params) {
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {

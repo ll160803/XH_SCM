@@ -477,11 +477,12 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(GenerateMsg(item.getID(), "药品剩余效期不足6个月", false));
                 continue;
             }
-
-            if (!IsExistFphm(order, "", item.getFPHM(), userName.trim().replace("'", ""))) {
-                ListMess.add(GenerateMsg(item.getID(), "发票号码已经存在", false));
-                continue;
-            }
+if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要上传发票号码
+    if (!IsExistFphm(order, "", item.getFPHM(), userName.trim().replace("'", ""))) {
+        ListMess.add(GenerateMsg(item.getID(), "发票号码已经存在", false));
+        continue;
+    }
+}
 
             ScmBSupplyplan entity = new ScmBSupplyplan();
             if ("U,D".contains(item.getFLAG()))//修改删除
@@ -499,11 +500,17 @@ public class SCM_XHImpl implements ISCM_XHService {
             //region 赋值数据
             entity.setCharge(item.getCHARG());
             entity.setComments(item.getCOMMENTS());
-
-            entity.setFphm(item.getFPHM());
-            entity.setFpbm(item.getFPBM());
+            /**
+             * 发票   货票同行  才需要设置 发票编码 发票号码 发票日期
+             */
             entity.setFpjr(item.getFPJR());
-            entity.setFprq(item.getFPRQ());
+
+            if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要上传发票号码
+                entity.setFphm(item.getFPHM());
+                entity.setFpbm(item.getFPBM());
+
+                entity.setFprq(item.getFPRQ());
+            }
 
             entity.setgMenge(item.getMENGE());
 

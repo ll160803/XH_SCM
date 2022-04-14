@@ -1,10 +1,10 @@
 #for tests only !
-#Thu May 20 16:51:55 CST 2021
+#Tue Apr 12 14:39:15 CST 2022
 jco.client.lang=EN
 jco.destination.peak_limit=10
 jco.client.client=300
 jco.client.passwd=@123456
 jco.client.user=COM_SCM
-jco.client.sysnr=0
+jco.client.sysnr=00
 jco.destination.pool_capacity=5
 jco.client.ashost=192.168.64.29

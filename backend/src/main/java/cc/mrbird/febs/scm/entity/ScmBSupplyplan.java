@@ -220,6 +220,15 @@ public class ScmBSupplyplan implements Serializable {
     @ExcelField(value = "修改人")
     private Long modifyUserId;
 
+    public String getIsHp() {
+        return isHp;
+    }
+
+    public void setIsHp(String isHp) {
+        this.isHp = isHp;
+    }
+
+    private  transient  String isHp;
 
     public Long getId() {
         return id;

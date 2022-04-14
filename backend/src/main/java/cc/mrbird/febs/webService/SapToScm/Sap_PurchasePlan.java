@@ -39,15 +39,25 @@ public class Sap_PurchasePlan implements Serializable {
 
     private String lifnr ;
 
-    public String getName() {
+    public String getCode() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setCode(String name) {
         this.name = name;
     }
 
     private String name ;
+
+    public String getName() {
+        return code;
+    }
+
+    public void setName(String code) {
+        this.code = code;
+    }
+
+    private String code ;
 
     public String getMatnr() {
         return matnr;
