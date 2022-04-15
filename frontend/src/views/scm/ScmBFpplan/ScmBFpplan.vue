@@ -44,6 +44,11 @@
           ghost
           @click="add"
         >新增</a-button>
+         <a-button
+          type="primary"
+          ghost
+          @click="print"
+        >打印开票清单</a-button>
         <a-button
           @click="batchDelete"
         >删除</a-button>
@@ -102,7 +107,7 @@
    
 
     <plan-add
-         @close="handleAddClose"
+      @close="handleAddClose"
       @success="handleAddSuccess"
       :addVisiable="addVisiable">
     </plan-add>
@@ -114,7 +119,13 @@
       :orderId="orderId">
     </plan-edit>
     <!-- 修改字典 -->
-    
+    <fpplan-print
+    ref="sendinfoPrint"
+      @close="handlePrintClose"
+      :printVisiable="printVisiable"
+      :ids="printIds"
+      :lodop="lodop">
+    </fpplan-print>
   </a-card>
 </template>
 
@@ -122,10 +133,12 @@
 import moment from 'moment'
 import PlanAdd from './PlanAdd.vue'
 import PlanEdit from './PlanEdit.vue'
+import { getLodop ,getLodopDiv } from '../../../tools/lodop'
+import FpplanPrint from './FpplanPrint.vue'
 
 export default {
   name: 'Sendorder',
-  components: { PlanAdd, PlanEdit },
+  components: { PlanAdd, PlanEdit, FpplanPrint },
   data () {
     return {
       scroll: {
@@ -168,6 +181,9 @@ export default {
       },{
         title: '库房',
         dataIndex: 'lgortName'
+      }, {
+        title: '发票号码',
+        dataIndex: 'fphm'
       },{
         title: '开票单号',
         dataIndex: 'id'
@@ -223,7 +239,10 @@ export default {
           switch (text) {
             case 0:
               return <a-tag color="purple">未入库</a-tag>
-            case 1:
+           case 1:
+              if(row.materCode!=null && row.materCode!=''){
+                return <a-tag color="orange">已入帐</a-tag>
+              }
               return <a-tag color="green">已入库</a-tag>
             default:
               return text

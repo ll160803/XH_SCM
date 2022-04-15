@@ -131,18 +131,7 @@
             <a-date-picker v-decorator="[ 'hsdat', { rules: [{ required: true, message: '生产日期不能为空' }] }]" />
           </a-form-item>
         </a-col>
-        <a-col :span="12">
-          <a-form-item
-            v-bind="formItemLayout"
-            label="供应金额"
-          >
-            <a-input
-              :disabled="true"
-              placeholder="请输入供应金额"
-              v-decorator="['fpjr', { rules: [{ required: true, message: '供应金额不能为空' }] }]"
-            />
-          </a-form-item>
-        </a-col>
+       
         <!-- <a-col :span="12">
           <a-form-item
             v-bind="formItemLayout"
@@ -216,6 +205,18 @@
             <a-date-picker v-decorator="[ 'outDate',  { rules: [{ required: false, message: '请输入补货日期' },{
             validator: this.handleValidator2
           }]}]" />
+          </a-form-item>
+        </a-col>
+         <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="供应金额"
+          >
+            <a-input
+              :disabled="true"
+              placeholder="请输入供应金额"
+              v-decorator="['fpjr', { rules: [{ required: true, message: '供应金额不能为空' }] }]"
+            />
           </a-form-item>
         </a-col>
       </a-row>

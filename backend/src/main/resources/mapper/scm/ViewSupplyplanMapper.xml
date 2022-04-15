@@ -708,6 +708,67 @@ where
 		and `scm_b_supplyplan`.`IS_DELETEMARK` = 1
 	)
     </select>
+
+	<select id="findVPlanByCode" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" >
+      SELECT
+	`scm_b_purcharseorder`.`ebeln` AS `ebeln`,
+	`scm_b_purcharseorder`.`ebelp` AS `ebelp`,
+	`scm_b_purcharseorder`.`matnr` AS `matnr`,
+	CONCAT(`scm_b_purcharseorder`.`txz01`,'/',IFNULL(`scm_b_purcharseorder`.send_deaprt_name,'')) AS `txz01`,
+	`scm_b_purcharseorder`.`werkst` AS `werkst`,
+	`scm_b_purcharseorder`.`werks` AS `werks`,
+	`scm_b_purcharseorder`.`lgort` AS `lgort`,
+	`scm_b_purcharseorder`.`lgortName` AS `lgortName`,
+	`scm_b_purcharseorder`.`menge` AS `menge`,
+	`scm_b_purcharseorder`.`meins` AS `meins`,
+	`scm_b_purcharseorder`.`mseht` AS `mseht`,
+	`scm_b_purcharseorder`.`netpr` AS `netpr`,
+	`scm_b_purcharseorder`.`eindt` AS `eindt`,
+	`scm_b_purcharseorder`.`bedat` AS `bedat`,
+	`scm_b_purcharseorder`.`bsart` AS `bsart`,
+	`scm_b_supplyplan`.`G_MENGE` AS `G_MENGE`,
+	`scm_b_supplyplan`.`CHARGE` AS `CHARGE`,
+	`scm_b_supplyplan`.`VFDAT` AS `VFDAT`,
+	`scm_b_supplyplan`.`HSDAT` AS `HSDAT`,
+	`scm_b_supplyplan`.`FPHM` AS `FPHM`,
+	`scm_b_supplyplan`.`FPJR` AS `FPJR`,
+	`scm_b_supplyplan`.`FPRQ` AS `FPRQ`,
+	`scm_b_supplyplan`.`BASE_ID` AS `BASE_ID`,
+	`scm_b_supplyplan`.`ID` AS `ID`,
+	`scm_b_supplyplan`.`CODE` AS `CODE`,
+	`scm_b_supplyplan`.`STATUS` AS `STATUS`,
+	`scm_b_supplyplan`.`DoneMenge` AS `DONEMENGE`,
+	`scm_b_supplyplan`.`FPBM` AS `FPBM`,
+	`scm_b_supplyplan`.`GYSACCOUNT` AS `GYSACCOUNT`,
+	`scm_b_supplyplan`.`GYSNAME` AS `GYSNAME`,
+	`scm_b_supplyplan`.`PKG_AMOUNT` AS `PKG_AMOUNT`,
+	`scm_b_supplyplan`.`PKG_NUMBER` AS `PKG_NUMBER`,
+	`scm_b_supplyplan`.`UNINFORMED_STATE` AS `UNINFORMED_STATE`,
+	`scm_b_supplyplan`.`INFORMED_STATE` AS `INFORMED_STATE`,
+	`scm_b_supplyplan`.`BSART_D` AS `BSART_D`,
+	`scm_b_supplyplan`.`LINK_PERSON` AS `LINK_PERSON`,
+	`scm_b_supplyplan`.`SEND_DEPART` AS `SEND_DEPART`,
+	`scm_b_supplyplan`.`LINK_TELEPHONE` AS `LINK_TELEPHONE`,
+	`scm_b_supplyplan`.`SEND_ORDER_CODE` AS `SEND_ORDER_CODE`,
+	`scm_b_supplyplan`.`OUT_CAUSE` AS `OUT_CAUSE`,
+	`scm_b_supplyplan`.`OUT_DATE` AS `OUT_DATE`,
+	`scm_b_supplyplan`.`IS_DELETEMARK` AS `IS_DELETEMARK`,
+	`scm_b_supplyplan`.`CREATE_TIME` AS `CREATE_TIME`,
+	`scm_b_supplyplan`.`MODIFY_TIME` AS `MODIFY_TIME`,
+	`scm_b_supplyplan`.`CREATE_USER_ID` AS `CREATE_USER_ID`,
+	`scm_b_supplyplan`.`MODIFY_USER_ID` AS `MODIFY_USER_ID`,
+	`scm_b_purcharseorder`.`NAME` AS `NAME`
+FROM
+	(
+		(select * from `scm_b_supplyplan` where CODE=#{code}) scm_b_supplyplan
+		JOIN `scm_b_purcharseorder`
+	)
+where
+	(
+		`scm_b_supplyplan`.`BASE_ID` = `scm_b_purcharseorder`.`ID`
+		and `scm_b_supplyplan`.`IS_DELETEMARK` = 1
+	)
+    </select>
 	<!--pda 获取供应计划接口-->
 	<select id="findVPurcharseorderForPda" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" >
 		SELECT

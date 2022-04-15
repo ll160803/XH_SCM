@@ -143,6 +143,7 @@ export default {
         title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
+          if(text==null) return ''
           return moment(text).format('YYYY-MM-DD')
         },
         width: 100

@@ -31,6 +31,8 @@ private static final long serialVersionUID=1L;
     @TableField("ID")
     @ExcelField(value ="供应计划号")
     private Long id;
+    @TableField("coder")
+    private String coder;
     /**
      * 订单号
      */
@@ -361,6 +363,14 @@ private Long modifyUserId;
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getCoder(){
+        return coder;
+    }
+
+    public void setCoder(String coder) {
+        this.coder = coder;
     }
 
     public String getMaterCode(){

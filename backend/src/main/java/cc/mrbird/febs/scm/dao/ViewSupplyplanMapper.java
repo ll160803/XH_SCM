@@ -35,6 +35,7 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         Long findVPurcharseorder_noOrder(@Param("order") ViewSupplyplan order);
         Long findVPurcharseorder_noOrder2022(@Param("order") ViewSupplyplan order);
         List<ViewSupplyplan>  findVPlanByOrderCode(@Param(value = "orderCode") String orderCode);
+        List<ViewSupplyplan>  findVPlanByCode(@Param(value = "code") String code);
 
         List<ViewSupplyplan> findVPurcharseorder(@Param("order") ViewSupplyplan order);
 

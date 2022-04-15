@@ -767,18 +767,20 @@ public class ScmBSupplyplanController extends BaseController {
     }
 
 
-    @PostMapping("print")
-    public FebsResponse Generate(@NotBlank(message = "{required}") String id, String bsart) {
+    @PostMapping("kpprint")
+    public FebsResponse Generate23(@NotBlank(message = "{required}") String id) {
         FebsResponse feb = new FebsResponse();
-        List<ViewSupplyplan> e1 = iViewSupplyplanService.findVPlanByOrderCode(id);
+        List<ViewSupplyplan> e1 = iViewSupplyplanService.findVPlanByCode(id);
         StringBuilder sb = new StringBuilder();
         if (e1 != null && e1.size() > 0) {
-            sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst() + "  " + e1.get(0).getLgortName()));
-            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次",  "供应金额", "缺货原因", "补送日期"));
 
+            sb.append(String.format(GenerateHeadStr_kp(e1.get(0).getCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst() + "  " + e1.get(0).getLgortName()));
+           // sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次",  "供应金额", "缺货原因", "补送日期"));
+            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "补送日期"));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             for (ViewSupplyplan f2 : e1) {
-                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(),  String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
+               // sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(),  String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
+                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(), f2.getFphm()==null?"":f2.getFphm(), String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
             }
             sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)： %1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", e1.get(0).getGysname()));
             sb.append("</table>");
@@ -789,6 +791,41 @@ public class ScmBSupplyplanController extends BaseController {
         return feb;
     }
 
+    @PostMapping("print")
+    public FebsResponse Generate(@NotBlank(message = "{required}") String id, String bsart) {
+        FebsResponse feb = new FebsResponse();
+        List<ViewSupplyplan> e1 = iViewSupplyplanService.findVPlanByOrderCode(id);
+        StringBuilder sb = new StringBuilder();
+        if (e1 != null && e1.size() > 0) {
+
+            sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst() + "  " + e1.get(0).getLgortName()));
+            // sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次",  "供应金额", "缺货原因", "补送日期"));
+            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次", "发票号码", "发票金额", "缺货原因", "补送日期"));
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            for (ViewSupplyplan f2 : e1) {
+                // sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(),  String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
+                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(), f2.getFphm()==null?"":f2.getFphm(), String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
+            }
+            sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)： %1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", e1.get(0).getGysname()));
+            sb.append("</table>");
+        } else {
+            sb.append("尚未添加供应计划!");
+        }
+        feb.data(sb.toString());
+        return feb;
+    }
+    public String GenerateHeadStr_kp(String code) {
+        StringBuilder sb = new StringBuilder();
+        String mark = GenerateMark(code);
+        sb.append("<table cellpadding=\"0\" cellspacing=\"0\">");
+        sb.append(String.format("<tr><td colspan=\"12\" style=\"height:50px;font-family:宋体;text-align:center;font-size: 20px;\" >%1$s</td><td colspan=\"2\" ><img alt=\"显示出错\" id=\"im_14\" src=\"%2$s\"  style=\"text-align:center; width:80px; height:80px;\"/></td></tr>", "武汉协和医院药品开票清单", mark));
+        sb.append("<tr><td colspan=\"3\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商编码：%1$s</td>");
+        sb.append("<td colspan=\"4\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >供应商名称：%2$s</td>");
+        sb.append("<td colspan=\"5\" style=\"height:40px;font-family:宋体;text-align:left;font-size: 12px;\" >库房：%3$s</td>");
+        sb.append(String.format("<td colspan=\"2\" style=\"height:40px;font-family:宋体;text-align:center;font-size: 12px;\" >%1$s</td><tr>", code));
+        return sb.toString();
+
+    }
     public String GenerateHeadStr(String orderCode) {
         StringBuilder sb = new StringBuilder();
         String mark = GenerateMark(orderCode);
@@ -832,20 +869,20 @@ public class ScmBSupplyplanController extends BaseController {
                         "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%9$s" +
                         "</td>" +
-                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%10$s" +
                         "</td>" +
-                        "<td colspan=\"2\" style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%11$s" +
                         "</td>" +
-//                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
-//                        "%12$s" +
-//                        "</td>" +
-                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%12$s" +
                         "</td>" +
-                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;border-right:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%13$s" +
+                        "</td>" +
+                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;border-right:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%14$s" +
                         "</td>" +
                         "</tr>";
 
@@ -883,21 +920,21 @@ public class ScmBSupplyplanController extends BaseController {
                         "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%9$s" +
                         "</td>" +
-                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%10$s" +
                         "</td>" +
-                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:left;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%11$s" +
                         "</td>" +
-//                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
-//                        "%12$s" +
-//                        "</td>" +
-
-                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "<td style=\"width: 60px;border-left:solid 1px black;border-top:solid 1px black;text-align:right;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%12$s" +
                         "</td>" +
-                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;border-right:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
+
+                        "<td style=\"width: 80px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;height:30px;font-family:宋体;font-size: 12px;\">" +
                         "%13$s" +
+                        "</td>" +
+                        "<td style=\"width: 100px;border-left:solid 1px black;border-top:solid 1px black;text-align:center;border-right:solid 1px black;height:30px;font-family:宋体;font-size: 12px;\">" +
+                        "%14$s" +
                         "</td>" +
                         "</tr>";
 

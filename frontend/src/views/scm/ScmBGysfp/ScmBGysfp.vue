@@ -77,7 +77,7 @@
           type="primary"
           ghost
           @click="add"
-        >日常采购发票维护</a-button>
+        >发票集中维护</a-button>
         <a-button
           v-hasPermission="['scmBGysfp:add']"
           type="primary"

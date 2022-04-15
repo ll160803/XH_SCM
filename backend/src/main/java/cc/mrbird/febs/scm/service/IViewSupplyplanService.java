@@ -45,6 +45,8 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
 
         List<ViewSupplyplan> findVPlanByOrderCode(String orderCode);
 
+        List<ViewSupplyplan> findVPlanByCode(String code);
+
         IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan);
         IPage<ViewSupplyplan> findVPurcharseorder_2022 (QueryRequest request, ViewSupplyplan viewSupplyplan);
 

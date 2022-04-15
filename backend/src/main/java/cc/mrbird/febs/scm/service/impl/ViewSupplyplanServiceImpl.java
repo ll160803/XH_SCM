@@ -160,6 +160,10 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
 
             queryWrapper.le(ViewSupplyplan::getMaterCode,time);// 只有在截至时间之前的数据 才可以
 
+            queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getFphm).or().eq(ViewSupplyplan::getFphm, ""
+            ));
+            queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getCoder).or().eq(ViewSupplyplan::getCoder, ""
+            ));
             queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getCode).or().eq(ViewSupplyplan::getCode, ""
             ).or().eq(ViewSupplyplan::getCode, viewSupplyplan.getCode()));
             if (viewSupplyplan.getId() != null) {
@@ -180,6 +184,7 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
                 queryWrapper.eq(ViewSupplyplan::getLgort, viewSupplyplan.getLgort());
             }
+
 
             if (viewSupplyplan.getIsDeletemark() != null) {
                 queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
@@ -505,6 +510,13 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
    public List<ViewSupplyplan> findVPlanByOrderCode(String orderCode){
         return  this.baseMapper.findVPlanByOrderCode(orderCode);
    }
+
+    @Override
+    @Transactional
+    public List<ViewSupplyplan> findVPlanByCode(String code){
+        return  this.baseMapper.findVPlanByCode(code);
+    }
+
     @Override
     @Transactional
     public IPage<ViewSupplyplan> findMatnrValid (QueryRequest request, ViewSupplyplan viewSupplyplan){
