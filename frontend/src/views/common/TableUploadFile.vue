@@ -1,11 +1,6 @@
 <template>
-  <a-modal
-    title="附件上传"
-    :visible="fileVisiable"
-    :footer="null"
-    @cancel="cancelAudit"
-    :maskClosable="false"
-  >
+<a-row>
+  <a-col :span="12">
     <a-upload
       accept=".png,.jpg,.pdf"
       :fileList="fileList"
@@ -15,17 +10,18 @@
       <a-button v-if="fileList.length === 0">
         <a-icon type="upload" ref="up"  /> 选择文件
       </a-button>
-    </a-upload>
+    </a-upload></a-col>
+    <a-col :span="12">
     <a-button
           type="primary"
           @click="handleUpload"
           :disabled="fileList.length === 0 ||isShow===0"
           :loading="uploading"
-          style="margin-top: 16px"
         >
           {{uploading ? '上传中' : '开始上传' }}
         </a-button>
-  </a-modal>
+    </a-col>
+</a-row>
 
 </template>
   
@@ -42,21 +38,6 @@ export default {
       fileId: '',
       fileName: ''
     }
-  },
-  props: {
-    fileVisiable: {
-      default: false
-    }
-  },
-  watch:{
-fileVisiable() {
-  if(this.fileVisiable){
-     this.fileUrl=''
-     this.fileUrl=''
-     this.fileName =''
-     this.isShow =1
-  }
-}
   },
   methods: {
     handleRemove (file) {
@@ -106,6 +87,7 @@ fileVisiable() {
         this.fileName = comfile.name
         this.fileList=[]
         this.fileList.push(comfile)
+        this.$emit("setFileId", this.fileId, this.fileUrl, this.fileName)
         this.isShow = 0
         this.uploading = false
         this.$message.success('上传成功.')

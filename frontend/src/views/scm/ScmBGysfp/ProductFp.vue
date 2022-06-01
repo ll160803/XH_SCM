@@ -10,10 +10,11 @@
       :scroll="{ x: 900 }"
     >
       <template slot="fileId" slot-scope="text, record">
-        <div v-if="isEdit">
-        <a-button type="dashed"   block @click="OpenFile(record)">
-          {{ record.fileId != null && record.fileId != "" ? "已上传" : "上传" }}
-        </a-button>
+        <div v-if="isEdit&&(text==null ||text=='')">
+          <tableUpload-file
+      @setFileId="(a,b,c)=>setFileId(record,a,b,c)"
+    >
+    </tableUpload-file>
         </div>
         <div v-else>
          <a
@@ -36,13 +37,7 @@
         </a-button>
       </template>
     </a-table>
-    <tableUpload-file
-      ref="upFile"
-      :fileId="editRecord.fileId"
-      :fileVisiable="fileVisiable"
-      @setFileId="setFileId"
-    >
-    </tableUpload-file>
+   
   </div>
 </template>
 
@@ -78,7 +73,7 @@ export default {
           scopedSlots: {
             customRender: "fileId",
           },
-          width: 200,
+          width: 160,
         },
         {
           title: "操作",
@@ -101,17 +96,17 @@ export default {
         this.$refs.upFile.fetch(record.fileId)
       }
     },
-    setFileId (fileId, fileUrl, fileName) {
-      this.fileVisiable = false
+    setFileId (record,fileId, fileUrl, fileName) {
+
       console.log(fileUrl)
       /**
        const dataSource = [...this.dataSource]
        console.log(this.editRecord.id)
        let record=dataSource.filter(p=>p.id===this.editRecord.id)
        console.log(record)*/
-      this.editRecord["fileId"] = fileId
-      this.editRecord["fileUrl"] = fileUrl
-      this.editRecord["clientName"] = fileName
+     record["fileId"] = fileId
+      record["fileUrl"] = fileUrl
+     record["clientName"] = fileName
       //this.dataSource =[...dataSource]
     },
     reset () {
