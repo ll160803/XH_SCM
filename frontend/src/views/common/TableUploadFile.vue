@@ -87,7 +87,7 @@ fileVisiable() {
       return isJPG && isLt2M;
     },
     handleChange (info) {
-      debugger
+
       if (info.file.status === 'uploading') {
         this.handleUpload()
       }
