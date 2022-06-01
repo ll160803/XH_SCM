@@ -238,7 +238,7 @@ public class ScmUpImpl implements IScmUpService {
             Msg.setMess("发票日期参数有误，应为日期格式");
             return Msg;
         }
-        if(this.iScmBGysfpService.IsExist(fphm,userName,""))
+        if(this.iScmBGysfpService.IsExist(fphm,userName,"",fprq.substring(0,4)))
         {
             Msg.setIsSuccess(false);
             Msg.setMess("已经存在的的发票号码");
@@ -328,4 +328,124 @@ public class ScmUpImpl implements IScmUpService {
 
 
     }
+
+    public UpMess UploadFileFpList(String userName,String realName, String password, String fphm, String fprq, String fpAmount,
+                                   String fileName2,String fileBa64Content2,List<FileInfo> fileInfoList){
+        UpMess Msg = new UpMess();
+
+        List<String> arrUserAccount = new ArrayList<>();
+        arrUserAccount.add("10000100");
+        if (!arrUserAccount.contains(userName)) {// 不被允许的用户
+            Msg.setIsSuccess(false);
+            Msg.setMess("不明原因错误");
+            return Msg;
+        }
+        if (!StringUtils.isNotBlank(userName) || !StringUtils.isNotBlank(password) || !StringUtils.isNotBlank(fphm)
+                || !StringUtils.isNotBlank(fprq) || !StringUtils.isNotBlank(fpAmount)|| fileInfoList.size()<0
+                || !StringUtils.isNotBlank(fileBa64Content2)) {
+            Msg.setIsSuccess(false);
+            Msg.setMess("参数有误");
+            return Msg;
+        }
+        BigDecimal amount= new BigDecimal(0);
+        try{
+            amount= new BigDecimal(fpAmount);
+        }
+        catch (Exception ex){
+            Msg.setIsSuccess(false);
+            Msg.setMess("发票金额参数有误");
+            return Msg;
+        }
+        Date startDate;
+        try {
+            startDate = DateUtil.parse(fprq +" 00:00:00");
+        }
+        catch (Exception ex)
+        {
+            Msg.setIsSuccess(false);
+            Msg.setMess("发票日期参数有误，应为日期格式");
+            return Msg;
+        }
+        if(this.iScmBGysfpService.IsExist(fphm,userName,"",fprq.substring(0,4)))
+        {
+            Msg.setIsSuccess(false);
+            Msg.setMess("已经存在的的发票号码");
+            return Msg;
+        }
+        try {
+            String accountCode = userName.trim().replace("'", "");
+            String username = StringUtils.lowerCase(accountCode);
+            password = MD5Util.encrypt(username, password);
+
+            User user = this.userManager.getUser(username);
+            if (user == null) {
+                Msg.setIsSuccess(false);
+                Msg.setMess("您的用户名或密码有误");
+                return Msg;
+            }
+
+            if (!StringUtils.equals(user.getPassword(), password)) {
+                Msg.setIsSuccess(false);
+                Msg.setMess("您的用户名或密码有误");
+                return Msg;
+            }
+            if (User.STATUS_LOCK.equals(user.getStatus())) {
+                Msg.setIsSuccess(false);
+                Msg.setMess("账号已被锁定,请联系管理员！");
+                return Msg;
+            }
+
+            String gysFpId= UUID.randomUUID().toString();
+
+
+           List<String> comfileIds= new ArrayList<>();
+            for (FileInfo fi: fileInfoList
+                 ) {
+                String f_ID= SaveFile(Msg,fi.getFileBa64Content(),fi.getFileName()); //厂家发票
+                if(!StringUtils.isNotBlank(f_ID)){
+                    return Msg;
+                }
+                comfileIds.add(f_ID);
+            }
+            if(comfileIds.size()>0) {
+                LambdaQueryWrapper<ComFile> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.in(ComFile::getId, comfileIds);
+                ComFile comFile = new ComFile();
+                comFile.setRefTabTable("scmbgysfp");
+                comFile.setRefTabId(gysFpId);
+                this.iComFileService.update(comFile, queryWrapper);
+            }
+
+
+            String f_ID2=  SaveFile(Msg,fileBa64Content2,fileName2); //供应商发票
+            if(!StringUtils.isNotBlank(f_ID2)){
+                return Msg;
+            }
+
+            ScmBGysfp scmBGysfp =new ScmBGysfp();
+            scmBGysfp.setId(gysFpId);
+            //scmBGysfp.setCreateUserId(userName);
+            scmBGysfp.setFpAmount(amount);
+            scmBGysfp.setFpHm(fphm);
+            scmBGysfp.setFprq(startDate);
+            scmBGysfp.setGysaccount(userName);
+            scmBGysfp.setGysName(realName);
+            scmBGysfp.setCreateTime(new Date());
+            scmBGysfp.setState(0);
+           // scmBGysfp.setFileId(f_ID);//厂家
+            scmBGysfp.setMaterId(f_ID2); //供应商的
+            scmBGysfp.setIsDeletemark(1);
+            this.iScmBGysfpService.createScmBGysfpJieKou(scmBGysfp);
+            Msg.setIsSuccess(true);
+            Msg.setMess("");
+            return Msg;
+        } catch (Exception ex) {
+            Msg.setIsSuccess(false);
+            log.info(ex.getMessage());
+            Msg.setMess("SCM接口出错");
+            return Msg;
+
+        }
+    }
+
 }

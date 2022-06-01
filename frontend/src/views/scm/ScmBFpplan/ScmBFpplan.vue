@@ -9,18 +9,47 @@
         <div :class="advanced ? null: 'fold'">
           <a-row>
             <a-col
-              :md="8"
+              :md="6"
               :sm="24"
             >
               <a-form-item
                 label="开票单号"
-                :labelCol="{span: 5}"
-                :wrapperCol="{span: 18, offset: 1}"
+                :labelCol="{span: 8}"
+                :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.id" />
               </a-form-item>
             </a-col>
-           
+             <a-col  :md="6"
+              :sm="24">
+              <a-form-item
+                label="创建开始时间"
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker style="width:100%" @change="onChange"  />
+              </a-form-item>
+            </a-col>
+           <a-col  :md="6"
+              :sm="24">
+              <a-form-item
+                label="创建结束时间"
+               
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker  style="width:100%" @change="onChange2"  />
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+          <a-form-item
+            label="供应商开票截至时间"
+            :labelCol="{ span:12 }"
+            :wrapperCol="{ span: 11, offset: 1 }"
+          >
+           <a-input v-model="time"  disabled/>
+          </a-form-item>
+        </a-col>
 
           </a-row>
 
@@ -116,7 +145,9 @@
       @close="handleEditClose"
       @success="handleEditSuccess"
       :editVisiable="editVisiable"
-      :orderId="orderId">
+      :orderId="orderId"
+      :fphm="fphm"
+      >
     </plan-edit>
     <!-- 修改字典 -->
     <fpplan-print
@@ -133,7 +164,7 @@
 import moment from 'moment'
 import PlanAdd from './PlanAdd.vue'
 import PlanEdit from './PlanEdit.vue'
-import { getLodop ,getLodopDiv } from '../../../tools/lodop'
+import { getLodop, getLodopDiv } from '../../../tools/lodop'
 import FpplanPrint from './FpplanPrint.vue'
 
 export default {
@@ -168,6 +199,8 @@ export default {
       printIds: '',
       printVisiable: false,
       orderId: '',
+      fphm: '',
+      time: '',
       lodop: {}
     }
   },
@@ -178,19 +211,19 @@ export default {
       return [{
         title: '院区',
         dataIndex: 'werkst'
-      },{
+      }, {
         title: '库房',
         dataIndex: 'lgortName'
       }, {
         title: '发票号码',
         dataIndex: 'fphm'
-      },{
+      }, {
         title: '开票单号',
         dataIndex: 'id'
       }, {
         title: '开票金额',
         dataIndex: 'fpjr'
-      },{
+      }, {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' }
@@ -200,8 +233,14 @@ export default {
       return [{
         title: '供应计划号',
         dataIndex: 'id'
+      }, {
+        title: '药品编码',
+        dataIndex: 'matnr'
+      }, {
+        title: '药品名称',
+        dataIndex: 'txz01'
       },
-       {
+      {
         title: '供应数量',
         dataIndex: 'gMenge'
       }, {
@@ -229,7 +268,7 @@ export default {
         title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
-          if(text== null) return ''
+          if (text == null) return ''
           return moment(text).format('YYYY-MM-DD')
         }
       }, {
@@ -239,8 +278,8 @@ export default {
           switch (text) {
             case 0:
               return <a-tag color="purple">未入库</a-tag>
-           case 1:
-              if(row.materCode!=null && row.materCode!=''){
+            case 1:
+              if (row.materCode != null && row.materCode != '') {
                 return <a-tag color="orange">已入帐</a-tag>
               }
               return <a-tag color="green">已入库</a-tag>
@@ -248,22 +287,52 @@ export default {
               return text
           }
         }
-      }, {
-        title: '预收数量',
-        dataIndex: 'doneMenge'
-      }, {
-        title: '包装规格',
-        dataIndex: 'pkgAmount'
-      }, {
-        title: '包装数量',
-        dataIndex: 'pkgNumber'
-      }]
+      }, 
+      //{
+      //   title: '预收数量',
+      //   dataIndex: 'doneMenge'
+      // }, {
+      //   title: '包装规格',
+      //   dataIndex: 'pkgAmount'
+      // }, {
+      //   title: '包装数量',
+      //   dataIndex: 'pkgNumber'
+      // }
+      ]
     }
   },
   mounted () {
     this.fetch()
+    this.fetch2()
   },
   methods: {
+    fetch2 () {
+      this.$get('scmDControl', {
+      }).then((r) => {
+        let rows = r.data.rows
+        if (rows.length > 0) {
+          if (rows[0].endTime != null) {
+            this.time = rows[0].endTime.substr(0, 10)
+          }
+        }
+      });
+    },
+    onChange (date, dateString) {
+      if (date == null) {
+        delete this.queryParams.createTimeFrom
+      }
+      else {
+        this.queryParams.createTimeFrom = dateString
+      }
+    },
+    onChange2 (date, dateString) {
+      if (date == null) {
+        delete this.queryParams.createTimeTo
+      }
+      else {
+        this.queryParams.createTimeTo = dateString
+      }
+    },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
     },
@@ -324,6 +393,7 @@ export default {
     edit (record) {
       let that = this
       this.orderId = record.id
+      this.fphm = record.fphm
       this.editVisiable = true
       setTimeout(function () {
         that.$refs.scmBSendorderEdit.setFormValues(record.id)
@@ -364,7 +434,9 @@ export default {
     },
     handleSubData (record) {
       this.loading = true
-      this.$get('scmBSupplyplan', {
+      this.$get('viewSupplyplan/fpcode', {
+        pageNum: 1,
+        pageSize: 1000,
         code: record.id
       }).then((r) => {
         let data = r.data
@@ -462,7 +534,7 @@ export default {
         params.pageSize = this.pagination.defaultPageSize
         params.pageNum = this.pagination.defaultCurrent
       }
-      
+
       if (params.sortField == null) {
         params.sortField = "ID"
         params.sortOrder = "descend"

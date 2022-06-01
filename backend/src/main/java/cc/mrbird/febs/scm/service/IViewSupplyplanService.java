@@ -30,6 +30,8 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
 
         IPage<ViewSupplyplan> findDoneViewSupplyplans(QueryRequest request, ViewSupplyplan viewSupplyplan, String statusType);
 
+        IPage<ViewSupplyplan> findViewSupplyplans_byfpplan(QueryRequest request, ViewSupplyplan viewSupplyplan);
+
         IPage<ViewSupplyplan> findViewSupplyplans_byMaterCode(QueryRequest request, ViewSupplyplan viewSupplyplan);
         void createViewSupplyplan(ViewSupplyplan viewSupplyplan);
 

@@ -44,7 +44,7 @@
         />
       </a-form-item>
       </a-col>
- <a-col :sm="8">
+ <!-- <a-col :sm="8">
       <a-form-item
         v-bind="formItemLayout"
         label="药厂发票"
@@ -69,7 +69,7 @@
           {{uploading ? '上传中' : '开始上传' }}
         </a-button>
       </a-form-item>
-       </a-col>
+       </a-col> -->
          <a-col :sm="8">
       <a-form-item
         v-bind="formItemLayout"
@@ -112,6 +112,12 @@
         :loading="loading"
       >提交</a-button>
     </div>
+    <a-collapse v-model="activeKey">
+    <a-collapse-panel key="1" header="厂商发票上传">
+       <product-fp ref="productFp">
+       </product-fp>
+    </a-collapse-panel>
+    </a-collapse>
     <a-card title="开票数据选择" :border="false">
        <scm-b-gysfp-sub ref="sub" fphm=""  @sucess="selectSucess">
        </scm-b-gysfp-sub>
@@ -119,13 +125,14 @@
   </a-drawer>
 </template>
 <script>
+import ProductFp from './ProductFp.vue'
 import ScmBGysfpSub from './ScmBGysfpSub.vue'
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 }
 }
 export default {
-  components: { ScmBGysfpSub },
+  components: { ScmBGysfpSub, ProductFp },
   name: 'ScmBGysfpAdd',
   props: {
     addVisiable: {
@@ -148,8 +155,14 @@ export default {
         materId: ''
       },
       fpjr: '',
-      kpjr: ''
+      kpjr: '',
+      activeKey: ['1']
     }
+  },
+  watch: {
+    activeKey(key) {
+      console.log(key);
+    },
   },
   methods: {
     reset () {
@@ -163,6 +176,7 @@ export default {
       this.scmBGysfp = {
 
       }
+      this.$refs.productFp.reset()
       this.$refs.sub.reset()
       this.form.resetFields()
     },
@@ -184,19 +198,25 @@ export default {
         this.$message.warning('请选择开票数据.')
         return false
       }
-      if (this.scmBGysfp.fileId === '') {
-        this.$message.warning('请上传厂家发票.')
-        return false
-      }
+      // if (this.scmBGysfp.fileId === '') {
+      //   this.$message.warning('请上传厂家发票.')
+      //   return false
+      // }
       if (this.scmBGysfp.materId === '') {
         this.$message.warning('请上传供应商发票.')
+        return false
+      }
+      let fileListIds= this.$refs.productFp.getAllFileId()
+      if(fileListIds.length==0){
+         this.$message.warning('请上传厂家发票.')
         return false
       }
       this.form.validateFields((err, values) => {
         if (!err) {
           this.setFields()
           this.$post('scmBGysfp', {
-            ...this.scmBGysfp
+            ...this.scmBGysfp,
+            fileListIds: fileListIds.join(',')
           }).then(() => {
             this.reset()
             this.$emit('success')

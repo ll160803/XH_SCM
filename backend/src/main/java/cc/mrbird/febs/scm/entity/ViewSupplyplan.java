@@ -346,6 +346,14 @@ private Long modifyUserId;
 
     private transient String materCodeTo;
 
+    public String getSendDeaprtContact() {
+        return sendDeaprtContact;
+    }
+
+    public void setSendDeaprtContact(String sendDeaprtContact) {
+        this.sendDeaprtContact = sendDeaprtContact;
+    }
+    private   String  sendDeaprtContact;
 
   public String getSendCodes() {
         return sendCodes;

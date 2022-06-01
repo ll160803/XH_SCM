@@ -99,6 +99,12 @@
         type="primary"
       >关闭</a-button>
     </div>
+     <a-collapse v-model="activeKey">
+    <a-collapse-panel key="1" header="厂商发票">
+       <product-fp ref="productFp" :isEdit="false">
+       </product-fp>
+    </a-collapse-panel>
+    </a-collapse>
     <sub-view ref="sub">
     </sub-view>
   </a-drawer>
@@ -106,18 +112,24 @@
 <script>
 import moment from 'moment'
 import SubView from './SubView.vue'
+import ProductFp from './ProductFp.vue'
 
 const formItemLayout = {
   labelCol: { span: 6 },
   wrapperCol: { span: 18 }
 }
 export default {
-  components: { SubView },
+  components: { SubView,ProductFp },
   name: 'ScmBGysfpEdit',
   props: {
     editVisiable: {
       default: false
     }
+  },
+   watch: {
+    activeKey(key) {
+      console.log(key);
+    },
   },
   data () {
     return {
@@ -134,7 +146,8 @@ export default {
       scmBGysfp: {
         fileId: '',
         materId: ''
-      }
+      },
+      activeKey: ['1']
     }
   },
   methods: {
@@ -144,6 +157,7 @@ export default {
       this.fileList2 = []
       this.scmBGysfp.materId = ''
       this.scmBGysfp.fileId = ''
+       this.$refs.productFp.reset()
       this.form.resetFields()
     },
     onClose () {
@@ -208,6 +222,7 @@ export default {
       let that= this 
       setTimeout(()=>{
         that.$refs.sub.search(scmBGysfp.fpHm,scmBGysfp.fpAmount)
+        that.$refs.productFp.fetch(scmBGysfp.id)
       },300)
     },
     handleRemove (file) {
@@ -293,11 +308,11 @@ export default {
     },
     handleSubmit () {
       if (this.scmBGysfp.materId === '') {
-        this.$message.warning('请上传两票制承诺书附件.')
+        this.$message.warning('请上传供应商发票.')
         return false
       }
       if (this.scmBGysfp.fileId === '') {
-        this.$message.warning('请上传委托书附件.')
+        this.$message.warning('请上传厂家发票.')
         return false
       }
       this.form.validateFields((err, values) => {

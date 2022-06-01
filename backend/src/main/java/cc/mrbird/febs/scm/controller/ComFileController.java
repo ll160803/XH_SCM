@@ -9,11 +9,13 @@ import cc.mrbird.febs.common.domain.QueryRequest;
 
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.utils.FtpUtil;
+import cc.mrbird.febs.scm.entity.OutComFile;
 import cc.mrbird.febs.scm.service.IComFileService;
 import cc.mrbird.febs.scm.entity.ComFile;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +65,14 @@ public class ComFileController extends BaseController{
     public Map<String, Object> List(QueryRequest request, ComFile comFile){
         return getDataTable(this.iComFileService.findComFiles(request, comFile));
     }
+    @GetMapping("list")
+    public List<ComFile> List2(ComFile comFile){
+        LambdaQueryWrapper<ComFile> comFileLambdaQueryWrapper= new LambdaQueryWrapper<>();
+        comFileLambdaQueryWrapper.eq(ComFile::getRefTabTable,comFile.getRefTabTable());
+        comFileLambdaQueryWrapper.eq(ComFile::getRefTabId,comFile.getRefTabId());
+        return  this.iComFileService.list(comFileLambdaQueryWrapper);
+    }
+
 
     /**
      * 跳转添加页面
@@ -138,6 +148,60 @@ public class ComFileController extends BaseController{
     public ComFile detail(@NotBlank(message = "{required}") @PathVariable String id) {
         ComFile comFile=this.iComFileService.getById(id);
         return comFile;
+    }
+
+    @GetMapping("scm/{id}")
+    public OutComFile detail2(@NotBlank(message = "{required}") @PathVariable String id) {
+        ComFile comFile=this.iComFileService.getById(id);
+        OutComFile outComFile =new OutComFile();
+
+        outComFile.setUid(comFile.getId());
+        outComFile.setName(comFile.getClientName());
+        outComFile.setStatus("done");
+
+        String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/"  + comFile.getServerName();
+        outComFile.setUrl(fileUrl);
+        outComFile.setThumbUrl(fileUrl);
+        outComFile.setSerName(comFile.getServerName());
+        return outComFile;
+    }
+
+    @PostMapping("uploadNew")
+    public FebsResponse Upload2(@RequestParam("file") MultipartFile file) throws FebsException {
+        if (file.isEmpty()) {
+            throw new FebsException("空文件");
+        }
+        String fileName2 = file.getOriginalFilename();  // 文件名
+        String suffixName = fileName2.substring(fileName2.lastIndexOf("."));  // 后缀名
+        String filePath = febsProperties.getUploadPath(); // 上传后的路径
+        String fileName = UUID.randomUUID() + suffixName; // 新文件名
+        File dest = new File(filePath + fileName);
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdirs();
+        }
+        try {
+            file.transferTo(dest);
+        } catch (IOException e) {
+            throw new FebsException(e.getMessage());
+        }
+        String Id=UUID.randomUUID().toString();
+        ComFile cf=new ComFile();
+        cf.setId(Id);
+        cf.setCreateTime(new Date());
+        cf.setClientName(fileName2);//客户端的名称
+        cf.setServerName(fileName);
+        iComFileService.createComFile(cf);
+        String fileUrl = febsProperties.getBaseUrl() + "/uploadFile/"  + fileName;
+
+        OutComFile outComFile = new OutComFile();
+        outComFile.setUid(Id);
+        outComFile.setName(fileName2);
+        outComFile.setStatus("done");
+        outComFile.setUrl(fileUrl);
+        outComFile.setThumbUrl(fileUrl);
+        outComFile.setSerName(fileName);
+        // return new FebsResponse().put("data", outComFile);
+        return new FebsResponse().data(outComFile) ;
     }
 
 

@@ -9,6 +9,16 @@ import java.math.BigDecimal;
 public class Sap_PurchasePlan implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    public String getCode2() {
+        return code2;
+    }
+
+    public void setCode2(String code2) {
+        this.code2 = code2;
+    }
+
+    private String code2 ;
+
     public String getEbeln() {
         return ebeln;
     }
@@ -40,21 +50,21 @@ public class Sap_PurchasePlan implements Serializable {
     private String lifnr ;
 
     public String getCode() {
-        return name;
+        return code;
     }
 
-    public void setCode(String name) {
-        this.name = name;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     private String name ;
 
     public String getName() {
-        return code;
+        return name;
     }
 
-    public void setName(String code) {
-        this.code = code;
+    public void setName(String name) {
+        this.name = name;
     }
 
     private String code ;

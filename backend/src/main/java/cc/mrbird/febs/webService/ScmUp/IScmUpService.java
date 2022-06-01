@@ -15,4 +15,7 @@ public interface IScmUpService {
 
     @WebMethod
     UpMess UploadFileFp(String userName,String realName, String password, String fphm, String fprq, String fpAmount,String fileName1,String fileBa64Content1,String fileName2,String fileBa64Content2);
+
+    @WebMethod
+    UpMess UploadFileFpList(String userName,String realName, String password, String fphm, String fprq, String fpAmount,String fileName2,String fileBa64Content2,List<FileInfo> fileInfoList);
 }

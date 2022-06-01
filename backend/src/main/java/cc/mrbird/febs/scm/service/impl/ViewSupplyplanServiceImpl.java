@@ -157,11 +157,26 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
 
            queryWrapper.and(wrapper -> wrapper.ne(ViewSupplyplan::getMaterCode,""));
+           if(StringUtils.isNotEmpty(viewSupplyplan.getMaterCodeFrom())){
+               queryWrapper.ge(ViewSupplyplan::getMaterCode,viewSupplyplan.getMaterCodeFrom());
+           }
+            if(StringUtils.isNotEmpty(viewSupplyplan.getMaterCodeTo())){
+                queryWrapper.le(ViewSupplyplan::getMaterCode,viewSupplyplan.getMaterCodeTo());
+            }
 
             queryWrapper.le(ViewSupplyplan::getMaterCode,time);// 只有在截至时间之前的数据 才可以
+            if(StringUtils.isNotEmpty(viewSupplyplan.getMatnr())) {
+                queryWrapper.eq(ViewSupplyplan::getMatnr, viewSupplyplan.getMatnr());// 药品编码
+            }
+            if(StringUtils.isNotEmpty(viewSupplyplan.getTxz01())) {
+                queryWrapper.like(ViewSupplyplan::getTxz01, viewSupplyplan.getTxz01());// 药品名称
+            }
+            if(StringUtils.isNotEmpty(viewSupplyplan.getSendDeaprtContact())) {
+                queryWrapper.like(ViewSupplyplan::getSendDeaprtContact, viewSupplyplan.getSendDeaprtContact());// 是否集中采购
+            }
 
             queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getFphm).or().eq(ViewSupplyplan::getFphm, ""
-            ));
+            ).or().eq(ViewSupplyplan::getFphm, viewSupplyplan.getFphm()));
             queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getCoder).or().eq(ViewSupplyplan::getCoder, ""
             ));
             queryWrapper.and(wrapper -> wrapper.isNull(ViewSupplyplan::getCode).or().eq(ViewSupplyplan::getCode, ""
@@ -190,6 +205,28 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
                 queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
             }
             Page<ViewSupplyplan> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<ViewSupplyplan> findViewSupplyplans_byfpplan(QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        try {
+            List<ScmDControl> control= this.scmDControlMapper.selectList(null);
+
+            LambdaQueryWrapper<ViewSupplyplan> queryWrapper = new LambdaQueryWrapper<>();
+
+            queryWrapper.eq(ViewSupplyplan::getCode, viewSupplyplan.getCode());
+
+
+            queryWrapper.eq(ViewSupplyplan::getIsDeletemark, 1);
+
+            Page<ViewSupplyplan> page = new Page<>();
+           // page.setSearchCount(false);
             SortUtil.handlePageSort(request, page, false);
             return this.page(page, queryWrapper);
         } catch (Exception e) {

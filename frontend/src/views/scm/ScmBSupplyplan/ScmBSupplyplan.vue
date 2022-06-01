@@ -425,7 +425,7 @@ export default {
       this.queryParams.gysaccount = this.user.username//供应商账号
       this.queryParams.pageSize = 10000
       this.queryParams.pageNum = 1
-      this.$export('viewSupplyplan/excel', {
+      this.$export('viewSupplyplan/timeExcel', {
         sortField: "id",
         sortOrder: "descend",
         ...this.queryParams

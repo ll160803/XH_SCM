@@ -68,7 +68,6 @@
           @click="add"
         >新增</a-button>
         <a-button
-          v-hasPermission="['sendorder:add']"
           type="primary"
           ghost
           @click="print"

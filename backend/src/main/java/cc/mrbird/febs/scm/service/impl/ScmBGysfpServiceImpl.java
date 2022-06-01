@@ -77,6 +77,13 @@ public void createScmBGysfp(ScmBGysfp scmBGysfp){
         scmBGysfp.setIsDeletemark(1);
         this.save(scmBGysfp);
         }
+    @Override
+    @Transactional
+    public void createScmBGysfpJieKou(ScmBGysfp scmBGysfp){
+        scmBGysfp.setCreateTime(new Date());
+        scmBGysfp.setIsDeletemark(1);
+        this.save(scmBGysfp);
+    }
 
 @Override
 @Transactional
@@ -100,13 +107,13 @@ public void deleteScmBGysfps(String[]Ids){
         }
         @Override
         @Transactional
-       public boolean IsExist(String fphm,String gys,String id){
+       public boolean IsExist(String fphm,String gys,String id,String year){
           Integer reInt= 0;
           if(StringUtils.isNotBlank(id)){
-                  reInt=this.baseMapper.IsExistById(fphm.trim(),gys.trim(),id);
+                  reInt=this.baseMapper.IsExistById(fphm.trim(),gys.trim(),id,year);
           }
           else{
-                  reInt=this.baseMapper.IsExist(fphm.trim(),gys.trim());
+                  reInt=this.baseMapper.IsExist(fphm.trim(),gys.trim(),year);
           }
           if(reInt>0){
                   return  true;

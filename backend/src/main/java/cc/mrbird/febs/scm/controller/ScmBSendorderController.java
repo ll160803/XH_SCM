@@ -21,6 +21,7 @@ import cc.mrbird.febs.scm.entity.ScmBSendorder;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.scm.service.IViewSupplyplanService;
 import cc.mrbird.febs.system.domain.User;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -184,13 +185,7 @@ public class ScmBSendorderController extends BaseController {
     }
 
 
-    /**
-     * 跳转修改页面
-     *
-     * @param request
-     * @param id      实体ID
-     * @return
-     */
+
     @Log("物资修改")
     @PutMapping
     @RequiresPermissions("scmBSendorder:update")
@@ -398,7 +393,7 @@ public class ScmBSendorderController extends BaseController {
             GenerateCode(sb, sdf.format(entity.getBedat()), entity.getEbeln(), entity.getId().toString(), entity.getMatnr(), entity.getTxz01(), entity.getMenge().toString(), entity.getgMenge().toString(), entity.getCharge(), entity.getNetpr().toString(), entity.getFpjr().toString(), sdf.format(entity.getHsdat()), sdf.format(entity.getFprq()), entity.getPkgAmount()==null?"":entity.getPkgAmount().toString(), entity.getPkgNumber()==null?"":entity.getPkgNumber().toString());
         }
         //GenerateBottomCode(sb, "", "", "", "", "", "", "", "", "", "", "", "", "", "");//最后一行空着
-        sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", gysName));
+        sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：%2$s</td></tr>", gysName, DateUtil.format(new Date(),"yyyy-MM-dd")));
         sb.append("</table>");
     }
     private void GenerMater(StringBuilder sb,List<ViewSupplyplan> entitys ,String id ,String markCode ){
@@ -424,7 +419,7 @@ public class ScmBSendorderController extends BaseController {
             GenerateCode(sb, sdf.format(entity.getBedat()), entity.getEbeln(), entity.getId().toString(), entity.getMatnr(), entity.getTxz01(), entity.getMenge().toString(), entity.getgMenge().toString(), entity.getMseht(), entity.getNetpr().toString(), entity.getFpjr().toString(), entity.getSendDepart(), entity.getLinkPerson(), entity.getLinkTelephone(), entity.getMatnr());
         }
         //GenerateBottomCode(sb, "", "", "", "", "", "", "", "", "", "", "", "", "", "");//最后一行空着
-        sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：</td></tr>", gysName));
+        sb.append(String.format("<tr><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)：%1$s</td><td colspan=\"5\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"4\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：%2$s</td></tr>", gysName, DateUtil.format(new Date(),"yyyy-MM-dd")));
         sb.append("</table>");
     }
     public void GenerateCode(StringBuilder sb, String BEDAT, String EBELN, String EBELP, String MATNR, String TXZ01, String order_menge, String MENGE, String MSEHT, String PRICE, String MONEY, String SEND_DEPART_NAME, String LINK_PERSON, String LINK_TELEPHONE, String MATER_CODE)

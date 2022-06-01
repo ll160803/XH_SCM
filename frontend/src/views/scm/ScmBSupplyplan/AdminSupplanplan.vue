@@ -63,6 +63,10 @@
                       value="1"
                     >已入库</a-select-option>
                      <a-select-option
+                      key="2"
+                      value="2"
+                    >已过账</a-select-option>
+                     <a-select-option
                       key="-1"
                       value="-1"
                     >全部</a-select-option>
@@ -79,6 +83,26 @@
                 :wrapperCol="{span: 15, offset: 1}"
               >
                 <a-input v-model="queryParams.keyword_gys" />
+              </a-form-item>
+            </a-col>
+             <a-col :md="6" :sm="24">
+              <a-form-item
+                label="入账开始时间"
+                :labelCol="{ span: 8 }"
+                
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker style="width:100%" @change="onChange"  />
+              </a-form-item>
+            </a-col>
+            <a-col :md="6" :sm="24">
+              <a-form-item
+                label="入账结束时间"
+               
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker  style="width:100%" @change="onChange2"  />
               </a-form-item>
             </a-col>
             </template>
@@ -273,7 +297,10 @@ export default {
           switch (text) {
             case 0:
               return <a-tag color="purple">未入库</a-tag>
-            case 1:
+             case 1:
+              if(row.materCode!=null && row.materCode!=''){
+                return <a-tag color="orange">已入帐</a-tag>
+              }
               return <a-tag color="green">已入库</a-tag>
             default:
               return text
@@ -324,6 +351,24 @@ export default {
       this.advanced = !this.advanced
       if (!this.advanced) {
         this.queryParams.comments = ''
+      }
+    },
+    onChange (date, dateString) {
+      console.info(date)
+      console.info(dateString)
+      if(date==null){
+        delete this.queryParams.materCodeFrom
+      }
+      else{
+        this.queryParams.materCodeFrom = dateString
+      }
+    },
+    onChange2 (date, dateString) {
+      if(date==null){
+        delete this.queryParams.materCodeTo
+      }
+      else{
+        this.queryParams.materCodeTo = dateString
       }
     },
     setWerks (werks) {
@@ -423,7 +468,7 @@ export default {
       }
       params.bsartD = "0"
       // params.gysaccount = this.user.username//供应商账号
-      this.$get('viewSupplyplan', {
+      this.$get('viewSupplyplan/time', {
         ...params
       }).then((r) => {
         let data = r.data

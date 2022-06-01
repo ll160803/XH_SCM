@@ -2,7 +2,7 @@
   <a-drawer
     title="新增"
     :maskClosable="false"
-    width="75%"
+    width="90%"
     placement="right"
     :closable="false"
     @close="onClose"
@@ -11,7 +11,7 @@
   >
     <a-form :form="form">
       <a-row>
-        <a-col :span="12">
+        <a-col :span="8">
           <werks-lgort
             ref="werklgort"
             @werks="setWerks"
@@ -19,8 +19,71 @@
           >
           </werks-lgort>
         </a-col>
+         <a-col
+          :span="4"
+          :offset="1"
+        >
+          <a-input
+            placeholder="输入药品编码"
+            v-model="queryParams.matnr"
+          />
+        </a-col>
+         <a-col
+          :span="4"
+          :offset="1"
+        >
+          <a-input
+            placeholder="输入药品名称"
+            v-model="queryParams.txz01"
+          />
+        </a-col>
         <a-col
-          :span="5"
+          :span="3"
+          :offset="1"
+        >
+         <a-form-item
+          label="是否集采"
+          :labelCol="{span: 12}"
+          :wrapperCol="{span: 12}"
+        >
+          <a-select
+            v-model="queryParams.sendDeaprtContact"
+            style="width: 100%"
+            :dropdownStyle="{width: '200%'}"
+          >
+            <a-select-option
+             value="1"
+             key="1"
+            >否</a-select-option>
+             <a-select-option
+             value="0"
+             key="0"
+            >是</a-select-option>
+          </a-select>
+        </a-form-item>
+        </a-col>
+        <a-col :span="5" :offset="1">
+              <a-form-item
+                label="入账开始时间"
+                :labelCol="{ span: 8 }"
+                
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker style="width:100%" @change="onChange"  />
+              </a-form-item>
+            </a-col>
+           <a-col :span="5" :offset="1">
+              <a-form-item
+                label="入账结束时间"
+               
+                :labelCol="{ span: 8 }"
+                :wrapperCol="{ span: 15, offset: 1 }"
+              >
+                <a-date-picker  style="width:100%" @change="onChange2"  />
+              </a-form-item>
+            </a-col>
+        <a-col
+          :span="4"
           :offset="1"
         >
           <a-input-search
@@ -80,11 +143,11 @@ export default {
     }
   },
   watch: {
-    addVisiable () {
-      if (this.addVisiable) {
-        this.fetch()
-      }
-    }
+    // addVisiable () {
+    //   if (this.addVisiable) {
+    //     this.fetch()
+    //   }
+    // }
   },
   computed: {
     columns () {
@@ -92,6 +155,14 @@ export default {
         title: '供应计划号',
         dataIndex: 'id',
         width: 130
+      },{
+        title: '是否集中采购',
+        dataIndex: 'sendDeaprtContact',
+        customRender: (text, row, index) => {
+          if(text=='0') return '是'
+          return '否'
+        },
+        width: 100
       }, {
         title: '药品编码',
         dataIndex: 'matnr',
@@ -128,7 +199,7 @@ export default {
         dataIndex: 'fphm',
         width: 100
       }, {
-        title: '发票金额',
+        title: '供应金额',
         dataIndex: 'fpjr',
         width: 100
       }, {
@@ -189,7 +260,9 @@ export default {
         showSizeChanger: true,
         showTotal: (total, range) => `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      queryParams: {},
+      queryParams: {
+        sendDeaprtContact: '1'
+      },
       loading: false,
       bordered: true,
       werks: '',
@@ -201,6 +274,22 @@ export default {
     onClose () {
       this.reset()
       this.$emit('close')
+    },
+    onChange (date, dateString) {
+      if(date==null) {
+        delete this.queryParams.materCodeFrom
+      }
+      else{
+      this.queryParams.materCodeFrom = dateString
+      }
+    },
+    onChange2 (date, dateString) {
+        if(date==null) {
+           delete this.queryParams.materCodeTo
+        }
+        else{
+      this.queryParams.materCodeTo = dateString
+        }
     },
     onSelectChange (selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
@@ -255,9 +344,11 @@ export default {
       this.sortedInfo = null
       this.paginationInfo = null
       // 重置查询参数
-      this.queryParams = {}
+      this.queryParams = {
+        sendDeaprtContact: '1'
+      }
       this.$refs.werklgort.reset()
-      // this.fetch()
+       this.fetch({id:'-1'})
     },
     handleTableChange (pagination, filters, sorter) {
       this.sortedInfo = sorter
@@ -286,6 +377,8 @@ export default {
         params.sortOrder = "descend"
       }
       params.status = 1 // 为收货的数据
+      //console.info(params.sendDeaprtContact)
+     
       this.$get('viewSupplyplan/code', {
         ...params
       }).then((r) => {
@@ -302,6 +395,7 @@ export default {
       this.scmBFpplan["supplyPlanIds"] = supplyPlanIds
       var werks = ''
       var lgort = ''
+      var sendDeaprtContact= ''
       var msg = ''
       for (let item of this.rows) {
         if (werks == '') {
@@ -318,6 +412,14 @@ export default {
         else {
           if (lgort != item.lgort) {
             msg += item.id + ":" + item.lgortName + "库房不一致"
+          }
+        }
+         if (sendDeaprtContact == '') {
+          sendDeaprtContact = item.sendDeaprtContact;
+        }
+        else {
+          if (sendDeaprtContact != item.sendDeaprtContact) {
+            msg += item.id + ":是否集采不一致"
           }
         }
       }

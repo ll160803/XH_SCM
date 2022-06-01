@@ -112,18 +112,34 @@ public class ScmBFpplanController extends BaseController {
             scmBFpplan.setGysname(currentUser.getRealname());
             scmBFpplan.supplyPlanIds = supplyPlanIds;
 
+            String werks = "";
+            String lgort = "";
+            String zq=""; //是否同一个账期
             if (StringUtils.isNotBlank(supplyPlanIds)) {
                 String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
 
-                List<ViewSupplyplan> list = new ArrayList<>();
-                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                List<ViewSupplyplan> listvp = new ArrayList<>();
+                listvp.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
 
-                double jr = list.stream().mapToDouble(p -> Convert.toDouble(p.getFpjr())).sum();
+                double jr = listvp.stream().mapToDouble(p -> Convert.toDouble(p.getFpjr())).sum();
 
-                scmBFpplan.setWerks(list.get(0).getWerks());
-                scmBFpplan.setWerkst(list.get(0).getWerkst());
-                scmBFpplan.setLgort(list.get(0).getLgort());
-                scmBFpplan.setLgortName(list.get(0).getLgortName());
+                for (ViewSupplyplan vp2 : listvp
+                ) {
+                    if (werks.equals("")) {
+                        werks = vp2.getWerks();
+                        lgort = vp2.getLgort();
+                        zq= vp2.getMaterCode();
+                    } else {
+                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.equals(vp2.getMaterCode()))) {
+                            throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致或入账月份不一致");
+                        }
+                    }
+                }
+
+                scmBFpplan.setWerks(listvp.get(0).getWerks());
+                scmBFpplan.setWerkst(listvp.get(0).getWerkst());
+                scmBFpplan.setLgort(listvp.get(0).getLgort());
+                scmBFpplan.setLgortName(listvp.get(0).getLgortName());
                 scmBFpplan.setFpjr(new BigDecimal(jr));
 
             }
@@ -132,9 +148,9 @@ public class ScmBFpplanController extends BaseController {
 
 
         } catch (Exception e) {
-            message = "新增/按钮失败";
-            log.error(message, e);
-            throw new FebsException(message);
+
+            //log.error(message, e);
+            throw new FebsException(e.getMessage());
         }
     }
 
@@ -158,6 +174,7 @@ public class ScmBFpplanController extends BaseController {
             }
             String werks = "";
             String lgort = "";
+            String zq= "";
             if (StringUtils.isNotBlank(supplyPlanIds)) {
                 String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
                 List<ViewSupplyplan> listvp = this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
@@ -168,9 +185,10 @@ public class ScmBFpplanController extends BaseController {
                     if (werks.equals("")) {
                         werks = vp2.getWerks();
                         lgort = vp2.getLgort();
+                        zq= vp2.getMaterCode();
                     } else {
-                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()))) {
-                            throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致");
+                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.equals(vp2.getMaterCode()))) {
+                            throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致或入账月份不一致");
                         }
                     }
                 }

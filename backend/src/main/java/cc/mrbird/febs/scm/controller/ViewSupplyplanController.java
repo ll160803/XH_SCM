@@ -88,6 +88,13 @@ public Map<String, Object> List(QueryRequest request, ViewSupplyplan viewSupplyp
 
         return getDataTable(this.iViewSupplyplanService.findViewSupplyplans_byMaterCode(request, scmBSupplyplan));
     }
+    @GetMapping("fpcode")
+    public Map<String, Object> ListOrder5(QueryRequest request, ViewSupplyplan scmBSupplyplan) {
+        scmBSupplyplan.setIsDeletemark(1);
+        User currentUser = FebsUtil.getCurrentUser();
+        //scmBSupplyplan.setGysaccount(currentUser.getUsername());
+        return getDataTable(this.iViewSupplyplanService.findViewSupplyplans_byfpplan(request, scmBSupplyplan));
+    }
 /**
  * 跳转添加页面
  * @param request
@@ -156,6 +163,17 @@ public void export(QueryRequest request, ViewSupplyplan viewSupplyplan, HttpServ
         throw new FebsException(message);
         }
         }
+    @PostMapping("timeExcel")
+    public void exporttime(QueryRequest request, ViewSupplyplan viewSupplyplan, HttpServletResponse response) throws FebsException {
+        try {
+            List<ViewSupplyplan> viewSupplyplans = this.iViewSupplyplanService.findVPurcharseorder_2022(request, viewSupplyplan).getRecords();
+            ExcelKit.$Export(ViewSupplyplan.class, response).downXlsx(viewSupplyplans, false);
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
 
 @GetMapping("/{id}")
 public ViewSupplyplan detail(@NotBlank(message = "{required}") @PathVariable String id) {

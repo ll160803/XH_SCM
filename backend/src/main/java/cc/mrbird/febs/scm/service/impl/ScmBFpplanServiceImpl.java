@@ -1,9 +1,13 @@
 package cc.mrbird.febs.scm.service.impl;
 
 import cc.mrbird.febs.common.domain.QueryRequest;
+import cc.mrbird.febs.common.exception.FebsException;
 import cc.mrbird.febs.common.utils.SortUtil;
+import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
+import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.entity.ScmBFpplan;
 import cc.mrbird.febs.scm.dao.ScmBFpplanMapper;
+import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.service.IScmBFpplanService;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -42,10 +46,13 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
             LambdaQueryWrapper<ScmBFpplan> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(ScmBFpplan::getIsDeletemark, 1);//1是未删 0是已删
 
-            if (StringUtils.isNotBlank(scmBFpplan.getCreateTimeFrom()) && StringUtils.isNotBlank(scmBFpplan.getCreateTimeTo())) {
+            if (StringUtils.isNotBlank(scmBFpplan.getCreateTimeFrom()) ) {
                 queryWrapper
                         .ge(ScmBFpplan::getCreateTime, scmBFpplan.getCreateTimeFrom())
-                        .le(ScmBFpplan::getCreateTime, scmBFpplan.getCreateTimeTo());
+                        ;
+            }
+            if(StringUtils.isNotBlank(scmBFpplan.getCreateTimeTo())){
+                queryWrapper.le(ScmBFpplan::getCreateTime, scmBFpplan.getCreateTimeTo()+" 23:59:59");
             }
             if (StringUtils.isNotBlank(scmBFpplan.getModifyTimeFrom()) && StringUtils.isNotBlank(scmBFpplan.getModifyTimeTo())) {
                 queryWrapper
@@ -54,6 +61,9 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
             }
             if(StringUtils.isNotEmpty(scmBFpplan.getGysaccount())){
                 queryWrapper.eq(ScmBFpplan::getGysaccount,scmBFpplan.getGysaccount());
+            }
+            if(scmBFpplan.getId()!=null){
+                queryWrapper.eq(ScmBFpplan::getId,scmBFpplan.getId());
             }
             Page<ScmBFpplan> page = new Page<>();
             SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
@@ -78,6 +88,15 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
             else {
                 queryWrapper.and(wrap->wrap.eq(ScmBFpplan::getFphm,"")
                         .or().isNull(ScmBFpplan::getFphm));
+            }
+
+            if (StringUtils.isNotBlank(scmBFpplan.getCreateTimeFrom()) ) {
+                queryWrapper
+                        .ge(ScmBFpplan::getCreateTime, scmBFpplan.getCreateTimeFrom())
+                ;
+            }
+            if(StringUtils.isNotBlank(scmBFpplan.getCreateTimeTo())){
+                queryWrapper.le(ScmBFpplan::getCreateTime, scmBFpplan.getCreateTimeTo() +" 23:59:59");
             }
             queryWrapper.eq(ScmBFpplan::getFpjr,scmBFpplan.getFpjr());
             Page<ScmBFpplan> page = new Page<>();
@@ -142,6 +161,7 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
             ) {
                 ids.add(Long.parseLong(idStr));
             }
+
             // String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
             this.baseMapper.updateSupplyPlan2(ids, scmBFpplan.getId().toString());
 

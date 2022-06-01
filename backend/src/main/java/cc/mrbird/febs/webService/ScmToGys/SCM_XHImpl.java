@@ -197,8 +197,17 @@ public class SCM_XHImpl implements ISCM_XHService {
                         purchase.setTxz01(item.getTxz01());
                         purchase.setWerkst(item.getWerkst());
                         purchase.setWerks(item.getWerks());
+                        if(StringUtils.isNotEmpty(item.getCode())&& item.getCode().equals("1") && item.getNetpr().compareTo(new BigDecimal("0"))<0) {
+                            purchase.setCodeflag(3);// 3 退货  2.临时 1 常规
+                        }
+                        else if(StringUtils.isNotEmpty(item.getCode())&& item.getCode().equals("1")){
+                            purchase.setCodeflag(2);// 3 退货  2.临时 1 常规
+                        }
+                        else{
+                            purchase.setCodeflag(1);// 3 退货  2.临时 1 常规
+                        }
                         reList.add(purchase);
-                        log.info("传出参数:" + purchase.toString());
+                       // log.info("传出参数:" + purchase.toString());
 
                     }
                     Msg.setPurchasePlans(reList);
@@ -220,7 +229,7 @@ public class SCM_XHImpl implements ISCM_XHService {
             return Msg;
         } catch (Exception ex) {
             Msg.setIsSuccess(false);
-            Msg.setMess("SCM接口出错");
+            Msg.setMess("SCM接口出错"+ex.getMessage());
             Msg.setPurchasePlans(null);
             return Msg;
 
@@ -465,10 +474,10 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(GenerateMsg(item.getID(), "PKG_NUMBER数值必须大于等于0", false));
                 continue;
             }
-            if (item.getFPJR() == null || item.getFPJR().longValue() < 0) {
-                ListMess.add(GenerateMsg(item.getID(), "FPJR数值必须大于等于0", false));
-                continue;
-            }
+//            if (item.getFPJR() == null || item.getFPJR().longValue() < 0) {
+//                ListMess.add(GenerateMsg(item.getID(), "FPJR数值必须大于等于0", false));
+//                continue;
+//            }
             Calendar c = Calendar.getInstance();
             c.setTime(new Date());
             c.add(Calendar.MONTH, 6);
@@ -477,7 +486,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                 ListMess.add(GenerateMsg(item.getID(), "药品剩余效期不足6个月", false));
                 continue;
             }
-if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要上传发票号码
+if(StringUtils.isNotEmpty(order.getCode()) && order.getCode().equals("1")) { //货票同行 需要上传发票号码
     if (!IsExistFphm(order, "", item.getFPHM(), userName.trim().replace("'", ""))) {
         ListMess.add(GenerateMsg(item.getID(), "发票号码已经存在", false));
         continue;
@@ -503,7 +512,7 @@ if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要
             /**
              * 发票   货票同行  才需要设置 发票编码 发票号码 发票日期
              */
-            entity.setFpjr(item.getFPJR());
+            entity.setFpjr(item.getMENGE().multiply(order.getNetpr()));
 
             if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要上传发票号码
                 entity.setFphm(item.getFPHM());
@@ -700,10 +709,10 @@ if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要
                 ) {
 
                     Long gyjh = Long.parseLong(back.getZGYJH().trim());
-                    if(list_supp_C.size()>2) {
-                        log.info(list_supp_C.get(1).getId().toString() + ":" + list_supp_C.get(1).getBaseId());
-                        log.info(list_supp_C.get(2).getId().toString() + ":" + list_supp_C.get(2).getBaseId());
-                    }
+//                    if(list_supp_C.size()>2) {
+//                        log.info(list_supp_C.get(1).getId().toString() + ":" + list_supp_C.get(1).getBaseId());
+//                        log.info(list_supp_C.get(2).getId().toString() + ":" + list_supp_C.get(2).getBaseId());
+//                    }
                     List<ViewSupplyplan> deList = list_supp_C.stream().filter(p -> p.getId().equals(gyjh)).collect(Collectors.toList());
                    String deleteID="";
                    if(deList.size()>0)

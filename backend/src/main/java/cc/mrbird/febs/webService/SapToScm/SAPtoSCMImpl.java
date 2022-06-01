@@ -77,7 +77,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             List<ScmBPurcharseorder> list_Delete = new ArrayList<>();
             List<ScmBPurcharseorder> list_purchase_C = new ArrayList<>();
             for (Sap_PurchasePlan item : purcharseList) {
-
+                log.info(item.getEbeln());
                 String gysName = "";
                 List<GysEntity> listvf = listVendors.stream().filter((GysEntity e0) -> e0.getCode().equals(item.getLifnr())).collect(Collectors.toList());
                 if (listvf.size() > 0) {
@@ -128,6 +128,8 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                             order.setSendDeaprtContact(item.getContact());
                             order.setSendDeaprtPhone(item.getPhone());
                             order.setComments(item.getComments());
+                            order.setCode(item.getCode()); //采购计划的类型 2022 04 12
+                            order.setSendDeaprtContact(item.getCode2()); //采购计划的类型 2022 04 19
 
                             if (StringUtils.equals(item.getBsart().trim(), "Z004")) {
                                 order.setSendDeaprtName(item.getRemark());//西院的药品订单 接收科室放在订单备注里
@@ -182,6 +184,7 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
                     entity.setComments(item.getComments());
                     entity.setId(UUID.randomUUID().toString());
                     entity.setCode(item.getCode()); //采购计划的类型 2022 04 12
+                    entity.setSendDeaprtContact(item.getCode2()); //采购计划的类型 2022 04 19
 
                     if (StringUtils.equals(item.getBsart().trim(), "Z004")) {
                         entity.setSendDeaprtName(item.getRemark());//西院的药品订单 接收科室放在订单备注里

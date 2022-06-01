@@ -11,6 +11,7 @@ public class Purchase {
     private String id;
     private String bedat;
     private String ebeln;
+    private int codeflag;
 
     public String getId() {
         return id;
@@ -138,6 +139,14 @@ public class Purchase {
 
     public void setWerks(String werks) {
         this.werks = werks;
+    }
+
+    public int getCodeflag() {
+        return codeflag;
+    }
+
+    public void setCodeflag(int codeflag) {
+        this.codeflag= codeflag;
     }
 
     private String ebelp;

@@ -193,7 +193,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 1800,
+        x: 1900,
         y: window.innerHeight - 200 - 100 - 20
       },
       dateFormat: 'YYYY-MM-DD',
@@ -256,6 +256,14 @@ export default {
           }
           return '临时采购'
         },
+      },{
+        title: '是否集中采购',
+        dataIndex: 'sendDeaprtContact',
+        customRender: (text, row, index) => {
+          if(text=='0') return '是'
+          return '否'
+        },
+        width: 100
       },{
         title: '订单号',
         dataIndex: 'ebeln',
@@ -494,7 +502,7 @@ export default {
         this.$message.warning('此供应计划已经预收入库，不能修改！！！')
         return
       }
-      if (record.code == '1') {
+      if (pRecord.code == '1') {
         this.$refs.scmBPurcharseorderEdit.setFormValues(record)
         this.$refs.scmBPurcharseorderEdit.setOrderFormValues(pRecord)
         this.editVisiable = true

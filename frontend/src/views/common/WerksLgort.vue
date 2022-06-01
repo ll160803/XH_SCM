@@ -11,7 +11,7 @@
             v-model="firstProvince"
             style="width: 100%"
             @change="handleProvinceChange"
-            dropdownMenuStyle="width:200%"
+            :dropdownStyle="{width: '200%'}"
           >
             <a-select-option
               v-for="province in provinceData"
@@ -32,7 +32,7 @@
             v-model="secondCity"
             style="width: 100%"
             @change="handleCityChange"
-            dropdownMenuStyle="width:200%"
+            :dropdownStyle="{width: '200%'}"
           >
             <a-select-option
               v-for="city in cities"
@@ -71,7 +71,8 @@ export default {
         this.cities = this.areaData.filter(item => item.parentId === value)
       }
       this.secondCity = ''
-      this.$emit("werks", value)
+      this.$emit("werks", value=='0'?'':value)
+      this.$emit("lgort", '')
     },
     handleCityChange (value) {
       this.$emit("lgort", value)

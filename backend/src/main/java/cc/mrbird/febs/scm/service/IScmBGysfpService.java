@@ -24,11 +24,13 @@ public interface IScmBGysfpService extends IService<ScmBGysfp> {
 
         void createScmBGysfp(ScmBGysfp scmBGysfp);
 
+        void createScmBGysfpJieKou(ScmBGysfp scmBGysfp);
+
         void updateScmBGysfp(ScmBGysfp scmBGysfp);
 
         void deleteScmBGysfps(String[]Ids);
 
-        boolean IsExist(String fphm,String gys,String id);
+        boolean IsExist(String fphm,String gys,String id,String year);
 
         void updateFpState( String fphm,  String gys,int state);
         }
