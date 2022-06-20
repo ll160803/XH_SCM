@@ -434,7 +434,7 @@ export default {
     },
     handleSubData (record) {
       this.loading = true
-      this.$get('viewSupplyplan/fpcode', {
+      this.$get('viewSupplyplanNew/fpcode', {
         pageNum: 1,
         pageSize: 1000,
         code: record.id

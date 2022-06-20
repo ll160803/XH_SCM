@@ -3,7 +3,9 @@ package cc.mrbird.febs.webService.SapToScm;
 import cc.mrbird.febs.scm.dao.*;
 import cc.mrbird.febs.scm.entity.*;
 import cc.mrbird.febs.scm.service.IScmBGysfpService;
+import cc.mrbird.febs.scm.service.IScmBSapplanService;
 import cc.mrbird.febs.scm.service.IScmCacheService;
+import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import jdk.net.SocketFlow;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,9 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
     @Autowired
     private IScmBGysfpService iScmBGysfpService;
+
+    @Autowired
+    private IScmBSapplanService iScmBSapplanService;
 
     public String HelloWorld() {
         return "haha";
@@ -440,6 +445,22 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
         }
         catch (Exception ex){
             log.error("更改入账时间:"+ex.getMessage());
+        }
+        return  false;
+    }
+    @Override
+    public Boolean GetPlanFormSap(String planid,String fpjr,String changeDate){
+        try {
+            log.info(planid+"_"+fpjr+"_"+changeDate);
+            ScmBSapplan scmBSapplan= new ScmBSapplan();
+            scmBSapplan.setFpjr(new BigDecimal(fpjr.trim()));
+            scmBSapplan.setPlanId(Convert.toLong(planid));
+            scmBSapplan.setChangDate(Convert.toDate(changeDate));
+            this.iScmBSapplanService.createScmBSapplan(scmBSapplan);
+            return  true;
+        }
+        catch (Exception ex){
+            log.error("更改入sap计划:"+ex.getMessage());
         }
         return  false;
     }

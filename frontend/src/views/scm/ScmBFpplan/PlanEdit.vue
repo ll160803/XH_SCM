@@ -156,8 +156,8 @@ export default {
     columns () {
       return [{
         title: '供应计划号',
-        dataIndex: 'id',
-        width: 100
+        dataIndex: 'id2',
+        width: 130
       },{
         title: '是否集中采购',
         dataIndex: 'sendDeaprtContact',
@@ -202,14 +202,34 @@ export default {
         dataIndex: 'fphm',
         width: 100
       }, {
-        title: '发票金额',
+        title: '调价日期',
+        dataIndex: 'changDate',
+        customRender: (text, row, index) => {
+          if(text== null) return ''
+          return moment(text).format('YYYY-MM-DD')
+        },
+        width: 100
+      },{
+        title: '上账日期',
+        dataIndex: 'materCode',
+        width: 100
+      }, {
+        title: '供应金额',
         dataIndex: 'fpjr',
+        width: 100
+      }, {
+        title: '院区',
+        dataIndex: 'werkst',
+        width: 120
+      }, {
+        title: '库房',
+        dataIndex: 'lgortName',
         width: 80
       }, {
         title: '发票日期',
         dataIndex: 'fprq',
         customRender: (text, row, index) => {
-          if(text== null) return ''
+          if(text==null) return ''
           return moment(text).format('YYYY-MM-DD')
         },
         width: 100
@@ -226,14 +246,6 @@ export default {
               return text
           }
         },
-        width: 80
-      }, {
-        title: '包装规格',
-        dataIndex: 'pkgAmount',
-        width: 80
-      }, {
-        title: '包装数量',
-        dataIndex: 'pkgNumber',
         width: 80
       }]
     }
@@ -382,7 +394,7 @@ export default {
       params.code = this.orderId
       params.status = 1 //未收货的数据
       
-      this.$get('viewSupplyplan/code', {
+      this.$get('viewSupplyplanNew/code', {
         ...params
       }).then((r) => {
         let data = r.data

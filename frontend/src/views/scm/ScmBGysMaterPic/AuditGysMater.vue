@@ -411,11 +411,9 @@ export default {
       this.fetch()
     },
     handleTableChange (pagination, filters, sorter) {
-      this.sortedInfo = sorter
+     // this.sortedInfo = sorter
       this.paginationInfo = pagination
       this.fetch({
-        sortField: sorter.field,
-        sortOrder: sorter.order,
         ...this.queryParams
       })
     },

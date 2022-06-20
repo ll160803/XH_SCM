@@ -5,7 +5,8 @@ import store from '../store'
 import db from 'utils/localstorage'
 moment.locale('zh-cn')
 
-let url= 'https://testscmapi.whuh.com/';
+let url= 'https://scmapi.whuh.com/';
+//let url='http://192.168.65.125:1044'
 //let url= 'http://localhost:1044/';
 // 统一配置
 let FEBS_REQUEST = axios.create({

@@ -227,18 +227,20 @@ export default {
       })
     },
     handleRemove (file) {
-      const index = this.fileList.indexOf(file)
-      const newFileList = this.fileList.slice()
-      newFileList.splice(index, 1)
-      this.fileList = newFileList
+      // const index = this.fileList.indexOf(file)
+      // const newFileList = this.fileList.slice()
+      // newFileList.splice(index, 1)
+      this.fileList = []
       this.isShow = 1
+      this.uploading= false
     },
     handleRemove2 (file) {
-      const index = this.fileList2.indexOf(file)
-      const newFileList = this.fileList2.slice()
-      newFileList.splice(index, 1)
-      this.fileList2 = newFileList
+      // const index = this.fileList2.indexOf(file)
+      // const newFileList = this.fileList2.slice()
+      // newFileList.splice(index, 1)
+      this.fileList2 = []
       this.isShow2 = 1
+      this.uploading2= false
     },
     beforeUpload (file) {
       const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf')

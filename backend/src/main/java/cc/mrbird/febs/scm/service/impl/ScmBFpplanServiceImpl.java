@@ -138,11 +138,22 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
             String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
 
             List<Long> ids = new ArrayList<>();
+            List<Long> ids2= new ArrayList<>();
             for (String idStr : arr_ids
             ) {
-                ids.add(Long.parseLong(idStr));
+                if(idStr.contains("*")){
+                    ids2.add(Long.parseLong(idStr.replace("*","")));
+                }
+                else {
+                    ids.add(Long.parseLong(idStr));
+                }
             }
-            this.baseMapper.updateSupplyPlan2(ids, scmBFpplan.getId().toString());
+            if(ids.size()>0) {
+                this.baseMapper.updateSupplyPlan2(ids, scmBFpplan.getId().toString());
+            }
+            if(ids2.size()>0) {
+                this.baseMapper.updateSapPlan(ids2, scmBFpplan.getId().toString());
+            }
         }
     }
 
@@ -155,16 +166,28 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
 
         if (StringUtils.isNotBlank(supplyPlanIds)) {
             this.baseMapper.removeOrderCode(scmBFpplan.getId().toString());//先清空之前的
-            String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
-            List<Long> ids = new ArrayList<>();
-            for (String idStr : arr_ids
-            ) {
-                ids.add(Long.parseLong(idStr));
-            }
+
+                String[] arr_ids = supplyPlanIds.split(StringPool.COMMA);
+
+                List<Long> ids = new ArrayList<>();
+                List<Long> ids2= new ArrayList<>();
+                for (String idStr : arr_ids
+                ) {
+                    if(idStr.contains("*")){
+                        ids2.add(Long.parseLong(idStr.replace("*","")));
+                    }
+                    else {
+                        ids.add(Long.parseLong(idStr));
+                    }
+                }
 
             // String str_ids = "'" + supplyPlanIds.replace(",", "','") + "'";
-            this.baseMapper.updateSupplyPlan2(ids, scmBFpplan.getId().toString());
-
+            if(ids.size()>0) {
+                this.baseMapper.updateSupplyPlan2(ids, scmBFpplan.getId().toString());
+            }
+            if(ids2.size()>0) {
+                this.baseMapper.updateSapPlan(ids2, scmBFpplan.getId().toString());
+            }
         }
     }
 

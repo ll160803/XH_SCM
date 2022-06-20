@@ -28,4 +28,7 @@ public interface  ISAPtoSCMService {
 
     @WebMethod
     Boolean ChangeSupplanTime(String id,String time);
+
+    @WebMethod
+    Boolean GetPlanFormSap(String planid,String fpjr,String changeDate);
 }

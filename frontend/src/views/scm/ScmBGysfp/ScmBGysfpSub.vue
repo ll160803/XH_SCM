@@ -235,7 +235,7 @@ export default {
     },
     handleSubData (record) {
       this.loading = true
-      this.$get('scmBSupplyplan', {
+      this.$get('viewSupplyplanNew/fpcode', {
         code: record.id
       }).then((r) => {
         let data = r.data

@@ -31,6 +31,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -116,11 +117,29 @@ public class ScmBFpplanController extends BaseController {
             String lgort = "";
             String zq=""; //是否同一个账期
             if (StringUtils.isNotBlank(supplyPlanIds)) {
-                String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
+
+
+                String[] pIds=supplyPlanIds.split(",");
+                List<String> pid1= new ArrayList<>();
+                List<String> pid2= new ArrayList<>();
+                for (String iid:pIds
+                     ) {
+                    if(iid.contains("*")){
+                        pid2.add(iid.replace("*",""));
+                    }
+                    else{
+                        pid1.add(iid);
+                    }
+                }
+
 
                 List<ViewSupplyplan> listvp = new ArrayList<>();
-                listvp.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
-
+                if(pid1.size()>0) {
+                    listvp.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(pid1));
+                }
+                if(pid2.size()>0) {
+                    listvp.addAll(this.iViewSupplyplanService.getViewSupplyNewPlanByIds(pid2));
+                }
                 double jr = listvp.stream().mapToDouble(p -> Convert.toDouble(p.getFpjr())).sum();
 
                 for (ViewSupplyplan vp2 : listvp
@@ -130,7 +149,7 @@ public class ScmBFpplanController extends BaseController {
                         lgort = vp2.getLgort();
                         zq= vp2.getMaterCode();
                     } else {
-                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.equals(vp2.getMaterCode()))) {
+                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.substring(0,7).equals(vp2.getMaterCode().substring(0,7)))) {
                             throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致或入账月份不一致");
                         }
                     }
@@ -176,8 +195,27 @@ public class ScmBFpplanController extends BaseController {
             String lgort = "";
             String zq= "";
             if (StringUtils.isNotBlank(supplyPlanIds)) {
-                String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
-                List<ViewSupplyplan> listvp = this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
+
+                String[] pIds=supplyPlanIds.split(",");
+                List<String> pid1= new ArrayList<>();
+                List<String> pid2= new ArrayList<>();
+                for (String iid:pIds
+                ) {
+                    if(iid.contains("*")){
+                        pid2.add(iid.replace("*",""));
+                    }
+                    else{
+                        pid1.add(iid);
+                    }
+                }
+                List<ViewSupplyplan> listvp = new ArrayList<>();
+                if(pid1.size()>0) {
+                    listvp.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(pid1));
+                }
+                if(pid2.size()>0) {
+                    listvp.addAll(this.iViewSupplyplanService.getViewSupplyNewPlanByIds(pid2));
+                }
+               // listvp.addAll(this.iViewSupplyplanService.getViewSupplyNewPlanByIds(pid2));
                 double jr = listvp.stream().mapToDouble(p -> Convert.toDouble(p.getFpjr())).sum();
                 scmBFpplan.setFpjr(new BigDecimal(jr));
                 for (ViewSupplyplan vp2 : listvp
@@ -187,7 +225,7 @@ public class ScmBFpplanController extends BaseController {
                         lgort = vp2.getLgort();
                         zq= vp2.getMaterCode();
                     } else {
-                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.equals(vp2.getMaterCode()))) {
+                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.substring(0,7).equals(vp2.getMaterCode().substring(0,7)))) {
                             throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致或入账月份不一致");
                         }
                     }

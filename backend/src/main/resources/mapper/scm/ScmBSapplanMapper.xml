@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.scm.dao.ScmBSapplanMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.scm.entity.ScmBSapplan">
+                    <id column="ID" property="id"/>
+                    <result column="plan_id" property="planId"/>
+                    <result column="FPJR" property="fpjr"/>
+            <result column="fp_hm" property="fpHm"/>
+            <result column="fp_bm" property="fpBm"/>
+            <result column="fprq" property="fprq"/>
+                    <result column="chang_date" property="changDate"/>
+                    <result column="code" property="code"/>
+                    <result column="state" property="state"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        ID, plan_id, FPJR,fp_hm, fp_bm,fprq,  chang_date, code, state, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateScmBSapplan" parameterType="cc.mrbird.febs.scm.entity.ScmBSapplan">
+        update scm_b_sapplan
+        <trim prefix="set" suffixOverrides=",">
+<if test="planId != null">plan_id=#{planId},</if>
+<if test="fpjr != null">FPJR=#{fpjr},</if>
+            <if test="fpHm != null">fp_hm=#{fpHm},</if>
+            <if test="fpBm != null">fp_bm=#{fpBm},</if>
+            <if test="fprq != null">fprq=#{fprq},</if>
+<if test="changDate != null">chang_date=#{changDate},</if>
+<if test="code != null">code=#{code},</if>
+<if test="state != null">state=#{state},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where ID=#{id}
+
+    </update>
+    <select id="findScmBSapplan" resultType="cc.mrbird.febs.scm.entity.ScmBSapplan" parameterType="cc.mrbird.febs.scm.entity.ScmBSapplan">
+        select  *  from scm_b_sapplan
+        where  1=1
+        <if test="scmBSapplan.changDateFrom!= null">
+            AND scmBSapplan.chang_date <![CDATA[ >= ]]>  #{scmBSapplan.changDateFrom}
+        </if>
+        <if test="scmBSapplan.changDateTo!= null">
+            AND scmBSapplan.chang_date <![CDATA[ <= ]]>  #{scmBSapplan.changDateTo}
+        </if>
+            <if test="scmBSapplan.code != null and scmBSapplan.code != ''"> and scmBSapplan.code like concat('%', #{ scmBSapplan.code} ,'%')</if>
+        <if test="scmBSapplan.state != null"> and scmBSapplan.state =#{ scmBSapplan.state} </if>
+        <if test="scmBSapplan.isDeletemark != null"> and scmBSapplan.IS_DELETEMARK =#{ scmBSapplan.isDeletemark} </if>
+        <if test="scmBSapplan.createTimeFrom!= null">
+            AND scmBSapplan.CREATE_TIME <![CDATA[ >= ]]>  #{scmBSapplan.createTimeFrom}
+        </if>
+        <if test="scmBSapplan.createTimeTo!= null">
+            AND scmBSapplan.CREATE_TIME <![CDATA[ <= ]]>  #{scmBSapplan.createTimeTo}
+        </if>
+        <if test="scmBSapplan.modifyTimeFrom!= null">
+            AND scmBSapplan.MODIFY_TIME <![CDATA[ >= ]]>  #{scmBSapplan.modifyTimeFrom}
+        </if>
+        <if test="scmBSapplan.modifyTimeTo!= null">
+            AND scmBSapplan.MODIFY_TIME <![CDATA[ <= ]]>  #{scmBSapplan.modifyTimeTo}
+        </if>
+</select>
+
+</mapper>

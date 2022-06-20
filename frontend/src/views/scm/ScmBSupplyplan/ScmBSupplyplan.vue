@@ -206,7 +206,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 2500,
+        x: 2600,
         y: window.innerHeight - 200 - 100 - 20 - 5
       },
       advanced: false,
@@ -335,6 +335,10 @@ export default {
               return text
           }
         },
+        width: 100
+      }, {
+        title: '入账日期',
+        dataIndex: 'materCode',
         width: 100
       }, {
         title: '包装规格',

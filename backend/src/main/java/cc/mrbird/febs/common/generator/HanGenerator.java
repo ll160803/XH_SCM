@@ -66,7 +66,7 @@ public class HanGenerator {
         // strategy.setCapitalMode(true);// 全局大写命名 ORACLE 注意
         //strategy.setTablePrefix(new String[] { "tlog_", "tsys_" });// 此处可以修改为您的表前缀
         strategy.setNaming(NamingStrategy.underline_to_camel);// 表名生成策略
-        strategy.setInclude(new String[]{"scm_b_fpplan"}); // 需要生成的表
+        strategy.setInclude(new String[]{"view_supplyplan_new"}); // 需要生成的表
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.demo.TestEntity");
@@ -114,10 +114,8 @@ public class HanGenerator {
 
         //在生成页面时候  查询字段设置
         List<String> searchFiledsList = new ArrayList<>();
-        searchFiledsList.add("name");
-        searchFiledsList.add("state");
-        searchFiledsList.add("CREATE_TIME");
-        searchFiledsList.add("MODIFY_TIME");
+        searchFiledsList.add("code");
+        searchFiledsList.add("id");
 
         // 注入自定义配置，可以在 VM 中使用 cfg.abc 【可无】  ${cfg.eliminateFileds}
         InjectionConfig cfg = new InjectionConfig() {
@@ -191,9 +189,9 @@ public class HanGenerator {
         // 自定义模板配置，可以 copy 源码 mybatis-plus/src/main/resources/templates 下面内容修改，
         // 放置自己项目的 src/main/resources/templates 目录下, 默认名称一下可以不配置，也可以自定义模板名称
         TemplateConfig tc = new TemplateConfig();
-        tc.setController("");
-        tc.setService("");
-        tc.setServiceImpl("");
+        tc.setController("/templates/templatesMybatis/controller.java.vm");
+        tc.setService("/templates/templatesMybatis/service.java.vm");
+        tc.setServiceImpl("/templates/templatesMybatis/serviceImpl.java.vm");
         tc.setEntity("/templates/templatesMybatis/entity.java.vm");
         // tc.setMapper("/templates/templatesMybatis/mapper.java.vm");
         //  tc.setXml("/templates/templatesMybatis/mapper.xml.vm");

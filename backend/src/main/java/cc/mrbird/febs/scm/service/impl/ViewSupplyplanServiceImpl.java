@@ -264,8 +264,13 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
     }
     @Override
     @Transactional
-    public List<ViewSupplyplan> getViewSupplyPlanByIds(String ids) {
+    public List<ViewSupplyplan> getViewSupplyPlanByIds(List<String> ids) {
         return this.baseMapper.GetViewSupplyPlanByIds(ids);
+    }
+    @Override
+    @Transactional
+    public List<ViewSupplyplan> getViewSupplyNewPlanByIds(List<String> ids) {
+        return this.baseMapper.GetViewSupplyNewPlanByIds(ids);
     }
 
     @Override

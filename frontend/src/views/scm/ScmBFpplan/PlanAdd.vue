@@ -82,6 +82,35 @@
                 <a-date-picker  style="width:100%" @change="onChange2"  />
               </a-form-item>
             </a-col>
+             <a-col
+          :span="3"
+          :offset="1"
+        >
+         <a-form-item
+          label="是否调价"
+          :labelCol="{span: 12}"
+          :wrapperCol="{span: 12}"
+        >
+          <a-select
+            v-model="queryParams.mseht"
+            style="width: 100%"
+            :dropdownStyle="{width: '200%'}"
+          >
+           <a-select-option
+             value="-1"
+             key="-1"
+            >全部</a-select-option>
+            <a-select-option
+             value="1"
+             key="1"
+            >否</a-select-option>
+             <a-select-option
+             value="0"
+             key="0"
+            >是</a-select-option>
+          </a-select>
+        </a-form-item>
+        </a-col>
         <a-col
           :span="4"
           :offset="1"
@@ -99,7 +128,7 @@
     <a-table
       ref="TableInfo"
       :columns="columns"
-      :rowKey="record => record.id"
+      :rowKey="record => record.id2"
       :dataSource="dataSource"
       :pagination="pagination"
       :loading="loading"
@@ -153,7 +182,7 @@ export default {
     columns () {
       return [{
         title: '供应计划号',
-        dataIndex: 'id',
+        dataIndex: 'id2',
         width: 130
       },{
         title: '是否集中采购',
@@ -199,6 +228,18 @@ export default {
         dataIndex: 'fphm',
         width: 100
       }, {
+        title: '调价日期',
+        dataIndex: 'changDate',
+        customRender: (text, row, index) => {
+          if(text== null) return ''
+          return moment(text).format('YYYY-MM-DD')
+        },
+        width: 100
+      },{
+        title: '上账日期',
+        dataIndex: 'materCode',
+        width: 100
+      }, {
         title: '供应金额',
         dataIndex: 'fpjr',
         width: 100
@@ -231,10 +272,6 @@ export default {
               return text
           }
         },
-        width: 80
-      }, {
-        title: '包装规格',
-        dataIndex: 'pkgAmount',
         width: 80
       }, {
         title: '包装数量',
@@ -378,8 +415,11 @@ export default {
       }
       params.status = 1 // 为收货的数据
       //console.info(params.sendDeaprtContact)
+      if(params.mseht=='-1'){
+        delete params.mseht
+      }
      
-      this.$get('viewSupplyplan/code', {
+      this.$get('viewSupplyplanNew/code', {
         ...params
       }).then((r) => {
         let data = r.data

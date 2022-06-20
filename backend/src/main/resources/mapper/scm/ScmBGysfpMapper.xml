@@ -29,7 +29,7 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, fp_hm, fp_bm, fp_amount, AuditCause, COMMENTS, STATE, mater_ID, FILE_ID, GysName, GYSACCOUNT, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, fp_hm, fp_bm,fprq, fp_amount, AuditCause, COMMENTS, STATE, mater_ID, FILE_ID, GysName, GYSACCOUNT, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmBGysfp" parameterType="cc.mrbird.febs.scm.entity.ScmBGysfp">
         update scm_b_gysfp

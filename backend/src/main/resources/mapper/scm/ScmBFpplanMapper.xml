@@ -99,4 +99,13 @@
         </foreach>
         AND STATUS=1
     </update>
+    <update id="updateSapPlan">
+        UPDATE scm_b_sapplan
+        SET CODE = #{id}
+        WHERE
+        plan_id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>

@@ -78,7 +78,6 @@ public class ScmBSendorderController extends BaseController {
     /**
      * 分页查询数据
      *
-     * @param bootStrapTable 分页信息
      * @param scmBSendorder  查询条件
      * @return
      */
@@ -127,7 +126,10 @@ public class ScmBSendorderController extends BaseController {
 
 
                 List<ViewSupplyplan> list = new ArrayList<>();
-                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                List<String> ids= Arrays.asList(supplyPlanIds.split(","));
+                if(ids.size()>0) {
+                    list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(ids));
+                }
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
@@ -157,7 +159,10 @@ public class ScmBSendorderController extends BaseController {
                 String ids="'"+supplyPlanIds.replace(",","','")+"'";
 
                 List<ViewSupplyplan> list = new ArrayList<>();
-                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                List<String> id_tr= Arrays.asList(supplyPlanIds.split(","));
+                if(id_tr.size()>0) {
+                    list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(id_tr));
+                }
 
                 scmBSendorder.setWerks(list.get(0).getWerks());
                 scmBSendorder.setWerkst(list.get(0).getWerkst());
@@ -200,7 +205,10 @@ public class ScmBSendorderController extends BaseController {
                 String ids="'"+supplyPlanIds.replace(",","','")+"'";
 
                 List<ViewSupplyplan> list = new ArrayList<>();
-                list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds));
+                List<String> id_tr= Arrays.asList(supplyPlanIds.split(","));
+                if(id_tr.size()>0) {
+                    list.addAll(this.iViewSupplyplanService.getViewSupplyPlanByIds(id_tr));
+                }
 
                 scmBSendorder.setWerks(list.get(0).getWerks());
                 scmBSendorder.setWerkst(list.get(0).getWerkst());
@@ -266,8 +274,16 @@ public class ScmBSendorderController extends BaseController {
                 }
             }
             if(StringUtils.isNotBlank(supplyPlanIds)) {
-                String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
-                List<ViewSupplyplan> listvp = this.iViewSupplyplanService.getViewSupplyPlanByIds(supplyPlanIds);
+               // String ids = "'" + supplyPlanIds.replace(",", "','") + "'";
+                List<String> id_tr= Arrays.asList(supplyPlanIds.split(","));
+                List<ViewSupplyplan> listvp =new ArrayList<>();
+                if(id_tr.size()>0) {
+                     listvp = this.iViewSupplyplanService.getViewSupplyPlanByIds(id_tr);
+                }
+                scmBSendorder.setWerks(list.get(0).getWerks());
+                scmBSendorder.setWerkst(list.get(0).getWerkst());
+                scmBSendorder.setLgort(list.get(0).getLgort());
+                scmBSendorder.setLgortname(list.get(0).getLgortName());
                 for (ViewSupplyplan vp2 : listvp
                 ) {
                     if(werks.equals("")){

@@ -922,4 +922,17 @@ WHERE
 			AND a.matnr = #{order.matnr}
 		</if>
 	</select>
+
+<select id="GetViewSupplyPlanByIds" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+	select *  from view_supplyplan where id in
+	<foreach collection="ids" item="item" open="(" separator="," close=")">
+		#{item}
+	</foreach>
+</select>
+	<select id="GetViewSupplyNewPlanByIds" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+		select *  from view_supplyplan_new where id in
+		<foreach collection="ids" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
 </mapper>

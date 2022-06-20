@@ -1,6 +1,7 @@
 package cc.mrbird.febs.scm.dao;
 
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
+import cc.mrbird.febs.scm.entity.ViewSupplyplanNew;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,9 +21,9 @@ import java.util.List;
 public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
         void updateViewSupplyplan(ViewSupplyplan viewSupplyplan);
 
-        @Select("select *  from view_supplyplan where id in (${ids})")
-        List<ViewSupplyplan> GetViewSupplyPlanByIds(@Param(value = "ids") String ids);
 
+        List<ViewSupplyplan> GetViewSupplyPlanByIds(@Param(value = "ids") List<String> ids);
+        List<ViewSupplyplan> GetViewSupplyNewPlanByIds(@Param(value = "ids") List<String> ids);
 
         IPage<ViewSupplyplan> findVPurcharseorder2022(Page page,@Param("order") ViewSupplyplan order);
 

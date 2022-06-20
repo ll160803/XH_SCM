@@ -13,6 +13,8 @@ import cc.mrbird.febs.scm.service.*;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
@@ -54,6 +56,10 @@ public class ScmBGysfpController extends BaseController {
 
     @Autowired
     public IViewSupplyplanService iViewSupplyplanService;
+
+    @Autowired
+    public IViewSupplyplanNewService iViewSupplyplanNewService;
+
     @Autowired
     private IComFileService iComFileService;
 
@@ -123,18 +129,29 @@ public class ScmBGysfpController extends BaseController {
 
                 List<ViewSupplyplan> list = new ArrayList<>();
                 list.addAll(this.iViewSupplyplanService.findVPlanByCode(scmBGysfp.getFpBm()));
+                LambdaQueryWrapper<ViewSupplyplanNew> queryWrapper = new LambdaQueryWrapper<>();
+
+                    queryWrapper.eq(ViewSupplyplanNew::getIsDeletemark, 1);
+                queryWrapper.eq(ViewSupplyplanNew::getCode, scmBGysfp.getFpBm());
+               List<ViewSupplyplanNew> listNew= this.iViewSupplyplanNewService.list(queryWrapper);
+               listNew.forEach(p->{
+                   ViewSupplyplan plan = new ViewSupplyplan();
+                   BeanUtil.copyProperties(p, plan, CopyOptions.create().setIgnoreNullValue(true));
+                   list.add(plan);
+               });
+
                 list.parallelStream().forEach(item->{
                     item.setFphm(scmBGysfp.getFpHm());
                     item.setFprq(scmBGysfp.getFprq());
                 });
                 RfcNOC rfc = new RfcNOC();
-                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "2", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
                     log.error("新增发票数据,SAP端接收失败");
                     throw new FebsException("新增发票数据,SAP端接收失败");
                 }
 
-                this.iScmBFpplanService.updateScmBFpplan(scmBFpplan);
+                this.iScmBFpplanService.updateScmBFpplan(scmBFpplan); //2022-06-13
                 this.iScmBFpplanService.updateFpData(scmBGysfp.getFpBm(), DateUtil.format(scmBGysfp.getFprq(), "yyyy-MM-dd"), scmBGysfp.getFpHm());
             }
             this.iScmBGysfpService.createScmBGysfp(scmBGysfp);
@@ -210,17 +227,28 @@ public class ScmBGysfpController extends BaseController {
 
                     List<ViewSupplyplan> list= this.iViewSupplyplanService.findVPlanByCode(scmBGysfp.getFpBm());
 
+                    LambdaQueryWrapper<ViewSupplyplanNew> queryWrapper = new LambdaQueryWrapper<>();
+
+                    queryWrapper.eq(ViewSupplyplanNew::getIsDeletemark, 1);
+                    queryWrapper.eq(ViewSupplyplanNew::getCode, scmBGysfp.getFpBm());
+                    List<ViewSupplyplanNew> listNew= this.iViewSupplyplanNewService.list(queryWrapper);
+                    listNew.forEach(p->{
+                        ViewSupplyplan plan = new ViewSupplyplan();
+                        BeanUtil.copyProperties(p, plan, CopyOptions.create().setIgnoreNullValue(true));
+                        list.add(plan);
+                    });
                     list.parallelStream().forEach(item->{
                         item.setFphm("");
+                        item.setFprq(null);
                     });
                     RfcNOC rfc = new RfcNOC();
-                    List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
+                    List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "2", "U");
                     if (!backMsg.get(0).getMSTYPE().equals("S")) {
                         log.error("删除发票数据,SAP端接收失败");
                         throw new FebsException("删除发票数据,SAP端接收失败");
                     }
 
-                    this.iScmBFpplanService.updateFpplan(scmBGysfp.getFpBm());
+                    this.iScmBFpplanService.updateFpplan(scmBGysfp.getFpBm());  //2022-06-13
                     this.iScmBFpplanService.updateFpData(scmBGysfp.getFpBm(), null, "");
                 }
                 this.iScmBGysfpService.removeById(id);
