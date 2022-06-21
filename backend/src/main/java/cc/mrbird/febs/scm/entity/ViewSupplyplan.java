@@ -2,6 +2,7 @@ package cc.mrbird.febs.scm.entity;
 
 import java.math.BigDecimal;
 
+import cc.mrbird.febs.common.converter.IfConverter;
 import cc.mrbird.febs.common.converter.TimeConverter;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.wuwenze.poi.annotation.Excel;
 import com.wuwenze.poi.annotation.ExcelField;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * <p>
@@ -175,8 +177,21 @@ private String baseId;
     /**
      * 状态
      */
+
     @TableField("STATUS")
 private Integer status;
+    @ExcelField(value ="状态")
+    private  transient  String statusName;
+    public String getStatusName(){
+        if(status==0) return  "未收货";
+        if(status==1) {
+            if(StringUtils.isNotEmpty(materCode)){
+                return  "已入账";
+            }
+            return  "已收货";
+        }
+        return "";
+    }
     /**
      * 发票编码
      */
@@ -353,6 +368,7 @@ private Long modifyUserId;
     public void setSendDeaprtContact(String sendDeaprtContact) {
         this.sendDeaprtContact = sendDeaprtContact;
     }
+    @ExcelField(value ="是否集采", writeConverter = IfConverter.class )
     private   String  sendDeaprtContact;
 
   public String getSendCodes() {

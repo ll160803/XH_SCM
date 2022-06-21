@@ -106,6 +106,35 @@
                 <a-date-picker  style="width:100%" @change="onChange2"  />
               </a-form-item>
             </a-col>
+         <!-- <a-col
+                :md="6"
+                :sm="24"
+              >
+         <a-form-item
+          label="是否集采"
+          :labelCol="{span: 12}"
+          :wrapperCol="{span: 12}"
+        >
+          <a-select
+            v-model="queryParams.sendDeaprtContact"
+            style="width: 100%"
+            :dropdownStyle="{width: '100%'}"
+          >
+           <a-select-option
+             value="-1"
+             key="-1"
+            >全部</a-select-option>
+            <a-select-option
+             value="1"
+             key="1"
+            >否</a-select-option>
+             <a-select-option
+             value="0"
+             key="0"
+            >是</a-select-option>
+          </a-select>
+        </a-form-item> -->
+        </a-col>
             <a-col
                 :md="6"
                 :sm="24"
@@ -118,6 +147,7 @@
                   <a-input v-model="queryParams.id" />
                 </a-form-item>
               </a-col>
+
             </template>
           </div>
           <span style="float: right; margin-top: 3px;">
@@ -206,7 +236,7 @@ export default {
   data () {
     return {
       scroll: {
-        x: 2600,
+        x: 2700,
         y: window.innerHeight - 200 - 100 - 20 - 5
       },
       advanced: false,
@@ -252,6 +282,14 @@ export default {
       }, {
         title: '项目号',
         dataIndex: 'ebelp',
+        width: 100
+      },{
+        title: '是否集中采购',
+        dataIndex: 'sendDeaprtContact',
+        customRender: (text, row, index) => {
+          if(text=='0') return '是'
+          return '否'
+        },
         width: 100
       }, {
         title: '物料编码',
@@ -429,10 +467,15 @@ export default {
       this.queryParams.gysaccount = this.user.username//供应商账号
       this.queryParams.pageSize = 10000
       this.queryParams.pageNum = 1
+      let params={...this.queryParams}
+      // if(params.sendDeaprtContact=="-1"){
+      //   delete params.sendDeaprtContact
+      // }
+     // queryParams.sendDeaprtContact
       this.$export('viewSupplyplan/timeExcel', {
         sortField: "id",
         sortOrder: "descend",
-        ...this.queryParams
+        ...params
       })
     },
     search () {
@@ -493,6 +536,9 @@ export default {
       }
       params.bsartD = "0"
       params.gysaccount = this.user.username//供应商账号
+      //   if(params.sendDeaprtContact=="-1"){
+      //   delete params.sendDeaprtContact
+      // }
       this.$get('viewSupplyplan/time', {
         ...params
       }).then((r) => {

@@ -518,6 +518,7 @@ WHERE
 		b.`eindt` AS `eindt`,
 		b.`bedat` AS `bedat`,
 		b.`bsart` AS `bsart`,
+		b.send_deaprt_contact as send_deaprt_contact,
 		a.`CHARGE` AS `CHARGE`,
 		a.`VFDAT` AS `VFDAT`,
 		a.`HSDAT` AS `HSDAT`,
