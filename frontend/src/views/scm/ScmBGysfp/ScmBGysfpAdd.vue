@@ -35,7 +35,7 @@
           v-decorator="['fpAmount', {rules: [{ required: true, message: '发票金额不能为空' }] }]"
         />
       </a-form-item>
-      <a-form-item
+      <!-- <a-form-item
         v-bind="formItemLayout"
         label="药厂发票"
       >
@@ -57,7 +57,7 @@
         >
           {{uploading ? '上传中' : '开始上传' }}
         </a-button>
-      </a-form-item>
+      </a-form-item> -->
       <a-form-item
         v-bind="formItemLayout"
         label="供应商发票"
@@ -145,10 +145,10 @@ export default {
       this.$emit('close')
     },
     handleSubmit () {
-      if (this.scmBGysfp.fileId === '') {
-        this.$message.warning('请上传厂家发票.')
-        return false
-      }
+      // if (this.scmBGysfp.fileId === '') {
+      //   this.$message.warning('请上传厂家发票.')
+      //   return false
+      // }
       if (this.scmBGysfp.materId === '') {
         this.$message.warning('请上传供应商发票.')
         return false

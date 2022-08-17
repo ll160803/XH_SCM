@@ -147,6 +147,10 @@ public class ScmBSupplyplanController extends BaseController {
                     throw new FebsException("请在发票管理界面上传对应发票！");
                 }
             }
+           if(StringUtils.isEmpty(scmBSupplyplan.getFphm())) {
+               scmBSupplyplan.setFprq(null);
+           }
+
             BigDecimal bd = scmBSupplyplan.getgMenge().divide(scmBSupplyplan.getPkgAmount(), 2);
             scmBSupplyplan.setPkgNumber(bd.setScale(0, BigDecimal.ROUND_UP));
 
@@ -385,6 +389,9 @@ public class ScmBSupplyplanController extends BaseController {
                     throw new FebsException("请在发票管理界面上传对应发票！");
                 }
             }
+            if(StringUtils.isEmpty(scmBSupplyplan.getFphm())) {
+                scmBSupplyplan.setFprq(null);
+            }
             if (!iScmBSupplyplanService.HasPreDone(scmBSupplyplan.getId().toString())) {
                 throw new FebsException("此供应计划已经产生预收，不允许修改！");
             }
@@ -597,7 +604,12 @@ public class ScmBSupplyplanController extends BaseController {
                         if (!en.getStatus().equals(1)) {
                             message += "此送货清单尚未入库";
                             break;
-                        } else {
+                        }
+                        else if (StringUtils.isNotEmpty(en.getMaterCode())) {
+                            message += "此送货清单已入账，不能取消收货";
+                            break;
+                        }
+                        else {
                             en.setStatus(0);
                             doneList.add(en);
                             arrids.add(en.getId());
@@ -824,11 +836,11 @@ public class ScmBSupplyplanController extends BaseController {
             double total_money= e1.stream().mapToDouble(p->Convert.toDouble(p.getFpjr())).sum();
             sb.append(String.format(GenerateHeadStr(e1.get(0).getSendOrderCode().toString()), e1.get(0).getGysaccount(), e1.get(0).getGysname(), e1.get(0).getWerkst() + "  " + e1.get(0).getLgortName()));
             // sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次",  "供应金额", "缺货原因", "补送日期"));
-            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次", "发票号码", "有效期", "缺货原因", "补送日期"));
+            sb.append(String.format(GenerateTabHeadStr(), "订单日期", "供应计划", "药品编码", "药品名称", "计划数量", "送货数量", "单位", "单价", "金额", "批次", "发票号码", "有效期", "缺货原因", "备注"));
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             for (ViewSupplyplan f2 : e1) {
                 // sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f", (f2.getNetpr().multiply(f2.getgMenge()))), f2.getCharge(),  String.format("%.2f", f2.getFpjr()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
-                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f",  f2.getFpjr()), f2.getCharge(), f2.getFphm()==null?"":f2.getFphm(), f2.getVfdat() == null ? "" : sdf.format(f2.getVfdat()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getOutDate() == null ? "" : sdf.format(f2.getOutDate())));
+                sb.append(String.format(GenerateRowStr(), sdf.format(f2.getBedat()), f2.getId().toString(), f2.getMatnr(), f2.getTxz01(), String.format("%.2f", f2.getMenge()), String.format("%.2f", f2.getgMenge()), f2.getMseht(), String.format("%.2f", f2.getNetpr()), String.format("%.2f",  f2.getFpjr()), f2.getCharge(), f2.getFphm()==null?"":f2.getFphm(), f2.getVfdat() == null ? "" : sdf.format(f2.getVfdat()), f2.getOutCause() == null ? "" : f2.getOutCause(), f2.getLinkTelephone()==null?"":f2.getLinkTelephone()));
             }
             sb.append(String.format("<tr><td colspan=\"4\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;text-align:left;font-size: 12px;\" >供应商(盖章)： %1$s</td><td colspan=\"4\" style=\"height:30px;font-family:宋体;border-top:solid 1px black;font-size: 12px;\" >采购中心(签字)：</td><td colspan=\"3\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >金额合计：%3$s</td><td colspan=\"3\" style=\"height:30px;border-top:solid 1px black;font-family:宋体;font-size: 12px;\" >打印日期：%2$s</td></tr>", e1.get(0).getGysname(),DateUtil.format(new Date(),"yyyy-MM-dd"),String.format("%.2f", total_money)));
             sb.append("</table>");

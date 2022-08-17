@@ -36,8 +36,8 @@ public interface ScmBFpplanMapper extends BaseMapper<ScmBFpplan> {
     @Update("UPDATE scm_b_supplyplan SET CODE = '' WHERE CODE =#{ids} and status=1 ;UPDATE scm_b_sapplan SET CODE = '' WHERE CODE =#{ids} ")
     int removeOrderCode(@Param("ids") String ids);
 
-    @Select("Select id from scm_b_supplyplan where CODE=#{sendCode}")
-    List<Long> findPlanIds(@Param("sendCode") String sendCode);
+    @Select("Select id from scm_b_supplyplan where CODE=#{sendCode} union all SELECT CONCAT(plan_id,'*') id  from scm_b_sapplan where CODE=#{sendCode}")
+    List<String> findPlanIds(@Param("sendCode") String sendCode);
 
 
     @Update("UPDATE scm_b_supplyplan SET fprq = #{fprq},fphm=#{fphm} WHERE CODE =#{code} and status=1;update scm_b_sapplan set fprq = #{fprq},fp_hm=#{fphm} where code=#{code} ")

@@ -407,6 +407,9 @@ export default {
         title: '包装数量',
         dataIndex: 'pkgNumber'
       }, {
+        title: '备注',
+        dataIndex: 'linkTelephone'
+      }, {
         title: '操作',
         dataIndex: 'operation',
         scopedSlots: { customRender: 'operation' },

@@ -147,4 +147,8 @@ public class PlanDetail {
     private String FLAG ;
 
     private String ID ;
+    /**
+     * 备注
+     */
+    private String NOTE;
 }

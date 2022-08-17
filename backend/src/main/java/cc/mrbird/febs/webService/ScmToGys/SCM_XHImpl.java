@@ -317,14 +317,14 @@ public class SCM_XHImpl implements ISCM_XHService {
         return true;
     }
 
-    private  Long getExistMenge(ScmBSupplyplan entity){
-        Long havData = this.scmBSupplyplanMapper.IsOutMenge(entity); //已经存在的供应计划数量
-        Long orderMenge = this.scmBSupplyplanMapper.orderMenge(entity);
+    private  Double getExistMenge(ScmBSupplyplan entity){
+        Double havData = this.scmBSupplyplanMapper.IsOutMenge(entity); //已经存在的供应计划数量
+        Double orderMenge = this.scmBSupplyplanMapper.orderMenge(entity);
         if(havData==null){
-            return Long.parseLong(entity.getgMenge().toString())-orderMenge;
+            return Double.parseDouble(entity.getgMenge().toString())-orderMenge;
         }
         else{
-           return havData + Long.parseLong(entity.getgMenge().toString())-orderMenge;
+           return havData + Double.parseDouble(entity.getgMenge().toString())-orderMenge;
         }
     }
 
@@ -522,6 +522,7 @@ if(StringUtils.isNotEmpty(order.getCode()) && order.getCode().equals("1")) { //�
             }
 
             entity.setgMenge(item.getMENGE());
+            entity.setLinkTelephone(item.getNOTE());// 20220628  --增加备注 史昉
 
             entity.setGysaccount(user.getUsername());
             entity.setGysname(user.getRealname());
@@ -551,7 +552,7 @@ if(StringUtils.isNotEmpty(order.getCode()) && order.getCode().equals("1")) { //�
                 entity.setStatus(0);// = "0";//0新建 1确认
                 // list_supp_C.Add(entity);
                 try {
-                    Long isMenge =getExistMenge(entity);
+                    Double isMenge =getExistMenge(entity);
 
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
@@ -606,7 +607,7 @@ if(StringUtils.isNotEmpty(order.getCode()) && order.getCode().equals("1")) { //�
                 }
             } else if (item.getFLAG().equals("U")) {
                 try {
-                    Long isMenge = getExistMenge(entity);
+                    Double isMenge = getExistMenge(entity);
                     if (isMenge != null && isMenge > 0) {
                         WcfPlan_XH Msg = new WcfPlan_XH();
                         Msg.setIsSuccess(false);

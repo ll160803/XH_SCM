@@ -285,7 +285,7 @@ export default {
     },
     handleEditSuccess () {
       this.editVisiable = false
-      this.$message.success('修改检验报告成功')
+      this.$message.success('修改检验报告成功。已经引用的批次号，只修改厂商发票。')
       this.search()
     },
     handleEditClose () {

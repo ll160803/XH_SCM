@@ -40,7 +40,7 @@
       </a-form-item>
       <a-form-item
         v-bind="formItemLayout"
-        label="文件上传"
+        label="药检报告"
       >
         <a-upload
           accept=".pdf"
@@ -59,6 +59,29 @@
           style="margin-top: 16px"
         >
           {{uploading ? '上传中' : '开始上传' }}
+        </a-button>
+      </a-form-item>
+       <a-form-item
+        v-bind="formItemLayout"
+        label="厂商发票"
+      >
+        <a-upload
+          accept=".png,.jpg,.pdf"
+          :fileList="fileList2"
+          :remove="handleRemove2"
+          :beforeUpload="beforeUpload2"
+        >
+          <a-button>
+            <a-icon type="upload" /> 选择文件 </a-button>
+        </a-upload>
+        <a-button
+          type="primary"
+          @click="handleUpload2"
+          :disabled="fileList2.length === 0 ||isShow2===0"
+          :loading="uploading2"
+          style="margin-top: 16px"
+        >
+          {{uploading2 ? '上传中' : '开始上传' }}
         </a-button>
       </a-form-item>
     </a-form>
@@ -98,12 +121,16 @@ export default {
       isShow: 1,
       fileList: [],
       uploading: false,
+       isShow2: 1,
+      fileList2: [],
+      uploading2: false,
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
       scmBGysMaterPic: {
         fileId: '',
-        materId: ''
+        materId: '',
+        mtart: ''
       }
     }
   },
@@ -113,10 +140,13 @@ export default {
       this.scmBGysMaterPic = {}
       this.fileList = []
       this.isShow = 1
+        this.fileList2 = []
+      this.isShow2 = 1
       this.$refs.upfc.reset()
       this.$refs.upfc.matnr = ''
       this.scmBGysMaterPic.materId = ''
       this.scmBGysMaterPic.fileId = ''
+      this.scmBGysMaterPic.mtart = ''  //厂商发票
       this.form.resetFields()
     },
     onClose () {
@@ -130,8 +160,12 @@ export default {
         this.$message.warning('请在下列列表里选择药品.')
         return false
       }
+      //  if (this.scmBGysMaterPic.mtart === '') {
+      //   this.$message.warning('请上传厂家发票.')
+      //   return false
+      // }
       if (this.scmBGysMaterPic.fileId == '') {
-        this.$message.warning('请上传资质附件.')
+        this.$message.warning('请上传验收资质附件.')
         return false
       }
       this.form.setFieldsValue({ matnr2: '2' })
@@ -162,6 +196,14 @@ export default {
       this.fileList = newFileList
       this.isShow = 1
     },
+     handleRemove2 (file) {
+      //const index = this.fileList2.indexOf(file)
+     // const newFileList = this.fileList2.slice()
+     // newFileList.splice(index, 1)
+      this.fileList2 = []
+      this.isShow2 = 1
+      this.uploading2= false
+    },
     onChange (date, dateString) {
       console.log(date, dateString);
     },
@@ -179,6 +221,21 @@ export default {
         this.fileList = [...this.fileList, file]
       }
       return isJPG && isLt2M;
+    },
+      beforeUpload2 (file) {
+      const isJPG = (file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf' )
+      console.info(file.type)
+      if (!isJPG) {
+        this.$message.error('请只上传jpg,png,pdf文件!')
+      }
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (!isLt2M) {
+        this.$message.error('附件必须小于 2MB!')
+      }
+      if (isJPG && isLt2M) {
+        this.fileList2 = [...this.fileList2, file]
+      }
+      return isJPG && isLt2M; 
     },
     handleUpload () {
       const { fileList } = this
@@ -200,6 +257,27 @@ export default {
         this.$message.error('上传失败.')
       })
       this.fileList[0].status = 'done'
+    },
+     handleUpload2 () {
+      const { fileList2 } = this
+      const formData = new FormData()
+      formData.append('file', fileList2[0])
+      this.uploading2 = true
+
+      // You can use any AJAX library you like
+      this.$upload('comFile/upload', formData).then((r) => {
+        console.info('上传IF:' + r.data.data)
+        this.scmBGysMaterPic.mtart = r.data.data
+
+        // this.fileList = []
+        this.isShow2 = 0
+        this.uploading2 = false
+        this.$message.success('上传成功.')
+      }).catch(() => {
+        this.uploading2 = false
+        this.$message.error('上传失败.')
+      })
+      this.fileList2[0].status = 'done'
     }
   }
 }

@@ -30,7 +30,7 @@ public interface IScmBFpplanService extends IService<ScmBFpplan> {
 
         void deleteScmBFpplans(String[]Ids);
 
-        List<Long> findPlanIds(String sendCode);
+        List<String> findPlanIds(String sendCode);
 
         void updateFpData(String code,String fprq,String fphm);
 

@@ -148,7 +148,7 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
     @Transactional
     public void createScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
         //scmBSupplyplan.setId(UUID.randomUUID().toString());
-        Long isMenge = getExistMenge(scmBSupplyplan);
+        Double isMenge = getExistMenge(scmBSupplyplan);
         if (isMenge != null && isMenge > 0) {
             throw new FebsException("供应计划数量超出订单数量");
         }
@@ -185,14 +185,14 @@ public class ScmBSupplyplanServiceImpl extends ServiceImpl<ScmBSupplyplanMapper,
        // HandleScmBSupplyD(scmBSupplyplan);//hsc 20200819 增加箱数数据
     }
 
-    private  Long getExistMenge(ScmBSupplyplan entity){
-        Long havData = this.baseMapper.IsOutMenge(entity); //已经存在的供应计划数量
-        Long orderMenge = this.baseMapper.orderMenge(entity);
+    private  Double getExistMenge(ScmBSupplyplan entity){
+        Double havData = this.baseMapper.IsOutMenge(entity); //已经存在的供应计划数量
+        Double orderMenge = this.baseMapper.orderMenge(entity);
         if(havData==null){
-            return Long.parseLong(entity.getgMenge().toString())-orderMenge;
+            return Double.parseDouble(entity.getgMenge().toString().trim())-orderMenge;
         }
         else{
-            return havData + Long.parseLong(entity.getgMenge().toString())-orderMenge;
+            return havData + Double.parseDouble(entity.getgMenge().toString().trim())-orderMenge;
         }
     }
 private  void HandleScmBSupplyD(ScmBSupplyplan scmBSupplyplan){
@@ -225,7 +225,7 @@ private  void HandleScmBSupplyD(ScmBSupplyplan scmBSupplyplan){
     @Transactional
     public void updateScmBSupplyplan(ScmBSupplyplan scmBSupplyplan) throws FebsException {
         if (scmBSupplyplan.getIsDeletemark()==null||scmBSupplyplan.getIsDeletemark() >0) {//s删除不需要做验证
-            Long isMenge = getExistMenge(scmBSupplyplan);
+            Double isMenge = getExistMenge(scmBSupplyplan);
             if (isMenge != null && isMenge > 0) {
                 throw new FebsException("供应计划数量超出订单数量");
             }

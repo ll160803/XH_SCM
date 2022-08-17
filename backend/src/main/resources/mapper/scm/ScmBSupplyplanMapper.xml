@@ -83,7 +83,7 @@
         </trim>
         where id=#{id}
     </update>
-    <select id="IsOutMenge" parameterType="cc.mrbird.febs.scm.entity.ScmBSupplyplan" resultType="Long">
+    <select id="IsOutMenge" parameterType="cc.mrbird.febs.scm.entity.ScmBSupplyplan" resultType="Double">
       select SUM(scm_b_supplyplan.G_MENGE)
         gMenge from scm_b_supplyplan
         inner JOIN scm_b_purcharseorder on scm_b_supplyplan.BASE_ID=scm_b_purcharseorder.id
@@ -92,7 +92,7 @@
             AND scm_b_supplyplan.id !=${plan.id}
         </if>
     </select>
-    <select id="orderMenge" parameterType="cc.mrbird.febs.scm.entity.ScmBSupplyplan" resultType="Long">
+    <select id="orderMenge" parameterType="cc.mrbird.febs.scm.entity.ScmBSupplyplan" resultType="Double">
         select scm_b_purcharseorder.menge
         from scm_b_purcharseorder
         where id=#{plan.baseId}

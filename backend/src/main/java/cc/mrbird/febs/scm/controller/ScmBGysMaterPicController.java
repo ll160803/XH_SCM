@@ -16,6 +16,7 @@ import cc.mrbird.febs.scm.entity.ScmBGysMaterPic;
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.scm.service.IVScmBGyspicUserService;
 import cc.mrbird.febs.system.domain.User;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
@@ -138,7 +139,13 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setName(currentUser.getRealname());
 
              if(this.iScmBGysMaterPicService.IsDelete(scmBGysMaterPic.getId())){
-                 throw new FebsException("已经使用的批次号，不能修改");
+                 LambdaQueryWrapper<ScmBGysMaterPic> lambdaQueryWrapper= new LambdaQueryWrapper<>();
+                 lambdaQueryWrapper.eq(ScmBGysMaterPic::getId,scmBGysMaterPic.getId());
+                 ScmBGysMaterPic  pic= new ScmBGysMaterPic();
+                 pic.setMtart(scmBGysMaterPic.getMtart());
+                 this.iScmBGysMaterPicService.update(pic,lambdaQueryWrapper);
+                 return;
+                // throw new FebsException("已经使用的批次号，不能修改");
              }
 
             ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());

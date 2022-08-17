@@ -122,7 +122,7 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
 
     @Override
     @Transactional
-    public List<Long> findPlanIds(String sendCode) {
+    public List<String> findPlanIds(String sendCode) {
         return this.baseMapper.findPlanIds(sendCode);
     }
 

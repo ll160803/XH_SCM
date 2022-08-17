@@ -100,7 +100,7 @@
     <a-table
       ref="TableInfo"
       :columns="columns"
-      :rowKey="record => record.id"
+      :rowKey="record => record.id2"
       :dataSource="dataSource"
       :pagination="pagination"
       :loading="loading"
@@ -329,19 +329,20 @@ export default {
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-        this.paginationInfo.pageSize = this.pagination.defaultPageSize
-      }
+      // this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
+      // if (this.paginationInfo) {
+      //   this.paginationInfo.current = this.pagination.defaultCurrent
+      //   this.paginationInfo.pageSize = this.pagination.defaultPageSize
+      // }
       // 重置列排序规则
       this.sortedInfo = null
-      this.paginationInfo = null
+     // this.paginationInfo = null
       // 重置查询参数
       this.queryParams = {
         sendDeaprtContact: '1'
       }
       this.$refs.werklgort.reset()
+      
       this.fetch({id: '-1'})
     },
     handleTableChange (pagination, filters, sorter) {

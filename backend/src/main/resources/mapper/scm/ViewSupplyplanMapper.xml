@@ -692,6 +692,7 @@ WHERE
 	`scm_b_supplyplan`.`SEND_ORDER_CODE` AS `SEND_ORDER_CODE`,
 	`scm_b_supplyplan`.`OUT_CAUSE` AS `OUT_CAUSE`,
 	`scm_b_supplyplan`.`OUT_DATE` AS `OUT_DATE`,
+	`scm_b_supplyplan`.`mater_code` AS `mater_code`,
 	`scm_b_supplyplan`.`IS_DELETEMARK` AS `IS_DELETEMARK`,
 	`scm_b_supplyplan`.`CREATE_TIME` AS `CREATE_TIME`,
 	`scm_b_supplyplan`.`MODIFY_TIME` AS `MODIFY_TIME`,

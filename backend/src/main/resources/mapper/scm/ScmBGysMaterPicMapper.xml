@@ -16,6 +16,7 @@
             <result column="lgortName" property="lgortName"/>
             <result column="werks" property="werks"/>
             <result column="werkt" property="werkt"/>
+            <result column="MTART" property="mtart"/>
                     <result column="STATE" property="state"/>
                     <result column="FILE_ID" property="fileId"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
@@ -35,7 +36,7 @@ order  by scm_b_gys_mater_pic.create_time desc
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        ID, CODE, NAME, GYSACCOUNT, MATER_ID, CHARGE, COMMENTS, STATE, FILE_ID, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        ID, CODE, NAME, GYSACCOUNT, MATER_ID,MTART, CHARGE, COMMENTS, STATE, FILE_ID, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmBGysMaterPic" parameterType="cc.mrbird.febs.scm.entity.ScmBGysMaterPic">
         update scm_b_gys_mater_pic
@@ -48,6 +49,7 @@ order  by scm_b_gys_mater_pic.create_time desc
             <if test="matnr != null">matnr=#{matnr},</if>
             <if test="txz01 != null">txz01=#{txz01},</if>
             <if test="mseht != null">MSEHT=#{mseht},</if>
+            <if test="mtart != null">MTART=#{mtart},</if>
             <if test="produceArea != null">PRODUCE_AREA=#{produceArea},</if>
             <if test="spec != null">SPEC=#{spec},</if>
             <if test="spellCode != null">SPELL_CODE=#{spellCode},</if>

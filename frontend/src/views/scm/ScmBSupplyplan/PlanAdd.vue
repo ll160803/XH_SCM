@@ -237,6 +237,17 @@
             />
           </a-form-item>
         </a-col>
+         <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="备注"
+          >
+            <a-input
+              placeholder="请输入备注"
+              v-decorator="['linkTelephone', {}]"
+            />
+          </a-form-item>
+        </a-col>
       </a-row>
     </a-form>
     <div class="drawer-bootom-button">
@@ -405,7 +416,7 @@ export default {
       callback();
     },
     setFields () {
-      let values = this.form.getFieldsValue(['gMenge', 'charge', 'vfdat', 'hsdat',  'fpjr',  'pkgAmount', 'pkgNumber', 'outCause', 'outDate'])
+      let values = this.form.getFieldsValue(['gMenge', 'charge', 'vfdat', 'hsdat',  'fpjr',  'pkgAmount', 'pkgNumber', 'outCause', 'outDate', 'linkTelephone'])
       if (typeof values !== 'undefined') {
         Object.keys(values).forEach(_key => { this.scmBSupplyplan[_key] = values[_key] })
       }

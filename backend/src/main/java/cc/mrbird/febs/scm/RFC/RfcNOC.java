@@ -41,22 +41,22 @@ public class RfcNOC {
 //         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
 //         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
 
-        /** 测试的地址
+        /** 测试的地址*/
          connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.29");//服务器
          connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "00");        //系统编号
          connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "300");       //SAP集团
          connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
          connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "@123456");     //密码
          connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "EN");        //登录语言
-         */
-/** 正式的地址 */
+
+/** 正式的地址
         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器
         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "01");        //系统编号
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");       //SAP集团
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "822019");     //密码
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH");        //登录语言
-
+ */
 
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "5");  //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
@@ -241,13 +241,13 @@ public class RfcNOC {
 
                 IrfTable_IT_SUPLAN.setValue("ZPSTA", ZPSTA);
                 IrfTable_IT_SUPLAN.setValue("ZUPFG", ZUPFG);
-                IrfTable_IT_SUPLAN.setValue("ZBTXT", "");
+                IrfTable_IT_SUPLAN.setValue("ZBTXT", entity.getLinkTelephone()==null?"":entity.getLinkTelephone());//备注
                 IrfTable_IT_SUPLAN.setValue("ZJYR", ZPSTA == "1" ? userID : "");
                 //总务
                 IrfTable_IT_SUPLAN.setValue("ZLXR", entity.getLinkPerson());//联系人
                 IrfTable_IT_SUPLAN.setValue("KOSTL", entity.getSendDepart());//科室编码
                 IrfTable_IT_SUPLAN.setValue("ZSPTM", entity.getMatnr());
-                IrfTable_IT_SUPLAN.setValue("ZTEL", entity.getLinkTelephone());
+                IrfTable_IT_SUPLAN.setValue("ZTEL", "");
 //送货清单
                 IrfTable_IT_SUPLAN.setValue("ZSHQD", entity.getSendOrderCode());
 

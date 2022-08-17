@@ -102,7 +102,7 @@ public class ScmBFpplanController extends BaseController {
         }
     }
 
-    @Log("药品新增/按钮")
+    @Log("新增开票数据")
     @PostMapping("planAdd")
     @RequiresPermissions("fpplan:add")
     public void addFpPlan(@Valid ScmBFpplan scmBFpplan, String supplyPlanIds) throws FebsException {
@@ -149,7 +149,7 @@ public class ScmBFpplanController extends BaseController {
                         lgort = vp2.getLgort();
                         zq= vp2.getMaterCode();
                     } else {
-                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.substring(0,7).equals(vp2.getMaterCode().substring(0,7)))) {
+                        if (!(werks.equals(vp2.getWerks()) && (!werks.equals("2000" )||lgort.equals(vp2.getLgort())) && zq.substring(0,7).equals(vp2.getMaterCode().substring(0,7)))) {
                             throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致或入账月份不一致");
                         }
                     }
@@ -225,7 +225,7 @@ public class ScmBFpplanController extends BaseController {
                         lgort = vp2.getLgort();
                         zq= vp2.getMaterCode();
                     } else {
-                        if (!(werks.equals(vp2.getWerks()) && lgort.equals(vp2.getLgort()) && zq.substring(0,7).equals(vp2.getMaterCode().substring(0,7)))) {
+                        if (!(werks.equals(vp2.getWerks()) &&  (!werks.equals("2000" )||lgort.equals(vp2.getLgort())) && zq.substring(0,7).equals(vp2.getMaterCode().substring(0,7)))) {
                             throw new FebsException(vp2.getId().toString() + ":" + vp2.getWerkst() + "-" + vp2.getLgortName() + "不一致或入账月份不一致");
                         }
                     }

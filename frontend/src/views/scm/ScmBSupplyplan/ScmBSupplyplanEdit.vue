@@ -229,6 +229,17 @@
           }]}]" />
           </a-form-item>
         </a-col>
+         <a-col :span="12">
+          <a-form-item
+            v-bind="formItemLayout"
+            label="备注"
+          >
+            <a-input
+              placeholder="请输入备注"
+              v-decorator="['linkTelephone', {}]"
+            />
+          </a-form-item>
+        </a-col>
       </a-row>
     </a-form>
     <div class="drawer-bootom-button">
@@ -292,7 +303,7 @@ export default {
       this.$emit('close')
     },
     setFormValues ({ ...scmBSupplyplan }) {
-      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate']
+      let fields = ['gMenge', 'charge', 'vfdat', 'hsdat', 'fphm', 'fpjr', 'fprq', 'fpbm', 'pkgAmount', 'pkgNumber', 'outCause', 'outDate','linkTelephone']
       let fieldDates = ['vfdat', 'hsdat', 'fprq', 'outDate', 'createTime', 'modifyTime']
       Object.keys(scmBSupplyplan).forEach((key) => {
         if (fields.indexOf(key) !== -1) {

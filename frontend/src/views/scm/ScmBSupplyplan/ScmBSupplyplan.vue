@@ -401,6 +401,9 @@ export default {
             return ''
           }
         }
+      } ,{
+        title: '备注',
+        dataIndex: 'linkTelephone'
       }]
     }
   },

@@ -120,7 +120,7 @@
             v-model="queryParams.id"
             @search="search"
             enterButton="查询"
-          />
+          />  <span >总金额:{{totalAmount}}</span>
         </a-col>
       </a-row>
 
@@ -304,7 +304,8 @@ export default {
       bordered: true,
       werks: '',
       lgort: '',
-      rows: []
+      rows: [],
+      totalAmount: 0
     }
   },
   methods: {
@@ -329,17 +330,31 @@ export default {
         }
     },
     onSelectChange (selectedRowKeys) {
+       console.info(selectedRowKeys)
       this.selectedRowKeys = selectedRowKeys
       const dataSource = [...this.dataSource];
       for (let item of dataSource) {
         const rows2 = [...this.rows]
-        if (this.selectedRowKeys.indexOf(item.id) >= 0) {
-          this.rows = rows2.filter(item2 => item2.id !== item.id);
+      
+        if (this.selectedRowKeys.indexOf(item.id2) >= 0) {
+          this.rows = rows2.filter(item2 => item2.id2 !== item.id2);
           this.rows.push(item)
         }
         else {
-          this.rows = rows2.filter(item2 => item2.id !== item.id);
+          this.rows = rows2.filter(item2 => item2.id2 !== item.id2);
         }
+      }
+      this.totalAmount= 0;
+      if(this.rows.length>0){
+        
+        //  this.rows.forEach((p)=>{
+         
+        //    this.totalAmount =(parseFloat(this.totalAmount)+ parseFloat(p.fpjr)).toFixed(2)
+        //  })
+        this.totalAmount= this.rows.reduce((a,b)=>{
+           a= (parseFloat(a)+parseFloat(b.fpjr)).toFixed(2)
+          return a
+        },0)
       }
     },
     setWerks (werks) {
@@ -367,19 +382,20 @@ export default {
     reset () {
       this.loading = false
       this.scmBSendorder = {}
+      this.totalAmount= 0
       this.rows = []
       this.form.resetFields()
       // 取消选中
       this.selectedRowKeys = []
       // 重置分页
-      this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
-      if (this.paginationInfo) {
-        this.paginationInfo.current = this.pagination.defaultCurrent
-        this.paginationInfo.pageSize = this.pagination.defaultPageSize
-      }
+      // this.$refs.TableInfo.pagination.current = this.pagination.defaultCurrent
+      // if (this.paginationInfo) {
+      //   this.paginationInfo.current = this.pagination.defaultCurrent
+      //   this.paginationInfo.pageSize = this.pagination.defaultPageSize
+      // }
       // 重置列排序规则
       this.sortedInfo = null
-      this.paginationInfo = null
+     // this.paginationInfo = null
       // 重置查询参数
       this.queryParams = {
         sendDeaprtContact: '1'
@@ -450,7 +466,7 @@ export default {
           lgort = item.lgort;
         }
         else {
-          if (lgort != item.lgort) {
+          if (!(item.werks!=2000||lgort == item.lgort)) { //除了协和医院本部 肿瘤、西院、金银湖允许跨库房合并供应计划开票
             msg += item.id + ":" + item.lgortName + "库房不一致"
           }
         }

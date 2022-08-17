@@ -7,17 +7,16 @@ import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.common.utils.FileToBase64Util;
 import cc.mrbird.febs.common.utils.FtpUtil;
 import cc.mrbird.febs.common.utils.MD5Util;
+import cc.mrbird.febs.scm.RFC.BackFromSAP_SubPlan;
 import cc.mrbird.febs.scm.RFC.RfcNOC;
 import cc.mrbird.febs.scm.dao.ScmBGysMaterPicMapper;
 import cc.mrbird.febs.scm.dao.ScmDMaterMapper;
-import cc.mrbird.febs.scm.entity.ComFile;
-import cc.mrbird.febs.scm.entity.ScmBGysMaterPic;
-import cc.mrbird.febs.scm.entity.ScmBGysfp;
-import cc.mrbird.febs.scm.entity.ScmDMater;
-import cc.mrbird.febs.scm.service.IComFileService;
-import cc.mrbird.febs.scm.service.IScmBGysfpService;
+import cc.mrbird.febs.scm.entity.*;
+import cc.mrbird.febs.scm.service.*;
 import cc.mrbird.febs.system.domain.User;
 import cc.mrbird.febs.system.manager.UserManager;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +62,16 @@ public class ScmUpImpl implements IScmUpService {
     @Autowired
     private IScmBGysfpService iScmBGysfpService;
 
-    public UpMess UploadFileAndCharge(String userName,String realName, String password, String matnr, String charge, String fileCname,String fileBa64Content) {
+    @Autowired
+    public IViewSupplyplanNewService iViewSupplyplanNewService;
+
+    @Autowired
+    public IScmBFpplanService iScmBFpplanService;
+
+    @Autowired
+    public IViewSupplyplanService iViewSupplyplanService;
+
+    public UpMess UploadFileAndCharge(String userName,String realName, String password, String matnr, String charge, String fileCname,String fileBa64Content,String fileName1,String fileBa64Content1) {
         UpMess Msg = new UpMess();
 
         List<String> arrUserAccount = new ArrayList<>();
@@ -103,12 +111,15 @@ public class ScmUpImpl implements IScmUpService {
                 return Msg;
             }
 
-            log.info("1111111111");
+            String f_ID=  SaveFile(Msg,fileBa64Content1,fileName1); //厂家发票
+            if(!StringUtils.isNotBlank(f_ID)){
+                return Msg;
+            }
+
             byte[] filebs = new BASE64Decoder().decodeBuffer(fileBa64Content);
             InputStream inputStream =null;
             inputStream= new ByteArrayInputStream(filebs);
 
-            log.info("2222222222");
             String fileName = UUID.randomUUID() + ".pdf"; // 新文件名
 
             try {
@@ -131,7 +142,6 @@ public class ScmUpImpl implements IScmUpService {
             cf.setServerName(fileName);
             iComFileService.createComFile(cf);
 
-            log.info("444444444444444");
             LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(ScmBGysMaterPic::getMatnr, matnr);
 
@@ -146,7 +156,6 @@ public class ScmUpImpl implements IScmUpService {
                 Msg.setMess("存在相同的药品和批次");
                 return Msg;
             }
-            log.info("55555555555");
             LambdaQueryWrapper<ScmDMater> queryWrapper2 = new LambdaQueryWrapper<>();
             queryWrapper2.eq(ScmDMater::getGysaccount,userName);
             queryWrapper2.eq(ScmDMater::getMatnr,matnr);
@@ -176,6 +185,7 @@ public class ScmUpImpl implements IScmUpService {
             scmBGysMaterPic.setSpec(scmDMater.getSpec());
             scmBGysMaterPic.setTxz01(scmDMater.getTxz01());
             scmBGysMaterPic.setCreateTime(new Date());
+            scmBGysMaterPic.setMtart(f_ID);// 存入厂商发票附件文件ID
 
             Boolean flag = RfcNOC.SendUploadInfo_RFC(userName, matnr, charge, fileName, "I");
             if (flag) {
@@ -330,7 +340,7 @@ public class ScmUpImpl implements IScmUpService {
     }
 
     public UpMess UploadFileFpList(String userName,String realName, String password, String fphm, String fprq, String fpAmount,
-                                   String fileName2,String fileBa64Content2,List<FileInfo> fileInfoList){
+                                   String fileName2,String fileBa64Content2,String fpBm){
         UpMess Msg = new UpMess();
 
         List<String> arrUserAccount = new ArrayList<>();
@@ -341,7 +351,7 @@ public class ScmUpImpl implements IScmUpService {
             return Msg;
         }
         if (!StringUtils.isNotBlank(userName) || !StringUtils.isNotBlank(password) || !StringUtils.isNotBlank(fphm)
-                || !StringUtils.isNotBlank(fprq) || !StringUtils.isNotBlank(fpAmount)|| fileInfoList.size()<0
+                || !StringUtils.isNotBlank(fprq) || !StringUtils.isNotBlank(fpAmount)|| !StringUtils.isNotBlank(fpBm)
                 || !StringUtils.isNotBlank(fileBa64Content2)) {
             Msg.setIsSuccess(false);
             Msg.setMess("参数有误");
@@ -366,6 +376,7 @@ public class ScmUpImpl implements IScmUpService {
             Msg.setMess("发票日期参数有误，应为日期格式");
             return Msg;
         }
+
         if(this.iScmBGysfpService.IsExist(fphm,userName,"",fprq.substring(0,4)))
         {
             Msg.setIsSuccess(false);
@@ -397,36 +408,16 @@ public class ScmUpImpl implements IScmUpService {
 
             String gysFpId= UUID.randomUUID().toString();
 
-
-           List<String> comfileIds= new ArrayList<>();
-            for (FileInfo fi: fileInfoList
-                 ) {
-                String f_ID= SaveFile(Msg,fi.getFileBa64Content(),fi.getFileName()); //厂家发票
-                if(!StringUtils.isNotBlank(f_ID)){
-                    return Msg;
-                }
-                comfileIds.add(f_ID);
-            }
-            if(comfileIds.size()>0) {
-                LambdaQueryWrapper<ComFile> queryWrapper = new LambdaQueryWrapper<>();
-                queryWrapper.in(ComFile::getId, comfileIds);
-                ComFile comFile = new ComFile();
-                comFile.setRefTabTable("scmbgysfp");
-                comFile.setRefTabId(gysFpId);
-                this.iComFileService.update(comFile, queryWrapper);
-            }
-
-
             String f_ID2=  SaveFile(Msg,fileBa64Content2,fileName2); //供应商发票
             if(!StringUtils.isNotBlank(f_ID2)){
                 return Msg;
             }
-
             ScmBGysfp scmBGysfp =new ScmBGysfp();
             scmBGysfp.setId(gysFpId);
             //scmBGysfp.setCreateUserId(userName);
             scmBGysfp.setFpAmount(amount);
             scmBGysfp.setFpHm(fphm);
+            scmBGysfp.setFpBm(fpBm);
             scmBGysfp.setFprq(startDate);
             scmBGysfp.setGysaccount(userName);
             scmBGysfp.setGysName(realName);
@@ -435,6 +426,61 @@ public class ScmUpImpl implements IScmUpService {
            // scmBGysfp.setFileId(f_ID);//厂家
             scmBGysfp.setMaterId(f_ID2); //供应商的
             scmBGysfp.setIsDeletemark(1);
+
+            if (StringUtils.isNotEmpty(fpBm)) {
+
+                LambdaQueryWrapper<ScmBFpplan> queryWrapper45 = new LambdaQueryWrapper<>();
+                queryWrapper45.eq(ScmBFpplan::getIsDeletemark, 1);//1是未删 0是已删
+
+                if(StringUtils.isNotEmpty(fphm)){
+                    queryWrapper45.and(wrap->wrap.eq(ScmBFpplan::getFphm,"").or().eq(ScmBFpplan::getFphm,fphm)
+                            .or().isNull(ScmBFpplan::getFphm));
+                }
+
+                queryWrapper45.eq(ScmBFpplan::getGysaccount,userName);
+                queryWrapper45.eq(ScmBFpplan::getFpjr,fpAmount);
+               if(this.iScmBFpplanService.count(queryWrapper45)<=0){
+                   Msg.setIsSuccess(false);
+                   Msg.setMess("不存在的开票清单，请检查开票清单号和发票金额是否对应");
+                   return Msg;
+               }
+
+
+                ScmBFpplan scmBFpplan = new ScmBFpplan();
+                scmBFpplan.setId(Long.parseLong(fpBm));
+                scmBFpplan.setFphm(scmBGysfp.getFpHm());
+                scmBFpplan.setFprq(scmBGysfp.getFprq());
+
+                List<ViewSupplyplan> list = new ArrayList<>();
+                list.addAll(this.iViewSupplyplanService.findVPlanByCode(scmBGysfp.getFpBm()));
+                LambdaQueryWrapper<ViewSupplyplanNew> queryWrapper = new LambdaQueryWrapper<>();
+
+                queryWrapper.eq(ViewSupplyplanNew::getIsDeletemark, 1);
+                queryWrapper.eq(ViewSupplyplanNew::getCode, scmBGysfp.getFpBm());
+                List<ViewSupplyplanNew> listNew= this.iViewSupplyplanNewService.list(queryWrapper);
+                listNew.forEach(p->{
+                    ViewSupplyplan plan = new ViewSupplyplan();
+                    BeanUtil.copyProperties(p, plan, CopyOptions.create().setIgnoreNullValue(true));
+                    list.add(plan);
+                });
+
+                list.parallelStream().forEach(item->{
+                    item.setFphm(scmBGysfp.getFpHm());
+                    item.setFprq(scmBGysfp.getFprq());
+                });
+                RfcNOC rfc = new RfcNOC();
+                List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC("37", list, "10000100", "南京医药湖北有限公司", "2", "U");//这里是写死的
+                if (!backMsg.get(0).getMSTYPE().equals("S")) {
+                    Msg.setIsSuccess(false);
+                    Msg.setMess("新增发票数据,SAP端接收失败");
+                    return Msg;
+                }
+
+                this.iScmBFpplanService.updateScmBFpplan(scmBFpplan); //2022-06-13
+                this.iScmBFpplanService.updateFpData(scmBGysfp.getFpBm(), DateUtil.format(scmBGysfp.getFprq(), "yyyy-MM-dd"), scmBGysfp.getFpHm());
+            }
+
+
             this.iScmBGysfpService.createScmBGysfpJieKou(scmBGysfp);
             Msg.setIsSuccess(true);
             Msg.setMess("");
@@ -446,6 +492,9 @@ public class ScmUpImpl implements IScmUpService {
             return Msg;
 
         }
+    }
+    public String hello() {
+        return  "haha";
     }
 
 }

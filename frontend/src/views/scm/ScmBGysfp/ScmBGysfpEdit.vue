@@ -99,12 +99,12 @@
         type="primary"
       >关闭</a-button>
     </div>
-     <a-collapse v-model="activeKey">
+     <!-- <a-collapse v-model="activeKey">
     <a-collapse-panel key="1" header="厂商发票">
        <product-fp ref="productFp" :isEdit="false">
        </product-fp>
     </a-collapse-panel>
-    </a-collapse>
+    </a-collapse> -->
     <sub-view ref="sub">
     </sub-view>
   </a-drawer>
@@ -157,7 +157,7 @@ export default {
       this.fileList2 = []
       this.scmBGysfp.materId = ''
       this.scmBGysfp.fileId = ''
-       this.$refs.productFp.reset()
+      // this.$refs.productFp.reset()
       this.form.resetFields()
     },
     onClose () {
@@ -222,7 +222,7 @@ export default {
       let that= this 
       setTimeout(()=>{
         that.$refs.sub.search(scmBGysfp.fpHm,scmBGysfp.fpAmount)
-        that.$refs.productFp.fetch(scmBGysfp.id)
+      //  that.$refs.productFp.fetch(scmBGysfp.id)
       },300)
     },
     handleRemove (file) {

@@ -284,11 +284,8 @@ export default {
         title: '预收数量',
         dataIndex: 'doneMenge'
       }, {
-        title: '包装规格',
-        dataIndex: 'pkgAmount'
-      }, {
-        title: '包装数量',
-        dataIndex: 'pkgNumber'
+        title: '备注',
+        dataIndex: 'linkTelephone'
       }, {
         title: '操作',
         dataIndex: 'operation2',

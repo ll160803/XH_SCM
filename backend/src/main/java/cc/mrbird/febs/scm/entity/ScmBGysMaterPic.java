@@ -138,6 +138,11 @@ public class ScmBGysMaterPic implements Serializable {
     @TableField("MSEHT")
     private String mseht;
     /**
+     * 厂商发票
+     */
+    @TableField("MTART")
+    private String mtart;
+    /**
      * 物料描述
      */
     @TableField("TXZ01")

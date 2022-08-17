@@ -239,11 +239,7 @@ private String linkPerson;
      */
     @TableField("SEND_DEPART")
 private String sendDepart;
-    /**
-     * 联系方式
-     */
-    @TableField("LINK_TELEPHONE")
-private String linkTelephone;
+
     /**
      * 送货清单号
      */
@@ -262,7 +258,7 @@ private String sendOrderCode;
      * 开票时间 字符串yyyy-MM-dd
      */
     @TableField("MATER_CODE")
-    @ExcelField(value ="开票时间")
+    @ExcelField(value ="入账日期")
     private String materCode;
     /**
      * 缺货原因
@@ -278,6 +274,13 @@ private String outCause;
     @TableField("OUT_DATE")
             @ExcelField(value ="补货日期", writeConverter = TimeConverter.class)
 private Date outDate;
+
+    /**
+     * 联系方式
+     */
+    @TableField("LINK_TELEPHONE")
+    @ExcelField(value ="备注")
+    private String linkTelephone;
     /**
      * 是否删除
      */
