@@ -34,6 +34,8 @@ public interface ScmBGysMaterPicMapper extends BaseMapper<ScmBGysMaterPic> {
 
         IPage<ScmBGysMaterPic> findVScmBGyspicUser(Page page, @Param("vScmBGyspicUser") ScmBGysMaterPic vScmBGyspicUser,@Param("keyword_mater") String keyword_mater,@Param("keyword_gys") String keyword_gys,@Param("userid") String userid);
 
+
+        IPage<ScmBGysMaterPic> findVScmBGyspicNoFile(Page page, @Param("vScmBGyspicUser") ScmBGysMaterPic vScmBGyspicUser,@Param("keyword_mater") String keyword_mater,@Param("keyword_gys") String keyword_gys);
         @ Select("select b.id from  scm_b_purcharseorder a\n" +
                 "inner join scm_b_supplyplan b on a.ID=b.BASE_ID\n" +
                 "where a.matnr=#{matnr} and b.CHARGE=#{charge} and b.GYSACCOUNT=#{gysaccount} and b.IS_DELETEMARK=1 LIMIT 0,1")

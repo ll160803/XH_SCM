@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.his.dao.ScmWChangeMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.his.entity.ScmWChange">
+                    <id column="id" property="id"/>
+                    <result column="tj_rq" property="tjRq"/>
+                    <result column="ny" property="ny"/>
+                    <result column="fy_id" property="fyId"/>
+                    <result column="kw" property="kw"/>
+                    <result column="gys_id" property="gysId"/>
+                    <result column="gys_name" property="gysName"/>
+                    <result column="yp_lb" property="ypLb"/>
+                    <result column="yp_bh" property="ypBh"/>
+                    <result column="yp_cd" property="ypCd"/>
+                    <result column="yp_mc" property="ypMc"/>
+                    <result column="sl" property="sl"/>
+                    <result column="dw" property="dw"/>
+                    <result column="jh_old" property="jhOld"/>
+                    <result column="jh_new" property="jhNew"/>
+                    <result column="jh_je" property="jhJe"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, tj_rq, ny, fy_id, kw, gys_id, gys_name, yp_lb, yp_bh, yp_cd, yp_mc, sl, dw, jh_old, jh_new, jh_je, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateScmWChange" parameterType="cc.mrbird.febs.his.entity.ScmWChange">
+        update scm_w_change
+        <trim prefix="set" suffixOverrides=",">
+<if test="tjRq != null">tj_rq=#{tjRq},</if>
+<if test="ny != null">ny=#{ny},</if>
+<if test="fyId != null">fy_id=#{fyId},</if>
+<if test="kw != null">kw=#{kw},</if>
+<if test="gysId != null">gys_id=#{gysId},</if>
+<if test="gysName != null">gys_name=#{gysName},</if>
+<if test="ypLb != null">yp_lb=#{ypLb},</if>
+<if test="ypBh != null">yp_bh=#{ypBh},</if>
+<if test="ypCd != null">yp_cd=#{ypCd},</if>
+<if test="ypMc != null">yp_mc=#{ypMc},</if>
+<if test="sl != null">sl=#{sl},</if>
+<if test="dw != null">dw=#{dw},</if>
+<if test="jhOld != null">jh_old=#{jhOld},</if>
+<if test="jhNew != null">jh_new=#{jhNew},</if>
+<if test="jhJe != null">jh_je=#{jhJe},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findScmWChange" resultType="cc.mrbird.febs.his.entity.ScmWChange" parameterType="cc.mrbird.febs.his.entity.ScmWChange">
+        select  *  from scm_w_change
+        where  1=1
+            <if test="scmWChange.id != null and scmWChange.id != ''"> and scmWChange.id =#{ scmWChange.id} </if>
+            <if test="scmWChange.tjRq != null and scmWChange.tjRq != ''"> and scmWChange.tj_rq like concat('%', #{ scmWChange.tjRq} ,'%')</if>
+            <if test="scmWChange.ny != null and scmWChange.ny != ''"> and scmWChange.ny like concat('%', #{ scmWChange.ny} ,'%')</if>
+            <if test="scmWChange.fyId != null and scmWChange.fyId != ''"> and scmWChange.fy_id like concat('%', #{ scmWChange.fyId} ,'%')</if>
+            <if test="scmWChange.kw != null and scmWChange.kw != ''"> and scmWChange.kw like concat('%', #{ scmWChange.kw} ,'%')</if>
+            <if test="scmWChange.gysId != null and scmWChange.gysId != ''"> and scmWChange.gys_id like concat('%', #{ scmWChange.gysId} ,'%')</if>
+            <if test="scmWChange.gysName != null and scmWChange.gysName != ''"> and scmWChange.gys_name like concat('%', #{ scmWChange.gysName} ,'%')</if>
+            <if test="scmWChange.ypLb != null and scmWChange.ypLb != ''"> and scmWChange.yp_lb like concat('%', #{ scmWChange.ypLb} ,'%')</if>
+            <if test="scmWChange.ypBh != null and scmWChange.ypBh != ''"> and scmWChange.yp_bh like concat('%', #{ scmWChange.ypBh} ,'%')</if>
+            <if test="scmWChange.ypCd != null and scmWChange.ypCd != ''"> and scmWChange.yp_cd like concat('%', #{ scmWChange.ypCd} ,'%')</if>
+            <if test="scmWChange.ypMc != null and scmWChange.ypMc != ''"> and scmWChange.yp_mc like concat('%', #{ scmWChange.ypMc} ,'%')</if>
+            <if test="scmWChange.dw != null and scmWChange.dw != ''"> and scmWChange.dw like concat('%', #{ scmWChange.dw} ,'%')</if>
+        <if test="scmWChange.isDeletemark != null"> and scmWChange.IS_DELETEMARK =#{ scmWChange.isDeletemark} </if>
+        <if test="scmWChange.createTimeFrom!= null">
+            AND scmWChange.CREATE_TIME <![CDATA[ >= ]]>  #{scmWChange.createTimeFrom}
+        </if>
+        <if test="scmWChange.createTimeTo!= null">
+            AND scmWChange.CREATE_TIME <![CDATA[ <= ]]>  #{scmWChange.createTimeTo}
+        </if>
+        <if test="scmWChange.modifyTimeFrom!= null">
+            AND scmWChange.MODIFY_TIME <![CDATA[ >= ]]>  #{scmWChange.modifyTimeFrom}
+        </if>
+        <if test="scmWChange.modifyTimeTo!= null">
+            AND scmWChange.MODIFY_TIME <![CDATA[ <= ]]>  #{scmWChange.modifyTimeTo}
+        </if>
+</select>
+
+</mapper>

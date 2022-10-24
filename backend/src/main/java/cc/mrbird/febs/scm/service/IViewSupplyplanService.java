@@ -55,6 +55,8 @@ public interface IViewSupplyplanService extends IService<ViewSupplyplan> {
         IPage<ViewSupplyplan> findVPurcharseorder (QueryRequest request, ViewSupplyplan viewSupplyplan);
         IPage<ViewSupplyplan> findVPurcharseorder_2022 (QueryRequest request, ViewSupplyplan viewSupplyplan);
 
+        IPage<ViewSupplyplan> findSapPlanVPurcharseorder2022 (QueryRequest request, ViewSupplyplan viewSupplyplan);
+
         List<ViewSupplyplan> findPurcharseSendOrder(ViewSupplyplan viewSupplyplan);
 
         List<ViewSupplyplan> getViewSupplyPlanByPdaId(String id);

@@ -33,5 +33,7 @@ public interface IScmBSendorderService extends IService<ScmBSendorder> {
 
         void updateFpjr(String id);
 
+        void removeOrderId(String id);
+
         IPage<ViewSupplyplan>  findPhoneSendorders(QueryRequest request, ViewSupplyplan viewSupplyplan);
         }

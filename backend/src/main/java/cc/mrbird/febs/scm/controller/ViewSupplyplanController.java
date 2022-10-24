@@ -166,7 +166,14 @@ public void export(QueryRequest request, ViewSupplyplan viewSupplyplan, HttpServ
     @PostMapping("timeExcel")
     public void exporttime(QueryRequest request, ViewSupplyplan viewSupplyplan, HttpServletResponse response) throws FebsException {
         try {
+            request.setPageNum(1);
+            request.setPageSize(10000);
+
             List<ViewSupplyplan> viewSupplyplans = this.iViewSupplyplanService.findVPurcharseorder_2022(request, viewSupplyplan).getRecords();
+            List<ViewSupplyplan> viewSapplans = this.iViewSupplyplanService.findSapPlanVPurcharseorder2022(request, viewSupplyplan).getRecords();
+            if(viewSapplans.size()>0) {
+                viewSupplyplans.addAll(viewSapplans);
+            }
             ExcelKit.$Export(ViewSupplyplan.class, response).downXlsx(viewSupplyplans, false);
         } catch (Exception e) {
             message = "导出Excel失败";

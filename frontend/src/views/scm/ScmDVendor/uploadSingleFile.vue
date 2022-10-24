@@ -4,8 +4,8 @@
       :fileList="fileList"
       :remove="handleRemove"
       :beforeUpload="beforeUpload"
-      @change="handleUpload"
-      :disabled="!(fileList.length === 0)"
+      @change="handleChange"
+      
     >
       <a-button>
         <a-icon
@@ -53,10 +53,10 @@ export default {
     },
     beforeUpload (file) {
       this.fileList = [...this.fileList, file]
-      return false
+      //return false
     },
     handleChange (info) {
-      if (info.file.status === 'done') {
+      if (info.file.status === 'uploading') {
         this.handleUpload()
       }
     },

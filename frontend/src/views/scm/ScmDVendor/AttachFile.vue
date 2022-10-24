@@ -54,10 +54,9 @@
               :fileList="fileList"
               :remove="handleRemove"
               :beforeUpload="beforeUpload"
-              @change="handleUpload"
-              :disabled="!(fileList.length === 0)"
+              @change="handleChange"
             >
-              <a-button>
+              <a-button v-if="fileList.length === 0">
                 <a-icon type="upload" /> 选择文件 </a-button>
             </a-upload>
             <!-- <a-button
@@ -127,10 +126,12 @@ export default {
     },
     beforeUpload (file) {
       this.fileList = [...this.fileList, file]
-      return false
+     // return false
     },
     handleChange(info) {
-      if (info.file.status === 'done') {
+      console.info(info)
+      if (info.file.status === 'uploading') {
+        
         this.handleUpload()
       } 
     },

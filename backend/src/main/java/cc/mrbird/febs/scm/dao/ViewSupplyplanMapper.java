@@ -27,6 +27,9 @@ public interface ViewSupplyplanMapper extends BaseMapper<ViewSupplyplan> {
 
         IPage<ViewSupplyplan> findVPurcharseorder2022(Page page,@Param("order") ViewSupplyplan order);
 
+        IPage<ViewSupplyplan> findSapPlanVPurcharseorder2022(Page page,@Param("order") ViewSupplyplan order);
+
+
         IPage<ViewSupplyplan> findVPurcharseorder(Page page, @Param("order") ViewSupplyplan order);
 
         Long findVPurcharseorder_COUNT(@Param("order") ViewSupplyplan order);

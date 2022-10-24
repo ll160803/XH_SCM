@@ -104,22 +104,24 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
         }
     }
     @Override
+    public IPage<ScmBGysMaterPic> findScmBGysMaterPicsNoFile(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic,String keyword_mater,String keyword_gys)
+    {
+        try {
+            Page<ScmBGysMaterPic> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+            return this.baseMapper.findVScmBGyspicNoFile(page,scmBGysMaterPic ,keyword_mater, keyword_gys);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+    @Override
     @Transactional
     public void createScmBGysMaterPic(ScmBGysMaterPic scmBGysMaterPic) throws FebsException {
         scmBGysMaterPic.setId(UUID.randomUUID().toString());
         scmBGysMaterPic.setCreateTime(new Date());
         String matnr = scmBGysMaterPic.getMaterId();
-        LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ScmBGysMaterPic::getMaterId, matnr);
-        queryWrapper.eq(ScmBGysMaterPic::getGysaccount, scmBGysMaterPic.getGysaccount());
-        queryWrapper.eq(ScmBGysMaterPic::getCharge, scmBGysMaterPic.getCharge());
-        queryWrapper.eq(ScmBGysMaterPic::getIsDeletemark, 1);
-        int count =this.baseMapper.selectCount(queryWrapper);
-        if(count>0)
-        {
-            throw new FebsException("存在相同的药品和批次");
 
-        }
 
         ScmDMater scmDMater = this.scmDMaterMapper.selectById(matnr.trim());
         scmBGysMaterPic.setState(0);
@@ -145,18 +147,7 @@ public class ScmBGysMaterPicServiceImpl extends ServiceImpl<ScmBGysMaterPicMappe
         scmBGysMaterPic.setModifyTime(new Date());
         String matnr = scmBGysMaterPic.getMaterId();
 
-        LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(ScmBGysMaterPic::getMaterId, matnr);
 
-        queryWrapper.eq(ScmBGysMaterPic::getGysaccount, scmBGysMaterPic.getGysaccount());
-        queryWrapper.eq(ScmBGysMaterPic::getCharge, scmBGysMaterPic.getCharge());
-        queryWrapper.ne(ScmBGysMaterPic::getId, scmBGysMaterPic.getId());
-        queryWrapper.eq(ScmBGysMaterPic::getIsDeletemark, 1);
-        int count =this.baseMapper.selectCount(queryWrapper);
-        if(count>0)
-        {
-            throw new FebsException("存在相同的药品和批次");
-        }
         ScmDMater scmDMater = this.scmDMaterMapper.selectById(matnr);
         scmBGysMaterPic.setState(0);
         scmBGysMaterPic.setMatnr(scmDMater.getMatnr());

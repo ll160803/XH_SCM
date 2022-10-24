@@ -129,6 +129,13 @@
       </a-form>
     </div>
     <div>
+       <div class="operator">
+        <a-button
+          type="primary"
+          ghost
+          @click="exportExcel"
+        >导出</a-button>
+      </div>
       <!-- 表格区域 -->
       <a-table
         ref="TableInfo"
@@ -307,7 +314,11 @@ export default {
           }
         },
         width: 100
-      }, {
+      },  {
+        title: '入账日期',
+        dataIndex: 'materCode',
+        width: 100
+      },{
         title: '包装规格',
         dataIndex: 'pkgAmount',
         width: 100
@@ -330,6 +341,9 @@ export default {
             return ''
           }
         }
+      },{
+        title: '备注',
+        dataIndex: 'linkTelephone'
       }]
     }
   },
@@ -396,7 +410,7 @@ export default {
       this.lodop = null
       this.printVisiable = false
     },
-    exportExcel () {
+   exportExcel () {
       let { sortedInfo } = this
       let sortField, sortOrder
       // 获取当前列的排序和列的过滤规则
@@ -404,10 +418,18 @@ export default {
         sortField = sortedInfo.field
         sortOrder = sortedInfo.order
       }
-      this.$export('scmBSupplyplan/excel', {
-        sortField: sortField,
-        sortOrder: sortOrder,
-        ...this.queryParams
+      this.queryParams.bsartD = "0"
+      this.queryParams.pageSize = 10000
+      this.queryParams.pageNum = 1
+      let params={...this.queryParams}
+      // if(params.sendDeaprtContact=="-1"){
+      //   delete params.sendDeaprtContact
+      // }
+     // queryParams.sendDeaprtContact
+      this.$export('viewSupplyplan/timeExcel', {
+        sortField: "id",
+        sortOrder: "descend",
+        ...params
       })
     },
     search () {

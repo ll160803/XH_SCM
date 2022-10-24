@@ -86,6 +86,12 @@ public class ScmBGysMaterPicController extends BaseController {
         return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPicsAudit(request, scmBGysMaterPic, keyword_mater, keyword_gys,userId));
     }
 
+    @GetMapping("noFile")
+    public Map<String, Object> List22(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, String keyword_mater, String keyword_gys) {
+        User currentUser = FebsUtil.getCurrentUser();
+
+        return getDataTable(this.iScmBGysMaterPicService.findScmBGysMaterPicsNoFile(request, scmBGysMaterPic, keyword_mater, keyword_gys));
+    }
     /**
      * 跳转添加页面
      *
@@ -105,6 +111,21 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setName(currentUser.getRealname());
             scmBGysMaterPic.setState(0);
             scmBGysMaterPic.setIsDeletemark(1);
+            scmBGysMaterPic.setCharge(scmBGysMaterPic.getCharge().trim());
+
+            String matnr = scmBGysMaterPic.getMaterId();
+            LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ScmBGysMaterPic::getMaterId, matnr);
+            queryWrapper.eq(ScmBGysMaterPic::getGysaccount, scmBGysMaterPic.getGysaccount());
+            queryWrapper.eq(ScmBGysMaterPic::getCharge, scmBGysMaterPic.getCharge());
+            queryWrapper.eq(ScmBGysMaterPic::getIsDeletemark, 1);
+            int count =this.iScmBGysMaterPicService.count(queryWrapper);
+            if(count>0)
+            {
+                throw new FebsException("存在相同的药品和批次");
+
+            }
+
             ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
             if (comFile != null) {
                 Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMatnr(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
@@ -137,6 +158,7 @@ public class ScmBGysMaterPicController extends BaseController {
             scmBGysMaterPic.setModifyUserId(currentUser.getUserId());
             scmBGysMaterPic.setGysaccount(currentUser.getUsername());
             scmBGysMaterPic.setName(currentUser.getRealname());
+            scmBGysMaterPic.setCharge(scmBGysMaterPic.getCharge().trim());
 
              if(this.iScmBGysMaterPicService.IsDelete(scmBGysMaterPic.getId())){
                  LambdaQueryWrapper<ScmBGysMaterPic> lambdaQueryWrapper= new LambdaQueryWrapper<>();
@@ -147,10 +169,23 @@ public class ScmBGysMaterPicController extends BaseController {
                  return;
                 // throw new FebsException("已经使用的批次号，不能修改");
              }
+            String matnr = scmBGysMaterPic.getMaterId();
+            LambdaQueryWrapper<ScmBGysMaterPic> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ScmBGysMaterPic::getMaterId, matnr);
+
+            queryWrapper.eq(ScmBGysMaterPic::getGysaccount, scmBGysMaterPic.getGysaccount());
+            queryWrapper.eq(ScmBGysMaterPic::getCharge, scmBGysMaterPic.getCharge());
+            queryWrapper.ne(ScmBGysMaterPic::getId, scmBGysMaterPic.getId());
+            queryWrapper.eq(ScmBGysMaterPic::getIsDeletemark, 1);
+            int count =this.iScmBGysMaterPicService.count(queryWrapper);
+            if(count>0)
+            {
+                throw new FebsException("存在相同的药品和批次");
+            }
 
             ComFile comFile = this.iComFileService.getById(scmBGysMaterPic.getFileId());
             if (comFile != null) {
-                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMatnr(), scmBGysMaterPic.getCharge(), comFile.getServerName(), "I");
+                Boolean flag = RfcNOC.SendUploadInfo_RFC(currentUser.getUsername(), scmBGysMaterPic.getMatnr(), scmBGysMaterPic.getCharge().trim(), comFile.getServerName(), "I");
                 if (flag) {
                     this.iScmBGysMaterPicService.updateScmBGysMaterPic(scmBGysMaterPic);
                 } else {
@@ -219,6 +254,21 @@ public class ScmBGysMaterPicController extends BaseController {
             User currentUser = FebsUtil.getCurrentUser();
             scmBGysMaterPic.setGysaccount(currentUser.getUsername());
             List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPics(request, scmBGysMaterPic, "", "").getRecords();
+            ExcelKit.$Export(ScmBGysMaterPic.class, response).downXlsx(scmBGysMaterPics, false);
+        } catch (Exception e) {
+            message = "导出Excel失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    @PostMapping("excelNoFile")
+    public void exportNoFile(QueryRequest request, ScmBGysMaterPic scmBGysMaterPic, HttpServletResponse response, String keyword_mater, String keyword_gys) throws FebsException {
+        try {
+            request.setPageSize(10000);
+            request.setPageNum(1);
+            User currentUser = FebsUtil.getCurrentUser();
+            List<ScmBGysMaterPic> scmBGysMaterPics = this.iScmBGysMaterPicService.findScmBGysMaterPicsNoFile(request, scmBGysMaterPic, keyword_mater, keyword_gys).getRecords();
             ExcelKit.$Export(ScmBGysMaterPic.class, response).downXlsx(scmBGysMaterPics, false);
         } catch (Exception e) {
             message = "导出Excel失败";

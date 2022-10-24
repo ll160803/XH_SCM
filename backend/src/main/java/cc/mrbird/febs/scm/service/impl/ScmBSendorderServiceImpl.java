@@ -183,6 +183,13 @@ public class ScmBSendorderServiceImpl extends ServiceImpl<ScmBSendorderMapper, S
 
     }
 
+
+    @Override
+    @Transactional
+    public  void removeOrderId(String id){
+        this.baseMapper.removeOrderCode(id);
+    }
+
     @Override
     @Transactional
     public List<Long> findPlanIds(String sendCode) {

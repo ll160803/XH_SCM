@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cc.mrbird.febs.his.dao.ScmWSaleMapper">
+
+        <!-- 通用查询映射结果 -->
+        <resultMap id="BaseResultMap" type="cc.mrbird.febs.his.entity.ScmWSale">
+                    <id column="id" property="id"/>
+                    <result column="ywlx" property="ywlx"/>
+                    <result column="ny" property="ny"/>
+                    <result column="fy_id" property="fyId"/>
+                    <result column="gys_id" property="gysId"/>
+                    <result column="gys_name" property="gysName"/>
+                    <result column="yp_bh" property="ypBh"/>
+                    <result column="yp_cd" property="ypCd"/>
+                    <result column="yp_mc" property="ypMc"/>
+                    <result column="sl" property="sl"/>
+                    <result column="dw" property="dw"/>
+                    <result column="jh_je" property="jhJe"/>
+                    <result column="cjr" property="cjr"/>
+                    <result column="cjrid" property="cjrid"/>
+                    <result column="remark" property="remark"/>
+                    <result column="IS_DELETEMARK" property="isDeletemark"/>
+                    <result column="CREATE_TIME" property="createTime"/>
+                    <result column="MODIFY_TIME" property="modifyTime"/>
+                    <result column="CREATE_USER_ID" property="createUserId"/>
+                    <result column="MODIFY_USER_ID" property="modifyUserId"/>
+        </resultMap>
+
+        <!-- 通用查询结果列 -->
+        <sql id="Base_Column_List">
+        id, ywlx, ny, fy_id, gys_id, gys_name, yp_bh, yp_cd, yp_mc, sl, dw, jh_je, cjr, cjrid, remark, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+    </sql>
+    <update id="updateScmWSale" parameterType="cc.mrbird.febs.his.entity.ScmWSale">
+        update scm_w_sale
+        <trim prefix="set" suffixOverrides=",">
+<if test="ywlx != null">ywlx=#{ywlx},</if>
+<if test="ny != null">ny=#{ny},</if>
+<if test="fyId != null">fy_id=#{fyId},</if>
+<if test="gysId != null">gys_id=#{gysId},</if>
+<if test="gysName != null">gys_name=#{gysName},</if>
+<if test="ypBh != null">yp_bh=#{ypBh},</if>
+<if test="ypCd != null">yp_cd=#{ypCd},</if>
+<if test="ypMc != null">yp_mc=#{ypMc},</if>
+<if test="sl != null">sl=#{sl},</if>
+<if test="dw != null">dw=#{dw},</if>
+<if test="jhJe != null">jh_je=#{jhJe},</if>
+<if test="cjr != null">cjr=#{cjr},</if>
+<if test="cjrid != null">cjrid=#{cjrid},</if>
+<if test="remark != null">remark=#{remark},</if>
+<if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
+<if test="createTime != null">CREATE_TIME=#{createTime},</if>
+<if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
+<if test="createUserId != null">CREATE_USER_ID=#{createUserId},</if>
+<if test="modifyUserId != null">MODIFY_USER_ID=#{modifyUserId},</if>
+        </trim>
+                where id=#{id}
+
+    </update>
+    <select id="findScmWSale" resultType="cc.mrbird.febs.his.entity.ScmWSale" parameterType="cc.mrbird.febs.his.entity.ScmWSale">
+        select  *  from scm_w_sale
+        where  1=1
+            <if test="scmWSale.id != null and scmWSale.id != ''"> and scmWSale.id =#{ scmWSale.id} </if>
+            <if test="scmWSale.ywlx != null and scmWSale.ywlx != ''"> and scmWSale.ywlx like concat('%', #{ scmWSale.ywlx} ,'%')</if>
+            <if test="scmWSale.ny != null and scmWSale.ny != ''"> and scmWSale.ny like concat('%', #{ scmWSale.ny} ,'%')</if>
+            <if test="scmWSale.fyId != null and scmWSale.fyId != ''"> and scmWSale.fy_id like concat('%', #{ scmWSale.fyId} ,'%')</if>
+            <if test="scmWSale.gysId != null and scmWSale.gysId != ''"> and scmWSale.gys_id like concat('%', #{ scmWSale.gysId} ,'%')</if>
+            <if test="scmWSale.gysName != null and scmWSale.gysName != ''"> and scmWSale.gys_name like concat('%', #{ scmWSale.gysName} ,'%')</if>
+            <if test="scmWSale.ypBh != null and scmWSale.ypBh != ''"> and scmWSale.yp_bh like concat('%', #{ scmWSale.ypBh} ,'%')</if>
+            <if test="scmWSale.ypCd != null and scmWSale.ypCd != ''"> and scmWSale.yp_cd like concat('%', #{ scmWSale.ypCd} ,'%')</if>
+            <if test="scmWSale.ypMc != null and scmWSale.ypMc != ''"> and scmWSale.yp_mc like concat('%', #{ scmWSale.ypMc} ,'%')</if>
+            <if test="scmWSale.dw != null and scmWSale.dw != ''"> and scmWSale.dw like concat('%', #{ scmWSale.dw} ,'%')</if>
+            <if test="scmWSale.cjr != null and scmWSale.cjr != ''"> and scmWSale.cjr like concat('%', #{ scmWSale.cjr} ,'%')</if>
+            <if test="scmWSale.cjrid != null and scmWSale.cjrid != ''"> and scmWSale.cjrid like concat('%', #{ scmWSale.cjrid} ,'%')</if>
+            <if test="scmWSale.remark != null and scmWSale.remark != ''"> and scmWSale.remark like concat('%', #{ scmWSale.remark} ,'%')</if>
+        <if test="scmWSale.isDeletemark != null"> and scmWSale.IS_DELETEMARK =#{ scmWSale.isDeletemark} </if>
+        <if test="scmWSale.createTimeFrom!= null">
+            AND scmWSale.CREATE_TIME <![CDATA[ >= ]]>  #{scmWSale.createTimeFrom}
+        </if>
+        <if test="scmWSale.createTimeTo!= null">
+            AND scmWSale.CREATE_TIME <![CDATA[ <= ]]>  #{scmWSale.createTimeTo}
+        </if>
+        <if test="scmWSale.modifyTimeFrom!= null">
+            AND scmWSale.MODIFY_TIME <![CDATA[ >= ]]>  #{scmWSale.modifyTimeFrom}
+        </if>
+        <if test="scmWSale.modifyTimeTo!= null">
+            AND scmWSale.MODIFY_TIME <![CDATA[ <= ]]>  #{scmWSale.modifyTimeTo}
+        </if>
+</select>
+
+</mapper>

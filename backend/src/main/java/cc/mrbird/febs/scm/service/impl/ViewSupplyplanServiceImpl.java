@@ -410,6 +410,15 @@ public class ViewSupplyplanServiceImpl extends ServiceImpl<ViewSupplyplanMapper,
             return null;
         }
     }
+    @Override
+    public IPage<ViewSupplyplan> findSapPlanVPurcharseorder2022 (QueryRequest request, ViewSupplyplan viewSupplyplan) {
+        Page<ViewSupplyplan> page = new Page<>();
+        SortUtil.handlePageSort(request, page, false);
+        page.setSearchCount(false);
+        // return this.page(page, queryWrapper);
+        IPage<ViewSupplyplan> listPage= this.baseMapper.findSapPlanVPurcharseorder2022(page, viewSupplyplan);
+        return  listPage;
+    }
 
         @Override
         public IPage<ViewSupplyplan> findVPurcharseorder_2022 (QueryRequest request, ViewSupplyplan viewSupplyplan){

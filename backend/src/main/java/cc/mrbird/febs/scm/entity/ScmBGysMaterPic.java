@@ -39,13 +39,13 @@ public class ScmBGysMaterPic implements Serializable {
      * 姓名
      */
     @TableField("NAME")
-
+    @ExcelField(value = "供应商姓名")
     private String name;
     /**
      * 供应商账号
      */
     @TableField("GYSACCOUNT")
-
+    @ExcelField(value = "供应商账号")
     private String gysaccount;
     /**
      * 药品编码ID

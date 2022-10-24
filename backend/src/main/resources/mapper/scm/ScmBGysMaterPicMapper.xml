@@ -9,6 +9,8 @@
                     <result column="NAME" property="name"/>
                     <result column="GYSACCOUNT" property="gysaccount"/>
                     <result column="MATER_ID" property="materId"/>
+            <result column="matnr" property="matnr"/>
+            <result column="TXZ01" property="txz01"/>
                     <result column="CHARGE" property="charge"/>
                     <result column="COMMENTS" property="comments"/>
                     <result column="AUDITCAUSE" property="auditCause"/>
@@ -36,7 +38,7 @@ order  by scm_b_gys_mater_pic.create_time desc
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        ID, CODE, NAME, GYSACCOUNT, MATER_ID,MTART, CHARGE, COMMENTS, STATE, FILE_ID, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        ID, CODE, NAME, GYSACCOUNT,matnr,TXZ01, MATER_ID,MTART, CHARGE, COMMENTS, STATE, FILE_ID, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmBGysMaterPic" parameterType="cc.mrbird.febs.scm.entity.ScmBGysMaterPic">
         update scm_b_gys_mater_pic
@@ -105,5 +107,27 @@ order  by scm_b_gys_mater_pic.create_time desc
         <if test="vScmBGyspicUser.lgortName != null"> and scm_b_gys_mater_pic.lgortName like concat('%', #{ vScmBGyspicUser.lgortName} ,'%')</if>
     </select>
 
+
+    <select id="findVScmBGyspicNoFile" resultType="cc.mrbird.febs.scm.entity.ScmBGysMaterPic" parameterType="cc.mrbird.febs.scm.entity.ScmBGysMaterPic">
+        SELECT
+        distinct
+        b.GYSACCOUNT,
+        b.GYSNAME NAME,
+        b.CHARGE,
+        c.matnr matnr,
+        c.TXZ01 txz01
+        FROM
+        scm_b_supplyplan b
+        INNER JOIN scm_b_purcharseorder c ON c.id = b.BASE_ID
+        LEFT JOIN scm_b_gys_mater_pic a ON a.CHARGE = b.CHARGE
+        AND a.GYSACCOUNT = b.GYSACCOUNT
+        AND a.matnr = c.matnr
+        WHERE
+        a.FILE_ID IS NULL and b.IS_DELETEMARK=1
+
+        <if test="keyword_gys != null  and keyword_gys != ''"> and (b.GYSACCOUNT = #{keyword_gys} or b.GYSNAME like concat('%', #{keyword_gys} ,'%'))</if>
+        <if test="keyword_mater != null  and keyword_mater != ''"> and (c.matnr = #{ keyword_mater} or c.TXZ01 like concat('%', #{ keyword_mater} ,'%'))</if>
+
+    </select>
 
 </mapper>

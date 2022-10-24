@@ -649,6 +649,160 @@ WHERE
 		WHERE
 		(a.`BASE_ID` = b.`ID`)
 	</select>
+    <!-- 获取退钱供应计划数据-->
+	<select id="findSapPlanVPurcharseorder2022" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" parameterType="cc.mrbird.febs.scm.entity.ViewSupplyplan">
+		SELECT
+		b.`ebeln` AS `ebeln`,
+		b.`ebelp` AS `ebelp`,
+		b.`matnr` AS `matnr`,
+		CONCAT(b.`txz01`,'/',IFNULL(b.send_deaprt_name,'')) AS `txz01`,
+		b.`werkst` AS `werkst`,
+		b.`werks` AS `werks`,
+		b.`lgort` AS `lgort`,
+		b.`lgortName` AS `lgortName`,
+		b.`menge` AS `menge`,
+		b.`meins` AS `meins`,
+		b.`mseht` AS `mseht`,
+		b.`netpr` AS `netpr`,
+		b.`eindt` AS `eindt`,
+		b.`bedat` AS `bedat`,
+		b.`bsart` AS `bsart`,
+		b.send_deaprt_contact as send_deaprt_contact,
+		a.`CHARGE` AS `CHARGE`,
+		a.`VFDAT` AS `VFDAT`,
+		a.`HSDAT` AS `HSDAT`,
+		a.`FPHM` AS `FPHM`,
+		c.`FPJR` AS `FPJR`,
+		a.`FPRQ` AS `FPRQ`,
+		a.`BASE_ID` AS `BASE_ID`,
+		a.`ID` AS `ID`,
+		a.`STATUS` AS `STATUS`,
+		(CASE WHEN a.`STATUS`=1 then a.g_Menge ELSE a.DoneMenge end) AS `DONEMENGE`,
+		a.`FPBM` AS `FPBM`,
+		a.`GYSACCOUNT` AS `GYSACCOUNT`,
+		a.`GYSNAME` AS `GYSNAME`,
+		a.`G_Menge` as `GMenge`,
+		a.`PKG_AMOUNT` AS `PKG_AMOUNT`,
+		a.`PKG_NUMBER` AS `PKG_NUMBER`,
+		a.`UNINFORMED_STATE` AS `UNINFORMED_STATE`,
+		a.`INFORMED_STATE` AS `INFORMED_STATE`,
+		a.`BSART_D` AS `BSART_D`,
+		a.`LINK_PERSON` AS `LINK_PERSON`,
+		a.`SEND_DEPART` AS `SEND_DEPART`,
+		a.`LINK_TELEPHONE` AS `LINK_TELEPHONE`,
+		a.`SEND_ORDER_CODE` AS `SEND_ORDER_CODE`,
+		a.`OUT_CAUSE` AS `OUT_CAUSE`,
+		a.`OUT_DATE` AS `OUT_DATE`,
+		a.`IS_DELETEMARK` AS `IS_DELETEMARK`,
+		a.`CREATE_TIME` AS `CREATE_TIME`,
+		a.`MODIFY_TIME` AS `MODIFY_TIME`,
+		a.`CREATE_USER_ID` AS `CREATE_USER_ID`,
+		a.`MODIFY_USER_ID` AS `MODIFY_USER_ID`,
+		b.`NAME` AS `NAME`,
+		a.mater_code as mater_code
+		FROM
+
+		(
+		(
+		SELECT
+		*
+		FROM
+		`scm_b_supplyplan`
+		WHERE
+		`scm_b_supplyplan`.`IS_DELETEMARK` = 1 and  `scm_b_supplyplan`.`bsart_d` = 0
+		<if test="order.id != null and order.id != 0">
+			AND scm_b_supplyplan.id = #{order.id}
+		</if>
+		<if test="order.status != null and order.status==0">
+			AND scm_b_supplyplan.status = #{order.status}
+		</if>
+		<if test="order.status != null and order.status==1">
+			AND scm_b_supplyplan.status = #{order.status} AND (scm_b_supplyplan.mater_code is null or scm_b_supplyplan.mater_code='')
+		</if>
+		<if test="order.status != null and order.status==2">
+			AND scm_b_supplyplan.status = 1 AND (scm_b_supplyplan.mater_code is not null and scm_b_supplyplan.mater_code!='' )
+		</if>
+		<if test="order.materCodeFrom != null and order.materCodeFrom!=''">
+			AND scm_b_supplyplan.mater_code<![CDATA[ >= ]]> #{order.materCodeFrom}
+		</if>
+		<if test="order.materCodeTo != null and order.materCodeTo!=''">
+			AND scm_b_supplyplan.mater_code<![CDATA[ <= ]]> #{order.materCodeTo}
+		</if>
+		<if test="order.doneMenge == 0">
+			AND scm_b_supplyplan.doneMenge = scm_b_supplyplan.g_Menge
+		</if>
+		<if test="order.doneMenge == 2">
+			AND (((scm_b_supplyplan.doneMenge is null or scm_b_supplyplan.doneMenge <![CDATA[ < ]]> scm_b_supplyplan.g_Menge) AND length(scm_b_supplyplan.SEND_ORDER_CODE) <![CDATA[ > ]]> 0)
+			or (scm_b_supplyplan.doneMenge>0 and  scm_b_supplyplan.doneMenge <![CDATA[ < ]]> scm_b_supplyplan.g_Menge))
+		</if>
+		<if test="order.gysaccount != null and order.gysaccount != ''">
+			AND scm_b_supplyplan.gysaccount = #{order.gysaccount}
+		</if>
+		<if test="order.keyword_gys != null and order.keyword_gys != ''">
+			AND ((scm_b_supplyplan.gysaccount = #{order.keyword_gys}) or (scm_b_supplyplan.gysname like concat('%',#{order.keyword_gys},'%')))
+		</if>
+		<if test="order.baseId != null">
+			AND scm_b_supplyplan.base_Id = #{order.baseId}
+		</if>
+		<if test="order.noOrder != null and order.noOrder != ''">
+			AND (length(scm_b_supplyplan.SEND_ORDER_CODE) = 0  or scm_b_supplyplan.SEND_ORDER_CODE is null)
+		</if>
+		<if test="order.sendOrderCode != null and order.sendOrderCode != ''">
+			AND scm_b_supplyplan.SEND_ORDER_CODE = #{order.sendOrderCode}
+		</if>
+		<if test="order.sendCodes != null and order.sendCodes != ''">
+			AND scm_b_supplyplan.SEND_ORDER_CODE in ${order.sendCodes}
+		</if>
+		) a
+		JOIN (
+		SELECT
+		scm_b_purcharseorder.*
+		FROM
+		`scm_b_purcharseorder`
+
+		<if test="order.ebelp !=null">
+			INNER JOIN scm_b_userandarea A2 ON CONCAT(scm_b_purcharseorder.werks,scm_b_purcharseorder.lgort)  = A2.AreaID  AND A2.UserID=${order.ebelp}
+		</if>
+		WHERE
+		1 = 1
+
+		<if test="order.ebeln != null and order.ebeln !=''">
+			AND scm_b_purcharseorder.ebeln = #{order.ebeln}
+		</if>
+		<if test="order.werks != null and order.werks !='0'.toString()">
+			AND scm_b_purcharseorder.werks = #{order.werks}
+		</if>
+		<if test="order.lgort != null and order.lgort !='0'.toString()">
+			AND scm_b_purcharseorder.lgort = #{order.lgort}
+		</if>
+		<if test="order.gysname != null and order.gysname != ''">
+			AND scm_b_purcharseorder.gysname like concat('%',#{order.gysname},'%')
+		</if>
+		<if test="order.txz01 != null and order.txz01 != ''">
+			AND scm_b_purcharseorder.txz01 like concat('%',#{order.txz01},'%')
+		</if>
+		<if test="order.matnr != null and order.matnr != ''">
+			AND scm_b_purcharseorder.matnr = #{order.matnr}
+		</if>
+		<if test="order.keyword_mater != null and order.keyword_mater != ''">
+			AND ((scm_b_purcharseorder.matnr = #{order.keyword_mater}) or (scm_b_purcharseorder.txz01 like concat('%',#{order.keyword_mater},'%')))
+		</if>
+		<if test="order.eindt != null">
+			AND scm_b_purcharseorder.bedat <![CDATA[ >= ]]>  #{order.eindt}
+		</if>
+		<if test="order.bedat != null">
+			AND scm_b_purcharseorder.bedat <![CDATA[ <= ]]> #{order.bedat}
+		</if>
+
+		) b
+		JOIN `scm_b_sapplan` c ON
+		(
+		a.`ID` = c.`plan_id`
+		)
+		)
+		WHERE
+		(a.`BASE_ID` = b.`ID`)
+	</select>
 
 	<select id="findVPlanByOrderCode" resultType="cc.mrbird.febs.scm.entity.ViewSupplyplan" >
       SELECT

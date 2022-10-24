@@ -63,4 +63,9 @@ public interface IScmUpService {
 
     @WebMethod
     String hello();
+
+    @WebMethod
+    UpMess DownLoadPlan(@WebParam(name="userName")String userName,@WebParam(name="realName")String realName, @WebParam(name="password")String password);
+
+
 }

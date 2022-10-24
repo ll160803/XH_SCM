@@ -1156,4 +1156,24 @@ public class ScmBSupplyplanController extends BaseController {
         return reStr;
 
     }
+    @PostMapping("materCode")
+    public void UpdateMaterCode(String materCode,String ids){
+        if(StringUtils.isNotEmpty(ids)){
+            String[] arrids= ids.split(",");
+            LambdaQueryWrapper<ScmBSupplyplan> lm= new LambdaQueryWrapper<>();
+            lm.in(ScmBSupplyplan::getId,arrids);
+            lm.eq(ScmBSupplyplan::getIsDeletemark,1);
+            lm.eq(ScmBSupplyplan::getStatus,1);
+
+            ScmBSupplyplan plan= new ScmBSupplyplan();
+            if(materCode==null){
+                plan.setMaterCode("");
+            }
+            else {
+                plan.setMaterCode(materCode);
+            }
+            this.iScmBSupplyplanService.update(plan,lm);
+        }
+    }
+
 }

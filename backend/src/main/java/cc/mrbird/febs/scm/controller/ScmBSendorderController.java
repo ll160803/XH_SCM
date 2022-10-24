@@ -171,12 +171,15 @@ public class ScmBSendorderController extends BaseController {
 
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
-                if (!backMsg.get(0).getMSTYPE().equals("S")) {
-                    log.error("修改送货订单,SAP端接收失败");
-                    throw new FebsException("修改送货订单,SAP端接收失败");
+                log.info(backMsg.get(0).getMSTYPE());
+                if (backMsg.get(0).getMSTYPE().equals("S")) {
+                    this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
+
                 }
                 else {
-                    this.iScmBSendorderService.updateScmBSendorder(scmBSendorder);
+                    this.iScmBSendorderService.removeOrderId(scmBSendorder.getId().toString());
+                    log.error("修改送货订单,SAP端接收失败");
+                    throw new FebsException("修改送货订单,SAP端接收失败");
                     //this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
                 }
             }
@@ -219,11 +222,13 @@ public class ScmBSendorderController extends BaseController {
                 RfcNOC rfc = new RfcNOC();
                 List<BackFromSAP_SubPlan> backMsg = rfc.SendSupplyPlan_RFC(currentUser.getUserId().toString(), list, currentUser.getUsername(), currentUser.getRealname(), "0", "U");
                 if (!backMsg.get(0).getMSTYPE().equals("S")) {
+
                     log.error("修改送货订单,SAP端接收失败");
                     throw new FebsException("修改送货订单,SAP端接收失败");
                 }
                 else {
                     //this.iScmBSendorderService.updateFpjr(scmBSendorder.getId().toString());
+
                 }
             }
             else
