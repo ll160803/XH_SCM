@@ -11,9 +11,11 @@ import cc.mrbird.febs.his.entity.ScmWChange;
 
 import cc.mrbird.febs.common.utils.FebsUtil;
 import cc.mrbird.febs.system.domain.User;
+import cn.hutool.core.convert.Convert;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.wuwenze.poi.ExcelKit;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,12 +54,21 @@ public IScmWChangeService iScmWChangeService;
  * @return
  */
 @GetMapping
-@RequiresPermissions("scmWChange:view")
 public Map<String, Object> List(QueryRequest request, ScmWChange scmWChange){
+    User currentUser= FebsUtil.getCurrentUser();
+    scmWChange.setGysName(currentUser.getRealname());
         return getDataTable(this.iScmWChangeService.findScmWChanges(request, scmWChange));
         }
+    @GetMapping("all")
+    public Map<String, Object> List2(QueryRequest request, ScmWChange scmWChange){
 
-/**
+        return getDataTable(this.iScmWChangeService.findScmWChanges(request, scmWChange));
+    }
+
+
+
+
+    /**
  * 添加
  * @param  scmWChange
  * @return
@@ -111,9 +123,10 @@ public void deleteScmWChanges(@NotBlank(message = "{required}") @PathVariable St
         }
         }
 @PostMapping("excel")
-@RequiresPermissions("scmWChange:export")
 public void export(QueryRequest request, ScmWChange scmWChange, HttpServletResponse response) throws FebsException {
         try {
+            request.setPageSize(10000);
+            request.setPageNum(1);
         List<ScmWChange> scmWChanges = this.iScmWChangeService.findScmWChanges(request, scmWChange).getRecords();
         ExcelKit.$Export(ScmWChange.class, response).downXlsx(scmWChanges, false);
         } catch (Exception e) {

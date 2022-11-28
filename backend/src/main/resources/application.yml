@@ -12,6 +12,9 @@ cxf:
   path: /webservice
 
 spring:
+  devtools:
+    restart:
+      enabled: true
   main:
     allow-bean-definition-overriding: true
   datasource:

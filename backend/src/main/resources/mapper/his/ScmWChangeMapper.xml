@@ -5,6 +5,7 @@
         <!-- 通用查询映射结果 -->
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.his.entity.ScmWChange">
                     <id column="id" property="id"/>
+            <result column="code" property="code"/>
                     <result column="tj_rq" property="tjRq"/>
                     <result column="ny" property="ny"/>
                     <result column="fy_id" property="fyId"/>
@@ -20,6 +21,7 @@
                     <result column="jh_old" property="jhOld"/>
                     <result column="jh_new" property="jhNew"/>
                     <result column="jh_je" property="jhJe"/>
+            <result column="state" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="MODIFY_TIME" property="modifyTime"/>
@@ -29,12 +31,13 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, tj_rq, ny, fy_id, kw, gys_id, gys_name, yp_lb, yp_bh, yp_cd, yp_mc, sl, dw, jh_old, jh_new, jh_je, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id, code, tj_rq, ny, fy_id, kw, gys_id, gys_name, yp_lb, yp_bh, yp_cd, yp_mc, sl, dw, jh_old, jh_new, jh_je, state,IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmWChange" parameterType="cc.mrbird.febs.his.entity.ScmWChange">
         update scm_w_change
         <trim prefix="set" suffixOverrides=",">
 <if test="tjRq != null">tj_rq=#{tjRq},</if>
+            <if test="code != null">code=#{code},</if>
 <if test="ny != null">ny=#{ny},</if>
 <if test="fyId != null">fy_id=#{fyId},</if>
 <if test="kw != null">kw=#{kw},</if>
@@ -49,6 +52,7 @@
 <if test="jhOld != null">jh_old=#{jhOld},</if>
 <if test="jhNew != null">jh_new=#{jhNew},</if>
 <if test="jhJe != null">jh_je=#{jhJe},</if>
+            <if test="state != null">state=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
@@ -62,6 +66,7 @@
         select  *  from scm_w_change
         where  1=1
             <if test="scmWChange.id != null and scmWChange.id != ''"> and scmWChange.id =#{ scmWChange.id} </if>
+        <if test="scmWChange.code != null and scmWChange.code != ''"> and scmWChange.code like concat('%', #{ scmWChange.code} ,'%')</if>
             <if test="scmWChange.tjRq != null and scmWChange.tjRq != ''"> and scmWChange.tj_rq like concat('%', #{ scmWChange.tjRq} ,'%')</if>
             <if test="scmWChange.ny != null and scmWChange.ny != ''"> and scmWChange.ny like concat('%', #{ scmWChange.ny} ,'%')</if>
             <if test="scmWChange.fyId != null and scmWChange.fyId != ''"> and scmWChange.fy_id like concat('%', #{ scmWChange.fyId} ,'%')</if>
@@ -74,6 +79,7 @@
             <if test="scmWChange.ypMc != null and scmWChange.ypMc != ''"> and scmWChange.yp_mc like concat('%', #{ scmWChange.ypMc} ,'%')</if>
             <if test="scmWChange.dw != null and scmWChange.dw != ''"> and scmWChange.dw like concat('%', #{ scmWChange.dw} ,'%')</if>
         <if test="scmWChange.isDeletemark != null"> and scmWChange.IS_DELETEMARK =#{ scmWChange.isDeletemark} </if>
+        <if test="scmWChange.state != null"> and scmWChange.state =#{ scmWChange.state} </if>
         <if test="scmWChange.createTimeFrom!= null">
             AND scmWChange.CREATE_TIME <![CDATA[ >= ]]>  #{scmWChange.createTimeFrom}
         </if>

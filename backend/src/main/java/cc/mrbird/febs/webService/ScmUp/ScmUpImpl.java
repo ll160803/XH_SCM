@@ -339,7 +339,7 @@ public class ScmUpImpl implements IScmUpService {
     }
 
 
-    private String AddData(String supplyPlanIds,String username,String realname,UpMess msg){
+    private String AddData(String supplyPlanIds,String username,String realname,  UpMess msg){
         try {
             ScmBFpplan scmBFpplan = new ScmBFpplan();
             scmBFpplan.setGysaccount(username);
@@ -473,7 +473,7 @@ public class ScmUpImpl implements IScmUpService {
 
 
              fpBm= AddData(supplyPlanIds,username,realName,Msg);
-            if(StringUtils.isEmpty(fpBm)){
+            if(StringUtils.isEmpty(fpBm)){ //开票清单号
                 return Msg;
             }
 

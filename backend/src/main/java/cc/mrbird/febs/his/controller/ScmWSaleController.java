@@ -51,12 +51,19 @@ public IScmWSaleService iScmWSaleService;
  * @return
  */
 @GetMapping
-@RequiresPermissions("scmWSale:view")
 public Map<String, Object> List(QueryRequest request, ScmWSale scmWSale){
+    User currentUser= FebsUtil.getCurrentUser();
+    scmWSale.setGysName(currentUser.getRealname());
         return getDataTable(this.iScmWSaleService.findScmWSales(request, scmWSale));
         }
+    @GetMapping("all")
+    public Map<String, Object> List2(QueryRequest request, ScmWSale scmWSale){
 
-/**
+        return getDataTable(this.iScmWSaleService.findScmWSales(request, scmWSale));
+    }
+
+
+    /**
  * 添加
  * @param  scmWSale
  * @return
@@ -111,9 +118,10 @@ public void deleteScmWSales(@NotBlank(message = "{required}") @PathVariable Stri
         }
         }
 @PostMapping("excel")
-@RequiresPermissions("scmWSale:export")
 public void export(QueryRequest request, ScmWSale scmWSale, HttpServletResponse response) throws FebsException {
         try {
+            request.setPageSize(10000);
+            request.setPageNum(1);
         List<ScmWSale> scmWSales = this.iScmWSaleService.findScmWSales(request, scmWSale).getRecords();
         ExcelKit.$Export(ScmWSale.class, response).downXlsx(scmWSales, false);
         } catch (Exception e) {

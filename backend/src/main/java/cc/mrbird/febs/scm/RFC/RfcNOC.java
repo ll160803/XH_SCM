@@ -4,6 +4,8 @@ import cc.mrbird.febs.common.annotation.Log;
 import cc.mrbird.febs.common.domain.FebsResponse;
 import cc.mrbird.febs.common.properties.FebsProperties;
 import cc.mrbird.febs.common.properties.JcoProperties;
+import cc.mrbird.febs.his.entity.ScmWChange;
+import cc.mrbird.febs.his.entity.ScmWSale;
 import cc.mrbird.febs.scm.entity.ScmBPurcharseorder;
 import cc.mrbird.febs.scm.entity.ScmBSupplyplan;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
@@ -12,6 +14,7 @@ import com.sap.conn.jco.ext.DestinationDataProvider;
 import com.sap.conn.rfc.api.IRfcFunction;
 import com.sap.conn.rfc.api.IRfcTable;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.velocity.runtime.directive.Foreach;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -41,22 +44,22 @@ public class RfcNOC {
 //         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, JcoProperties.getPassw());     //密码
 //         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, JcoProperties.getLang());        //登录语言
 
-        /** 测试的地址
+        /** 测试的地址*/
          connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.29");//服务器
          connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "00");        //系统编号
          connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "300");       //SAP集团
          connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
          connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "@123456");     //密码
          connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "EN");        //登录语言
-         */
-/** 正式的地址 */
+
+/** 正式的地址
         connectProperties.setProperty(DestinationDataProvider.JCO_ASHOST, "192.168.64.26");//服务器
         connectProperties.setProperty(DestinationDataProvider.JCO_SYSNR, "01");        //系统编号
         connectProperties.setProperty(DestinationDataProvider.JCO_CLIENT, "800");       //SAP集团
         connectProperties.setProperty(DestinationDataProvider.JCO_USER, "COM_SCM");  //SAP用户名
         connectProperties.setProperty(DestinationDataProvider.JCO_PASSWD, "822019");     //密码
         connectProperties.setProperty(DestinationDataProvider.JCO_LANG, "ZH");        //登录语言
-
+ */
 
         connectProperties.setProperty(DestinationDataProvider.JCO_POOL_CAPACITY, "5");  //最大连接数
         connectProperties.setProperty(DestinationDataProvider.JCO_PEAK_LIMIT, "10");     //最大连接线程
@@ -333,4 +336,182 @@ public class RfcNOC {
         }
 
     }
+
+    public List<BackFromSAP_SubPlan> SendFp_RFC(String userID, List<ScmWChange> listEntitys,String fphm, double fpje,String kpid,String fprq) {
+        String fuName = "ZMM00_FM_TJSCM";
+        log.info("史昉调价数据", 1);
+        List<BackFromSAP_SubPlan> list = new ArrayList<>();
+        JCoDestination destination;
+        try {
+            destination = RfcNOC.GetDestination();
+            if (destination == null) {
+                log.error("配置信息出错");
+                BackFromSAP_SubPlan pur2 = new BackFromSAP_SubPlan();
+                pur2.setMESS("无法连接SAP，或者配置出错");
+                pur2.setMSTYPE("H");
+                pur2.setZGYJH("");
+                list.add(pur2);
+                return list;
+            }
+            JCoRepository rfcrep = destination.getRepository();
+            JCoFunction myfun = null;
+            myfun = rfcrep.getFunction(fuName);
+            //  myfun.SetValue("IS_SELCOND", "0");//SAP里面的传入参数
+            if (myfun == null) {
+                log.info("ZMM00_FM_TJSCM is NULL");
+                return list;
+            }
+
+            JCoTable IrfTable_IT_SUPLAN = myfun.getTableParameterList().getTable("T_YTJSCM");
+            for (ScmWChange entity : listEntitys) {
+                IrfTable_IT_SUPLAN.appendRow();
+                IrfTable_IT_SUPLAN.setValue("NY", entity.getNy());//供应计划号 对应 CODE字段
+                IrfTable_IT_SUPLAN.setValue("WYM", entity.getId());
+                IrfTable_IT_SUPLAN.setValue("LIFNR", userID);
+
+                IrfTable_IT_SUPLAN.setValue("NAME1", entity.getGysName());
+                IrfTable_IT_SUPLAN.setValue("TJRQ", entity.getTjRq());
+                IrfTable_IT_SUPLAN.setValue("FY_ID", entity.getFyId());
+                IrfTable_IT_SUPLAN.setValue("ZYKSB", entity.getKw()); //HIS 唯一识别码
+                IrfTable_IT_SUPLAN.setValue("YP_LB", entity.getYpLb());
+                IrfTable_IT_SUPLAN.setValue("YP_BH", entity.getYpBh());
+
+                IrfTable_IT_SUPLAN.setValue("YP_CD", entity.getYpCd());
+                IrfTable_IT_SUPLAN.setValue("SL", entity.getSl());
+                IrfTable_IT_SUPLAN.setValue("DW", entity.getDw());
+
+                IrfTable_IT_SUPLAN.setValue("JH_OLD", entity.getJhOld());
+                IrfTable_IT_SUPLAN.setValue("JH_NEW", entity.getJhNew());
+
+                IrfTable_IT_SUPLAN.setValue("JH_JE", entity.getJhJe());
+                IrfTable_IT_SUPLAN.setValue("KPJE",fpje);
+                IrfTable_IT_SUPLAN.setValue("KPDH", kpid);
+                IrfTable_IT_SUPLAN.setValue("ZFPHM", fphm);
+                log.error("我到这里啦666");
+                IrfTable_IT_SUPLAN.setValue("ZFPRQ", fprq);
+            }
+
+            // myfun.SetValue("IT_SUPLAN", IrfTable_IT_SUPLAN);
+            //提前实例化一个空的表结构出来
+            myfun.execute(destination);//执行
+
+
+
+                BackFromSAP_SubPlan pur = new BackFromSAP_SubPlan();
+
+                pur.setMESS(myfun.getExportParameterList().getString("E_MES"));
+                pur.setMSTYPE(myfun.getExportParameterList().getString("E_TYPE"));
+               // pur.setZGYJH(rfcReturn.getString("ZGYJH"));
+
+
+                list.add(pur);
+
+
+            log.info("ZMM00_FM_TJSCM(发送计划) END SUCCESS!", 1);
+        } catch (Exception ex) {
+            log.info("ZMM00_FM_TJSCM(发送计划)出现问题：" + ex.getMessage(), 1);
+
+            BackFromSAP_SubPlan pur = new BackFromSAP_SubPlan();
+            pur.setMESS(ex.getMessage());
+            pur.setMSTYPE("H");
+            pur.setZGYJH("");
+            list.add(pur);
+
+        } finally {
+            destination = null;
+        }
+
+        return list;
+    }
+
+    public List<BackFromSAP_SubPlan> SendKp_RFC(String userID, List<ScmWSale> listEntitys, String fphm, double fpje, String kpid, String fprq) {
+        String fuName = "ZMM00_FM_YPSCM";
+        log.info("史昉调价数据", 1);
+        List<BackFromSAP_SubPlan> list = new ArrayList<>();
+        JCoDestination destination;
+        try {
+            destination = RfcNOC.GetDestination();
+            if (destination == null) {
+                log.error("配置信息出错");
+                BackFromSAP_SubPlan pur2 = new BackFromSAP_SubPlan();
+                pur2.setMESS("无法连接SAP，或者配置出错");
+                pur2.setMSTYPE("H");
+                pur2.setZGYJH("");
+                list.add(pur2);
+                return list;
+            }
+            JCoRepository rfcrep = destination.getRepository();
+            JCoFunction myfun = null;
+            myfun = rfcrep.getFunction(fuName);
+            //  myfun.SetValue("IS_SELCOND", "0");//SAP里面的传入参数
+            if (myfun == null) {
+                log.info("ZMM00_FM_TJSCM is NULL");
+                return list;
+            }
+
+            JCoTable IrfTable_IT_SUPLAN = myfun.getTableParameterList().getTable("T_YPSCM");
+            for (ScmWSale entity : listEntitys) {
+                IrfTable_IT_SUPLAN.appendRow();
+                IrfTable_IT_SUPLAN.setValue("NY", entity.getNy());//供应计划号 对应 CODE字段
+                IrfTable_IT_SUPLAN.setValue("WYM", entity.getId());
+                IrfTable_IT_SUPLAN.setValue("YWLX", entity.getYwlx());
+                IrfTable_IT_SUPLAN.setValue("LIFNR", userID);
+
+                IrfTable_IT_SUPLAN.setValue("NAME1", entity.getGysName());
+
+                IrfTable_IT_SUPLAN.setValue("FY_ID", entity.getFyId());
+
+                IrfTable_IT_SUPLAN.setValue("YP_BH", entity.getYpBh());
+
+                IrfTable_IT_SUPLAN.setValue("YP_CD", entity.getYpCd());
+                IrfTable_IT_SUPLAN.setValue("SL", entity.getSl());
+                IrfTable_IT_SUPLAN.setValue("DW", entity.getDw());
+
+                IrfTable_IT_SUPLAN.setValue("JH_JE", entity.getJhJe());
+
+
+
+                IrfTable_IT_SUPLAN.setValue("KPJE",fpje);
+                IrfTable_IT_SUPLAN.setValue("KPDH", kpid);
+                IrfTable_IT_SUPLAN.setValue("ZFPHM", fphm);
+                log.error("我到这里啦666");
+                IrfTable_IT_SUPLAN.setValue("ZFPRQ", fprq);
+                IrfTable_IT_SUPLAN.setValue("CJR", entity.getCjr());
+                IrfTable_IT_SUPLAN.setValue("CJRID", entity.getCjrid());
+                IrfTable_IT_SUPLAN.setValue("REMARK", entity.getRemark());
+            }
+
+            // myfun.SetValue("IT_SUPLAN", IrfTable_IT_SUPLAN);
+            //提前实例化一个空的表结构出来
+            myfun.execute(destination);//执行
+
+
+
+            BackFromSAP_SubPlan pur = new BackFromSAP_SubPlan();
+
+            pur.setMESS(myfun.getExportParameterList().getString("E_MES"));
+            pur.setMSTYPE(myfun.getExportParameterList().getString("E_TYPE"));
+            // pur.setZGYJH(rfcReturn.getString("ZGYJH"));
+
+
+            list.add(pur);
+
+
+            log.info("ZMM00_FM_YPSCM(发送计划) END SUCCESS!", 1);
+        } catch (Exception ex) {
+            log.info("ZMM00_FM_YPSCM(发送计划)出现问题：" + ex.getMessage(), 1);
+
+            BackFromSAP_SubPlan pur = new BackFromSAP_SubPlan();
+            pur.setMESS(ex.getMessage());
+            pur.setMSTYPE("H");
+            pur.setZGYJH("");
+            list.add(pur);
+
+        } finally {
+            destination = null;
+        }
+
+        return list;
+    }
+
 }

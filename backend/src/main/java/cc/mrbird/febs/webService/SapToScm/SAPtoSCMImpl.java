@@ -1,5 +1,9 @@
 package cc.mrbird.febs.webService.SapToScm;
 
+import cc.mrbird.febs.his.entity.ScmWFpplan;
+import cc.mrbird.febs.his.entity.ScmWKpplan;
+import cc.mrbird.febs.his.service.IScmWFpplanService;
+import cc.mrbird.febs.his.service.IScmWKpplanService;
 import cc.mrbird.febs.scm.dao.*;
 import cc.mrbird.febs.scm.entity.*;
 import cc.mrbird.febs.scm.service.IScmBGysfpService;
@@ -60,6 +64,12 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
 
     @Autowired
     private IScmBSapplanService iScmBSapplanService;
+
+    @Autowired
+    private IScmWFpplanService iScmWFpplanService;
+
+    @Autowired
+    private IScmWKpplanService iScmWKpplanService;
 
     public String HelloWorld() {
         return "haha";
@@ -463,5 +473,29 @@ public class SAPtoSCMImpl implements ISAPtoSCMService {
             log.error("更改入sap计划:"+ex.getMessage());
         }
         return  false;
+    }
+    @Override
+    public Boolean ChangeTJandCYState(String gysAccount,String fphm,String type,int state){
+        if(type.equals("1")) {//草药  2是调价
+            ScmWKpplan  scmWKpplan =new ScmWKpplan();
+            scmWKpplan.setStatus(state);
+            LambdaQueryWrapper<ScmWKpplan> queryWrapper =new LambdaQueryWrapper<>();
+            queryWrapper.eq(ScmWKpplan::getGysaccount,gysAccount);
+            queryWrapper.eq(ScmWKpplan::getFphm,fphm);
+            queryWrapper.eq(ScmWKpplan::getIsDeletemark,1);
+
+            this.iScmWKpplanService.update(scmWKpplan,queryWrapper);
+        }
+        if(type.equals("2")) {//草药  2是调价
+            ScmWFpplan  scmWFpplan =new ScmWFpplan();
+            scmWFpplan.setStatus(state);
+            LambdaQueryWrapper<ScmWFpplan> queryWrapper =new LambdaQueryWrapper<>();
+            queryWrapper.eq(ScmWFpplan::getGysaccount,gysAccount);
+            queryWrapper.eq(ScmWFpplan::getFphm,fphm);
+            queryWrapper.eq(ScmWFpplan::getIsDeletemark,1);
+
+            this.iScmWFpplanService.update(scmWFpplan,queryWrapper);
+        }
+        return  true;
     }
 }

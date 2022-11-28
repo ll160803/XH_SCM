@@ -5,6 +5,7 @@
         <!-- 通用查询映射结果 -->
         <resultMap id="BaseResultMap" type="cc.mrbird.febs.his.entity.ScmWSale">
                     <id column="id" property="id"/>
+                    <result column="code" property="code"/>
                     <result column="ywlx" property="ywlx"/>
                     <result column="ny" property="ny"/>
                     <result column="fy_id" property="fyId"/>
@@ -19,6 +20,7 @@
                     <result column="cjr" property="cjr"/>
                     <result column="cjrid" property="cjrid"/>
                     <result column="remark" property="remark"/>
+                    <result column="state" property="state"/>
                     <result column="IS_DELETEMARK" property="isDeletemark"/>
                     <result column="CREATE_TIME" property="createTime"/>
                     <result column="MODIFY_TIME" property="modifyTime"/>
@@ -28,12 +30,13 @@
 
         <!-- 通用查询结果列 -->
         <sql id="Base_Column_List">
-        id, ywlx, ny, fy_id, gys_id, gys_name, yp_bh, yp_cd, yp_mc, sl, dw, jh_je, cjr, cjrid, remark, IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
+        id,code, ywlx, ny, fy_id, gys_id, gys_name, yp_bh, yp_cd, yp_mc, sl, dw, jh_je, cjr, cjrid, remark,state ,IS_DELETEMARK, CREATE_TIME, MODIFY_TIME, CREATE_USER_ID, MODIFY_USER_ID
     </sql>
     <update id="updateScmWSale" parameterType="cc.mrbird.febs.his.entity.ScmWSale">
         update scm_w_sale
         <trim prefix="set" suffixOverrides=",">
 <if test="ywlx != null">ywlx=#{ywlx},</if>
+            <if test="code != null">code=#{code},</if>
 <if test="ny != null">ny=#{ny},</if>
 <if test="fyId != null">fy_id=#{fyId},</if>
 <if test="gysId != null">gys_id=#{gysId},</if>
@@ -47,6 +50,7 @@
 <if test="cjr != null">cjr=#{cjr},</if>
 <if test="cjrid != null">cjrid=#{cjrid},</if>
 <if test="remark != null">remark=#{remark},</if>
+            <if test="state != null">state=#{state},</if>
 <if test="isDeletemark != null">IS_DELETEMARK=#{isDeletemark},</if>
 <if test="createTime != null">CREATE_TIME=#{createTime},</if>
 <if test="modifyTime != null">MODIFY_TIME=#{modifyTime},</if>
@@ -60,6 +64,7 @@
         select  *  from scm_w_sale
         where  1=1
             <if test="scmWSale.id != null and scmWSale.id != ''"> and scmWSale.id =#{ scmWSale.id} </if>
+            <if test="scmWSale.code != null and scmWSale.code != ''"> and scmWSale.code like concat('%', #{ scmWSale.code} ,'%')</if>
             <if test="scmWSale.ywlx != null and scmWSale.ywlx != ''"> and scmWSale.ywlx like concat('%', #{ scmWSale.ywlx} ,'%')</if>
             <if test="scmWSale.ny != null and scmWSale.ny != ''"> and scmWSale.ny like concat('%', #{ scmWSale.ny} ,'%')</if>
             <if test="scmWSale.fyId != null and scmWSale.fyId != ''"> and scmWSale.fy_id like concat('%', #{ scmWSale.fyId} ,'%')</if>
@@ -73,6 +78,7 @@
             <if test="scmWSale.cjrid != null and scmWSale.cjrid != ''"> and scmWSale.cjrid like concat('%', #{ scmWSale.cjrid} ,'%')</if>
             <if test="scmWSale.remark != null and scmWSale.remark != ''"> and scmWSale.remark like concat('%', #{ scmWSale.remark} ,'%')</if>
         <if test="scmWSale.isDeletemark != null"> and scmWSale.IS_DELETEMARK =#{ scmWSale.isDeletemark} </if>
+        <if test="scmWSale.state != null"> and scmWSale.state =#{ scmWSale.state} </if>
         <if test="scmWSale.createTimeFrom!= null">
             AND scmWSale.CREATE_TIME <![CDATA[ >= ]]>  #{scmWSale.createTimeFrom}
         </if>

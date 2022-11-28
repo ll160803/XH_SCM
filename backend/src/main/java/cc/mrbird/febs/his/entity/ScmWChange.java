@@ -30,132 +30,139 @@ private static final long serialVersionUID=1L;
                                 private String id;
 
     /**
-     * 1=è‰è¯ä»£ç…ï¼›2=æ ¸åŒ»å­¦
+     * ¿ªÆ±±àÂë
      */
-            @ExcelField(value ="1=è‰è¯ä»£ç…ï¼›2=æ ¸åŒ»å­¦")
+    @ExcelField(value ="¿ªÆ±±àÂë")
+    private String code;
+
+    /**
+     * 1=²İÒ©´ú¼å£»2=ºËÒ½Ñ§
+     */
+            @ExcelField(value ="µ÷¼ÛÈÕÆÚ")
     private String tjRq;
 
     /**
-     * 202210ä¸šåŠ¡æ‰€å±æœˆä»½
+     * 202210ÒµÎñËùÊôÔÂ·İ
      */
-            @ExcelField(value ="202210ä¸šåŠ¡æ‰€å±æœˆä»½")
+            @ExcelField(value ="ÒµÎñËùÊôÔÂ·İ")
     private String ny;
 
     /**
-     * é™¢åŒº	2000(æœ¬é™¢=2000;è‚¿ç˜¤=2100;è¥¿é™¢=2200;é‡‘é“¶æ¹–=2300)
+     * ÔºÇø	2000(±¾Ôº=2000;Ö×Áö=2100;Î÷Ôº=2200;½ğÒøºş=2300)
      */
-            @ExcelField(value ="é™¢åŒº	2000(æœ¬é™¢=2000;è‚¿ç˜¤=2100;è¥¿é™¢=2200;é‡‘é“¶æ¹–=2300)")
+            @ExcelField(value ="ÔºÇø")
     private String fyId;
 
     /**
-     * åº“ä½
+     * ¿âÎ»
      */
-            @ExcelField(value ="åº“ä½")
+            @ExcelField(value ="¿âÎ»")
     private String kw;
 
     /**
-     * ä¾›åº”å•†ID
+     * ¹©Ó¦ÉÌID
      */
-            @ExcelField(value ="ä¾›åº”å•†ID")
+            @ExcelField(value ="¹©Ó¦ÉÌID")
     private String gysId;
 
     /**
-     * ä¾›åº”å•†åç§°
+     * ¹©Ó¦ÉÌÃû³Æ
      */
-            @ExcelField(value ="ä¾›åº”å•†åç§°")
+            @ExcelField(value ="¹©Ó¦ÉÌÃû³Æ")
     private String gysName;
 
     /**
-     * è¯å“ç±»åˆ«
+     * Ò©Æ·Àà±ğ
      */
-            @ExcelField(value ="è¯å“ç±»åˆ«")
+            @ExcelField(value ="Ò©Æ·Àà±ğ")
     private String ypLb;
 
     /**
-     * è¯å“ç¼–ç 
+     * Ò©Æ·±àÂë
      */
-            @ExcelField(value ="è¯å“ç¼–ç ")
+            @ExcelField(value ="Ò©Æ·±àÂë")
     private String ypBh;
 
     /**
-     * äº§åœ°ä»£ç 
+     * ²úµØ´úÂë
      */
-            @ExcelField(value ="äº§åœ°ä»£ç ")
+            @ExcelField(value ="²úµØ´úÂë")
     private String ypCd;
 
     /**
-     * è¯å“åç§°
+     * Ò©Æ·Ãû³Æ
      */
-            @ExcelField(value ="è¯å“åç§°")
+            @ExcelField(value ="Ò©Æ·Ãû³Æ")
     private String ypMc;
 
     /**
-     * æ•°é‡
+     * ÊıÁ¿
      */
-            @ExcelField(value ="æ•°é‡")
+            @ExcelField(value ="ÊıÁ¿")
     private Double sl;
 
     /**
-     * å•ä½
+     * µ¥Î»
      */
-            @ExcelField(value ="å•ä½")
+            @ExcelField(value ="µ¥Î»")
     private String dw;
 
     /**
-     * åŸè¿›è´§ä»·
+     * Ô­½ø»õ¼Û
      */
-            @ExcelField(value ="åŸè¿›è´§ä»·")
+            @ExcelField(value ="Ô­½ø»õ¼Û")
     private Double jhOld;
 
     /**
-     * æ–°è¿›è´§ä»·
+     * ĞÂ½ø»õ¼Û
      */
-            @ExcelField(value ="æ–°è¿›è´§ä»·")
+            @ExcelField(value ="ĞÂ½ø»õ¼Û")
     private Double jhNew;
 
     /**
-     * è°ƒä»·é‡‘é¢
+     * µ÷¼Û½ğ¶î
      */
-            @ExcelField(value ="è°ƒä»·é‡‘é¢")
+            @ExcelField(value ="µ÷¼Û½ğ¶î")
     private Double jhJe;
 
+
     /**
-     * æ˜¯å¦åˆ é™¤
+     * ×´Ì¬
+     */
+    @TableField("state")
+    private Integer state;
+    /**
+     * ÊÇ·ñÉ¾³ı
      */
     @TableField("IS_DELETEMARK")
-            @ExcelField(value ="æ˜¯å¦åˆ é™¤")
     private Integer isDeletemark;
 
     /**
-     * åˆ›å»ºæ—¶é—´
+     * ´´½¨Ê±¼ä
      */
     @TableField("CREATE_TIME")
-            @ExcelField(value ="åˆ›å»ºæ—¶é—´")
     private Date createTime;
     private transient String createTimeFrom;
     private transient String createTimeTo;
 
     /**
-     * ä¿®æ”¹æ—¶é—´
+     * ĞŞ¸ÄÊ±¼ä
      */
     @TableField("MODIFY_TIME")
-            @ExcelField(value ="ä¿®æ”¹æ—¶é—´")
     private Date modifyTime;
     private transient String modifyTimeFrom;
     private transient String modifyTimeTo;
 
     /**
-     * åˆ›å»ºäºº
+     * ´´½¨ÈË
      */
     @TableField("CREATE_USER_ID")
-            @ExcelField(value ="åˆ›å»ºäºº")
     private Long createUserId;
 
     /**
-     * ä¿®æ”¹äºº
+     * ĞŞ¸ÄÈË
      */
     @TableField("MODIFY_USER_ID")
-            @ExcelField(value ="ä¿®æ”¹äºº")
     private Long modifyUserId;
 
 

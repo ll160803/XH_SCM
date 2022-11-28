@@ -1,9 +1,20 @@
 package cc.mrbird.febs.job.task;
 
 import cc.mrbird.febs.common.utils.WxMessage;
+import cc.mrbird.febs.his.entity.ScmWChange;
+import cc.mrbird.febs.his.entity.ScmWSale;
+import cc.mrbird.febs.his.service.IScmWChangeService;
+import cc.mrbird.febs.his.service.IScmWSaleService;
 import cc.mrbird.febs.webService.OwnToOwn.*;
 
+import cc.mrbird.febs.webService.his.WebCommonService;
+import cc.mrbird.febs.webService.his.WebCommonServiceImplService;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
+import com.google.gson.JsonObject;
 import io.micrometer.core.instrument.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +25,12 @@ import java.util.List;
 @Slf4j
 @Component
 public class MsgValidTask {
+
+@Autowired
+    IScmWSaleService iScmWSaleService;
+    @Autowired
+    IScmWChangeService iScmWChangeService;
+
     /**  这是消息提醒  在后台发布时候必须注释掉
     cc.mrbird.febs.webService.OwnToOwn.IScmJobService iScmJobService;
     ScmJobImplService  scmJobImplService=new ScmJobImplService();
@@ -177,4 +194,164 @@ public class MsgValidTask {
 
         }
     }**/
+ /** 获取his的数据 */
+    public  void getZeroInventory() {//2.2.3.	零库存先用后结算
+        log.info("getZeroInventory","零库存先用后结算");
+        WebCommonServiceImplService his =new WebCommonServiceImplService();
+
+
+        String month= "202207";// DateUtil.format(DateUtil.date(),"yyyyMM");
+
+        String param="{\"instance\": \"sapdrugplant\",\"method\": \"getZeroInventory\",\"data\": {\"YWLX \":\"1\",\"NY\":\""+month+"\"}}";
+      String out=  his.getWebCommonServiceImplPort().doWebCommonService(param);
+
+        log.info(out);
+        JSONObject jsonObject= JSONUtil.parseObj(out);
+        String code = jsonObject.getStr("code");
+        String msg= jsonObject.getStr("msg");
+        JSONArray data= jsonObject.getJSONArray("data");
+
+        if(code.equals("1")){
+            for(int i=0;i<data.size();i++){
+
+                JSONObject object=(JSONObject)data.get(i);
+                ScmWSale sale =new ScmWSale();
+                String id=object.getStr("WYM");
+                sale.setGysName(object.getStr("GHS_NAME"));
+                sale.setState(0);
+                sale.setId(id);
+                sale.setCjr(object.getStr("CJR"));
+                sale.setCjrid(object.getStr("CJRID"));
+                sale.setDw(object.getStr("DW"));
+                sale.setIsDeletemark(1);
+                sale.setFyId(object.getStr("FY_ID"));
+                sale.setGysId(object.getStr("GHS_ID"));
+                sale.setJhJe( Double.parseDouble(object.getStr("JH_JE")));
+                sale.setNy(object.getStr("NY"));
+                sale.setRemark(object.getStr("REMARK"));
+                sale.setSl(Double.parseDouble(object.getStr("SL")));
+                sale.setYpBh(object.getStr("YP_BH"));
+                sale.setYpCd(object.getStr("YP_CD"));
+                sale.setYpMc(object.getStr("YP_MC"));
+                sale.setYwlx(object.getStr("YWLX"));
+
+                ScmWSale sl=  iScmWSaleService.getById(id);
+                if(sl==null){
+                    this.iScmWSaleService.createScmWSale(sale);
+                }
+            }
+        }
+
+
+    }
+
+    public  void getZeroInventory2() {//2.2.3.	零库存先用后结算
+        log.info("getZeroInventory","零库存先用后结算");
+        WebCommonServiceImplService his =new WebCommonServiceImplService();
+
+
+        String month=  DateUtil.format(DateUtil.date(),"yyyyMM");
+
+        String param="{\"instance\": \"sapdrugplant\",\"method\": \"getZeroInventory\",\"data\": {\"YWLX \":\"2\",\"NY\":\""+month+"\"}}";
+        String out=  his.getWebCommonServiceImplPort().doWebCommonService(param);
+
+        log.info(out);
+        JSONObject jsonObject= JSONUtil.parseObj(out);
+        String code = jsonObject.getStr("code");
+        String msg= jsonObject.getStr("msg");
+        JSONArray data= jsonObject.getJSONArray("data");
+
+        if(code.equals("1")){
+            for(int i=0;i<data.size();i++){
+
+                JSONObject object=(JSONObject)data.get(i);
+                ScmWSale sale =new ScmWSale();
+                String id=object.getStr("WYM");
+                sale.setGysName(object.getStr("GHS_NAME"));
+                sale.setState(0);
+                sale.setId(id);
+                sale.setCjr(object.getStr("CJR"));
+                sale.setCjrid(object.getStr("CJRID"));
+                sale.setDw(object.getStr("DW"));
+                sale.setIsDeletemark(1);
+                sale.setFyId(object.getStr("FY_ID"));
+                sale.setGysId(object.getStr("GHS_ID"));
+                sale.setJhJe( Double.parseDouble(object.getStr("JH_JE")));
+                sale.setNy(object.getStr("NY"));
+                sale.setRemark(object.getStr("REMARK"));
+                sale.setSl(Double.parseDouble(object.getStr("SL")));
+                sale.setYpBh(object.getStr("YP_BH"));
+                sale.setYpCd(object.getStr("YP_CD"));
+                sale.setYpMc(object.getStr("YP_MC"));
+                sale.setYwlx(object.getStr("YWLX"));
+
+                ScmWSale sl=  iScmWSaleService.getById(id);
+                if(sl==null){
+                    this.iScmWSaleService.createScmWSale(sale);
+                }
+            }
+        }
+
+
+    }
+
+    /** 获取his的调价数据 */
+    public  void getModifyPrice() {//2.2.3.	零库存先用后结算
+
+        WebCommonServiceImplService his =new WebCommonServiceImplService();
+
+
+        String month= "202207";// DateUtil.format(DateUtil.date(),"yyyyMM");
+
+        String param="{\n" +
+                "\t\"instance\": \"sapdrugplant\",\n" +
+                "\t\"method\": \"getModifyPrice\",\n" +
+                "\t\"data\": {\n" +
+                "\t\t\"ZX_RQ\": \""+month+"\"\n" +
+                "\t}\n" +
+                "}\n";
+        log.info(param);
+        String out=  his.getWebCommonServiceImplPort().doWebCommonService(param);
+
+        JSONObject jsonObject= JSONUtil.parseObj(out);
+        String code = jsonObject.getStr("code");
+        String msg= jsonObject.getStr("msg");
+        JSONArray data= jsonObject.getJSONArray("data");
+
+        if(code.equals("1")){
+            for(int i=0;i<data.size();i++){
+                JSONObject object=(JSONObject)data.get(i);
+
+                ScmWChange sale =new ScmWChange();
+                String id=object.getStr("WYM");
+                log.info(id);
+                sale.setGysName(object.getStr("GYS_NAME"));
+                sale.setState(0);
+                sale.setId(id);
+                sale.setJhNew(Double.parseDouble(object.getStr("JH_NEW")));
+                sale.setJhOld(Double.parseDouble(object.getStr("JH_OLD")));
+                sale.setYpLb(object.getStr("YP_LB"));
+                sale.setKw(object.getStr("ED_KF"));
+                sale.setDw(object.getStr("DW_MC"));
+                sale.setIsDeletemark(1);
+                sale.setFyId(object.getStr("FY_ID"));
+                sale.setGysId(object.getStr("GYS_ID"));
+                sale.setJhJe( Double.parseDouble(object.getStr("JH_JE")));
+                sale.setNy(object.getStr("NY"));
+
+                sale.setSl(Double.parseDouble(object.getStr("TJ_SL")));
+                sale.setYpBh(object.getStr("YP_BH"));
+                sale.setYpCd(object.getStr("YP_CD"));
+                sale.setYpMc(object.getStr("YP_MC"));
+                sale.setTjRq(object.getStr("TJRQ").substring(0,10).replace("-",""));
+
+                ScmWChange sc=  iScmWChangeService.getById(id);
+                if(sc==null){
+                    this.iScmWChangeService.createScmWChange(sale);
+                }
+            }
+        }
+
+
+    }
 }

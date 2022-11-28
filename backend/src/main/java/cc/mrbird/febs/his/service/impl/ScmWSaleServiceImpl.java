@@ -22,9 +22,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.time.LocalDate;
+
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author viki
@@ -36,57 +37,81 @@ import java.time.LocalDate;
 public class ScmWSaleServiceImpl extends ServiceImpl<ScmWSaleMapper, ScmWSale> implements IScmWSaleService {
 
 
-@Override
-public IPage<ScmWSale> findScmWSales(QueryRequest request, ScmWSale scmWSale){
-        try{
-        LambdaQueryWrapper<ScmWSale> queryWrapper=new LambdaQueryWrapper<>();
-        queryWrapper.eq(ScmWSale::getIsDeletemark, 1);//1是未删 0是已删
+    @Override
+    public IPage<ScmWSale> findScmWSales(QueryRequest request, ScmWSale scmWSale) {
+        try {
+            LambdaQueryWrapper<ScmWSale> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(ScmWSale::getIsDeletemark, 1);//1是未删 0是已删
 
-                                if (StringUtils.isNotBlank(scmWSale.getId())) {
-                                queryWrapper.like(ScmWSale::getId, scmWSale.getId());
-                                }
+            if (StringUtils.isNotBlank(scmWSale.getId())) {
+                queryWrapper.eq(ScmWSale::getId, scmWSale.getId());
+            }
+            if (StringUtils.isNotBlank(scmWSale.getGysName())) {
+                queryWrapper.like(ScmWSale::getGysName, scmWSale.getGysName());
+            }
+            if (StringUtils.isNotBlank(scmWSale.getCode())) {
+                queryWrapper.like(ScmWSale::getCode, scmWSale.getCode());
+            }
+            if (StringUtils.isNotBlank(scmWSale.getYpMc())) {
+                queryWrapper.like(ScmWSale::getYpMc, scmWSale.getYpMc());
+            }
+            if (StringUtils.isNotBlank(scmWSale.getNy())) {
+                queryWrapper.eq(ScmWSale::getNy, scmWSale.getNy());
+            }
+            if (StringUtils.isNotBlank(scmWSale.getYwlx())) {
+                queryWrapper.eq(ScmWSale::getYwlx, scmWSale.getYwlx());
+            }
+            if (StringUtils.isNotBlank(scmWSale.getFyId())) {
+                queryWrapper.like(ScmWSale::getFyId, scmWSale.getFyId());
+            }
+            if (scmWSale.getState() != null) {
+                queryWrapper.like(ScmWSale::getState, scmWSale.getState());
+            }
+            Page<ScmWSale> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.page(page, queryWrapper);
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
 
-        Page<ScmWSale> page=new Page<>();
-        SortUtil.handlePageSort(request,page,false);//true 是属性  false是数据库字段可两个
-        return this.page(page,queryWrapper);
-        }catch(Exception e){
-        log.error("获取字典信息失败" ,e);
-        return null;
+    @Override
+    public IPage<ScmWSale> findScmWSaleList(QueryRequest request, ScmWSale scmWSale) {
+        try {
+            Page<ScmWSale> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);//true 是属性  false是数据库字段可两个
+            return this.baseMapper.findScmWSale(page, scmWSale);
+        } catch (Exception e) {
+            log.error("获取失败", e);
+            return null;
         }
+    }
+
+    @Override
+    @Transactional
+    public void createScmWSale(ScmWSale scmWSale) {
+        if(StringUtils.isEmpty(scmWSale.getId())) {
+            scmWSale.setId(UUID.randomUUID().toString());
         }
-@Override
-public IPage<ScmWSale> findScmWSaleList (QueryRequest request, ScmWSale scmWSale){
-        try{
-        Page<ScmWSale> page=new Page<>();
-        SortUtil.handlePageSort(request,page,false);//true 是属性  false是数据库字段可两个
-        return  this.baseMapper.findScmWSale(page,scmWSale);
-        }catch(Exception e){
-        log.error("获取失败" ,e);
-        return null;
-        }
-        }
-@Override
-@Transactional
-public void createScmWSale(ScmWSale scmWSale){
-                scmWSale.setId(UUID.randomUUID().toString());
         scmWSale.setCreateTime(new Date());
         scmWSale.setIsDeletemark(1);
         this.save(scmWSale);
-        }
+    }
 
-@Override
-@Transactional
-public void updateScmWSale(ScmWSale scmWSale){
+    @Override
+    @Transactional
+    public void updateScmWSale(ScmWSale scmWSale) {
         scmWSale.setModifyTime(new Date());
         this.baseMapper.updateScmWSale(scmWSale);
-        }
+    }
 
-@Override
-@Transactional
-public void deleteScmWSales(String[]Ids){
-        List<String> list=Arrays.asList(Ids);
+    @Override
+    @Transactional
+    public void deleteScmWSales(String[] Ids) {
+        List<String> list = Arrays.asList(Ids);
         this.baseMapper.deleteBatchIds(list);
-        }
+    }
 
 
-        }
+}

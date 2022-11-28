@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://webservice.common.ld.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="WebCommonServiceImplService" targetNamespace="http://webservice.common.ld.com/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://webservice.common.ld.com/" elementFormDefault="unqualified" targetNamespace="http://webservice.common.ld.com/" version="1.0">
+
+  <xs:element name="doThridService" type="tns:doThridService"></xs:element>
+
+  <xs:element name="doThridServiceResponse" type="tns:doThridServiceResponse"></xs:element>
+
+  <xs:element name="doWebCommonService" type="tns:doWebCommonService"></xs:element>
+
+  <xs:element name="doWebCommonServiceResponse" type="tns:doWebCommonServiceResponse"></xs:element>
+
+  <xs:element name="isSuc" type="tns:isSuc"></xs:element>
+
+  <xs:element name="isSucResponse" type="tns:isSucResponse"></xs:element>
+
+  <xs:complexType name="doWebCommonService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="params" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doWebCommonServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="isSuc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="isSucResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doThridService">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="params" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="doThridServiceResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="xs:string"></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="doWebCommonService">
+    <wsdl:part element="tns:doWebCommonService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="doWebCommonServiceResponse">
+    <wsdl:part element="tns:doWebCommonServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isSuc">
+    <wsdl:part element="tns:isSuc" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="isSucResponse">
+    <wsdl:part element="tns:isSucResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="doThridServiceResponse">
+    <wsdl:part element="tns:doThridServiceResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="doThridService">
+    <wsdl:part element="tns:doThridService" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="WebCommonService">
+    <wsdl:operation name="doWebCommonService">
+      <wsdl:input message="tns:doWebCommonService" name="doWebCommonService">
+    </wsdl:input>
+      <wsdl:output message="tns:doWebCommonServiceResponse" name="doWebCommonServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isSuc">
+      <wsdl:input message="tns:isSuc" name="isSuc">
+    </wsdl:input>
+      <wsdl:output message="tns:isSucResponse" name="isSucResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="doThridService">
+      <wsdl:input message="tns:doThridService" name="doThridService">
+    </wsdl:input>
+      <wsdl:output message="tns:doThridServiceResponse" name="doThridServiceResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="WebCommonServiceImplServiceSoapBinding" type="tns:WebCommonService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"></soap:binding>
+    <wsdl:operation name="doWebCommonService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="doWebCommonService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="doWebCommonServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="isSuc">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="isSuc">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="isSucResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="doThridService">
+      <soap:operation soapAction="" style="document"></soap:operation>
+      <wsdl:input name="doThridService">
+        <soap:body use="literal"></soap:body>
+      </wsdl:input>
+      <wsdl:output name="doThridServiceResponse">
+        <soap:body use="literal"></soap:body>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WebCommonServiceImplService">
+    <wsdl:port binding="tns:WebCommonServiceImplServiceSoapBinding" name="WebCommonServiceImplPort">
+      <soap:address location="http://192.168.60.208:9081/his/service/ws"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
