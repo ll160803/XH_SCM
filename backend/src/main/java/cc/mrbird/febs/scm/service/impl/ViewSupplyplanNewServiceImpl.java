@@ -5,10 +5,12 @@ import cc.mrbird.febs.common.utils.SortUtil;
 import cc.mrbird.febs.scm.dao.ScmBSupplyplanMapper;
 import cc.mrbird.febs.scm.dao.ScmDControlMapper;
 import cc.mrbird.febs.scm.dao.ViewSupplyplanMapper;
+import cc.mrbird.febs.scm.entity.ScmBSapplan;
 import cc.mrbird.febs.scm.entity.ScmDControl;
 import cc.mrbird.febs.scm.entity.ViewSupplyplan;
 import cc.mrbird.febs.scm.entity.ViewSupplyplanNew;
 import cc.mrbird.febs.scm.dao.ViewSupplyplanNewMapper;
+import cc.mrbird.febs.scm.service.IScmBSapplanService;
 import cc.mrbird.febs.scm.service.IViewSupplyplanNewService;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
@@ -48,6 +50,8 @@ public class ViewSupplyplanNewServiceImpl extends ServiceImpl<ViewSupplyplanNewM
     ScmDControlMapper scmDControlMapper;
     @Autowired
     ViewSupplyplanMapper viewSupplyplanMapper;
+    @Autowired
+    IViewSupplyplanNewService iViewSupplyplanNewService;
 
     @Override
     public IPage<ViewSupplyplanNew> findViewSupplyplanNews(QueryRequest request, ViewSupplyplanNew viewSupplyplanNew) {
@@ -111,7 +115,12 @@ public class ViewSupplyplanNewServiceImpl extends ServiceImpl<ViewSupplyplanNewM
         if (StringUtils.isNotBlank(viewSupplyplan.getLgort())) {
             queryWrapper.eq(ViewSupplyplan::getLgort, viewSupplyplan.getLgort());
         }
-
+        if(StringUtils.isNotBlank(viewSupplyplan.getMseht()) && viewSupplyplan.getMseht().equals("0")){
+            queryWrapper.apply("view_supplyplan.ID in (select plan_id from scm_b_sapplan)");
+        }
+        if(StringUtils.isNotBlank(viewSupplyplan.getMseht()) && viewSupplyplan.getMseht().equals("1")){
+            queryWrapper.apply("view_supplyplan.ID not in (select plan_id from scm_b_sapplan)");
+        }
 
         if (viewSupplyplan.getIsDeletemark() != null) {
             queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
@@ -185,6 +194,12 @@ public class ViewSupplyplanNewServiceImpl extends ServiceImpl<ViewSupplyplanNewM
                 queryWrapper.eq(ViewSupplyplan::getLgort, viewSupplyplan.getLgort());
             }
 
+            if(StringUtils.isNotBlank(viewSupplyplan.getMseht()) && viewSupplyplan.getMseht().equals("0")){
+                queryWrapper.apply("view_supplyplan.ID in (select plan_id from scm_b_sapplan)");
+            }
+            if(StringUtils.isNotBlank(viewSupplyplan.getMseht()) && viewSupplyplan.getMseht().equals("1")){
+                queryWrapper.apply("view_supplyplan.ID not in (select plan_id from scm_b_sapplan)");
+            }
 
             if (viewSupplyplan.getIsDeletemark() != null) {
                 queryWrapper.eq(ViewSupplyplan::getIsDeletemark, viewSupplyplan.getIsDeletemark());
@@ -330,6 +345,48 @@ public class ViewSupplyplanNewServiceImpl extends ServiceImpl<ViewSupplyplanNewM
 
             }
             page.setRecords(list2);
+
+
+            return page;
+        } catch (Exception e) {
+            log.error("获取字典信息失败", e);
+            return null;
+        }
+    }
+
+    @Override
+    public IPage<ViewSupplyplanNew> findViewSupplyplans_byMaterCode2(QueryRequest request, ViewSupplyplanNew viewSupplyplan) {
+        try {
+            List<ScmDControl> control = this.scmDControlMapper.selectList(null);
+            String time = DateUtil.format(control.get(0).getEndTime(), "yyyy-MM-dd");
+
+            Page<ViewSupplyplanNew> page = new Page<>();
+            SortUtil.handlePageSort(request, page, false);
+
+            List<ViewSupplyplanNew> list2 = new ArrayList<>();
+            List<ViewSupplyplan> viewSupplyplanList = this.findViewSupplyplans(request, viewSupplyplan);
+
+
+           int count2 = this.findTotalCount(viewSupplyplan, time);
+            page.setTotal(count2);
+
+
+            List<String> ids= viewSupplyplanList.stream().map(p->p.getId().toString()).collect(Collectors.toList());
+
+            if(ids.size()>0) {
+                LambdaQueryWrapper<ViewSupplyplanNew> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+                lambdaQueryWrapper.in(ViewSupplyplanNew::getId, ids);
+                List<ViewSupplyplanNew> listSapPlan = this.iViewSupplyplanNewService.list(lambdaQueryWrapper);
+                list2.addAll(listSapPlan);
+            }
+            viewSupplyplanList.forEach(p -> {
+                ViewSupplyplanNew plan = new ViewSupplyplanNew();
+                BeanUtil.copyProperties(p, plan, CopyOptions.create().setIgnoreNullValue(true));
+                list2.add(plan);
+            });
+            List<ViewSupplyplanNew> list3= list2.stream().sorted(Comparator.comparing(ViewSupplyplanNew::getId)).collect(Collectors.toList());
+            page.setRecords(list3);
+
 
 
             return page;

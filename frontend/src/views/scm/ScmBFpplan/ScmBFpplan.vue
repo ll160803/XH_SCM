@@ -116,7 +116,7 @@
           :columns="innerColumns"
           :dataSource="record.innerData"
           :pagination="false"
-          :rowKey="record2 => record2.id"
+          :rowKey="record2 => record2.id2"
         >
           <!-- <template
             slot="operation2"
@@ -232,7 +232,7 @@ export default {
     innerColumns () {
       return [{
         title: '供应计划号',
-        dataIndex: 'id'
+        dataIndex: 'id2'
       }, {
         title: '药品编码',
         dataIndex: 'matnr'

@@ -80,6 +80,9 @@ public class ScmBFpplanServiceImpl extends ServiceImpl<ScmBFpplanMapper, ScmBFpp
         try {
             LambdaQueryWrapper<ScmBFpplan> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(ScmBFpplan::getIsDeletemark, 1);//1是未删 0是已删
+            if(StringUtils.isNotEmpty(scmBFpplan.getGysaccount())){
+                queryWrapper.eq(ScmBFpplan::getGysaccount,scmBFpplan.getGysaccount());
+            }
 
             if(StringUtils.isNotEmpty(scmBFpplan.getFphm())){
                 queryWrapper.and(wrap->wrap.eq(ScmBFpplan::getFphm,"").or().eq(ScmBFpplan::getFphm,scmBFpplan.getFphm())

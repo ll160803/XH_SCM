@@ -26,110 +26,111 @@ public class ScmWSale implements Serializable{
 
 private static final long serialVersionUID=1L;
 
+    @ExcelField(value ="å”¯ä¸€ç ")
                                 private String id;
 
     /**
-     * ¿ªÆ±±àÂë
+     * å¼€ç¥¨ç¼–ç 
      */
     private String code;
     /**
-     * 1=²İÒ©´ú¼å£»2=ºËÒ½Ñ§
+     * 1=è‰è¯ä»£ç…ï¼›2=æ ¸åŒ»å­¦
      */
-            @ExcelField(value ="ÒµÎñÀàĞÍ",writeConverterExp = "1=²İÒ©´ú¼å,2=ºËÒ½Ñ§")
+            @ExcelField(value ="ä¸šåŠ¡ç±»å‹",writeConverterExp = "1=è‰è¯ä»£ç…,2=æ ¸åŒ»å­¦")
     private String ywlx;
 
     /**
-     * 202210ÒµÎñËùÊôÔÂ·İ
+     * 202210ä¸šåŠ¡æ‰€å±æœˆä»½
      */
-            @ExcelField(value ="ÒµÎñËùÊôÔÂ·İ")
+            @ExcelField(value ="ä¸šåŠ¡æ‰€å±æœˆä»½")
     private String ny;
 
     /**
-     * ÔºÇø	2000(±¾Ôº=2000;Ö×Áö=2100;Î÷Ôº=2200;½ğÒøºş=2300)
+     * é™¢åŒº	2000(æœ¬é™¢=2000;è‚¿ç˜¤=2100;è¥¿é™¢=2200;é‡‘é“¶æ¹–=2300)
      */
-            @ExcelField(value ="ÔºÇø")
+            @ExcelField(value ="é™¢åŒº")
     private String fyId;
 
     /**
-     * ¹©Ó¦ÉÌID
+     * ä¾›åº”å•†ID
      */
-            @ExcelField(value ="¹©Ó¦ÉÌID")
+            @ExcelField(value ="ä¾›åº”å•†ID")
     private String gysId;
 
     /**
-     * ¹©Ó¦ÉÌÃû³Æ
+     * ä¾›åº”å•†åç§°
      */
-            @ExcelField(value ="¹©Ó¦ÉÌÃû³Æ")
+            @ExcelField(value ="ä¾›åº”å•†åç§°")
     private String gysName;
 
     /**
-     * Ò©Æ·±àÂë
+     * è¯å“ç¼–ç 
      */
-            @ExcelField(value ="Ò©Æ·±àÂë")
+            @ExcelField(value ="è¯å“ç¼–ç ")
     private String ypBh;
 
     /**
-     * ²úµØ´úÂë
+     * äº§åœ°ä»£ç 
      */
-            @ExcelField(value ="²úµØ´úÂë")
+            @ExcelField(value ="äº§åœ°ä»£ç ")
     private String ypCd;
 
     /**
-     * Ò©Æ·Ãû³Æ
+     * è¯å“åç§°
      */
-            @ExcelField(value ="Ò©Æ·Ãû³Æ")
+            @ExcelField(value ="è¯å“åç§°")
     private String ypMc;
 
     /**
-     * ÊıÁ¿
+     * æ•°é‡
      */
-            @ExcelField(value ="ÊıÁ¿")
+            @ExcelField(value ="æ•°é‡")
     private Double sl;
 
     /**
-     * µ¥Î»
+     * å•ä½
      */
-            @ExcelField(value ="µ¥Î»")
+            @ExcelField(value ="å•ä½")
     private String dw;
 
     /**
-     * ½ø»õ½ğ¶î
+     * è¿›è´§é‡‘é¢
      */
-            @ExcelField(value ="½ø»õ½ğ¶î")
+            @ExcelField(value ="è¿›è´§é‡‘é¢")
     private Double jhJe;
 
     /**
-     * ´´½¨ÈËĞÕÃû
+     * åˆ›å»ºäººå§“å
      */
-            @ExcelField(value ="´´½¨ÈËĞÕÃû")
+            @ExcelField(value ="åˆ›å»ºäººå§“å")
     private String cjr;
 
     /**
-     * ´´½¨ÈË¹¤ºÅ
+     * åˆ›å»ºäººå·¥å·
      */
-            @ExcelField(value ="´´½¨ÈË¹¤ºÅ")
+            @ExcelField(value ="åˆ›å»ºäººå·¥å·")
     private String cjrid;
 
     /**
-     * ±¸×¢
+     * å¤‡æ³¨
      */
-            @ExcelField(value ="±¸×¢")
+            @ExcelField(value ="å¤‡æ³¨")
     private String remark;
 
     /**
-     * ×´Ì¬
+     * çŠ¶æ€
      */
     @TableField("state")
     private Integer state;
 
     /**
-     * ÊÇ·ñÉ¾³ı
+     * æ˜¯å¦åˆ é™¤
      */
     @TableField("IS_DELETEMARK")
     private Integer isDeletemark;
 
     /**
-     * ´´½¨Ê±¼ä
+     * åˆ›å»ºæ—¶é—´
      */
     @TableField("CREATE_TIME")
     private Date createTime;
@@ -137,7 +138,7 @@ private static final long serialVersionUID=1L;
     private transient String createTimeTo;
 
     /**
-     * ĞŞ¸ÄÊ±¼ä
+     * ä¿®æ”¹æ—¶é—´
      */
     @TableField("MODIFY_TIME")
     private Date modifyTime;
@@ -145,13 +146,13 @@ private static final long serialVersionUID=1L;
     private transient String modifyTimeTo;
 
     /**
-     * ´´½¨ÈË
+     * åˆ›å»ºäºº
      */
     @TableField("CREATE_USER_ID")
     private Long createUserId;
 
     /**
-     * ĞŞ¸ÄÈË
+     * ä¿®æ”¹äºº
      */
     @TableField("MODIFY_USER_ID")
     private Long modifyUserId;

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.jws.WebService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -145,6 +146,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     if(listAllLastMonth.size()<=0){
                         listAllLastMonth =this.scmBPurcharseorderMapper.findlastmonth();
                     }
+                    log.error("88888");
                     List<ScmBPurcharseorder> list =  listAllLastMonth.stream().filter(p->p.getLifnr().equals(accountCode)
                     && p.getStatus().equals(1) && p.getCreateTime().compareTo(startDate)>=0
                             && p.getCreateTime().compareTo(endDate)<=0).collect(Collectors.toList());
@@ -153,7 +155,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                     queryOrderWrapper.eq(ScmBPurcharseorder::getStatus, "1");
                     queryOrderWrapper.between(ScmBPurcharseorder::getBedat, startDate, endDate);*/
 
-
+                    log.error("9999999");
                     //  List<ScmBPurcharseorder> list = this.scmBPurcharseorderMapper.selectList(queryOrderWrapper);
                     list.sort(
                             new Comparator<ScmBPurcharseorder>() {
@@ -167,7 +169,7 @@ public class SCM_XHImpl implements ISCM_XHService {
                                 }
                             }
                     );
-
+                    log.error("333333");
                     //   var list = rnc.GetPurcharseList("", userName.Trim().Replace("'", ""), "", startTime.ToString("yyyy-MM-dd"), endTime.ToString("yyyy-MM-dd"));
                     List<Purchase> reList = new ArrayList<>();
                     for (ScmBPurcharseorder item : list
@@ -512,7 +514,7 @@ if(StringUtils.isNotEmpty(order.getCode()) && order.getCode().equals("1")) { //�
             /**
              * 发票   货票同行  才需要设置 发票编码 发票号码 发票日期
              */
-            entity.setFpjr(item.getMENGE().multiply(order.getNetpr()));
+            entity.setFpjr(item.getMENGE().multiply(order.getNetpr()).setScale(2,BigDecimal.ROUND_HALF_UP));
 
             if(order.getCode()!=null && order.getCode().equals("1")) { //货票同行 需要上传发票号码
                 entity.setFphm(item.getFPHM());

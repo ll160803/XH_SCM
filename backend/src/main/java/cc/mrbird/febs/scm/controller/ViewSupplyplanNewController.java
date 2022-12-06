@@ -102,7 +102,7 @@ public void updateViewSupplyplanNew(@Valid ViewSupplyplanNew viewSupplyplanNew)t
         User currentUser = FebsUtil.getCurrentUser();
         scmBSupplyplan.setGysaccount(currentUser.getUsername());
 
-        return getDataTable(this.iViewSupplyplanNewService.findViewSupplyplans_byMaterCode(request, scmBSupplyplan));
+        return getDataTable(this.iViewSupplyplanNewService.findViewSupplyplans_byMaterCode2(request, scmBSupplyplan));
     }
     @GetMapping("fpcode")
     public Map<String, Object> ListOrder5(QueryRequest request, ViewSupplyplanNew scmBSupplyplan) {

@@ -31,7 +31,7 @@ public class CodeGenerator {
     // 数据库密码scm_d_plan
     private static final String PASSWORD = "123456";
     // @author 值
-    private static final String AUTHOR = "MrBird";
+    private static final String AUTHOR = "viki";
     // 包的基础路径
     private static final String BASE_PACKAGE_URL = "cc.mrbird.febs";
     // xml文件路径

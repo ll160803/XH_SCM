@@ -200,7 +200,7 @@ public class MsgValidTask {
         WebCommonServiceImplService his =new WebCommonServiceImplService();
 
 
-        String month= "202207";// DateUtil.format(DateUtil.date(),"yyyyMM");
+        String month= DateUtil.format(DateUtil.offsetMonth(DateUtil.date(),-1),"yyyyMM");
 
         String param="{\"instance\": \"sapdrugplant\",\"method\": \"getZeroInventory\",\"data\": {\"YWLX \":\"1\",\"NY\":\""+month+"\"}}";
       String out=  his.getWebCommonServiceImplPort().doWebCommonService(param);
@@ -250,7 +250,7 @@ public class MsgValidTask {
         WebCommonServiceImplService his =new WebCommonServiceImplService();
 
 
-        String month=  DateUtil.format(DateUtil.date(),"yyyyMM");
+        String month=  DateUtil.format(DateUtil.offsetMonth(DateUtil.date(),-1),"yyyyMM");
 
         String param="{\"instance\": \"sapdrugplant\",\"method\": \"getZeroInventory\",\"data\": {\"YWLX \":\"2\",\"NY\":\""+month+"\"}}";
         String out=  his.getWebCommonServiceImplPort().doWebCommonService(param);
@@ -301,7 +301,7 @@ public class MsgValidTask {
         WebCommonServiceImplService his =new WebCommonServiceImplService();
 
 
-        String month= "202207";// DateUtil.format(DateUtil.date(),"yyyyMM");
+        String month=  DateUtil.format(DateUtil.offsetMonth(DateUtil.date(),-1),"yyyyMM");
 
         String param="{\n" +
                 "\t\"instance\": \"sapdrugplant\",\n" +

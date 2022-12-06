@@ -28,6 +28,7 @@ public interface IViewSupplyplanNewService extends IService<ViewSupplyplanNew> {
 
         void deleteViewSupplyplanNews(String[]Ids);
 
+        IPage<ViewSupplyplanNew> findViewSupplyplans_byMaterCode2(QueryRequest request, ViewSupplyplanNew viewSupplyplan);
         IPage<ViewSupplyplanNew> findViewSupplyplans_byMaterCode(QueryRequest request, ViewSupplyplanNew viewSupplyplan);
         IPage<ViewSupplyplanNew> findViewSupplyplans_byCode(QueryRequest request, ViewSupplyplanNew viewSupplyplan);
         }

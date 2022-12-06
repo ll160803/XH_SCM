@@ -71,6 +71,8 @@ public class ScmBFpplanController extends BaseController {
     }
     @GetMapping("fp")
     public Map<String, Object> List3(QueryRequest request, ScmBFpplan scmBFpplan) {
+        User currentUser = FebsUtil.getCurrentUser();
+        scmBFpplan.setGysaccount(currentUser.getUsername());
         return getDataTable(this.iScmBFpplanService.findScmBFpplans2(request, scmBFpplan));
     }
 

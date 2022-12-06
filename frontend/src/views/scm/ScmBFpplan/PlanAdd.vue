@@ -132,7 +132,7 @@
       :dataSource="dataSource"
       :pagination="pagination"
       :loading="loading"
-      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+      :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange, onSelect: onSelectId}"
       @change="handleTableChange"
       :bordered="bordered"
       :scroll="{ x: 1700 ,y:300 }"
@@ -305,7 +305,8 @@ export default {
       werks: '',
       lgort: '',
       rows: [],
-      totalAmount: 0
+      totalAmount: 0,
+      arrIds: []
     }
   },
   methods: {
@@ -329,8 +330,36 @@ export default {
       this.queryParams.materCodeTo = dateString
         }
     },
-    onSelectChange (selectedRowKeys) {
-       console.info(selectedRowKeys)
+    onSelectId (record, selected){
+      
+    },
+    onSelectChange (selectedRowKeys,selectedRows) {
+      let arr= [...selectedRowKeys];
+      for (let id of arr){
+         var id2= id.replace("*","")
+          if (id.indexOf('*') >= 0) {
+            if(this.arrIds.indexOf(id2)>=0 && arr.indexOf(id2)<0 && this.selectedRowKeys.indexOf(id)>=0){
+              selectedRowKeys = selectedRowKeys.filter(v=>v!=id)
+              break
+            }
+            if(this.arrIds.indexOf(id2)>=0 && arr.indexOf(id2)<0 && this.selectedRowKeys.indexOf(id)<0){
+               selectedRowKeys.push(id2)
+               break;
+            }
+            
+          }
+          else{
+            if(this.arrIds.indexOf(id+"*")>=0 && arr.indexOf(id+"*")<0 && this.selectedRowKeys.indexOf(id)>=0){
+               selectedRowKeys = selectedRowKeys.filter(v=>v!=id)
+               break;
+            }
+            if(this.arrIds.indexOf(id+"*")>=0 && arr.indexOf(id+"*")<0 && this.selectedRowKeys.indexOf(id)<0){
+               selectedRowKeys.push(id+"*")
+               break;
+            }
+             
+          }
+      }
       this.selectedRowKeys = selectedRowKeys
       const dataSource = [...this.dataSource];
       for (let item of dataSource) {
@@ -443,6 +472,7 @@ export default {
         pagination.total = data.total
         this.loading = false
         this.dataSource = data.rows
+        this.arrIds = data.rows.map(v => {return v.id2})
         this.pagination = pagination
       })
     },
